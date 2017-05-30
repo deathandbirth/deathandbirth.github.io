@@ -226,6 +226,8 @@ const display={
 	},
 	change(a,draw){
 		let list = this.list[a];
+		container.style.width = list.width+'px';
+		container.style.height = list.height+'px';
 		canvas.width = list.width;
 		canvas.height = list.height;
 		fs = list.fs;
