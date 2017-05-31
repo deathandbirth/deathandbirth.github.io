@@ -183,22 +183,25 @@ const stairsMap = new Map([
 	[UP,{name:{a:'up staircase',b:'上り階段'},symbol:'<',color:WHITE,id:UP}],
 ]);
 
+const canvasIds = ['buf','main','cur','msg','stats','map','inv'];
 const canvas = {};
 const ctxes = {};
 {	
-	let children = document.getElementById('container').children;
-	for(let child of children){
-		canvas[child.id] = child;
-		ctxes[child.id.replace('canvas','').toLowerCase()] = 
-			child.getContext('2d');
+	let parent = document.getElementById('container');
+	parent.innerHTML = '';
+	for(let i=0,l=canvasIds.length;i<l;i++){
+		let id = canvasIds[i];
+		let child =  document.createElement('canvas');
+		canvas[id] = child;
+		ctxes[id] = child.getContext('2d');
+		if(id==='buf') continue;
+		child.style.position = 'absolute';
+		child.style.left = 0;
+		child.style.top = 0;
+		child.style['z-index'] = i;
+		parent.appendChild(child);
 	}
 }
-
-const canvasBuf = document.createElement('canvas');
-canvasBuf.setAttribute('id','canvasBuf');
-canvas[canvasBuf.id] = canvasBuf;
-ctxes['buf'] = canvasBuf.getContext('2d');
-
 
 let ctxBuf = ctxes.buf;
 let ctxMain = ctxes.main;
@@ -235,7 +238,7 @@ const display={
 		for(let key in canvas){
 			if(key==='width'||key==='height') continue;
 			let cvs = canvas[key];
-			let times = key==='canvasBuf'? 2:1;
+			let times = key==='buf'? 2:1;
 			cvs.setAttribute('width',list.width*times);
 			cvs.setAttribute('height',list.height*times);
 		}
@@ -3363,13 +3366,13 @@ const map = {
 		ctxMain.clearRect(0,0,canvas.width,canvas.height);
 		let X = cX- (IN_WIDTH-1)/2;
 		let Y = cY - (IN_HEIGHT)/2;
-		ctxMain.drawImage(canvasBuf,X*fs,Y*fs,IN_WIDTH*fs,IN_HEIGHT*fs,
+		ctxMain.drawImage(canvas.buf,X*fs,Y*fs,IN_WIDTH*fs,IN_HEIGHT*fs,
 		(canvas.width-IN_WIDTH*fs)/2,0,IN_WIDTH*fs,IN_HEIGHT*fs);
 	},
 	
 	redraw(cX,cY){
 		if(rogue.blinded) return;
-		ctxBuf.clearRect(0,0,canvasBuf.width,canvasBuf.height);
+		ctxBuf.clearRect(0,0,canvas.width*2,canvas.height*2);
 		for(let i=0,l=coords.length;i<l;i++){
 			for(let loc of coords[i])
 				if(loc.detected||loc.found) loc.draw(true);
@@ -3395,7 +3398,7 @@ const map = {
 };
 
 const goBlind =()=>{
-	ctxBuf.clearRect(0,0,canvasBuf.width,canvasBuf.height);
+	ctxBuf.clearRect(0,0,canvas.width*2,canvas.height*2);
 	coords[rogue.x][rogue.y].draw();
 	rogue.ce = null;
 	statistics.clearEnemyBar();
@@ -11846,7 +11849,6 @@ const searchItemToIdentifiy = {
 		}
 	}
 };
-
 document.onkeyup = function(e){
 	if(e.keyCode===16) isShift = false; //Shift
 	if(e.keyCode===17) isCtrl = false; //Ctrl
@@ -12206,7 +12208,7 @@ const quit =(keyCode,save)=>{
 }
 
 const clearAll =()=>{
-	ctxBuf.clearRect(0,0,canvasBuf.width,canvasBuf.height);
+	ctxBuf.clearRect(0,0,canvas.width*2,canvas.height*2);
 	ctxMain.clearRect(0,0,canvas.width,canvas.height);
 	ctsInv.clearRect(0,0,canvas.width,canvas.height);
 	ctxStats.clearRect(0,0,canvas.width,canvas.height);
