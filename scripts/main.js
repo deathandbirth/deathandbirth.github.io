@@ -6,7 +6,7 @@ const generateNumber = function*(i,j,bit){
 }
 const enums =(i,j)=> [...generateNumber(i,j)];
 const enumsBit =(i,j)=> [...generateNumber(i,j,true)];
-const VERSION = 0.0;
+const VERSION = 0.001;
 const MS = 2; //message space
 const SS = 3; //stats space
 const IN_WIDTH = 47; //canvas.width/fs-1;
@@ -123,7 +123,7 @@ const CL={ //command list
 	'Alt+dir':{a:'attack stationary/dig',b:'その場で攻撃する/掘る'},'Shift+dir':{a:'dash',b:'走る'},'.':{a:'stap on',b:'踏む'},
 	'>':{a:'down stairs',b:'階段を降りる'},'<':{a:'up stairs',b:'階段を昇る'},'=':{a:'option',b:'オプション'},'Ctrl+p':{a:'previous message',b:'メッセージ履歴'},
 	'Ctrl+r':{a:'redraw',b:'再描写'},'Ctrl+m':{a:'mute',b:'消音'},'Ctrl+s':{a:'save',b:'記録する'},'Ctrl+d':{a:'destroy item',b:'アイテムを破壊する'},
-	'Ctrl+x':{a:'save and exit',b:'記録して終了する'},
+	'Ctrl+x':{a:'save and exit',b:'記録して終了する'},'Ctrl+v':{a:'game version',b:'ゲームのバージョン'}
 };
 const CLW={ //wizard
 	'Ctrl+e':{a:'*enlightenment*',b:'*啓蒙*'},'Ctrl+z':{a:'*indestructible*',b:'*破壊不能*'},'Ctrl+q':{a:'*create trap*',b:'*罠を生成する*'},
@@ -2798,7 +2798,7 @@ const Data = class{
 		if(rogue.cdl) this.stashList = enter[STASH].list;
 		this.track = audio.curTrack;
 		this.date = new Date();
-		this.ver = VERSION/*.toFixed(1)*/;
+		this.ver = VERSION;
 	}
 	
 	loadInit(){
@@ -2966,7 +2966,7 @@ const data ={
 	},
 	dontSave(){
 		this.error = true;
-		message.draw(rogue.cl===ENG?
+		message.draw(option.language.user===ENG?
 		'Error occurred'
 		:'エラーが発生した');
 	}
@@ -12042,7 +12042,8 @@ document.onkeydown = function(e){
 			case 123: 
 				rogue.castBookmarkedSkill(e.keyCode);
 				break;
-			default:
+			case  86: //^v
+				if(isCtrl) message.draw(`Death and Birth ver ${VERSION}`);
 				break;
 		}
 	} else if(!flag.died&&!flag.retry&&(e.keyCode===27||(!flag.create&&e.keyCode==32)||(flag.message&&e.keyCode===80&&isCtrl))){ //ESC,  Space, ^p
@@ -12186,6 +12187,9 @@ const callTitle =()=>{
 	ctsInv.fillText(option.language.user===ENG?
 	'[Enter] to start'
 	:'[Enter] 開始',IN_WIDTH/2*fs,(IN_HEIGHT/2+2)*fs);
+	ctsInv.font = '15px Arial';
+	ctsInv.textAlign = 'right';
+	ctsInv.fillText(`ver ${VERSION}`,canvas.width-2*fs,canvas.height-2*fs);
 	ctsInv.restore();
 	flag.retry = true;
 	audio.stop(audio.curTrack);
