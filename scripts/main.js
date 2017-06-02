@@ -2106,7 +2106,7 @@ const fighterTab = {
 			material:M_STONE,atkType:AT_S,stillness:true,awake:true,volumeRate:1},
 	],
 	misc:[
-		{name:{a:'Player',b:'プレイヤー'},symbol:'@',color:WHITE,race:HUMAN,mod:NORMAL,grade:NORMAL,
+		{name:{a:'',b:''},symbol:'@',color:WHITE,race:HUMAN,mod:NORMAL,grade:NORMAL,
 			lvl:1,rarity:0,hpRate:0,mpRate:0,str:1,dex:1,con:1,int:1,spd:0,dmgBase:'1d1', acBase:0,dropNum:0,matRedTimes:0,
 			fire:0,water:0,air:0,earth:0,poison:0,
 			atkType:AT_B,awake:true}, 
@@ -2802,11 +2802,10 @@ const Data = class{
 	}
 	
 	loadInit(){
+		this.loadOption();
 		getRndName.init();
-		clearAll();
 		this.loadItemTab();
 		this.loadCoords();
-		this.loadOption();
 		this.loadDifficulty();
 		message.list = this.messageList;
 		litMapIds = this.litMapIds;
@@ -2815,9 +2814,10 @@ const Data = class{
 			this.loadItem(this.stashList);
 			enter[STASH].list = this.stashList;
 		}
+		this.loadAudio();
+		game.clearDisplay();	
 		display.change(option.display.user,true);
 		initFlag();
-		this.loadAudio();
 	}
 	
 	saveItemTab(){
@@ -2936,6 +2936,7 @@ const Data = class{
 }
 
 const data ={ 
+	name:'Player',
 	save(){
 		if(flag.died||flag.retry||this.error)
 			return;
@@ -2943,26 +2944,33 @@ const data ={
 			rogue.returnCubeItem();
 		message.draw(rogue.cl===ENG? 'Saved':'記録した');
 		let saveData = new Data();	
-		localStorage.setItem('Player',JSON.stringify(saveData));
+		localStorage.setItem(this.name,JSON.stringify(saveData));
 	},
 	load(){
-		let name = 'Player';
-		let saveData = JSON.parse(localStorage.getItem(name));
-		if(saveData===null){
-			initialize();
-			creation.town();
-		} else{
+		let found;
+		let saveData = JSON.parse(localStorage.getItem(this.name));
+		if(saveData!==null){
 			saveData.__proto__ = Data.prototype;
-			saveData.loadInit();
-			message.draw(rogue.cl===ENG? 'Loaded':'記録を読み込んだ');
-		}
+			try{
+				saveData.loadInit();
+				message.draw(option.language.user===ENG? 'Loaded':'記録を読み込んだ');
+			}catch(e){
+				this.failed = true;
+				let ver = saveData.ver;
+				ctsInv.fillText(option.language.user===ENG?
+					`Failed to load. In order to delete your save data and continue, please push 'Y'.(ver ${ver})`
+					:`読み込みに失敗しました。セーブデータを消去してゲームを続けるには、'Y'を押してください。(ver ${ver})`
+					,fs,fs);
+			}			
+		} else
+			game.start();	
 	},
 	delete(name){
 		localStorage.removeItem(name);
 	},
 	exit(){
 		this.save();
-		quit(89,true);
+		game.quit(89,true);
 	},
 	dontSave(){
 		this.error = true;
@@ -8394,6 +8402,7 @@ const Fighter = class extends Material{
 const Rogue = class extends Fighter{
 	constructor(){
 		super(fighterTab['misc'][0])
+		this.name['a'] = this.name['b'] = data.name;
 		this.id = ROGUE;
 		this.dmgBare = this.dmgBase; 
 		this.expMax = this.exp = 0;
@@ -8673,7 +8682,7 @@ const Rogue = class extends Fighter{
 		flag.regular = false;
 		flag.wait = false;
 		flag.died = true;
-		data.delete('Player');
+		data.delete(data.name);
 	}
 	
 	drawStats(){
@@ -8796,7 +8805,7 @@ const Rogue = class extends Fighter{
 		if(!trap&&!loc.stairs||loc.hidden) return;
 		if(trap||loc.stairs.id===DOWN&&keyCode===190){
 			if(option.autosave.user) data.save();
-			clearLevel();
+			game.clearLevel();
 			if(rogue.cdl===33){
 				rogue.cdl = 0;
 				creation.town();
@@ -8806,7 +8815,7 @@ const Rogue = class extends Fighter{
 			}
 		} else if(loc.stairs.id===UP&&keyCode===188){
 			if(option.autosave.user) data.save();
-			clearLevel();
+			game.clearLevel();
 			!--rogue.cdl? creation.town():creation.dungeon();
 		}
 	}
@@ -8814,12 +8823,12 @@ const Rogue = class extends Fighter{
 	enterPortal(){
 		if(!this.cdl){
 			if(option.autosave.user) data.save();
-			clearLevel()
+			game.clearLevel()
 			this.cdl = this.pdl;
 			creation.dungeon();
 		} else{
 			this.pdl = this.cdl;
-			clearLevel()
+			game.clearLevel()
 			creation.town();
 			this.cdl = 0;
 			let portal = new Portal(enter[PORTAL]);
@@ -10440,7 +10449,7 @@ const Rogue = class extends Fighter{
 		flag.died = false;
 		flag.regular = true;
 		rogue.cdl = 0;
-		clearLevel();
+		game.clearLevel();
 		creation.town();
 	}
 	
@@ -10768,7 +10777,7 @@ const Rogue = class extends Fighter{
 			case 191: //?
 				if(isShift){
 					flag.help = true;
-					help.main();
+					game.help.main();
 				}
 				break;
 			case 80: //p
@@ -12115,17 +12124,28 @@ document.onkeydown = function(e){
 	} else if(flag.option){
 		option.main(e.keyCode);
 	} else if(flag.quit){
-		quit(e.keyCode);
+		game.quit(e.keyCode);
 	}
 	
-	if(flag.died&&e.keyCode===13){ //Enter
-		if(wizard&&rogue)
-			rogue.revive();
-		else if(!flag.retry)
-			gameOver();
-		else
-			data.load();
-	} else if(!flag.died){
+	if(flag.died){
+		if(data.failed){
+			if(e.keyCode===89&&isShift){ //Y
+				game.start();
+				data.failed = false;
+				data.delete(data.name);
+				message.draw(rogue.cl===ENG?
+						'Deleted the data'
+						:'データ消去しました')
+			}
+		} else if(e.keyCode===13){ //Enter
+			if(wizard&&rogue)
+				rogue.revive();
+			else if(!flag.retry)
+				game.over();
+			else
+				data.load();
+		}
+	} else{
 		if(rogue.done){
 			rogue.decreaseEnergy();
 			queue.moveAll();
@@ -12154,111 +12174,108 @@ const initFlag =()=>{
 		flag[key] = key==='regular';
 }
 
-const help = {
-	main(){
-		inventory.shadow(MIDDLE);
-		this.i = 1;
-		this.j = MS+1;
-		this.loop(CL);
-		if(wizard) this.loop(CLW);
-	},
-	loop(list){
-		for(let key in list){
-			ctsInv.save();
-			ctsInv.fillText(key,(this.i-0.5)*fs,this.j*fs);
-			ctsInv.textAlign = 'left';
-			ctsInv.fillText(list[key][rogue.cl],(this.i+4)*fs,(this.j++)*fs);
-			ctsInv.restore();
-			if(this.j===IN_HEIGHT){
-				this.j = MS+1;
-				this.i += 14;
+const game = {
+	help:{
+		main(){
+			inventory.shadow(MIDDLE);
+			this.loop(CL);
+			if(wizard) this.loop(CLW);
+		},
+		loop(list){
+			let i = 1;
+			let j = MS+1;
+			for(let key in list){
+				ctsInv.save();
+				ctsInv.fillText(key,(i-0.5)*fs,j*fs);
+				ctsInv.textAlign = 'left';
+				ctsInv.fillText(list[key][rogue.cl],(i+4)*fs,(j++)*fs);
+				ctsInv.restore();
+				if(j===IN_HEIGHT){
+					j = MS+1;
+					i += 14;
+				}
 			}
 		}
+	},
+	title(){
+		this.clearDisplay();
+		ctsInv.save();
+		ctsInv.textAlign='center'
+		ctsInv.font = '40px Arial';
+		ctsInv.fillText('Death and Birth',IN_WIDTH/2*fs,IN_HEIGHT/2*fs);
+		ctsInv.font = '20px Arial';
+		ctsInv.fillText(option.language.user===ENG?
+		'[Enter] to start'
+		:'[Enter] 開始',IN_WIDTH/2*fs,(IN_HEIGHT/2+2)*fs);
+		ctsInv.font = '15px Arial';
+		ctsInv.textAlign = 'right';
+		ctsInv.fillText(`ver ${VERSION}`,canvas.width-2*fs,canvas.height-2*fs);
+		ctsInv.restore();
+		flag.retry = true;
+		audio.stop(audio.curTrack);
+		audio.playMusic('title');
+	},
+	over(){
+		this.clearDisplay();
+		ctsInv.save();
+		ctsInv.textAlign='center'
+		ctsInv.font = '40px Arial';
+		ctsInv.fillText('G A M E  O V E R',IN_WIDTH/2*fs,IN_HEIGHT/2*fs);
+		ctsInv.font = '20px Arial';
+		ctsInv.fillText(option.language.user===ENG?
+		'[Enter] to retry'
+		:'[Enter] リトライ',IN_WIDTH/2*fs,(IN_HEIGHT/2+2)*fs);
+		ctsInv.restore();
+		flag.retry = true;
+	},
+	quit(keyCode,save){
+		if(keyCode!==89&&keyCode!==78)	return; //y, n
+		if(keyCode===78){
+			flag.quit = false;
+			flag.regular = true;
+			inventory.clear();
+			return;
+		}
+		flag.died = true;
+		flag.regular = false;
+		this.title();	
+		if(!save) data.delete(data.name);
+		rogue = null;
+	},
+	start(){
+		initFlag();
+		initTab();
+		audio.init();
+		difficulty.init();
+		rogue = new Rogue();
+		rogue.init();
+		enter[STASH].list = [];
+		message.list = [];
+		message.clear(true);
+		this.clearLevel();
+		creation.town();
+	},
+	clearLevel(){
+		this.clearDisplay();
+		rogue.checkUnique();
+		Enemy.list = {};
+		Item.list = {};
+		Staircase.list = {};
+		rogue.numSteps = 0;
+		rogue.ce = null;
+		queue.list = []; 
+		rogue.portal.x = rogue.portal.y = 0;
+		litMapIds = {};
+	},
+	clearDisplay(){
+		ctxBuf.clearRect(0,0,canvas.width*2,canvas.height*2);
+		ctxMain.clearRect(0,0,canvas.width,canvas.height);
+		ctsInv.clearRect(0,0,canvas.width,canvas.height);
+		ctxStats.clearRect(0,0,canvas.width,canvas.height);
+		ctxMsg.clearRect(0,0,canvas.width,canvas.height);
+		// ctxMap.clearRect(0,0,canvas.width,canvas.height);
 	}
 };
 
-const callTitle =()=>{
-	clearAll();
-	ctsInv.save();
-	ctsInv.textAlign='center'
-	ctsInv.font = '40px Arial';
-	ctsInv.fillText('Death and Birth',IN_WIDTH/2*fs,IN_HEIGHT/2*fs);
-	ctsInv.font = '20px Arial';
-	ctsInv.fillText(option.language.user===ENG?
-	'[Enter] to start'
-	:'[Enter] 開始',IN_WIDTH/2*fs,(IN_HEIGHT/2+2)*fs);
-	ctsInv.font = '15px Arial';
-	ctsInv.textAlign = 'right';
-	ctsInv.fillText(`ver ${VERSION}`,canvas.width-2*fs,canvas.height-2*fs);
-	ctsInv.restore();
-	flag.retry = true;
-	audio.stop(audio.curTrack);
-	audio.playMusic('title');
-}
-
-const quit =(keyCode,save)=>{
-	if(keyCode!==89&&keyCode!==78)	return; //y, n
-	if(keyCode===78){
-		flag.quit = false;
-		flag.regular = true;
-		inventory.clear();
-		return;
-	}
-	flag.died = true;
-	flag.regular = false;
-	callTitle();
-	if(!save) data.delete('Player');
-	rogue = null;
-}
-
-const clearAll =()=>{
-	ctxBuf.clearRect(0,0,canvas.width*2,canvas.height*2);
-	ctxMain.clearRect(0,0,canvas.width,canvas.height);
-	ctsInv.clearRect(0,0,canvas.width,canvas.height);
-	ctxStats.clearRect(0,0,canvas.width,canvas.height);
-	ctxMsg.clearRect(0,0,canvas.width,canvas.height);
-	// ctxMap.clearRect(0,0,canvas.width,canvas.height);
-}
-
-const gameOver =()=>{
-	clearAll();
-	ctsInv.save();
-	ctsInv.textAlign='center'
-	ctsInv.font = '40px Arial';
-	ctsInv.fillText('G A M E  O V E R',IN_WIDTH/2*fs,IN_HEIGHT/2*fs);
-	ctsInv.font = '20px Arial';
-	ctsInv.fillText(option.language.user===ENG?
-	'[Enter] to retry'
-	:'[Enter] リトライ',IN_WIDTH/2*fs,(IN_HEIGHT/2+2)*fs);
-	ctsInv.restore();
-	flag.retry = true;
-}
-
-const initialize =()=>{
-	initFlag();
-	initTab();
-	audio.init();
-	difficulty.init();
-	rogue = new Rogue();
-	rogue.init();
-	enter[STASH].list = [];
-	message.list = [];
-	message.clear(true);
-	clearLevel();
-}
-
-const clearLevel =()=>{
-	clearAll();
-	rogue.checkUnique();
-	Enemy.list = {};
-	Item.list = {};
-	Staircase.list = {};
-	rogue.numSteps = 0;
-	rogue.ce = null;
-	queue.list = []; 
-	rogue.portal.x = rogue.portal.y = 0;
-	litMapIds = {};
-}
-
 display.change(option.display.user);
-callTitle();
+game.title();
