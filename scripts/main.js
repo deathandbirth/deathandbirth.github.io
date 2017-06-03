@@ -2109,7 +2109,17 @@ const fighterTab = {
 		{name:{a:'',b:''},symbol:'@',color:WHITE,race:HUMAN,mod:NORMAL,grade:NORMAL,
 			lvl:1,rarity:0,hpRate:0,mpRate:0,str:1,dex:1,con:1,int:1,spd:0,dmgBase:'1d1', acBase:0,dropNum:0,matRedTimes:0,
 			fire:0,water:0,air:0,earth:0,poison:0,
-			atkType:AT_B,awake:true}, 
+			atkType:AT_B,awake:true,
+			starter:[
+				{type:'melee',tabId:M_DAGGER,starter:true},
+				{type:'armor',tabId:A_VEST,starter:true},
+				{type:'book',tabId:B_ALCHEMY_1},
+				{type:'book',tabId:B_SPELL_1},
+				{type:'book',tabId:B_SKILL_1},
+				{type:'food',tabId:F_RATION,quantity:5},
+				{type:'light',tabId:L_TORCH,quantity:2,starter:true},
+			]
+		}, 
 		{name:{a:'Yeti',b:'イエティ'},symbol:'Y',color:WHITE,mod:NORMAL,grade:NORMAL,
 			lvl:1,rarity:0,hpRate:0,mpRate:0,str:1,dex:1,con:1,int:1,spd:0,dmgBase:'1d6', acBase:6,dropNum:0,matRedTimes:0,
 			fire:0,water:0,air:0,earth:0,poison:0,
@@ -8397,6 +8407,28 @@ const Fighter = class extends Material{
 		}
 		return parts;
 	}
+
+	getStarterItems(){
+		for(let item of this.starter){
+			let quantity = item.quantity? item.quantity:1;
+			let itemNew = creation.item(1,item.type,item.tabId,quantity,LIST,ud,ud,ud,ud,this.lvl,item.uniqueId,item.starter);
+			itemNew.equipable&&itemNew.type!=='light'? this.equipStarterItem(itemNew,item.side):this.packAdd(itemNew);
+		}
+	}
+
+	equipStarterItem(item,side){
+		if(!item||!item.equipable) return;
+		if(side)
+			this.side[side] = item;
+		else{
+			let parts = this.getParts(item);
+			if(!parts) return;
+			this.equipment[parts] = item;
+		}
+		item.place = P_EQUIPMENT;
+		this.gainOrloseWeight(item,item.quantity,true);
+		if(!side&&item.durab) this.getOrLooseStats(item,true);
+	}
 }
 
 const Rogue = class extends Fighter{
@@ -8436,7 +8468,7 @@ const Rogue = class extends Fighter{
 	}
 	
 	init(){
-		this.getStarterItems();
+		if(this.starter) this.getStarterItems();
 		this.calcAll();
 		this.hp = this.hpMax;
 		this.mp = this.mpMax;
@@ -10531,16 +10563,6 @@ const Rogue = class extends Fighter{
 		this.calcAll();
 	}
 	
-	getStarterItems(){
-		this.createItemIntoPack(1,'melee',M_DAGGER,1,ud,true);
-		this.createItemIntoPack(1,'armor',A_VEST,1,ud,true);
-		this.createItemIntoPack(1,'book',B_ALCHEMY_1,1,ud,true);
-		this.createItemIntoPack(1,'book',B_SPELL_1,1,ud,true);
-		this.createItemIntoPack(1,'book',B_SKILL_1,1,ud,true);
-		this.createItemIntoPack(1,'food',F_RATION,5,ud,true);
-		this.createItemIntoPack(2,'light',L_TORCH,1,ud,true);
-	}
-	
 	inputNumber(keyCode){
 		if(!keyCode){
 			cn = 1;
@@ -11286,26 +11308,6 @@ const Enemy = class extends Fighter{
 			&&!rogue.blinded&&(!this.invisible||rogue.seeInvisible);
 	}
 	
-	getStarterItems(){
-		for(let item of this.starter){
-			let itemNew = creation.item(1,item.type,item.tabId,1,LIST,ud,ud,item.ud,ud,this.lvl,item.uniqueId);
-			itemNew.equipable? this.equip(itemNew,item.side):this.packAdd(itemNew);
-		}
-	}
-
-	equip(item,side){ //starter
-		if(!item||!item.equipable) return;
-		if(side)
-			this.side[side] = item;
-		else{
-			let parts = this.getParts(item);
-			if(!parts) return;
-			this.equipment[parts] = item;
-		}
-		item.place = P_EQUIPMENT;
-		this.gainOrloseWeight(item,item.quantity,true);
-		if(!side&&item.durab) this.getOrLooseStats(item,true);
-	}
 }
 Enemy.list = {};
 
