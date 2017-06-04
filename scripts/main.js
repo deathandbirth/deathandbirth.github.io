@@ -2525,7 +2525,7 @@ const modTab = [
 		{name:{a:'of Illumination',b:'イルミネーションの'},lvl:1,rarity:0,
 			light:{lighten:1}},
 		{name:{a:'High Capasity',b:'大容量の'},lvl:1,rarity:50,
-			belt:{numBoxes:1},light:{duration:1000},},
+			belt:{numBoxes:1},light:{durationBonus:1000},},
 		{name:{a:'of Sustain Strength',b:'筋力維持の'},lvl:1,rarity:0,
 			melee:{strSus:true},shield:{strSus:true},gloves:{strSus:true},
 			ring:{strSus:true},light:{strSus:true}},
@@ -2648,6 +2648,7 @@ const investigationMap = new Map([
 	['gf',{name:{a:'Gold Finding',b:'財宝探求'},char:true,plus:true,perc:true}],
 	['expBonus',{name:{a:'Experience Bonus',b:'経験値加算値'},char:true,plus:true,perc:true}],
 	['lighten',{name:{a:'Lighten',b:'照明'},char:true,plus:true}],
+	['durationBonus',{name:{a:'Duration Bonus',b:'持続期間加算値'},item:true,plus:true}],
 	['numBoxes',{name:{a:'Slot numbers',b:'スロット数'},char:true,plus:true}],
 	
 	['dmgDiceNum',{name:{a:'Damage Dice Number',b:'ダメージ・ダイス数'},char:true,plus:true}],
@@ -11330,6 +11331,7 @@ const Item = class extends Material{
 			}
 			if(this.type==='light'){
 				this.durationMax = this.duration;
+				if(this.durationBonus) this.durationMax += this.durationBonus;
 				this.duration = 2500;
 			} else if(this.weapon){
 				this.dmgBare = this.dmgBase; 
