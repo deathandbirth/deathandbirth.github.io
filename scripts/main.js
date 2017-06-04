@@ -81,9 +81,9 @@ const ITJ={book:'書',food:'食料',potion:'薬',scroll:'巻物',wand:'棒',mele
 const ENJ={fire:'火',water:'水',air:'風',earth:'土',poison:'毒',light:'光',cold:'氷',lightning:'電',gravity:'重力',
 	infection:'感染',blizzard:'吹雪',sand:'砂',acid:'酸',magma:'溶岩',radiation:'放射線',atom:'原子',physical:'物理',
 	};
-const WEIGHT={'ring':0.1,'amulet':0.2,'book':1.0,'potion':0.2,'scroll':0.1,'wand':0.5,'gem':0.1,'coin':0.1,'food':0.3};
-const PRICE={'potion':50,'scroll':50,'wand':100,'melee':100,'missile':100,'staff':100,'shield':50
-	,'armor':100,'cloak':50,'belt':50,'helm':50,'gloves':50,'boots':50,'ring':50,'amulet':100,light:50,gem:200};
+const WEIGHT={ring:0.1,amulet:0.2,book:1.0,potion:0.2,scroll:0.1,wand:0.5,gem:0.1,coin:0.1,food:0.3,material:0.2};
+const PRICE={book:100,food:50,potion:25,scroll:25,wand:300,melee:100,missile:100,staff:100,shield:50
+	,armor:100,cloak:50,belt:50,helm:50,gloves:50,boots:50,ring:100,amulet:150,light:50,gem:400,oil:30,ammo:1,material:200};
 const RARITY={book:70,food:50,potion:0,scroll:0,wand:50,melee:0,missile:20,staff:20,shield:50,
 	armor:50,cloak:50,belt:50,helm:50,gloves:50,boots:50,light:50,ring:80,amulet:80,
 	oil:50,ammo:50,coin:0,gem:90,};
@@ -1055,7 +1055,7 @@ const materialMap =  new Map([
 		{name:{a:'Vicuna',b:'ビキューナ'},color:WHITE}, //ラクダ科
 		{name:{a:'Spiderweb',b:'スパイダーウェブ'},color:WHITE},
 	]}],
-	[M_FEATHER, {name:{a:'Feathers',b:'羽類'},hRate:2,tRate:7,pRate:2,list:[
+	[M_FEATHER, {name:{a:'Feathers',b:'羽類'},hRate:2,tRate:7,pRate:1.1,list:[
 		{name:{a:'Chicken Feather',b:'鶏羽'},color:BROWN},
 		{name:{a:'Peafowl Feather',b:'孔雀羽'},color:C_TEAL},
 		{name:{a:'Eagle Feather',b:'鷲羽'},color:SHADOW},
@@ -1069,7 +1069,7 @@ const materialMap =  new Map([
 		{name:{a:'Pegasus Feather',b:'ペガサス・フェザー'},color:WHITE},
 		//セイレン?
 	]}],
-	[M_FUR, {name:{a:'Furs',b:'毛皮類'},hRate:3,tRate:9,pRate:2,list:[
+	[M_FUR, {name:{a:'Furs',b:'毛皮類'},hRate:3,tRate:9,pRate:1.2,list:[
 		{name:{a:'Rabbit Fur',b:'兎毛皮'},color:C_BEIGE},
 		{name:{a:'Boar Fur',b:'猪毛皮'},color:BROWN},
 		{name:{a:'Wolf Fur',b:'狼毛皮'},color:C_BEIGE_GRAY},
@@ -1083,7 +1083,7 @@ const materialMap =  new Map([
 		{name:{a:'Manticore Fur',b:'マンティコア毛皮'},color:RED},
 		{name:{a:'Cerberus Fur',b:'ケルベロス毛皮'},color:GRAY},
 	]}],
-	[M_SKIN, {name:{a:'Skins',b:'皮類'},hRate:4,tRate:10,pRate:2,list:[
+	[M_SKIN, {name:{a:'Skins',b:'皮類'},hRate:4,tRate:10,pRate:1.3,list:[
 		{name:{a:'Deerhide',b:'鹿皮'},color:C_GOLDEN_YELLOW},
 		{name:{a:'Sheepskin',b:'羊皮'},color:C_BEIGE},
 		{name:{a:'Goatskin',b:'山羊皮'},color:C_BEIGE_GRAY},
@@ -1092,7 +1092,7 @@ const materialMap =  new Map([
 		{name:{a:'Demonhide',b:'デーモン・ハイド'},color:SHADOW},
 		{name:{a:'Wyrmhide',b:'ワイアーム・ハイド'},color:GREEN},
 	]}],
-	[M_SCALE, {name:{a:'Scales',b:'鱗類'},hRate:5,tRate:8,pRate:2,list:[
+	[M_SCALE, {name:{a:'Scales',b:'鱗類'},hRate:5,tRate:8,pRate:1.4,list:[
 		{name:{a:'Serpentskin',b:'蛇皮'},color:PURPLE},
 		{name:{a:'Lizard Skin',b:'トカゲ皮'},color:LIGHTGREEN},
 		{name:{a:'Fish Scale',b:'魚鱗'},color:BLUE},
@@ -1102,7 +1102,7 @@ const materialMap =  new Map([
 		{name:{a:'Dragonscale',b:'竜鱗'},color:GREEN},
 		{name:{a:'Lamiascale',b:'ラミア鱗'},color:C_TEAL},
 	]}],
-	[M_PLATING, {name:{a:'Plating',b:'メッキ製'},hRate:6,tRate:5,pRate:3,list:[
+	[M_PLATING, {name:{a:'Plating',b:'メッキ製'},hRate:6,tRate:5,pRate:1.5,list:[
 		{name:{a:'Tin Plated',b:'錫メッキ'},color:TIN},
 		{name:{a:'Zinc Plated',b:'亜鉛メッキ'},color:C_ZINC},
 		{name:{a:'Cadmium Plated',b:'カドミウムメッキ'},color:C_CADMIUM},
@@ -1114,7 +1114,7 @@ const materialMap =  new Map([
 		{name:{a:'Alumite',b:'アルマイト'},color:C_ALUMINIUM},
 		//Gilded
 	]}],
-	[M_WOOD, {name:{a:'Woods',b:'木材'},hRate:7,tRate:3,pRate:1,list:[
+	[M_WOOD, {name:{a:'Woods',b:'木材'},hRate:7,tRate:3,pRate:1.6,list:[
 		{name:{a:'Poplar',b:'ポプラ'},color:C_BEIGE},
 		{name:{a:'Walnut',b:'クルミ'},color:C_WALNUT},
 		{name:{a:'Cypress',b:'イトスギ'},color:C_CYPRESS}, 
@@ -1128,7 +1128,7 @@ const materialMap =  new Map([
 		{name:{a:'Life Tree',b:'生命樹'},color:BROWN},
 		//Cedar
 	]}],
-	[M_BONE, {name:{a:'Bones',b:'骨類'},hRate:8,tRate:2,pRate:2,list:[
+	[M_BONE, {name:{a:'Bones',b:'骨類'},hRate:8,tRate:2,pRate:1.7,list:[
 		{name:{a:'Bone',b:'骨'},color:WHITE},
 		{name:{a:'Giantbone',b:'ジャイアント・ボーン'},color:WHITE},
 		{name:{a:'Dragonbone',b:'竜骨'},color:WHITE},
@@ -1136,14 +1136,14 @@ const materialMap =  new Map([
 		{name:{a:'Vampirebone',b:'ヴァンパイア・ボーン'},color:WHITE},
 
 	]}],
-	[M_SHELL, {name:{a:'Shells',b:'甲殻類'},hRate:9,tRate:4,pRate:2,list:[
+	[M_SHELL, {name:{a:'Shells',b:'甲殻類'},hRate:9,tRate:4,pRate:1.8,list:[
 		{name:{a:'Coral',b:'珊瑚'},color:CORAL},
 		{name:{a:'Scorpion Shell',b:'サソリ殻'},color:SHADOW},
 		{name:{a:'Crab Shell',b:'蟹殻'},color:ORANGE},
 		{name:{a:'Turtle Shell',b:'亀甲羅'},color:BROWN},
 		{name:{a:'Scarab Shell',b:'スカラブ殻'},color:GRAY}, //スカラベ
 	]}],
-	[M_METAL, {name:{a:'Metals',b:'金属類'},hRate:10,tRate:3,pRate:5,list:[
+	[M_METAL, {name:{a:'Metals',b:'金属類'},hRate:10,tRate:3,pRate:1.9,list:[
 		{name:{a:'Tin',b:'錫'},color:TIN},
 		{name:{a:'Copper',b:'銅'},color:C_COPPER},
 		{name:{a:'Brass',b:'黄銅'},color:BRASS},
@@ -1157,7 +1157,7 @@ const materialMap =  new Map([
 		{name:{a:'Adamantite',b:'アダマンタイト'},color:STEEL},
 		{name:{a:'Orichalcum',b:'オリハルコン'},color:BRASS},
 	]}],
-	[M_STONE, {name:{a:'Stones',b:'石材'},hRate:11,tRate:1,pRate:4,list:[
+	[M_STONE, {name:{a:'Stones',b:'石材'},hRate:11,tRate:1,pRate:2,list:[
 		{name:{a:'Stone',b:'石'},color:WHITE},
 		{name:{a:'Hematite',b:'ヘマタイト'},color:WHITE},
 		{name:{a:'Moonstone',b:'ムーンストーン'},color:SKY_BLUE},
@@ -1174,7 +1174,7 @@ const materialMap =  new Map([
 		{name:{a:'Black Diamond',b:'ブラック・ダイヤモンド'},color:SHADOW},
 		//Gargoyle
 	]}],
-	[M_GEM, {name:{a:'Gems',b:'宝石類'},hRate:12,tRate:2,pRate:10,list:[
+	[M_GEM, {name:{a:'Gems',b:'宝石類'},hRate:12,tRate:2,pRate:3,list:[
 		{name:{a:'Ruby',b:'ルビー'},lvl:1,rarity:0,color:C_FIRE,bias:BIAS_FIRE},
 		{name:{a:'Turquoise',b:'ターコイズ'},lvl:1,rarity:0,color:C_AIR,bias:BIAS_AIR},
 		{name:{a:'Aquamarine',b:'アクアマリン'},lvl:1,rarity:0,color:C_WATER,bias:BIAS_WATER},
@@ -1193,16 +1193,15 @@ const materialMap =  new Map([
 	]}],
 ]);
 {
-	let times = 1;
 	for(let [matBase, materials] of materialMap.entries()){
 		materials.nums = enums(0,materials.list.length-1);
-		let hRate = materials.hRate*times;
-		let tRate = materials.tRate*times;
+		let hRate = materials.hRate;
+		let tRate = materials.tRate;
 		let pRate = materials.pRate;
 		let list = materials.list;
 		let num = Math.floor(30/list.length);
 		for(let [key, mat] of list.entries()){
-			mat.density = hRate/times+key/10;
+			mat.density = hRate+key/10;
 			mat.hardness = hRate*(key+1);
 			mat.toughness = tRate*(key+1);
 			mat.priceRate = pRate*(key+1);
@@ -1307,429 +1306,430 @@ const [//ammo
 	A_ROCK,A_ARROW,A_BOLT,
 	] = enums(1,3); 
 const C_COIN = 1;
+const RECIPE_1 = {
+	a:
+	`Torches [2-4]
+		-> Torch [duration sum]
+	Lamps or Lanthanums + oil [2-4]
+		-> Light Source [duration sum]
+	Potion of Healing [3]
+		-> Potion of Extra Healing
+	Wands [2-4]
+		-> Wand [charges sum]
+	Charge Book + Scroll
+		-> Charge book [charges sum]
+	Gem [1-4]
+		-> Coin
+	`,
+	b:
+	`松明 [2-4]
+		-> 松明 [期間 計]
+	ランプまたはランタン + オイル [2-4]
+		-> ランプまたはランタン [期間　計]
+	回復の薬 [3]
+		-> 特大回復の薬
+	魔法棒 [2-4]
+		-> 魔法棒 [充填 計]
+	充填書 + 巻物
+		-> 充填書 [充填 計]
+	宝石 [1-4]
+		-> 硬貨
+	`
+};
 const itemTab = {
 	book:new Map([
-		[B_BLANK_PAPER,{nameReal:{a:'Blank Paper',b:'白紙'},symbol:'?',color:GRAY,type2:'Charge Book',priceReal:1000,shop:true,
+		[B_BLANK_PAPER,{nameReal:{a:'Blank Paper',b:'白紙'},color:GRAY,type2:'Charge Book',priceRate:5,shop:true,
 			lvl:10,rarity:50}],
-		[B_ALCHEMY_1,{nameReal:{a:'Alchemy for Beginners',b:'初級錬金術'},symbol:'?',color:RED,type2:'recipe',priceReal:100,shop:true,
-			lvl:1,rarity:0,alchemy:true,desc:
-			{a:
-			`Torches [2-4]
-				-> Torch [duration sum]
-			Lamps or Lanthanums + oil [2-4]
-				-> Light Source [duration sum]
-			Potion of Healing [3]
-				-> Potion of Extra Healing
-			Wands [2-4]
-				-> Wand [charges sum]
-			Charge Book + Scroll
-				-> Charge book [charges sum]
-			Gem [1-4]
-				-> Coin
-			`,
-			b:
-			`松明 [2-4]
-				-> 松明 [期間 計]
-			ランプまたはランタン + オイル [2-4]
-				-> ランプまたはランタン [期間　計]
-			回復の薬 [3]
-				-> 特大回復の薬
-			魔法棒 [2-4]
-				-> 魔法棒 [充填 計]
-			充填書 + 巻物
-				-> 充填書 [充填 計]
-			宝石 [1-4]
-				-> 硬貨
-			`}
-		}],
-		[B_SPELL_1,{nameReal:{a:'Spells for Beginners',b:'初級魔術'},symbol:'?',color:GRAY,priceReal:100,shop:true,
+		[B_ALCHEMY_1,{nameReal:{a:'Alchemy for Beginners',b:'初級錬金術'},color:RED,type2:'recipe',priceRate:1,shop:true,
+			lvl:1,rarity:0,alchemy:true,desc:RECIPE_1}],
+		[B_SPELL_1,{nameReal:{a:'Spells for Beginners',b:'初級魔術'},color:GRAY,priceRate:1,shop:true,
 			list:{a:FIRE_BOLT,b:ICE_BOLT,c:LIGHTNING,d:MONSTER_DETECTION,e:POISON_BOLT,f:LIGHT,g:TOUCH_OF_CONFUSION,
 			h:SHORT_TELEPORTATION,i:TELEPORTATION,j:RESIST_FIRE,k:RESIST_WATER,l:RESIST_AIR,m:RESIST_EARTH,n:RESIST_POISON,
 			o:ITEM_DETECTION,p:SLEEPING_GAS},
 			lvl:1,rarity:0,skill:true}],
-		[B_SPELL_2,{nameReal:{a:'Intermediate Spells',b:'中級魔術'},symbol:'?',color:GRAY,priceReal:1000,shop:true,
+		[B_SPELL_2,{nameReal:{a:'Intermediate Spells',b:'中級魔術'},color:GRAY,priceRate:10,shop:true,
 			list:{a:FIRE_BALL,b:WHIRLWIND,c:POISON_MIST,d:TELEPORT_AWAY,e:SPEED,f:SEE_INVISIBLE,g:REMOVE_CURSE,
 			h:STONE_TO_MUD,i:IDENTIFY,j:ACID_BALL,k:RESTORE_STRENGTH,l:RESTORE_DEXTERITY,
 			m:RESTORE_CONSTITUTION,n:RESTORE_INTELLIGENCE,o:HEAL,p:MAGIC_MAPPING,q:VENOM_HANDS,r:HOLD_MONSTER},
 			lvl:10,rarity:10,skill:true}],
-		[B_SPELL_3,{nameReal:{a:'Advanced Spells',b:'上級魔術'},symbol:'?',color:GRAY,priceReal:3000,
+		[B_SPELL_3,{nameReal:{a:'Advanced Spells',b:'上級魔術'},color:GRAY,priceRate:30,
 			list:{a:LAVA_FLOW,b:LOWER_RESIST,c:BLIZZARD,d:TORNADO,e:TOWN_PORTAL,f:RESTORE_DURABILITY,g:GRAVITATIONAL_FIELD,
 			h:CURE_ALL,i:SATISFY_HUNGER,j:RESTORE_ALL,k:RESIST_ALL,l:RESTORE_EXPERIENCE,m:EARTHQUAKE},
 			lvl:20,rarity:30,skill:true}],
-		[B_SKILL_1,{nameReal:{a:'Skills for Beginners',b:'初級武術'},symbol:'?',color:BROWN,priceReal:100,shop:true,
+		[B_SKILL_1,{nameReal:{a:'Skills for Beginners',b:'初級武術'},color:BROWN,priceRate:1,shop:true,
 			list:{a:ENCOURAGEMENT,b:BLESSING,c:FIST_OF_CONFUSION,d:RAID,e:PIERCING_ARROW,f:EXPLODING_ARROW,g:PARALYZING_ARROW},
 			lvl:1,rarity:0,skill:true}],
-		[B_SKILL_2,{nameReal:{a:'Intermediate Skills',b:'中級武術'},symbol:'?',color:BROWN,priceReal:1000,shop:true,
+		[B_SKILL_2,{nameReal:{a:'Intermediate Skills',b:'中級武術'},color:BROWN,priceRate:10,shop:true,
 			list:{a:RUSH,b:COLLAPSE,c:PHOTON_ARROW,d:FREEZING_ARROW},
 			lvl:15,rarity:10,skill:true}],
-		[B_ARES,{nameReal:{a:'Ares',b:'アレス'},symbol:'?',color:BRONZE,priceReal:5000,
+		[B_ARES,{nameReal:{a:'Ares',b:'アレス'},color:BRONZE,priceRate:50,
 			list:{a:FIST_OF_CONFUSION,b:RUSH,c:RAID,d:COLLAPSE,e:SPIRAL},
 			lvl:30,rarity:50,skill:true}],
-		[B_APOLLO,{nameReal:{a:'Apollo',b:'アポロン'},symbol:'?',color:ORANGE,priceReal:5000,
+		[B_APOLLO,{nameReal:{a:'Apollo',b:'アポロン'},color:ORANGE,priceRate:50,
 			list:{a:PIERCING_ARROW,b:EXPLODING_ARROW,c:PARALYZING_ARROW,d:PHOTON_ARROW,e:FREEZING_ARROW,f:APOLLOS_ARROW},
 			lvl:30,rarity:50,skill:true}],
-		[B_HERACLITUS,{nameReal:{a:'Heraclitus',b:'ヘラクレイトス'},symbol:'?',color:C_FIRE,priceReal:5000,
+		[B_HERACLITUS,{nameReal:{a:'Heraclitus',b:'ヘラクレイトス'},color:C_FIRE,priceRate:50,
 			list:{a:FIRE_BOLT,b:LAVA_FLOW,c:LIGHT,d:FLAME_OF_DIDO,e:REMOVE_CURSE,f:SEE_INVISIBLE,g:RESIST_FIRE,
 			h:FIRE_BALL,i:RESTORE_STRENGTH,j:CHAIN_DECAY},
 			lvl:30,rarity:50,skill:true}], //fire
-		[B_THALES,{nameReal:{a:'Thales',b:'タレス'},symbol:'?',color:C_WATER,priceReal:5000,
+		[B_THALES,{nameReal:{a:'Thales',b:'タレス'},color:C_WATER,priceRate:50,
 			list:{a:HEAL,b:RESTORE_INTELLIGENCE,c:BLIZZARD,d:ACID_BALL,e:RESTORE_ALL,f:CURE_ALL,g:ICE_BOLT,h:RESIST_WATER,i:RESIST_ALL,
 			j:EXTRA_HEAL,k:COCYTUS},
 			lvl:30,rarity:50,skill:true}], //water
-		[B_ANAXIMENES,{nameReal:{a:'Anaximenes',b:'アナクシメネス'},symbol:'?',color:C_AIR,priceReal:5000,
+		[B_ANAXIMENES,{nameReal:{a:'Anaximenes',b:'アナクシメネス'},color:C_AIR,priceRate:50,
 			list:{a:LIGHTNING,b:SANDSTORM,c:BLIZZARD,d:ECCO,e:SPEED,f:RESIST_AIR,g:TORNADO,h:RESTORE_DEXTERITY,
 			i:WHIRLWIND},
 			lvl:30,rarity:50,skill:true}], //air
-		[B_XENOPHANES,{nameReal:{a:'Xenophanes',b:'クセノパネス'},symbol:'?',color:C_EARTH,priceReal:5000,
+		[B_XENOPHANES,{nameReal:{a:'Xenophanes',b:'クセノパネス'},color:C_EARTH,priceRate:50,
 			list:{a:ENLIGHTENMENT,b:SANDSTORM,c:LAVA_FLOW,d:GRAVITATIONAL_FIELD,e:MONSTER_DETECTION,f:STONE_TO_MUD,
 			g:IDENTIFY,h:RESIST_EARTH,i:SATISFY_HUNGER,j:WORMHOLE,k:RESTORE_CONSTITUTION,l:MAGIC_MAPPING,m:ITEM_DETECTION,
 			n:TOWN_PORTAL,o:RESTORE_DURABILITY,p:REPAIR_ALL,q:ENCHANT_SELF,r:EARTHQUAKE},
 			lvl:30,rarity:50,skill:true}], //earth
-		[B_HIPPOCRATES,{nameReal:{a:'Hippocrates',b:'ヒポクラテス'},symbol:'?',color:C_POISON,priceReal:5000,
+		[B_HIPPOCRATES,{nameReal:{a:'Hippocrates',b:'ヒポクラテス'},color:C_POISON,priceRate:50,
 			list:{a:POISON_BOLT,b:ACID_BALL,c:PESTILENCE,d:SLEEPING_GAS,e:TOUCH_OF_CONFUSION,f:RESIST_POISON,g:LOWER_RESIST,
 			h:VENOM_HANDS,i:CHAIN_DECAY,j:RESTORE_EXPERIENCE},
 			lvl:30,rarity:50,skill:true}], //poison
-		[B_DEMOCRITUS,{nameReal:{a:'Democritus',b:'デモクリトス'},symbol:'?',color:SHADOW2,priceReal:5000,
+		[B_DEMOCRITUS,{nameReal:{a:'Democritus',b:'デモクリトス'},color:SHADOW2,priceRate:50,
 			list:{a:SHORT_TELEPORTATION,b:TELEPORTATION,c:TELEPORT_AWAY,d:DISINTEGRATION},
 			lvl:30,rarity:70,skill:true}], //atom
 	]),
 	food:new Map([
-		[F_RATION,{nameReal:{a:'Ration',b:'レーション'},nameSkill:SATISFY_HUNGER,skillLvl:20,symbol:':',color:BROWN,priceReal:50,shop:true,
+		[F_RATION,{nameReal:{a:'Ration',b:'レーション'},nameSkill:SATISFY_HUNGER,skillLvl:20,color:BROWN,priceRate:1,shop:true,
 			lvl:1,rarity:0}],
 	]),
 	potion:new Map([
-		[P_POISON,{nameReal:{a:'Poison',b:'毒'},nameSkill:POISON,skillLvl:1,symbol:'!',priceReal:1,
+		[P_POISON,{nameReal:{a:'Poison',b:'毒'},nameSkill:POISON,skillLvl:1,priceRate:0.1,
 			lvl:1,rarity:0}],
-		[P_CONFUSION,{nameReal:{a:'Confusion',b:'混乱'},nameSkill:CONFUSION,skillLvl:3,symbol:'!',priceReal:1,
+		[P_CONFUSION,{nameReal:{a:'Confusion',b:'混乱'},nameSkill:CONFUSION,skillLvl:3,priceRate:0.1,
 			lvl:1,rarity:0}],
-		[P_PARALYSIS,{nameReal:{a:'Paralysis',b:'麻痺'},nameSkill:PARALYSIS,skillLvl:3,symbol:'!',priceReal:1,
+		[P_PARALYSIS,{nameReal:{a:'Paralysis',b:'麻痺'},nameSkill:PARALYSIS,skillLvl:3,priceRate:0.1,
 			lvl:3,rarity:0}],
-		[P_SLEEP,{nameReal:{a:'Sleep',b:'眠り'},nameSkill:SLEEP,skillLvl:3,symbol:'!',priceReal:1,
+		[P_SLEEP,{nameReal:{a:'Sleep',b:'眠り'},nameSkill:SLEEP,skillLvl:3,priceRate:0.1,
 			lvl:3,rarity:0}],
-		[P_BLINDNESS,{nameReal:{a:'Blindness',b:'盲目'},nameSkill:BLINDNESS,skillLvl:3,symbol:'!',priceReal:1,
+		[P_BLINDNESS,{nameReal:{a:'Blindness',b:'盲目'},nameSkill:BLINDNESS,skillLvl:3,priceRate:0.1,
 			lvl:3,rarity:0}],
-		[P_DISEASE,{nameReal:{a:'Disease',b:'病気'},nameSkill:INFECTION,skillLvl:3,symbol:'!',priceReal:1,
+		[P_DISEASE,{nameReal:{a:'Disease',b:'病気'},nameSkill:INFECTION,skillLvl:3,priceRate:0.1,
 			lvl:5,rarity:0}],
-		[P_HALLUCINATION,{nameReal:{a:'Hallucination',b:'幻覚'},nameSkill:HALLUCINATION,skillLvl:10,symbol:'!',priceReal:1,
+		[P_HALLUCINATION,{nameReal:{a:'Hallucination',b:'幻覚'},nameSkill:HALLUCINATION,skillLvl:10,priceRate:0.1,
 			lvl:5,rarity:0}],
-		[P_SLOWNESS,{nameReal:{a:'Slowness',b:'鈍足'},nameSkill:SLOW,skillLvl:10,symbol:'!',priceReal:1,
+		[P_SLOWNESS,{nameReal:{a:'Slowness',b:'鈍足'},nameSkill:SLOW,skillLvl:10,priceRate:0.1,
 			lvl:5,rarity:0}],
-		[P_CANCELLATION,{nameReal:{a:'Cancellation',b:'封印'},nameSkill:CANCELLATION,skillLvl:10,symbol:'!',priceReal:1,
+		[P_CANCELLATION,{nameReal:{a:'Cancellation',b:'封印'},nameSkill:CANCELLATION,skillLvl:10,priceRate:0.1,
 			lvl:10,rarity:0}],
-		[P_WEAKNESS,{nameReal:{a:'Weakness',b:'薄弱'},nameSkill:WEAKNESS,skillLvl:1,symbol:'!',priceReal:1,
+		[P_WEAKNESS,{nameReal:{a:'Weakness',b:'薄弱'},nameSkill:WEAKNESS,skillLvl:1,priceRate:0.1,
 			lvl:10,rarity:0}],
-		[P_CLUMSINESS,{nameReal:{a:'Clumsiness',b:'不器用'},nameSkill:CLUMSINESS,skillLvl:1,symbol:'!',priceReal:1,
+		[P_CLUMSINESS,{nameReal:{a:'Clumsiness',b:'不器用'},nameSkill:CLUMSINESS,skillLvl:1,priceRate:0.1,
 			lvl:10,rarity:0}],
-		[P_SICKLINESS,{nameReal:{a:'Sickliness',b:'病弱'},nameSkill:SICKLINESS,skillLvl:1,symbol:'!',priceReal:1,
+		[P_SICKLINESS,{nameReal:{a:'Sickliness',b:'病弱'},nameSkill:SICKLINESS,skillLvl:1,priceRate:0.1,
 			lvl:10,rarity:0}],
-		[P_STUPIDITY,{nameReal:{a:'Stupidity',b:'愚鈍'},nameSkill:STUPIDITY,skillLvl:1,symbol:'!',priceReal:1,
+		[P_STUPIDITY,{nameReal:{a:'Stupidity',b:'愚鈍'},nameSkill:STUPIDITY,skillLvl:1,priceRate:0.1,
 			lvl:10,rarity:0}],
-		[P_HEALING,{nameReal:{a:'Healing',b:'回復'},nameSkill:HEAL,skillLvl:10,symbol:'!',priceReal:50,shop:true,
+		[P_HEALING,{nameReal:{a:'Healing',b:'回復'},nameSkill:HEAL,skillLvl:10,priceRate:2,shop:true,
 			lvl:1,rarity:0}],
-		[P_EXTRA_HEALING,{nameReal:{a:'Extra Healing',b:'特大回復'},nameSkill:EXTRA_HEAL,skillLvl:10,symbol:'!',priceReal:200,
+		[P_EXTRA_HEALING,{nameReal:{a:'Extra Healing',b:'特大回復'},nameSkill:EXTRA_HEAL,skillLvl:10,priceRate:4,
 			lvl:15,rarity:30}],
-		[P_RESTORE_STRENGTH,{nameReal:{a:'Restore Strength',b:'筋力復活'},nameSkill:RESTORE_STRENGTH,skillLvl:10,symbol:'!',priceReal:100,shop:true,
+		[P_RESTORE_STRENGTH,{nameReal:{a:'Restore Strength',b:'筋力復活'},nameSkill:RESTORE_STRENGTH,skillLvl:10,priceRate:1,shop:true,
 			lvl:10,rarity:0}],
-		[P_RESTORE_DEXTERITY,{nameReal:{a:'Restore Dexterity',b:'器用さ復活'},nameSkill:RESTORE_DEXTERITY,skillLvl:10,symbol:'!',priceReal:100,shop:true,
+		[P_RESTORE_DEXTERITY,{nameReal:{a:'Restore Dexterity',b:'器用さ復活'},nameSkill:RESTORE_DEXTERITY,skillLvl:10,priceRate:1,shop:true,
 			lvl:10,rarity:0}],
-		[P_RESTORE_CONSTITUTION,{nameReal:{a:'Restore Constitution',b:'耐久力復活'},nameSkill:RESTORE_CONSTITUTION,skillLvl:10,symbol:'!',priceReal:100,shop:true,
+		[P_RESTORE_CONSTITUTION,{nameReal:{a:'Restore Constitution',b:'耐久力復活'},nameSkill:RESTORE_CONSTITUTION,skillLvl:10,priceRate:1,shop:true,
 			lvl:10,rarity:0}],
-		[P_RESTORE_INTELLIGENCE,{nameReal:{a:'Restore Intelligence',b:'知力復活'},nameSkill:RESTORE_INTELLIGENCE,skillLvl:10,symbol:'!',priceReal:100,shop:true,
+		[P_RESTORE_INTELLIGENCE,{nameReal:{a:'Restore Intelligence',b:'知力復活'},nameSkill:RESTORE_INTELLIGENCE,skillLvl:10,priceRate:1,shop:true,
 			lvl:10,rarity:0}],
-		[P_RESTORE_ALL,{nameReal:{a:'Restore All',b:'全復活'},nameSkill:RESTORE_ALL,skillLvl:10,symbol:'!',priceReal:1000,
+		[P_RESTORE_ALL,{nameReal:{a:'Restore All',b:'全復活'},nameSkill:RESTORE_ALL,skillLvl:10,priceRate:10,
 			lvl:20,rarity:50}],
-		[P_RESIST_FIRE,{nameReal:{a:'Resist Fire',b:'耐火'},nameSkill:RESIST_FIRE,skillLvl:20,symbol:'!',priceReal:100,
+		[P_RESIST_FIRE,{nameReal:{a:'Resist Fire',b:'耐火'},nameSkill:RESIST_FIRE,skillLvl:20,priceRate:2,
 			lvl:1,rarity:0}],
-		[P_RESIST_WATER,{nameReal:{a:'Resist Water',b:'耐水'},nameSkill:RESIST_WATER,skillLvl:20,symbol:'!',priceReal:100,
+		[P_RESIST_WATER,{nameReal:{a:'Resist Water',b:'耐水'},nameSkill:RESIST_WATER,skillLvl:20,priceRate:2,
 			lvl:1,rarity:0}],
-		[P_RESIST_AIR,{nameReal:{a:'Resist Air',b:'耐風'},nameSkill:RESIST_AIR,skillLvl:20,symbol:'!',priceReal:100,
+		[P_RESIST_AIR,{nameReal:{a:'Resist Air',b:'耐風'},nameSkill:RESIST_AIR,skillLvl:20,priceRate:2,
 			lvl:1,rarity:0}],
-		[P_RESIST_EARTH,{nameReal:{a:'Resist Earth',b:'耐土'},nameSkill:RESIST_EARTH,skillLvl:20,symbol:'!',priceReal:100,
+		[P_RESIST_EARTH,{nameReal:{a:'Resist Earth',b:'耐土'},nameSkill:RESIST_EARTH,skillLvl:20,priceRate:2,
 			lvl:1,rarity:0}],
-		[P_RESIST_POISON,{nameReal:{a:'Resist Poison',b:'耐毒'},nameSkill:RESIST_POISON,skillLvl:20,symbol:'!',priceReal:100,
+		[P_RESIST_POISON,{nameReal:{a:'Resist Poison',b:'耐毒'},nameSkill:RESIST_POISON,skillLvl:20,priceRate:2,
 			lvl:1,rarity:0}],
-		[P_RESIST_ALL,{nameReal:{a:'Resist All',b:'耐性'},nameSkill:RESIST_ALL,skillLvl:20,symbol:'!',priceReal:500,
+		[P_RESIST_ALL,{nameReal:{a:'Resist All',b:'耐性'},nameSkill:RESIST_ALL,skillLvl:20,priceRate:20,
 			lvl:20,rarity:50}],
-		[P_MANA,{nameReal:{a:'Mana',b:'魔力回復'},nameSkill:MANA,skillLvl:10,symbol:'!',priceReal:100,shop:true,
+		[P_MANA,{nameReal:{a:'Mana',b:'魔力回復'},nameSkill:MANA,skillLvl:10,priceRate:2,shop:true,
 			lvl:1,rarity:10}],
-		[P_SPEED,{nameReal:{a:'Speed',b:'速度'},nameSkill:SPEED,skillLvl:5,symbol:'!',priceReal:300,
+		[P_SPEED,{nameReal:{a:'Speed',b:'速度'},nameSkill:SPEED,skillLvl:5,priceRate:5,
 			lvl:10,rarity:20}],
-		[P_SEE_INVISIBLE,{nameReal:{a:'See Invisible',b:'透視'},nameSkill:SEE_INVISIBLE,skillLvl:10,symbol:'!',priceReal:1,shop:true,
+		[P_SEE_INVISIBLE,{nameReal:{a:'See Invisible',b:'透視'},nameSkill:SEE_INVISIBLE,skillLvl:10,priceRate:3,shop:true,
 			lvl:10,rarity:0}],
-		[P_RAISE_LEVEL,{nameReal:{a:'Raise Level',b:'レベル上昇'},nameSkill:RAISE_LEVEL,skillLvl:1,symbol:'!',priceReal:5000,
+		[P_RAISE_LEVEL,{nameReal:{a:'Raise Level',b:'レベル上昇'},nameSkill:RAISE_LEVEL,skillLvl:1,priceRate:100,
 			lvl:20,rarity:99}],
-		[P_ENLIGHTENMENT,{nameReal:{a:'Enlightenment',b:'啓蒙'},nameSkill:ENLIGHTENMENT,skillLvl:10,symbol:'!',priceReal:500,
+		[P_ENLIGHTENMENT,{nameReal:{a:'Enlightenment',b:'啓蒙'},nameSkill:ENLIGHTENMENT,skillLvl:10,priceRate:15,
 			lvl:20,rarity:50}],
-		[P_Lower_Resist,{nameReal:{a:'Lower Resist',b:'耐性低下'},nameSkill:LOWER_RESIST,skillLvl:20,symbol:'!',priceReal:1,
+		[P_Lower_Resist,{nameReal:{a:'Lower Resist',b:'耐性低下'},nameSkill:LOWER_RESIST,skillLvl:20,priceRate:0.1,
 			lvl:25,rarity:20}],
-		[P_CURE_ALL,{nameReal:{a:'Cure All',b:'全治療'},nameSkill:CURE_ALL,skillLvl:10,symbol:'!',priceReal:1000,
+		[P_CURE_ALL,{nameReal:{a:'Cure All',b:'全治療'},nameSkill:CURE_ALL,skillLvl:10,priceRate:30,
 			lvl:25,rarity:50}],
-		[P_RESTORE_EXPERIENCE,{nameReal:{a:'Restore Experience',b:'経験値復活'},nameSkill:RESTORE_EXPERIENCE,skillLvl:10,symbol:'!',priceReal:200,shop:true,
+		[P_RESTORE_EXPERIENCE,{nameReal:{a:'Restore Experience',b:'経験値復活'},nameSkill:RESTORE_EXPERIENCE,skillLvl:10,priceRate:3,shop:true,
 			lvl:15,rarity:0}],
-		[P_LETHE,{nameReal:{a:'Lethe',b:'レテ'},nameSkill:RESPEC,skillLvl:10,symbol:'!',color:WHITE,type2:'water',priceReal:1,lethe:true,
+		[P_LETHE,{nameReal:{a:'Lethe',b:'レテ'},nameSkill:RESPEC,skillLvl:10,color:WHITE,type2:'water',lethe:true,priceRate:200,
 			lvl:10,rarity:80}],
 	]),
 	scroll:new Map([
-		[S_SHORT_TELEPORTATION,{nameReal:{a:'Short Teleportation',b:'ショート・テレポート'},nameSkill:SHORT_TELEPORTATION,skillLvl:10,symbol:'?',color:WHITE,priceReal:60,shop:true,
+		[S_SHORT_TELEPORTATION,{nameReal:{a:'Short Teleportation',b:'ショート・テレポート'},nameSkill:SHORT_TELEPORTATION,skillLvl:10,color:WHITE,priceRate:1,shop:true,
 			lvl:1,rarity:0}],
-		[S_TELEPORTATION,{nameReal:{a:'Teleportation',b:'テレポート'},nameSkill:TELEPORTATION,skillLvl:10,symbol:'?',color:WHITE,priceReal:60,shop:true,
+		[S_TELEPORTATION,{nameReal:{a:'Teleportation',b:'テレポート'},nameSkill:TELEPORTATION,skillLvl:10,color:WHITE,priceRate:1.5,shop:true,
 			lvl:1,rarity:0}],
-		[S_REMOVE_CURSE,{nameReal:{a:'Remove Curse',b:'解呪'},nameSkill:REMOVE_CURSE,skillLvl:10,symbol:'?',color:WHITE,priceReal:60,shop:true,
+		[S_REMOVE_CURSE,{nameReal:{a:'Remove Curse',b:'解呪'},nameSkill:REMOVE_CURSE,skillLvl:10,color:WHITE,priceRate:2,shop:true,
 			lvl:1,rarity:0}],
-		[S_IDENTIFY,{nameReal:{a:'Identify',b:'識別'},nameSkill:IDENTIFY,skillLvl:10,symbol:'?',color:WHITE,priceReal:60,shop:true,
+		[S_IDENTIFY,{nameReal:{a:'Identify',b:'識別'},nameSkill:IDENTIFY,skillLvl:10,color:WHITE,priceRate:1,shop:true,
 			lvl:1,rarity:0}],
-		[S_MONSTER_DETECTION,{nameReal:{a:'Monster Detection',b:'モンスター感知'},nameSkill:MONSTER_DETECTION,skillLvl:10,symbol:'?',color:WHITE,priceReal:60,shop:true,
+		[S_MONSTER_DETECTION,{nameReal:{a:'Monster Detection',b:'モンスター感知'},nameSkill:MONSTER_DETECTION,skillLvl:10,color:WHITE,priceRate:1,shop:true,
 			lvl:5,rarity:0}],
-		[S_ITEM_DETECTION,{nameReal:{a:'Item Detection',b:'アイテム感知'},nameSkill:ITEM_DETECTION,skillLvl:10,symbol:'?',color:WHITE,priceReal:60,shop:true,
+		[S_ITEM_DETECTION,{nameReal:{a:'Item Detection',b:'アイテム感知'},nameSkill:ITEM_DETECTION,skillLvl:10,color:WHITE,priceRate:2,shop:true,
 			lvl:10,rarity:0}],
-		[S_MAGIC_MAPPING,{nameReal:{a:'Magic Mapping',b:'魔法地図'},nameSkill:MAGIC_MAPPING,skillLvl:10,symbol:'?',color:WHITE,priceReal:60,shop:true,
+		[S_MAGIC_MAPPING,{nameReal:{a:'Magic Mapping',b:'魔法地図'},nameSkill:MAGIC_MAPPING,skillLvl:10,color:WHITE,priceRate:3,shop:true,
 			lvl:15,rarity:0}],
-		[S_TOWN_PORTAL,{nameReal:{a:'Town Portal',b:'タウン・ポータル'},nameSkill:TOWN_PORTAL,skillLvl:10,symbol:'?',color:WHITE,priceReal:60,shop:true,
+		[S_TOWN_PORTAL,{nameReal:{a:'Town Portal',b:'タウン・ポータル'},nameSkill:TOWN_PORTAL,skillLvl:10,color:WHITE,priceRate:1,shop:true,
 			lvl:5,rarity:0}],
-		[S_TOUCH_CONFUSION,{nameReal:{a:'Touch of Confusion',b:'混乱の手'},nameSkill:TOUCH_OF_CONFUSION,skillLvl:10,symbol:'?',color:WHITE,priceReal:60,shop:true,
+		[S_TOUCH_CONFUSION,{nameReal:{a:'Touch of Confusion',b:'混乱の手'},nameSkill:TOUCH_OF_CONFUSION,skillLvl:10,color:WHITE,priceRate:4,shop:true,
 			lvl:10,rarity:0}],
-		[S_HOLD_MONSTER,{nameReal:{a:'Hold Monster',b:'モンスター束縛'},nameSkill:HOLD_MONSTER,skillLvl:10,symbol:'?',color:WHITE,priceReal:60,
+		[S_HOLD_MONSTER,{nameReal:{a:'Hold Monster',b:'モンスター束縛'},nameSkill:HOLD_MONSTER,skillLvl:10,color:WHITE,priceRate:10,
 			lvl:10,rarity:20}],
-		[S_AGGRAVATE_MONSTER,{nameReal:{a:'Aggravate Monster',b:'反感'},nameSkill:SCREAM,skillLvl:10,symbol:'?',color:WHITE,priceReal:1,
+		[S_AGGRAVATE_MONSTER,{nameReal:{a:'Aggravate Monster',b:'反感'},nameSkill:SCREAM,skillLvl:10,color:WHITE,priceRate:0.1,
 			lvl:1,rarity:0}],
-		[S_CREATE_MONSTER,{nameReal:{a:'Create Monster',b:'モンスター生成'},nameSkill:CREATE_MONSTER,skillLvl:10,symbol:'?',color:WHITE,priceReal:1,
+		[S_CREATE_MONSTER,{nameReal:{a:'Create Monster',b:'モンスター生成'},nameSkill:CREATE_MONSTER,skillLvl:10,color:WHITE,priceRate:0.1,
 			lvl:5,rarity:0}],
-		[S_CREATE_MAGIC_MONSTER,{nameReal:{a:'Create Magic Monster',b:'マジック・モンスター生成'},nameSkill:CREATE_MAGIC_MONSTER,skillLvl:10,symbol:'?',color:WHITE,priceReal:1,
+		[S_CREATE_MAGIC_MONSTER,{nameReal:{a:'Create Magic Monster',b:'マジック・モンスター生成'},nameSkill:CREATE_MAGIC_MONSTER,skillLvl:10,color:WHITE,priceRate:0.1,
 			lvl:20,rarity:50}],
-		[S_CREATE_TRAP,{nameReal:{a:'Create Trap',b:'トラップ生成'},nameSkill:CREATE_TRAP,skillLvl:10,symbol:'?',color:WHITE,priceReal:1,
+		[S_CREATE_TRAP,{nameReal:{a:'Create Trap',b:'トラップ生成'},nameSkill:CREATE_TRAP,skillLvl:10,color:WHITE,priceRate:0.1,
 			lvl:3,rarity:0}],
-		[S_RESTORE_DURABILITY,{nameReal:{a:'Restore Durability',b:'耐久度復活'},nameSkill:RESTORE_DURABILITY,skillLvl:10,symbol:'?',color:WHITE,priceReal:60,shop:true,
+		[S_RESTORE_DURABILITY,{nameReal:{a:'Restore Durability',b:'耐久度復活'},nameSkill:RESTORE_DURABILITY,skillLvl:10,color:WHITE,priceRate:1,shop:true,
 			lvl:10,rarity:0}],
-		[S_REPAIR_ALL,{nameReal:{a:'Repair All',b:'全修復'},nameSkill:REPAIR_ALL,skillLvl:10,symbol:'?',color:WHITE,priceReal:300,
+		[S_REPAIR_ALL,{nameReal:{a:'Repair All',b:'全修復'},nameSkill:REPAIR_ALL,skillLvl:10,color:WHITE,priceRate:20,
 			lvl:20,rarity:50}],
-		[S_DISINTEGRATION,{nameReal:{a:'Disintegration',b:'分解'},nameSkill:DISINTEGRATION,skillLvl:10,symbol:'?',color:WHITE,priceReal:60,
+		[S_DISINTEGRATION,{nameReal:{a:'Disintegration',b:'分解'},nameSkill:DISINTEGRATION,skillLvl:10,color:WHITE,priceRate:100,
 			lvl:30,rarity:80}],
-		[S_MAGIC_CIRCLE_PROTECTION,{nameReal:{a:'Magic Circle of Protection',b:'守護魔法円'},nameSkill:MAGIC_CIRCLE_OF_PROTECTION,skillLvl:10,symbol:'?',color:WHITE,priceReal:60,
+		[S_MAGIC_CIRCLE_PROTECTION,{nameReal:{a:'Magic Circle of Protection',b:'守護魔法円'},nameSkill:MAGIC_CIRCLE_OF_PROTECTION,skillLvl:10,color:WHITE,priceRate:30,
 			lvl:30,rarity:50}],
-		[S_LIGHT,{nameReal:{a:'Light',b:'光'},nameSkill:LIGHT,skillLvl:10,symbol:'?',color:WHITE,priceReal:60,shop:true,
+		[S_LIGHT,{nameReal:{a:'Light',b:'光'},nameSkill:LIGHT,skillLvl:10,color:WHITE,priceRate:1,shop:true,
 			lvl:1,rarity:0}],
-		[S_SPIDERWEB,{nameReal:{a:'Spiderweb',b:'スパイダー・ウェブ'},nameSkill:GRAVITATIONAL_FIELD,skillLvl:10,symbol:'?',color:WHITE,priceReal:60,
+		[S_SPIDERWEB,{nameReal:{a:'Spiderweb',b:'スパイダー・ウェブ'},nameSkill:GRAVITATIONAL_FIELD,skillLvl:10,color:WHITE,priceRate:50,
 			lvl:20,rarity:30}],
-		[S_EARTHQUAKE,{nameReal:{a:'Earthquake',b:'地震'},nameSkill:EARTHQUAKE,skillLvl:20,symbol:'?',color:WHITE,priceReal:200,
+		[S_EARTHQUAKE,{nameReal:{a:'Earthquake',b:'地震'},nameSkill:EARTHQUAKE,skillLvl:20,color:WHITE,priceRate:25,
 			lvl:20,rarity:30}],
 	]),
 	wand:new Map([
-		[W_TELEPORT_AWAY,{nameReal:{a:'Teleport Away',b:'テレポート・アウェイ'},nameSkill:TELEPORT_AWAY,skillLvl:10,symbol:'-',priceReal:500,
+		[W_TELEPORT_AWAY,{nameReal:{a:'Teleport Away',b:'テレポート・アウェイ'},nameSkill:TELEPORT_AWAY,skillLvl:10,priceRate:2,
 			lvl:10,rarity:0}],
-		[W_STONE_MUD,{nameReal:{a:'Stone to Mud',b:'岩石溶解'},nameSkill:STONE_TO_MUD,skillLvl:10,symbol:'-',priceReal:600,shop:true,
+		[W_STONE_MUD,{nameReal:{a:'Stone to Mud',b:'岩石溶解'},nameSkill:STONE_TO_MUD,skillLvl:10,priceRate:1.5,shop:true,
 			lvl:1,rarity:0}],
-		[W_FIRE_BOLT,{nameReal:{a:'Fire Bolt',b:'ファイア・ボルト'},nameSkill:FIRE_BOLT,skillLvl:10,symbol:'-',priceReal:400,shop:true,
+		[W_FIRE_BOLT,{nameReal:{a:'Fire Bolt',b:'ファイア・ボルト'},nameSkill:FIRE_BOLT,skillLvl:10,priceRate:1,shop:true,
 			lvl:1,rarity:0}],
-		[W_LIGHTNING,{nameReal:{a:'Lightning',b:'ライトニング'},nameSkill:LIGHTNING,skillLvl:10,symbol:'-',priceReal:400,shop:true,
+		[W_LIGHTNING,{nameReal:{a:'Lightning',b:'ライトニング'},nameSkill:LIGHTNING,skillLvl:10,priceRate:1,shop:true,
 			lvl:5,rarity:50}],
-		[W_ICE_BOLT,{nameReal:{a:'Ice Bolt',b:'アイス・ボルト'},nameSkill:ICE_BOLT,skillLvl:10,symbol:'-',priceReal:400,shop:true,
+		[W_ICE_BOLT,{nameReal:{a:'Ice Bolt',b:'アイス・ボルト'},nameSkill:ICE_BOLT,skillLvl:10,priceRate:1,shop:true,
 			lvl:10,rarity:50}],
-		[W_HASTE_MONSTER,{nameReal:{a:'Haste Monster',b:'モンスター加速'},nameSkill:SPEED,skillLvl:10,symbol:'-',priceReal:1, //
+		[W_HASTE_MONSTER,{nameReal:{a:'Haste Monster',b:'モンスター加速'},nameSkill:SPEED,skillLvl:10,priceRate:0.1,
 			lvl:1,rarity:0}],
-		[W_INVISIBILITY,{nameReal:{a:'Invisibility',b:'透明'},nameSkill:INVISIBILITY,skillLvl:10,symbol:'-',priceReal:100, //
+		[W_INVISIBILITY,{nameReal:{a:'Invisibility',b:'透明'},nameSkill:INVISIBILITY,skillLvl:10,priceRate:0.1,
 			lvl:10,rarity:0}],
-		[W_POLYMORPH,{nameReal:{a:'Polymorph',b:'変容'},nameSkill:POLYMORPH,skillLvl:10,symbol:'-',priceReal:100, //
+		[W_POLYMORPH,{nameReal:{a:'Polymorph',b:'変容'},nameSkill:POLYMORPH,skillLvl:10,priceRate:0.1,
 			lvl:15,rarity:0}],
-		[W_SLOW_MONSTER,{nameReal:{a:'Slow Monster',b:'スロー・モンスター'},nameSkill:SLOW,skillLvl:10,symbol:'-',priceReal:100,
+		[W_SLOW_MONSTER,{nameReal:{a:'Slow Monster',b:'スロー・モンスター'},nameSkill:SLOW,skillLvl:10,priceRate:1,
 			lvl:1,rarity:0}],
-		[W_CANCELLATION,{nameReal:{a:'Cancellation',b:'封印'},nameSkill:CANCELLATION,skillLvl:10,symbol:'-',priceReal:100, //
+		[W_CANCELLATION,{nameReal:{a:'Cancellation',b:'封印'},nameSkill:CANCELLATION,skillLvl:10,priceRate:3,
 			lvl:20,rarity:80}],
-		[W_TELEPORT_TO,{nameReal:{a:'Teleport To',b:'引き寄せ'},nameSkill:TELEPORT_TO,skillLvl:10,symbol:'-',priceReal:100, //
+		[W_TELEPORT_TO,{nameReal:{a:'Teleport To',b:'引き寄せ'},nameSkill:TELEPORT_TO,skillLvl:10,priceRate:0.1,
 			lvl:5,rarity:0}],
-		[W_Lower_Resist,{nameReal:{a:'Lower Resist',b:'耐性低下'},nameSkill:LOWER_RESIST,skillLvl:20,symbol:'-',priceReal:100, //
+		[W_Lower_Resist,{nameReal:{a:'Lower Resist',b:'耐性低下'},nameSkill:LOWER_RESIST,skillLvl:20,priceRate:5,
 			lvl:30,rarity:80}],
 	]),
 	melee:new Map([
 		//sword
-		[M_KNIFE,{name:{a:'Knife',b:'ナイフ'},nameReal:{a:'Knife',b:'ナイフ'},symbol:'|',shop:true,
+		[M_KNIFE,{nameReal:{a:'Knife',b:'ナイフ'},symbol:'|',shop:true,
 			lvl:1,rarity:0,iasBase:-10,volumeRate:0.3,atkType:AT_S|AT_T,edge:1,
 			material:M_WOOD|M_BONE}],
-		[M_DAGGER,{name:{a:'Dagger',b:'短剣'},nameReal:{a:'Dagger',b:'短剣'},symbol:'|',shop:true,
+		[M_DAGGER,{nameReal:{a:'Dagger',b:'短剣'},symbol:'|',shop:true,
 			lvl:1,rarity:0,iasBase:-10,volumeRate:0.3,atkType:AT_S|AT_T,edge:2,
 			material:M_STONE|M_METAL}],
-		[M_SWORD,{name:{a:'Sword',b:'剣'},nameReal:{a:'Sword',b:'剣'},symbol:'|',shop:true,
+		[M_SWORD,{nameReal:{a:'Sword',b:'剣'},symbol:'|',shop:true,
 			lvl:10,rarity:10,iasBase:0,volumeRate:1,atkType:AT_S,edge:2,
 			material:M_METAL|M_STONE}],
 		//polearm	
-		[M_SPEAR,{name:{a:'Spear',b:'槍'},nameReal:{a:'Spear',b:'槍'},symbol:'/',shop:true,
+		[M_SPEAR,{nameReal:{a:'Spear',b:'槍'},symbol:'/',shop:true,
 			lvl:1,rarity:0,iasBase:0,volumeRate:1,atkType:AT_T,
 			material:M_METAL}],
 		//misc	
-		[M_CLUB,{name:{a:'Club',b:'棍棒'},nameReal:{a:'Club',b:'棍棒'},symbol:'￥',shop:true,
+		[M_CLUB,{nameReal:{a:'Club',b:'棍棒'},symbol:'￥',shop:true,
 			lvl:1,rarity:0,iasBase:0,volumeRate:0.6,atkType:AT_B,
 			material:M_WOOD|M_BONE}],
-		[M_AXE,{name:{a:'Axe',b:'斧'},nameReal:{a:'Axe',b:'斧'},symbol:'/',shop:true,
+		[M_AXE,{nameReal:{a:'Axe',b:'斧'},symbol:'/',shop:true,
 			lvl:5,rarity:5,iasBase:10,volumeRate:2,atkType:AT_S,edge:1,
 			material:M_METAL}],
-		[M_TWO_HANDED_AXE,{name:{a:'Two-handed Axe',b:'両手斧'},nameReal:{a:'Two-handed Axe',b:'両手斧'},symbol:'/',
+		[M_TWO_HANDED_AXE,{nameReal:{a:'Two-handed Axe',b:'両手斧'},symbol:'/',
 			lvl:5,rarity:5,iasBase:15,volumeRate:3,atkType:AT_S,twoHanded:true,edge:1,
 			material:M_METAL}],
-		[M_PICK,{name:{a:'Pick',b:'ピック'},nameReal:{a:'Pick',b:'ピック'},symbol:'￥',shop:true,
+		[M_PICK,{nameReal:{a:'Pick',b:'ピック'},symbol:'￥',shop:true,
 			lvl:20,rarity:20,iasBase:5,volumeRate:1,atkType:AT_T,digging:1,
 			material:M_METAL}],
-		[M_MAUL,{name:{a:'Maul',b:'大木槌'},nameReal:{a:'Maul',b:'大木槌'},symbol:'￥',shop:true,
+		[M_MAUL,{nameReal:{a:'Maul',b:'大木槌'},symbol:'￥',shop:true,
 			lvl:20,rarity:20,iasBase:20,volumeRate:4,atkType:AT_B,twoHanded:true,
 			material:M_WOOD}],
-		[M_TWO_HANDED_HAMMER,{name:{a:'Two-handed Hammer',b:'両手槌'},nameReal:{a:'Two-handed Hammer',b:'両手槌'},symbol:'￥',
+		[M_TWO_HANDED_HAMMER,{nameReal:{a:'Two-handed Hammer',b:'両手槌'},symbol:'￥',
 			lvl:20,rarity:20,iasBase:20,volumeRate:4,atkType:AT_B,twoHanded:true,
 			material:M_METAL|M_STONE}],
 	]),
 	missile:new Map([
-		[M_SLING,{name:{a:'Sling',b:'スリング'},nameReal:{a:'Sling',b:'スリング'},symbol:'}',throwType:'sling',shop:true,
+		[M_SLING,{nameReal:{a:'Sling',b:'スリング'},throwType:'sling',shop:true,
 			lvl:1,rarity:0,iasBase:0,volumeRate:0.5,atkType:AT_B,
 			material:M_SKIN}],
-		[M_STAFF_SLING,{name:{a:'Staff Sling',b:'棒スリング'},nameReal:{a:'Staff Sling',b:'棒スリング'},symbol:'}',throwType:'sling',shop:true,
+		[M_STAFF_SLING,{nameReal:{a:'Staff Sling',b:'棒スリング'},throwType:'sling',shop:true,
 			lvl:1,rarity:0,iasBase:5,volumeRate:0.8,atkType:AT_B,
 			material:M_WOOD}],
-		[M_BOW,{name:{a:'Bow',b:'弓'},nameReal:{a:'Bow',b:'弓'},symbol:'}',throwType:'bow',shop:true,
+		[M_BOW,{nameReal:{a:'Bow',b:'弓'},throwType:'bow',shop:true,
 			lvl:1,rarity:0,iasBase:-10,volumeRate:0.5,atkType:AT_T,twoHanded:true,
 			material:M_WOOD|M_BONE}],
-		[M_CROSSBOW,{name:{a:'Crossbow',b:'クロスボウ'},nameReal:{a:'Crossbow',b:'クロスボウ'},symbol:'}',throwType:'crossbow',shop:true,
+		[M_CROSSBOW,{nameReal:{a:'Crossbow',b:'クロスボウ'},throwType:'crossbow',shop:true,
 			lvl:1,rarity:0,iasBase:5,volumeRate:1.5,atkType:AT_T,twoHanded:true,
 			material:M_WOOD|M_METAL}],
 	]),
 	staff:new Map([
-		[S_STICK,{name:{a:'Stick',b:'スティック'},nameReal:{a:'Stick',b:'スティック'},symbol:'_',shop:true,
+		[S_STICK,{nameReal:{a:'Stick',b:'スティック'},shop:true,
 			lvl:1,rarity:0,fcrBase:-10,volumeRate:0.5,atkType:AT_B,
 			material:M_WOOD}], 
-		[S_ROD,{name:{a:'Rod',b:'ロッド'},nameReal:{a:'Rod',b:'ロッド'},symbol:'_',shop:true,
+		[S_ROD,{nameReal:{a:'Rod',b:'ロッド'},shop:true,
 			lvl:1,rarity:0,fcrBase:-10,volumeRate:0.5,atkType:AT_B,
 			material:M_METAL}], 
-		[S_STAFF,{name:{a:'Staff',b:'杖'},nameReal:{a:'Staff',b:'杖'},symbol:'_',shop:true,
+		[S_STAFF,{nameReal:{a:'Staff',b:'杖'},shop:true,
 			lvl:1,rarity:0,fcrBase:-15,volumeRate:1,atkType:AT_B,twoHanded:true,
 			material:M_WOOD}], 
 		]),
 	shield:new Map([
-		[S_SHIELD,{name:{a:'Shield',b:'盾'},nameReal:{a:'Shield',b:'盾'},symbol:')',shop:true,
+		[S_SHIELD,{nameReal:{a:'Shield',b:'盾'},shop:true,
 			lvl:1,rarity:0,volumeRate:1,
 			material:M_SKIN|M_SCALE|M_METAL|M_BONE|M_WOOD|M_STONE|M_SHELL}],
 	]),
 	armor:new Map([
-		[A_ROBE,{name:{a:'Robe',b:'ローブ'},nameReal:{a:'Robe',b:'ローブ'},symbol:'[',shop:true,
+		[A_ROBE,{nameReal:{a:'Robe',b:'ローブ'},shop:true,
 			lvl:1,rarity:0,volumeRate:0.5,
 			material:M_CLOTH|M_FEATHER}],
-		[A_VESTMENT,{name:{a:'Vestment',b:'法衣'},nameReal:{a:'Vestment',b:'法衣'},symbol:'[',
+		[A_VESTMENT,{nameReal:{a:'Vestment',b:'法衣'},
 			lvl:1,rarity:0,volumeRate:0.6,
 			material:M_CLOTH|M_SKIN||M_GEM}],
-		[A_VEST,{name:{a:'Vest',b:'ベスト'},nameReal:{a:'Vest',b:'ベスト'},symbol:'[',shop:true,
+		[A_VEST,{nameReal:{a:'Vest',b:'ベスト'},shop:true,
 			lvl:1,rarity:0,volumeRate:0.8,
 			material:M_FUR|M_SKIN}],
-		[A_ARMOR,{name:{a:'Armor',b:'鎧'},nameReal:{a:'Armor',b:'鎧'},symbol:'[',shop:true,
+		[A_ARMOR,{nameReal:{a:'Armor',b:'鎧'},shop:true,
 			lvl:1,rarity:0,volumeRate:1,
 			material:M_SCALE|M_PLATING|M_BONE||M_SHELL}],
-		[A_SPLINT_MAIL,{name:{a:'Splint Mail',b:'小札鎧'},nameReal:{a:'Splint Mail',b:'小札鎧'},symbol:'[',shop:true,
+		[A_SPLINT_MAIL,{nameReal:{a:'Splint Mail',b:'小札鎧'},shop:true,
 			lvl:1,rarity:0,volumeRate:1.2,
 			material:M_METAL|M_WOOD}],
-		[A_PLATE_MAIL,{name:{a:'Plate Mail',b:'板金鎧'},nameReal:{a:'Plate Mail',b:'板金鎧'},symbol:'[',shop:true,
+		[A_PLATE_MAIL,{nameReal:{a:'Plate Mail',b:'板金鎧'},shop:true,
 			lvl:1,rarity:0,volumeRate:1.5,
 			material:M_METAL|M_STONE}],
 		]),
 	cloak:new Map([
-		[C_COAT,{name:{a:'Mantle',b:'マント'},nameReal:{a:'Mantle',b:'マント'},symbol:'(',shop:true,
+		[C_COAT,{nameReal:{a:'Mantle',b:'マント'},shop:true,
 			lvl:1,rarity:0,volumeRate:0.8,
 			material:M_FEATHER|M_SCALE}],
-		[C_CLOAK,{name:{a:'Coat',b:'コート'},nameReal:{a:'Coat',b:'コート'},symbol:'(',shop:true,
+		[C_CLOAK,{nameReal:{a:'Coat',b:'コート'},shop:true,
 			lvl:1,rarity:0,volumeRate:1,
 			material:M_FUR|M_SKIN}],
-		[C_MANTLE,{name:{a:'Cloak',b:'クローク'},nameReal:{a:'Cloak',b:'クローク'},symbol:'(',shop:true,
+		[C_MANTLE,{nameReal:{a:'Cloak',b:'クローク'},shop:true,
 			lvl:1,rarity:0,volumeRate:1.2,
 			material:M_CLOTH}],
 		]),
 	belt:new Map([
-		[B_SASH,{name:{a:'Sash',b:'腰帯'},nameReal:{a:'Sash',b:'腰帯'},symbol:'~',shop:true,
+		[B_SASH,{nameReal:{a:'Sash',b:'腰帯'},shop:true,
 			lvl:1,rarity:0,numBoxes:1,volumeRate:0.5,
 			material:M_CLOTH|M_FEATHER|M_FUR}],
-		[B_BELT,{name:{a:'Belt',b:'ベルト'},nameReal:{a:'Belt',b:'ベルト'},symbol:'~',shop:true,
+		[B_BELT,{nameReal:{a:'Belt',b:'ベルト'},shop:true,
 			lvl:1,rarity:0,numBoxes:1,volumeRate:1,
 			material:M_SKIN|M_SCALE|M_PLATING|M_BONE}],
 		]),
 	helm:new Map([
-		[H_CIRCLET,{name:{a:'Circlet',b:'冠'},nameReal:{a:'Circlet',b:'冠'},symbol:']',
+		[H_CIRCLET,{nameReal:{a:'Circlet',b:'冠'},
 			lvl:1,rarity:0,volumeRate:0.2,
 			material:M_FEATHER|M_PLATING|M_GEM}], 
-		[H_CAP,{name:{a:'Cap',b:'帽子'},nameReal:{a:'Cap',b:'帽子'},symbol:']',shop:true,
+		[H_CAP,{nameReal:{a:'Cap',b:'帽子'},shop:true,
 			lvl:1,rarity:0,volumeRate:0.5,
 			material:M_CLOTH|M_FUR|M_FEATHER|M_SKIN|M_SCALE}],
-		[H_CROWN,{name:{a:'Crown',b:'王冠'},nameReal:{a:'Crown',b:'王冠'},symbol:']',
+		[H_CROWN,{nameReal:{a:'Crown',b:'王冠'},
 			lvl:1,rarity:0,volumeRate:0.7,
 			material:M_METAL|M_GEM}], 
-		[H_MASK,{name:{a:'Mask',b:'仮面'},nameReal:{a:'Mask',b:'仮面'},symbol:']',shop:true,
+		[H_MASK,{nameReal:{a:'Mask',b:'仮面'},shop:true,
 			lvl:1,rarity:0,volumeRate:0.8,
 			material:M_PLATING|M_WOOD|M_STONE}], 
-		[H_HELM,{name:{a:'Helm',b:'兜'},nameReal:{a:'Helm',b:'兜'},symbol:']',shop:true,
+		[H_HELM,{nameReal:{a:'Helm',b:'兜'},shop:true,
 			lvl:1,rarity:0,volumeRate:1,
 			material:M_METAL|M_BONE|M_SHELL}],
 	]),
 	gloves:new Map([
-		[G_MITTEN,{name:{a:'Mitten',b:'ミトン'},nameReal:{a:'Mitten',b:'ミトン'},symbol:']',shop:true,
+		[G_MITTEN,{nameReal:{a:'Mitten',b:'ミトン'},shop:true,
 			lvl:1,rarity:0,volumeRate:0.5,
 			material:M_CLOTH|M_FUR|M_FEATHER}],
-		[G_BRACER,{name:{a:'Bracer',b:'ブレイサー'},nameReal:{a:'Bracer',b:'ブレイサー'},symbol:']',shop:true,
+		[G_BRACER,{nameReal:{a:'Bracer',b:'ブレイサー'},shop:true,
 			lvl:1,rarity:0,volumeRate:0.7,
 			material:M_STONE|M_PLATING}],
-		[G_GLOVES,{name:{a:'Gloves',b:'手袋'},nameReal:{a:'Gloves',b:'手袋'},symbol:']',shop:true,
+		[G_GLOVES,{nameReal:{a:'Gloves',b:'手袋'},shop:true,
 			lvl:1,rarity:0,volumeRate:1,
 			material:M_SKIN|M_SCALE}],
-		[G_VAMBRACE,{name:{a:'Vambrace',b:'腕甲'},nameReal:{a:'Vambrace',b:'腕甲'},symbol:']',shop:true,
+		[G_VAMBRACE,{nameReal:{a:'Vambrace',b:'腕甲'},shop:true,
 			lvl:1,rarity:0,volumeRate:0.8,
 			material:M_BONE|M_SHELL}],
-		[G_GAUNTLETS,{name:{a:'Gauntlets',b:'小手'},nameReal:{a:'Gauntlets',b:'小手'},symbol:']',shop:true,
+		[G_GAUNTLETS,{nameReal:{a:'Gauntlets',b:'小手'},shop:true,
 			lvl:1,rarity:0,iasBase:10,volumeRate:1.2,
 			material:M_METAL}],
 	]),
 	boots:new Map([
-		[B_SANDALS,{name:{a:'Sandals',b:'サンダル'},nameReal:{a:'Sandals',b:'サンダル'},symbol:']',shop:true,
+		[B_SANDALS,{nameReal:{a:'Sandals',b:'サンダル'},shop:true,
 			lvl:1,rarity:0,frwBase:-10,volumeRate:0.5,
 			material:M_CLOTH|M_FEATHER}],
-		[B_SHOES,{name:{a:'Shoes',b:'短靴'},nameReal:{a:'Shoes',b:'短靴'},symbol:']',shop:true,
+		[B_SHOES,{nameReal:{a:'Shoes',b:'短靴'},shop:true,
 			lvl:1,rarity:0,frwBase:-5,volumeRate:0.7,
 			material:M_FUR|M_SKIN|M_WOOD}],
-		[B_BOOTS,{name:{a:'Boots',b:'靴'},nameReal:{a:'Boots',b:'靴'},symbol:']',shop:true,
+		[B_BOOTS,{nameReal:{a:'Boots',b:'靴'},shop:true,
 			lvl:1,rarity:0,frwBase:0,volumeRate:1,
 			material:M_SCALE|M_PLATING|M_BONE|M_SHELL}],
-		[B_GREAVES,{name:{a:'Greaves',b:'脛当て'},nameReal:{a:'Greaves',b:'脛当て'},symbol:']',shop:true,
+		[B_GREAVES,{nameReal:{a:'Greaves',b:'脛当て'},shop:true,
 			lvl:1,rarity:0,frwBase:5,volumeRate:1.2,
 			material:M_METAL}],
 	]),
 	light:new Map([
-		[L_TORCH,{name:{a:'Torch',b:'松明'},nameReal:{a:'Torch',b:'松明'},symbol:'＊',shop:true,
+		[L_TORCH,{nameReal:{a:'Torch',b:'松明'},shop:true,
 			lvl:1,rarity:0,lighten:1,duration:5000,volumeRate:0.5,torch:true,
 			material:M_WOOD}],
-		[L_LAMP,{name:{a:'Lamp',b:'ランプ'},nameReal:{a:'Lamp',b:'ランプ'},symbol:'＊',shop:true,
+		[L_LAMP,{nameReal:{a:'Lamp',b:'ランプ'},shop:true,
 			lvl:1,rarity:0,lighten:2,duration:10000,volumeRate:1.2,
 			material:M_STONE}],
-		[L_LANTHANUM,{name:{a:'Lanthanum',b:'ランタン'},nameReal:{a:'Lanthanum',b:'ランタン'},symbol:'＊',shop:true,
+		[L_LANTHANUM,{nameReal:{a:'Lanthanum',b:'ランタン'},shop:true,
 			lvl:1,rarity:0,lighten:3,duration:7500,volumeRate:1,
 			material:M_METAL}],
 	]),
 	amulet:new Map([
-		[A_AMULET,{name:{a:'Amulet',b:'首飾り'},nameReal:{a:'Amulet',b:'首飾り'},symbol:'"',color:ORANGE,mod:MAGIC,
+		[A_AMULET,{nameReal:{a:'Amulet',b:'首飾り'},color:ORANGE,mod:MAGIC,
 			lvl:1,rarity:0,volumeRate:1,
 			material:M_METAL|M_BONE|M_FEATHER}],
 	]),
 	ring:new Map([
-		[R_RING,{name:{a:'Ring',b:'指輪'},nameReal:{a:'Ring',b:'指輪'},symbol:'=',color:RED,mod:MAGIC,
+		[R_RING,{nameReal:{a:'Ring',b:'指輪'},color:RED,mod:MAGIC,
 			lvl:1,rarity:0,volumeRate:1,
 			material:M_METAL|M_STONE|M_GEM}],
 	]),
 	gem:new Map([
-		[G_GEM,{nameReal:{a:'Gem',b:'ジェム'},symbol:'*',priceReal:0,
+		[G_GEM,{nameReal:{a:'Gem',b:'ジェム'},priceRate:1,
 			lvl:1,rarity:0}],
 	]),
 	oil:new Map([
-		[O_OLIVE_OIL,{nameReal:{a:'Olive Oil',b:'オリーブ油'},symbol:'!',color:YELLOW,duration:2500,weight:0.3,priceReal:30,shop:true,
+		[O_OLIVE_OIL,{nameReal:{a:'Olive Oil',b:'オリーブ油'},color:YELLOW,duration:2500,weight:0.3,priceRate:1,shop:true,
 			lvl:1,rarity:0}],
 	]),
 	ammo:new Map([
-		[A_ROCK,{nameReal:{a:'Rock',b:'石'},symbol:'{',color:GRAY,throwType:'sling',weight:0.1,priceReal:1,shop:true,
+		[A_ROCK,{nameReal:{a:'Rock',b:'石'},color:GRAY,throwType:'sling',weight:0.1,priceRate:1,shop:true,
 			lvl:1,rarity:0}],
-		[A_ARROW,{nameReal:{a:'Arrow',b:'矢'},symbol:'{',color:BROWN,throwType:'bow',weight:0.02,priceReal:1,shop:true,
+		[A_ARROW,{nameReal:{a:'Arrow',b:'矢'},color:BROWN,throwType:'bow',weight:0.02,priceRate:2,shop:true,
 			lvl:1,rarity:0}],
-		[A_BOLT,{nameReal:{a:'Bolt',b:'ボルト'},symbol:'{',color:BROWN,throwType:'crossbow',weight:0.04,priceReal:2,shop:true,
+		[A_BOLT,{nameReal:{a:'Bolt',b:'ボルト'},color:BROWN,throwType:'crossbow',weight:0.04,priceRate:3,shop:true,
 			lvl:1,rarity:0}],
 	]),
 	coin:new Map([
-		[C_COIN,{nameReal:{a:'Coin',b:'硬貨'},symbol:'$',color:YELLOW,priceReal:0,
+		[C_COIN,{nameReal:{a:'Coin',b:'硬貨'},color:YELLOW,
 			lvl:1,rarity:0}],
 	]),
 };
@@ -1742,6 +1742,7 @@ const itemNumsMap = (()=>{
 
 const IT = Object.keys(itemTab);
 IT.push('material');
+
 
 const AEGIS = -1;
 const itemUniqueMap = {
@@ -2106,7 +2107,7 @@ const fighterTab = {
 			material:M_STONE,atkType:AT_S,stillness:true,awake:true,volumeRate:1},
 	],
 	misc:[
-		{name:{a:'',b:''},symbol:'@',color:WHITE,race:HUMAN,mod:NORMAL,grade:NORMAL,
+		{name:{a:'Rogue',b:'ローグ'},symbol:'@',color:WHITE,race:HUMAN,mod:NORMAL,grade:NORMAL,
 			lvl:1,rarity:0,hpRate:0,mpRate:0,str:1,dex:1,con:1,int:1,spd:0,dmgBase:'1d1', acBase:0,dropNum:0,matRedTimes:0,
 			fire:0,water:0,air:0,earth:0,poison:0,
 			atkType:AT_B,awake:true,
@@ -2577,45 +2578,6 @@ const modAffNumsMap = (()=>{
 	return nums;
 })();
 
-{
-	for(let key in itemTab){
-		for(let [tabId, item] of itemTab[key].entries()){
-			item.type = key;
-			item.tabId = tabId;
-			if(!item.name) item.name = {};
-			if(key==='book'||key==='food'||key==='coin'
-			||key==='ammo'||key==='oil'||key==='misc')
-				item.identified = true;
-			else if(key==='melee'||key==='missile'||key==='staff'||key==='shield'||key==='armor'
-			||key==='cloak'||key==='belt'||key==='helm'||key==='gloves'||key==='boots'
-			||key==='light'||key==='ring'||key==='amulet'){
-				item.equipable = true;
-				item.grade = NORMAL;
-				if(key==='melee'||key==='missile'||key==='staff')
-					item.weapon = true;
-				else if(key==='light'||key==='ring'||key==='amulet')
-					item.ornament = true;
-				else
-					item.armor = true;
-			}
-			if(key==='book'){ //sort list
-				if(!item.skill) continue;
-				let list = item.list;
-				let keys = Object.keys(list);
-				for(let i=0,l=keys.length,found;i<l-1;i++,found=false){
-					for(let j =l-1;j>i;j--){
-						let [a, b] = [keys[j-1], keys[j]];
-						if(skillMap.get(list[a]).reqLvl>skillMap.get(list[b]).reqLvl){
-							[list[a], list[b]] = [list[b], list[a]];
-							found = true;
-						}
-					}
-					if(!found) break;
-				}
-			}
-		}
-	}
-}
 
 const investigationMap = new Map([
 	['atkType',{name:{a:'Attack Type',b:'攻撃種類'},char:true}],
@@ -11141,11 +11103,12 @@ const Enemy = class extends Fighter{
 		item.material = this.getMaterialBase();
 		item.identified = false;
 		item.quantity = 1;
-		item.symbol = item.symbolReal = '\'';
 		item.type = 'material';
-		item.weight = 0.2;
-		item.price = item.priceReal = 100;
+		item.weight = WEIGHT[item.type];
+		item.priceRate = materialMap.get(item.material).pRate;
 		item.__proto__ = Item.prototype;
+		item.symbolReal = item.symbol = Item.getSymbol(item.type);	
+		item.calcPrice();
 		item.putDown(this.x,this.y,true);
 	}
 	
@@ -11405,7 +11368,6 @@ const Item = class extends Material{
 			if(this.type==='gem'){
 				this.getMaterial(lvl,true);
 				this.getMagic(this.bias,this.lvl);
-				this.calcPrice();
 			} else
 				this.mod = NORMAL;
 			if(this.type==='ammo'){
@@ -11420,14 +11382,15 @@ const Item = class extends Material{
 				this.nameReal['a'] = this.nameReal['b'] = '$'+this.priceReal;
 			} else if(this.type==='wand')
 				this.charges = rndIntBet(3,6);
-			else if(this.type==='potion'&&!this.lethe||this.type==='scroll')
+			else if(this.type==='potion'&&!this.lethe||this.type==='scroll'){
 				if(this.quantity===1) this.quantity = rndIntBet(1,5);
+			}
+			if(!this.weight) this.weight = WEIGHT[this.type];
+			if(this.type!=='coin') this.calcPrice();
 			if(flag.shop||itemTab[this.type].get(this.tabId).identified){
 				if(this.type==='wand'&&!flag.shop&&this.identified) this.identified = false;
 				this.changeNameAndPrice();
-			} else
-				this.price = PRICE[this.type];
-			if(!this.weight) this.weight = WEIGHT[this.type];
+			}
 		}
 		
 		if(flag.shop) this.price *= flag.gamble? 10:2;
@@ -11516,25 +11479,35 @@ const Item = class extends Material{
 	}
 	
 	calcPrice(){
-		this.price = PRICE[this.type];
-		if(this.priceRate) this.price *= this.priceRate;
-		let times = 1;
-		if(this.cursed)
-			times = 0;
-		else if(this.mod===MAGIC)
-			times = 10;
-		else if(this.mod===RARE)
-			times = 20;
-		else if(this.mod===UNIQUE)
-			times = 50;
-		this.priceReal = this.price*times;
-		if(this.weapon||this.armor){
-			this.price = Math.round(this.price*this.weight);
-			this.priceReal = Math.round(this.priceReal*this.weight);
+		this.price = this.priceReal = PRICE[this.type];
+		if(this.priceRate) this.priceReal = Math.round(this.priceReal*this.priceRate);
+		if(this.equipable||this.type==='gem'||this.type==='material'){
+			let times;
+			switch(this.mod){
+				case NORMAL:
+					times = 1;
+					break;	
+				case MAGIC:
+					times = 2;
+					break;	
+				case RARE:
+					times = 5;
+					break;	
+				case UNIQUE:
+					times = 10;
+					this.priceReal += 1000;
+					break;	
+			}
+			this.priceReal *= times;
+			if(this.equipable){
+				let weight = 1+this.weight/2;
+				this.price = Math.round(this.price*weight);
+				this.priceReal = this.cursed? 1:Math.round(this.priceReal*weight);
+			}
 		}
 	}
 	
-	changeNameAndPrice(){
+	changeNameAndPrice(){ //identified
 		this.name['a'] = this.nameReal['a'];
 		this.name['b'] = this.nameReal['b'];
 		this.changePrice();
@@ -11645,9 +11618,123 @@ const Item = class extends Material{
 		}
 		return item;
 	}
+
+	static getSymbol(type){
+		let symbol;
+		switch(type){
+			case 'book':
+			case 'scroll':
+				symbol = '?';
+				break;
+			case 'food':
+				symbol = ':';
+				break;
+			case 'potion':
+			case 'oil':
+				symbol = '!';
+				break;
+			case 'wand':
+				symbol = '-';
+				break;
+			case 'food':
+				symbol = ':';
+				break;
+			case 'missile':
+				symbol = '}';
+				break;
+			case 'staff':
+				symbol = '_';
+				break;
+			case 'shield':
+				symbol = ')';
+				break;
+			case 'armor':
+				symbol = '[';
+				break;
+			case 'cloak':
+				symbol = '(';
+				break;
+			case 'belt':
+				symbol = '~';
+				break;
+			case 'helm':
+			case 'gloves':
+			case 'boots':
+				symbol = ']';
+				break;
+			case 'light':
+				symbol = '＊';
+				break;
+			case 'ring':
+				symbol = '=';
+				break;
+			case 'amulet':
+				symbol = '"';
+				break;
+			case 'gem':
+				symbol = '*';
+				break;
+			case 'ammo':
+				symbol = '{';
+				break;
+			case 'coin':
+				symbol = '$';
+				break;
+			case 'material':
+				symbol = '\'';
+				break;
+		}
+		return symbol;
+	}
+
+	static initTab(){
+		for(let key in itemTab){
+			for(let [tabId, item] of itemTab[key].entries()){
+				item.type = key;
+				item.tabId = tabId;
+				if(!item.symbol) item.symbol = Item.getSymbol(item.type);
+				if(!item.name) item.name = {};
+				if(key==='book'||key==='food'||key==='coin'
+				||key==='ammo'||key==='oil'||key==='misc')
+					item.identified = true;
+				else if(key==='melee'||key==='missile'||key==='staff'||key==='shield'||key==='armor'
+				||key==='cloak'||key==='belt'||key==='helm'||key==='gloves'||key==='boots'
+				||key==='light'||key==='ring'||key==='amulet'){
+					item.equipable = true;
+					item.grade = NORMAL;
+					if(key==='melee'||key==='missile'||key==='staff')
+						item.weapon = true;
+					else if(key==='light'||key==='ring'||key==='amulet')
+						item.ornament = true;
+					else
+						item.armor = true;
+					if(!this.name['a']){
+						item.name['a'] = item.nameReal['a'];
+						item.name['b'] = item.nameReal['b'];
+					}
+				}
+				if(key==='book'){ //sort list
+					if(!item.skill) continue;
+					let list = item.list;
+					let keys = Object.keys(list);
+					for(let i=0,l=keys.length,found;i<l-1;i++,found=false){
+						for(let j =l-1;j>i;j--){
+							let [a, b] = [keys[j-1], keys[j]];
+							if(skillMap.get(list[a]).reqLvl>skillMap.get(list[b]).reqLvl){
+								[list[a], list[b]] = [list[b], list[a]];
+								found = true;
+							}
+						}
+						if(!found) break;
+					}
+				}
+			}
+		}
+	}
 }
 
 Item.list = {};
+Item.initTab();
 
 const creation = {
 	input(keyCode){
@@ -12179,13 +12266,15 @@ const initFlag =()=>{
 const game = {
 	help:{
 		main(){
+			this.i = 1;
+			this.j = MS+1;
 			inventory.shadow(MIDDLE);
 			this.loop(CL);
 			if(wizard) this.loop(CLW);
 		},
 		loop(list){
-			let i = 1;
-			let j = MS+1;
+			let i = this.i;
+			let j = this.j;
 			for(let key in list){
 				ctsInv.save();
 				ctsInv.fillText(key,(i-0.5)*fs,j*fs);
@@ -12197,6 +12286,8 @@ const game = {
 					i += 14;
 				}
 			}
+			this.i = i;
+			this.j = j;
 		}
 	},
 	title(){
