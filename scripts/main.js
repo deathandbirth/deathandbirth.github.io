@@ -6,7 +6,7 @@ const generateNumber = function*(i,j,bit){
 }
 const enums =(i,j)=> [...generateNumber(i,j)];
 const enumsBit =(i,j)=> [...generateNumber(i,j,true)];
-const VERSION = 0.001;
+const VERSION = 0.002;
 const MS = 2; //message space
 const SS = 3; //stats space
 const IN_WIDTH = 47; //canvas.width/fs-1;
@@ -2984,6 +2984,7 @@ const audio = {
 		tplevel:new Audio('sound/tplevel.wav'),
 		dig:new Audio('sound/dig.wav'),
 		kill_boss:new Audio('sound/kill_boss.wav'),
+		coin:new Audio('sound/coin.wav'),
 	},
 	init(){
 		for(let key in this.music)
@@ -10309,6 +10310,7 @@ const Rogue = class extends Fighter{
 				message.draw(rogue.cl===ENG?
 				`Sold ${name} for $${amount}`
 				:`${name}を$${amount}で売却した`);
+				audio.playSound('coin');	
 			} else if(this.purse<amount)
 				message.draw(message.get(M_DONT_HAVE_MONEY));
 			else{ 
