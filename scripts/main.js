@@ -117,7 +117,8 @@ const CL={ //command list
 	s:{a:'search',b:'捜索する'},r:{a:'read scroll',b:'巻物を読む'},q:{a:'quaff potion',b:'薬を飲む'},z:{a:'zap wand',b:'棒を振る'},
 	p:{a:'pack item',b:'アイテムを詰める'},E:{a:'eat food',b:'食事する'},Q:{a:'quit',b:'ゲームを放棄する'},Esc:{a:'cancel command',b:'取り消す'},
 	x:{a:'examine things',b:'探査する'},a:{a:'add bookmark',b:'しおりを挟む'},G:{a:'gain stat/skill',b:'スキル/能力値を得る'},
-	t:{a:'throw',b:'射る'},S:{a:'swap gear',b:'装備を持ち替える'},C:{a:'character description',b:'キャラ詳細'},F:{a:'fuel',b:'補給する'},
+	f:{a:'fire',b:'射る'},t:{a:'throw item',b:'アイテムを投げる'},
+	S:{a:'swap gear',b:'装備を持ち替える'},C:{a:'character description',b:'キャラ詳細'},F:{a:'fuel',b:'補給する'},
 	R:{a:'Rest',b:'休む'},'A':{a:'alchemy',b:'錬金術'},
 	'1-9':{a:'use item',b:'アイテムを使う'},'m,F1-F12':{a:'use skill',b:'スキルを使う'},
 	'Alt+dir':{a:'attack stationary/dig',b:'その場で攻撃する/掘る'},'Shift+dir':{a:'dash',b:'走る'},'.':{a:'stap on',b:'踏む'},
@@ -484,6 +485,7 @@ const flag = {
 	cure: false,
 	blacksmith: false,
 	floor: false,
+	throw: false,
 };
 //message
 const [M_DESTROY,M_CANT_DESTROY,M_NUMBER,M_PACK,M_FLOOR,
@@ -500,7 +502,7 @@ const [M_DESTROY,M_CANT_DESTROY,M_NUMBER,M_PACK,M_FLOOR,
 	M_DONT_HAVE_MELEE,M_EXAMINE_W,M_GAIN_SKILL,M_OPTION,M_PREVIOUS,
 	M_STUCK,M_DIED,M_RECOVER_ALL,M_FLOAT,M_LIGHT_GONE,
 	M_STARVED,M_OPEN_OR_CLOSE,M_DONT_HAVE_EQUIPMENT,M_TAKE_OFF,M_FIRE,
-	M_ASK_TO_QUIT,M_QUIT,M_INTERRUPTED,
+	M_ASK_TO_QUIT,M_QUIT,M_INTERRUPTED,M_THROW,M_THROW_DIR,
 	] = enums(1,80);
 const msgMap = new Map([
 	[M_NUMBER,  {a:'[0-9] then [Enter] or [a] for all: ',
@@ -653,6 +655,10 @@ const msgMap = new Map([
 				  b:'[方向]　発射'}],
 	[M_QUIT, {a:'[y/n] to quit',
 			  b:'[y/n] 放棄'}],
+	[M_THROW, {a:'[a-z] [1-9] to throw',
+			   b:'[a-z] [1-9] 投擲'}],
+	[M_THROW_DIR, {a:'[direction] [.] to throw',
+				   b:'[方向] [.] 投擲'}],
 				
 				
 ]);
@@ -1722,10 +1728,13 @@ const itemTab = {
 	]),
 	ammo:new Map([
 		[A_ROCK,{nameReal:{a:'Rock',b:'石'},color:GRAY,throwType:'sling',weight:0.1,priceRate:1,shop:true,
+			dmgBase:'2d1',atkType:AT_B,
 			lvl:1,rarity:0}],
 		[A_ARROW,{nameReal:{a:'Arrow',b:'矢'},color:BROWN,throwType:'bow',weight:0.02,priceRate:2,shop:true,
+			dmgBase:'1d2',atkType:AT_T,
 			lvl:1,rarity:0}],
 		[A_BOLT,{nameReal:{a:'Bolt',b:'ボルト'},color:BROWN,throwType:'crossbow',weight:0.04,priceRate:3,shop:true,
+			dmgBase:'1d3',atkType:AT_T,
 			lvl:1,rarity:0}],
 	]),
 	coin:new Map([
@@ -3773,6 +3782,7 @@ const getNextDirection =(dr,ccw)=>{ //counterclockwise
 
 
 const lineOfSight =(x0,y0,x1,y1,color,skill)=>{
+	let parabora = flag.arrow||flag.throw||skill&&skill.parabora;
 	let rangeSq = skill&&skill.range>=0? skill.range**2:FOV_SQ;
 	let radius = skill&&skill.radius? skill.radius:0;
 	let [xT, xS, yT, yS] = [x0, x0, y0, y0];
@@ -3801,7 +3811,7 @@ const lineOfSight =(x0,y0,x1,y1,color,skill)=>{
 			if(radius&&(skill.each||loc.fighter&&skill.penetrate)){
 				if(!(loc.wall||loc.door===CLOSE))
 					shadowcasting.main(xS,yS,radius,ud,ud,color);
-			} else if(loc.fighter&&(!skill||!skill.penetrate&&(!skill.parabora||x===x1&&y===y1)))
+			} else if(loc.fighter&&(!skill||!skill.penetrate)&&!parabora)
 				break;
 		}
 		if(loc.wall||loc.door===CLOSE){
@@ -5755,23 +5765,36 @@ const Fighter = class extends Material{
 		if(this.acBValueTotal<0) this.acBValueTotal=0;
 	}
 	
-	calcAttack(e,skill,lvl){
-		let rate = Math.floor((this.rateValue/(this.rateValue+this.getEnemyAc(e)))*100);
+	calcAttack(e,skill,lvl,itemThrow){
+		let dmgBase,atkType;
+		if(!itemThrow){
+			dmgBase = this.dmgBase;
+			atkType = this.atkType;
+		} else{
+			dmgBase = itemThrow.dmgBase? itemThrow.dmgBase:'1d1';
+			atkType = itemThrow.atkType? itemThrow.atkType:AT_B;
+		}
+		let rate = Math.floor((this.rateValue/(this.rateValue+this.getEnemyAc(atkType,e)))*100);
 		if(rate>95)
 			rate = 95;
 		else if(rate<5)
 			rate = 5;
 		let dmg = 0;
-		if(skill&&skill.element!=='physical'||evalPercentage(rate)){ 
-			let boost = evalPercentage(this.equipment['main']? this.equipment['main'].weight:1);
+		if(skill&&skill.element!=='physical'||evalPercentage(rate)){
+			let weight;
+			if(itemThrow)
+				weight = itemThrow.weight;
+			else
+				weight = this.equipment['main']? this.equipment['main'].weight:1;
+			let boost = evalPercentage(weight);
 			if(e.race) boost += this.getRaceBoost(e.race);
-			if(e.material===M_STONE) boost += this.digging;
-			dmg = (this.str/2+dice.roll(this.dmgBase,boost)*(1+this.dmgBonus/100))
+			if(e.material===M_STONE&&!itemThrow) boost += this.digging;
+			dmg = (this.str/2+dice.roll(dmgBase,boost)*(1+this.dmgBonus/100))
 				*(1+this.dmgBuff/100);
 			if(skill) dmg *= 1+this.calcSkillValue(skill,lvl)/100;
 			let add = dmg;
 			dmg *= 1-e.physical/100;
-			if(!skill||skill.element==='physical'){
+			if(!itemThrow&&(!skill||skill.element==='physical')){
 				if(this.dmgFire) dmg += add*(this.dmgFire/100)*(1-e.fire/100);
 				if(this.dmgLightning) dmg += add*(this.dmgLightning/100)*(1-e.lightning/100);
 				if(this.dmgPoison) dmg += add*(this.dmgPoison/100)*(1-e.poison/100);
@@ -5782,11 +5805,11 @@ const Fighter = class extends Material{
 		return [dmg, rate];
 	}
 	
-	getEnemyAc(e){
+	getEnemyAc(atkType,e){
 		let ac = NaN;
-		if(this.atkType&AT_S&&!(ac<=e.acSValueTotal)) ac = e.acSValueTotal;
-		if(this.atkType&AT_T&&!(ac<=e.acTValueTotal)) ac = e.acTValueTotal;
-		if(this.atkType&AT_B&&!(ac<=e.acBValueTotal)) ac = e.acBValueTotal;
+		if(atkType&AT_S&&!(ac<=e.acSValueTotal)) ac = e.acSValueTotal;
+		if(atkType&AT_T&&!(ac<=e.acTValueTotal)) ac = e.acTValueTotal;
+		if(atkType&AT_B&&!(ac<=e.acBValueTotal)) ac = e.acBValueTotal;
 		return ac;
 	}
 	
@@ -5802,10 +5825,12 @@ const Fighter = class extends Material{
 		return boost;
 	}
 	
-	attack(e,missile,skill,lvl){
+	attack(e,missile,skill,lvl,itemThrow){
 		let count = 0;
 		let name;
-		if(missile){
+		if(itemThrow)
+			name = itemThrow.getName(true);
+		else if(missile){
 			name = rogue.cl===ENG? 'An arrow':'矢';
 			var ammo = ci;
 		} else if(skill)
@@ -5813,10 +5838,10 @@ const Fighter = class extends Material{
 		else
 			name = rogue.cl===ENG? this.getName(true):this.getName()+'の攻撃';
 		let nameE = e.getName();
-		let third = rogue.cl===ENG&&(missile||skill||this.id!==ROGUE);
+		let third = rogue.cl===ENG&&(itemThrow||missile||skill||this.id!==ROGUE);
 		do{
 			let [dmg, rate] = skill&&skill.type==='spell'?	[this.calcSkillValue(skill,lvl,e),100]:
-															this.calcAttack(e,skill,lvl);
+															this.calcAttack(e,skill,lvl,itemThrow);
 			let msg;
 			let miss = !dmg||e.indestructible;
 			if(miss){
@@ -5826,19 +5851,19 @@ const Fighter = class extends Material{
 				if(third) msg += 's';
 				e.hp -= dmg;
 			}
-			if(missile){
-				if(miss||evalPercentage(50))
-					this.deleteAmmo(ammo,true,e.x,e.y);
+			if(missile||itemThrow){
+				let item = ammo||itemThrow;
+				if(miss||item.indestructible||evalPercentage(50))
+					this.deleteAmmo(item,true,e.x,e.y);
 				else
-					this.deleteAmmo(ammo);
+					this.deleteAmmo(item);
 			}
 			message.draw(rogue.cl===ENG?
 			`${name} ${msg} ${nameE}${dmg&&!e.indestructible? ' by '+dmg:''} (hit rating ${rate})`//
 			:`${name}は${nameE}に${msg} (命中率 ${rate})`);
 			count++;
-			if(flag.dash||flag.rest)
-				flag.dash = flag.rest = false;
-			if(!skill||skill.element==='physical'){
+			if(flag.dash||flag.rest) flag.dash = flag.rest = false;
+			if(!itemThrow&&(!skill||skill.element==='physical')){
 				if(!dmg) continue;
 				if(this.stealLife){
 					let percent = this.stealLife>100? 1:this.stealLife/100;
@@ -5883,7 +5908,7 @@ const Fighter = class extends Material{
 					}
 				}
 			}
-			if(!skill||skill.type!=='spell'){
+			if(!itemThrow&&(!skill||skill.type!=='spell')){
 				if(this.decreaseDurab(true)) count = NaN;
 			}
 			e.decreaseDurab();
@@ -5902,13 +5927,12 @@ const Fighter = class extends Material{
 				return;
 			}
 			if(e.sleeping) e.wakeUp();
-			if(this.id===ROGUE&&e.id!==ROGUE){
-				if((!missile&&!skill||!rogue.ce)&&e.isShowing()) rogue.ce = e;
-			}
+			if(this.id===ROGUE) this.getCe(e,!missile&&!skill);
 			if(skill){
 				this.getElementEffect(skill.element,lvl,e)
 				return;
-			}
+			} else if(itemThrow)
+				return;
 		} while(missile&&this.timesMissile>count&&ammo.quantity>count
 		||!missile&&this.timesMelee>count);
 	}
@@ -6487,12 +6511,17 @@ const Fighter = class extends Material{
 	}
 	
 	decayOrRestore(stat,restore,exp,enemy){
-		if(!restore) var name = this.getName(true);
+		let name = this.getName(true);
 		switch(stat>=0? stat:rndInt(3)){
 			case STR:
-				if(restore)
-					this.str = this.strMax;
-				else if(this.strSus||!(this.str-this.strBonus)) 
+				if(restore){
+					if(this.str<this.strMax){
+						message.draw(rogue.cl===ENG?
+						`${name} restored the strength`
+						:`${name}筋力が元に戻った`);
+						this.str = this.strMax;
+					}
+				} else if(this.strSus||!(this.str-this.strBonus)) 
 					return;
 				else{
 					this.str--;
@@ -6504,9 +6533,14 @@ const Fighter = class extends Material{
 				this.calcDmg();
 				break;
 			case DEX:
-				if(restore)
-					this.dex = this.dexMax;
-				else if(this.dexSus||!(this.dex-this.dexBonus)) 
+				if(restore){
+					if(this.dex<this.dexMax){
+						message.draw(rogue.cl===ENG?
+						`${name} restored the dexterity`
+						:`${name}器用さが元に戻った`);
+						this.dex = this.dexMax;
+					}
+				} else if(this.dexSus||!(this.dex-this.dexBonus)) 
 					return;
 				else{
 					this.dex--;
@@ -6518,9 +6552,14 @@ const Fighter = class extends Material{
 				this.calcDmg();
 				break;
 			case CON:
-				if(restore) 
-					this.con = this.conMax;
-				else if(this.conSus||!(this.con-this.conBonus))
+				if(restore){
+					if(this.con<this.conMax){
+						message.draw(rogue.cl===ENG?
+						`${name} restored the constitution`
+						:`${name}耐久力が元に戻った`);
+						this.con = this.conMax;
+					}
+				} else if(this.conSus||!(this.con-this.conBonus))
 					return;
 				else{
 					this.con--;
@@ -6531,9 +6570,14 @@ const Fighter = class extends Material{
 				this.calcHP();
 				break;
 			case INT:
-				if(restore)
-					this.int = this.intMax;
-				else if(this.intSus||!(this.int-this.intBonus))
+				if(restore){
+					if(this.int<this.intMax){
+						message.draw(rogue.cl===ENG?
+						`${name} restored the intelligence`
+						:`${name}知力が元に戻った`);
+						this.int = this.intMax;
+					}
+				} else if(this.intSus||!(this.int-this.intBonus))
 					return;
 				else{
 					this.int--;
@@ -6545,8 +6589,13 @@ const Fighter = class extends Material{
 				break;
 			case EXP:
 				if(restore){
-					this.exp = this.expMax;
-					this.lvl = this.lvlMax;
+					if(this.exp<this.expMax){
+						message.draw(rogue.cl===ENG?
+						`${name} restored the experience`
+						:`${name}経験値が元に戻った`);
+						this.exp = this.expMax;
+						this.lvl = this.lvlMax;
+					}
 				} else if(!this.exp||evalPercentage(this.con*2))
 					return;
 				else{
@@ -7269,6 +7318,7 @@ const Fighter = class extends Material{
 				break;
 			case RESTORE_STRENGTH:
 				f.decayOrRestore(STR,true);
+				
 				break;
 			case RESTORE_DEXTERITY:
 				f.decayOrRestore(DEX,true);
@@ -7361,6 +7411,7 @@ const Fighter = class extends Material{
 				f.calcResist();
 				break;
 			case ENLIGHTENMENT:
+				if(f.id!==ROGUE) return;
 				map.lighten();
 				break;
 			case WORMHOLE:
@@ -7675,6 +7726,7 @@ const Fighter = class extends Material{
 				f.calcAc();
 				break;
 			case RESPEC:
+				if(f.mod===UNIQUE) return;
 				f.respec();
 				break;
 			case COLD:
@@ -7725,6 +7777,10 @@ const Fighter = class extends Material{
 			nameSkill = w.nameSkill;
 			skill = skillMap.get(nameSkill);
 			lvl = w.skillLvl;
+			let name = w.getName(false,1); 
+			message.draw(rogue.cl===ENG?
+			`Zapped ${name}`
+			:`${name}を振った`);
 		} else if(flag.skill){
 			if(!nameSkill) nameSkill = cs.id;
 			skill = skillMap.get(nameSkill);
@@ -7740,7 +7796,13 @@ const Fighter = class extends Material{
 			nameSkill = ci.nameSkill;
 			skill = skillMap.get(nameSkill);
 			lvl = ci.skillLvl;
+		} else if(flag.throw){
+			let name = ci.getName(false,1); 
+			message.draw(rogue.cl===ENG?
+			`Threw ${name}`
+			:`${name}を投げた`);
 		}
+		let thrown = flag.arrow||flag.throw;
 		if(flag.zap&&!w.charges){
 			message.draw(message.get(M_NOTHING_HAPPENED));
 			flag.zap = false;
@@ -7748,9 +7810,9 @@ const Fighter = class extends Material{
 			let found = false;
 			let hit = false;
 			let [xS, yS] = [this.x, this.y];
-			if(flag.arrow||skill.range!==0){
-				let parabora = !dr&&(flag.arrow||skill.parabora);
-				let rangeSq = !flag.arrow&&skill.range? skill.range**2:FOV_SQ;
+			if(thrown||skill.range!==0){
+				let parabora = !dr&&(thrown||skill.parabora);
+				let rangeSq = !thrown&&skill.range? skill.range**2:FOV_SQ;
 				if(dr) [x1, y1] = [this.x+dr.x*FOV, this.y+dr.y*FOV];
 				var [x0, xT, y0, yT] = [this.x,this.x,this.y,this.y]
 				var steep = Math.abs(y1-y0)>Math.abs(x1-x0);
@@ -7772,7 +7834,7 @@ const Fighter = class extends Material{
 						los = false;
 						break;
 					}
-					if(!flag.arrow&&skill.each){
+					if(!thrown&&skill.each){
 						if(!(coords[xS][yS].wall||coords[xS][yS].door===CLOSE))
 							shadowcasting.main(xS,yS,skill.radius,nameSkill,lvl,ud,ud,ud,this);
 					} else if((!parabora||parabora&&x===x1&&y===y1)
@@ -7780,8 +7842,11 @@ const Fighter = class extends Material{
 					&&(this.isOpponent(coords[xS][yS].fighter))){
 						let fighter = coords[xS][yS].fighter;
 						hit = true;
-						if(flag.arrow){
-					 		this.attack(fighter,true);
+						if(thrown){
+							if(flag.arrow)
+								this.attack(fighter,true);
+							else if(flag.throw)
+								this.haveThrown(ci,fighter,xS,yS);
 							break;
 						}
 						if(skill.radius)
@@ -7798,7 +7863,7 @@ const Fighter = class extends Material{
 					[xT, yT] = [xS, yS];
 				}
 				if(!los){
-					if(!flag.arrow&&skill.wall
+					if(!thrown&&skill.wall
 					&&(coords[xS][yS].wall&&!coords[xS][yS].indestructible
 					||coords[xS][yS].door===CLOSE)){
 						this.haveCast(nameSkill,lvl,ud,xS,yS);
@@ -7808,11 +7873,11 @@ const Fighter = class extends Material{
 				}
 			}
 			if(flag.died) return;
-			if(!flag.arrow&&skill.radius&&(!hit||skill.penetrate))
+			if(!thrown&&skill.radius&&(!hit||skill.penetrate))
 				shadowcasting.main(xS,yS,skill.radius,nameSkill,lvl,ud,ud,ud,this);
-			if(flag.arrow){
+			if(thrown){
 				if(!hit) this.deleteAmmo(ci,true,xS,yS);
-				flag.arrow = false;
+				flag.arrow = flag.throw = false;
 			} else if(flag.skill){
 				this.consumeMana(skill);
 				if(!ecco&&this.ecco&&this.mp>=skill.mp){
@@ -7831,8 +7896,11 @@ const Fighter = class extends Material{
 			} else if(flag.scroll){
 				if(flag.aim) this.deleteItem(ci,1);
 				flag.scroll = false;
-			} else if(flag.zap)
-				this.haveZapped(w,found);
+			} else if(flag.zap){
+				if(found) w.identifyWand();
+				this.reduceItemCharge(w);
+				flag.zap = false;
+			}
 		}
 		if(this.id!==ROGUE) return;
 		if(!flag.examine) ctxCur.clearRect(0,0,canvas.width,canvas.height);
@@ -8392,6 +8460,26 @@ const Fighter = class extends Material{
 		item.place = P_EQUIPMENT;
 		this.gainOrloseWeight(item,item.quantity,true);
 		if(!side&&item.durab) this.getOrLooseStats(item,true);
+	}
+	
+	respec(){
+		this.statPoints = this.skillPoints = this.lvl -1;
+		this.strMax = 1+this.strBonus;
+		this.dexMax = 1+this.dexBonus;
+		this.conMax = 1+this.conBonus;
+		this.intMax = 1+this.intBonus;
+		this.str = this.strMax;
+		this.dex = this.dexMax;
+		this.con = this.conMax;
+		this.int = this.intMax;
+		this.skill = {}
+		this.initSynerzy();
+		this.calcAll();
+ 		if(this.id===ROGUE) this.initBookmarks();
+ 		let name = this.getName(true);
+ 		message.draw(rogue.cl===ENG?
+ 		`${name} forgot everything`
+ 		:`${name}自らを忘却した`)
 	}
 }
 
@@ -9168,21 +9256,34 @@ const Rogue = class extends Fighter{
 		flag.aim = true;
 		this.examinePlot(true);
 	}
+	 
+	throw(keyCode){
+		if(this.switchInventory(keyCode,M_THROW)) return;
+		let a = getAlphabetOrNumber(keyCode);
+		if(!a||isShift) return;
+		let item = this.getItem(a,flag.floor);
+		if(!item) return;
+		inventory.clear();
+		ci = item;
+		flag.floor = false;
+		message.draw(message.get(M_THROW_DIR)+message.get(M_TO_EXAMINE),true);
+		flag.aim = true;
+		this.examinePlot(true);
+	}
 	
-	haveZapped(item,found){
-		if(found){
-			let itemT = itemTab[item.type].get(item.tabId);
-			if(!itemT.identified){
-				itemT.identified = true;
-				searchItemToIdentifiy.main(item.nameReal[ENG],item.type);
+	haveThrown(item,fighter,x,y){
+		if(item.type==='potion'||item.type==='wand'){
+			this.haveCast(item.nameSkill,item.skillLvl,fighter,x,y);
+			this.deleteAmmo(item,false,x,y);
+			if(!fighter.abort) this.getCe(fighter,false);
+			if(item.type==='potion')
+				item.identifyAll();
+			else{
+				let skill = skillMap.get(item.nameSkill);
+				if(!skill.wall&&fighter.material!==M_STONE) item.identifyWand();
 			}
-		}
-		let name = item.getName(false,1); 
-		message.draw(rogue.cl===ENG?
-		`Zapped ${name}`
-		:`${name}を振った`);
-		this.reduceItemCharge(item);
-		flag.zap = false;
+		} else
+			this.attack(fighter,ud,ud,ud,item);
 	}
 	
 	read(keyCode,boxItem){
@@ -10512,22 +10613,6 @@ const Rogue = class extends Fighter{
 		this.drawStats();
 	}
 	
-	respec(){
-		this.statPoints = this.skillPoints = this.lvl -1;
-		this.strMax = 1+this.strBonus;
-		this.dexMax = 1+this.dexBonus;
-		this.conMax = 1+this.conBonus;
-		this.intMax = 1+this.intBonus;
-		this.str = this.strMax;
-		this.dex = this.dexMax;
-		this.con = this.conMax;
-		this.int = this.intMax;
-		this.skill = {};
-		this.initBookmarks();
-		this.initSynerzy();
-		this.calcAll();
-	}
-	
 	inputNumber(keyCode){
 		if(!keyCode){
 			cn = 1;
@@ -10620,6 +10705,10 @@ const Rogue = class extends Fighter{
 		return false;
 	}
 	
+	getCe(fighter,melee){
+		if(fighter.id!==ROGUE&&(melee||!this.ce)&&fighter.isShowing()) this.ce = fighter;
+	}
+	
 	getName(subject,proper){
 		let name;
 		if(proper)
@@ -10701,14 +10790,27 @@ const Rogue = class extends Fighter{
 				}
 				break;
 			case 70: //f
-				if(!this.equipment['light']){
-					message.draw(message.get(M_DONT_EQUIP_LIGHT));
-					return;
+				if(isShift){
+					if(!this.equipment['light']){
+						message.draw(message.get(M_DONT_EQUIP_LIGHT));
+						return;
+					}
+					flag.fuel = true;
+					this.showInventory(P_PACK);
+					this.equipmentList();
+					message.draw(message.get(M_FUEL)+message.get(M_FLOOR),true);
+				} else{
+					if(!this.haveMissile(true)) return;
+					ci = this.getAmmo(this.equipment['main'].throwType);
+					if(!ci){
+						message.draw(message.get(M_DONT_HAVE_AMMO));
+						return;
+					}
+					flag.arrow = true;
+					flag.aim = true;
+					message.draw(message.get(M_FIRE)+message.get(M_TO_EXAMINE),true);
+					this.examinePlot(true);
 				}
-				flag.fuel = true;
-				this.showInventory(P_PACK);
-				this.equipmentList();
-				message.draw(message.get(M_FUEL)+message.get(M_FLOOR),true);
 				break;
 			case 87: //w
 				flag.equip = true;
@@ -10727,16 +10829,9 @@ const Rogue = class extends Fighter{
 					this.showInventory(P_PACK);
 					flag.unequip = true;
 				} else{
-					if(!this.haveMissile(true)) return;
-					ci = this.getAmmo(this.equipment['main'].throwType);
-					if(!ci){
-						message.draw(message.get(M_DONT_HAVE_AMMO));
-						return;
-					}
-					flag.arrow = true;
-					flag.aim = true;
-					message.draw(message.get(M_FIRE)+message.get(M_TO_EXAMINE),true);
-					this.examinePlot(true);
+					this.showInventory(P_PACK);
+					message.draw(message.get(M_THROW)+message.get(M_FLOOR),true);
+					flag.throw = true;
 				}
 				break;
 			case 81: //q
@@ -11030,6 +11125,7 @@ const Enemy = class extends Fighter{
 	}
 	
 	died(f){
+		this.abort = true;
 		coords[this.x][this.y].fighter = null;
 		delete Enemy.list[this.id];
 		coords[this.x][this.y].detected = false;
@@ -11462,6 +11558,15 @@ const Item = class extends Material{
 		this.changeNameAndPrice();
 		searchItemToIdentifiy.main(this.nameReal[ENG],this.type);
 	}
+	
+	identifyWand(){
+		let itemT = itemTab[this.type].get(this.tabId);
+		if(!itemT.identified){
+			itemT.identified = true;
+			searchItemToIdentifiy.main(this.nameReal[ENG],this.type);
+		}
+	}
+		
 	
 	getDurabPrice(){
 		let price = (this.durabMax-this.durab)*DURAB_PRICE;
@@ -12062,9 +12167,8 @@ document.onkeydown = function(e){
 				if(isShift)
 					rogue.downOrUpStairs(e.keyCode);
 				break;
-			case  70: //f
-				if(isShift)
-					rogue.eventFlag(e.keyCode);
+			case  70: //f fire, F fuel
+				rogue.eventFlag(e.keyCode);
 				break;
 			case  71: //g
 				if(isShift)
@@ -12144,7 +12248,7 @@ document.onkeydown = function(e){
 			case 123: 
 				rogue.castBookmarkedSkill(e.keyCode);
 				break;
-			case  86: //^v
+			case  86: //^v version
 				if(isCtrl) message.draw(`Death and Birth ver ${VERSION}`);
 				break;
 		}
@@ -12186,6 +12290,8 @@ document.onkeydown = function(e){
 		rogue.aim(e.keyCode);
 	} else if(flag.zap){
 		rogue.zap(e.keyCode);
+	} else if(flag.throw){
+		rogue.throw(e.keyCode);
 	} else if(flag.skill){
 		rogue.castSkill(e.keyCode);
 	} else if(flag.sortSkill){
