@@ -437,10 +437,10 @@ const difficulty = {
 
 const flag = {
 	died:true,
+	wait:true,
 	regular:false,
 	arrow: false,
 	scroll: false,
-	wait:false,
 	openDoor:false,
 	closeDoor:false,
 	retry:false,
@@ -2796,10 +2796,10 @@ const Data = class{
 			this.loadItem(this.stashList);
 			enter[STASH].list = this.stashList;
 		}
-		this.loadAudio();
 		game.clearDisplay();	
 		display.change(option.display.user,true);
 		initFlag();
+		this.loadAudio();
 	}
 	
 	saveItemTab(){
@@ -3018,9 +3018,10 @@ const audio = {
 		}
 			
 	},
-	loop(track){
-		track.currentTime = 0;
-		track.play();
+	playSafely(track){//play() request error
+		setTimeout(()=> {
+			if(this.curTrack===track.title&&track.paused) track.play();
+		},0);
 	},
 	playMusic(trackName){
 		if(!this.music[trackName]) return;
@@ -3029,7 +3030,7 @@ const audio = {
 		track.volume = 0;
 		track.fade = IN;
 		this.fadeIn(track);
-		if(!option.mute.user) track.play();
+		if(!option.mute.user) this.playSafely(track);
 	},
 	playSound(trackName,distance){
 		if(!this.sound[trackName]) return;
@@ -3053,7 +3054,7 @@ const audio = {
 	mute(){
 		option.mute.user = !option.mute.user;
 		let track = this.music[this.curTrack];
-		option.mute.user? track.pause():track.play();
+		option.mute.user? track.pause():this.playSafely(track);
 	},
 	getDungeonTrack(lvl,boss){
 		return lvl<10? 'dungeon1':
@@ -3066,6 +3067,7 @@ const audio = {
 {
 	for(let key in audio.music){
 		let track = audio.music[key];
+		track.title = key;
 		track.addEventListener('timeupdate', function() {
 			if(this.fade!==OUT&&this.currentTime>=this.duration-0.5){
 				this.fade = OUT;
@@ -3076,7 +3078,7 @@ const audio = {
 			if(audio.curTrack===key){
 				this.fade = IN;
 				audio.fadeIn(this);
-				this.play();
+				audio.playSafely(this);
 			}
 		},false);
 	}
@@ -12063,7 +12065,7 @@ document.onkeyup = function(e){
 
 document.onkeydown = function(e){
 	if(flag.wait){
-		queue.moveAll();
+		if(!flag.died) queue.moveAll();
 		return false;
 	}
 	if(e.keyCode===16) isShift = true; //Shift
@@ -12482,3 +12484,4 @@ const game = {
 
 display.change(option.display.user);
 game.title();
+flag.wait = false;
