@@ -2771,6 +2771,7 @@ const getRndName = {
 
 const Data = class{
 	constructor(){
+		this.convertCe(true);
 		this.saveItemTab();
 		this.coords = coords;
 		this.option = option;
@@ -2791,11 +2792,11 @@ const Data = class{
 		this.loadDifficulty();
 		message.list = this.messageList;
 		litMapIds = this.litMapIds;
-		if(rogue.ce) this.searchCe();
 		if(rogue.cdl){ 
 			this.loadItem(this.stashList);
 			enter[STASH].list = this.stashList;
 		}
+		this.convertCe();
 		game.clearDisplay();	
 		display.change(option.display.user,true);
 		initFlag();
@@ -2897,11 +2898,15 @@ const Data = class{
 			difficulty[key] = this.difficulty[key];
 	}
 	
-	searchCe(){
+	convertCe(save){
+		if(rogue.ce) rogue.ce = save? rogue.ce.id:Enemy.list[rogue.ce];
 		for(let key in Enemy.list){
-			if(rogue.ce.id===Enemy.list[key].id){
-				rogue.ce = Enemy.list[key];
-				break;
+			let enemy = Enemy.list[key];
+			if(enemy.ce){
+			   	if(save)
+					enemy.ce = enemy.ce.id;
+				else
+					enemy.ce = enemy.ce===ROGUE? rogue:Enemy.list[enemy.ce];
 			}
 		}
 	}
@@ -3183,10 +3188,7 @@ const circleSearch = {
 				if(!loc.fighter||loc.fighter.id===ROGUE||loc.fighter.symbol!==this.symbol) return;
 				if(loc.fighter.mod!==UNIQUE
 				&&!evalPercentage(loc.fighter.lvl)){
-					if(rogue.ce&&rogue.ce.id===loc.fighter.id){
-						rogue.ce = null;
-						statistics.clearEnemyBar();
-					}
+					if(rogue.ce&&rogue.ce.id===loc.fighter.id) rogue.removeCe();
 					loc.fighter.died();
 					this.count++; 
 				} else if(loc.fighter.sleeping)
@@ -3393,8 +3395,7 @@ const map = {
 const goBlind =()=>{
 	ctxBuf.clearRect(0,0,canvas.width*2,canvas.height*2);
 	coords[rogue.x][rogue.y].draw();
-	rogue.ce = null;
-	statistics.clearEnemyBar();
+	rogue.removeCe();
 }
 
 const seeInvisible =(see)=>{
@@ -3402,10 +3403,7 @@ const seeInvisible =(see)=>{
 		let enemy = Enemy.list[key];
 		if(enemy.invisible){
 			coords[enemy.x][enemy.y].draw();
-			if(!see&&rogue.ce&&rogue.ce.id===enemy.id){
-				rogue.ce = null;
-				statistics.clearEnemyBar();
-			}
+			if(!see&&rogue.ce&&rogue.ce.id===enemy.id) rogue.removeCe();
 		}
 	}
 	map.draw(rogue.x,rogue.y);
@@ -3542,6 +3540,7 @@ const statistics = {
 		ctxStats.restore();
 	},
 	drawEnemyBar(e,examine){
+		if(!e) return;
 		this.clearEnemyBar();
 		if(!(e.isShowing()
 		&&(examine||distanceSq(e.x,e.y,rogue.x,rogue.y)<=FOV_SQ
@@ -3564,18 +3563,18 @@ const statistics = {
 	clearEnemyBar(){
 		ctxStats.clearRect(0,MS*fs-5,canvas.width,2*fs+5); //
 	},
-	drawCurrentEnemy(){
-		if(!rogue.ce) return;
+	drawCurrentEnemy(enemy){
+		if(!enemy) return;
 		ctxStats.save();
 		ctxStats.textAlign = 'center';
 		ctxStats.fillStyle = GRAY;
 		ctxStats.strokeRect(canvas.width-2*fs,canvas.height-4.5*fs,fs,fs);
-		let symbol = rogue.ce.symbol;
-		ctxStats.fillStyle = rogue.ce.color;
-		if(rogue.ce.shadow)
-			ctxStats.shadowColor = rogue.ce.shadow;
-		if(rogue.ce.stroke) {
-			ctxStats.strokeStyle = rogue.ce.stroke;
+		let symbol =enemy.symbol;
+		ctxStats.fillStyle = enemy.color;
+		if(enemy.shadow)
+			ctxStats.shadowColor = enemy.shadow;
+		if(enemy.stroke) {
+			ctxStats.strokeStyle = enemy.stroke;
 			ctxStats.strokeText(symbol,canvas.width-1.5*fs,canvas.height-4*fs);
 		}
 		ctxStats.fillText(symbol,canvas.width-1.5*fs,canvas.height-4*fs);
@@ -5916,16 +5915,6 @@ const Fighter = class extends Material{
 			e.decreaseDurab();
 			if(e.hp<=0){
 				e.died(this);
-				if(e.id===ROGUE) return;
-				if(missile||skill){
-					if(rogue.ce&&rogue.ce.id===e.id){
-						rogue.ce = null;
-						statistics.clearEnemyBar();
-					}
-				} else{
-					rogue.ce = null;
-					statistics.clearEnemyBar();
-				}
 				return;
 			}
 			if(e.sleeping) e.wakeUp();
@@ -8773,11 +8762,11 @@ const Rogue = class extends Fighter{
 	
 	drawStats(){
 		let j = -2.5;
-		if(rogue.ce) statistics.drawEnemyBar(rogue.ce);
+		statistics.drawEnemyBar(this.ce);
 		this.calcCondition(false,true);
 		statistics.clear();
 		this.drawBoxes();
-		statistics.drawCurrentEnemy();
+		statistics.drawCurrentEnemy(this.ce);
 		ctxStats.save();
 		ctxStats.fillStyle = this.getConditionColor();
 		ctxStats.fillRect(0,canvas.height-SS*fs,(this.hp/this.hpMax)*canvas.width/2,3);
@@ -9800,16 +9789,16 @@ const Rogue = class extends Fighter{
 	
 	autoAim(item){
 		let x,y;
-		if(rogue.ce){
-			[x, y] = [rogue.ce.x, rogue.ce.y];
+		if(this.ce){
+			[x, y] = [this.ce.x, this.ce.y];
 			if(!litMapIds[x+','+y]&&(!coords[x][y].detected
 			||distanceSq(x,y,this.x,this.y)>FOV_SQ)
 			||!lineOfSight(this.x,this.y,x,y))
 				return;
 		} else{
 			shadowcasting.main(this.x,this.y,FOV,'Aim');
-			if(!rogue.ce) return;
-			[x, y] = [rogue.ce.x, rogue.ce.y];
+			if(!this.ce) return;
+			[x, y] = [this.ce.x, this.ce.y];
 		}
 		ci = item;
 		flag.arrow = true;
@@ -9858,9 +9847,9 @@ const Rogue = class extends Fighter{
 				}
 			} 
 			if(keyCode===82)
-				rogue.ce = null;
+				this.ce = null;
 			else if(loc.fighter&&loc.fighter.id!==ROGUE&&loc.fighter.isShowing())
-				rogue.ce = loc.fighter;
+				this.ce = loc.fighter;
 			else if(!flag.aim){
 				loc.getInfor();
 				return;
@@ -9974,7 +9963,7 @@ const Rogue = class extends Fighter{
 			ctxCur.clearRect(0,0,canvas.width,canvas.height);
 			map.draw(rogue.x,rogue.y);
 			statistics.clearEnemyBar();
-			if(rogue.ce) statistics.drawEnemyBar(rogue.ce);
+			statistics.drawEnemyBar(this.ce);
 		} else if(flag.minimap)
 			minimap.clear();
 		inventory.clear();
@@ -10268,8 +10257,8 @@ const Rogue = class extends Fighter{
 			this.examinePlot(true);
 		} else{
 			let x,y;
-			if(rogue.ce){
-				[x, y] = [rogue.ce.x, rogue.ce.y];
+			if(this.ce){
+				[x, y] = [this.ce.x, this.ce.y];
 				if(!litMapIds[x+','+y]&&(!coords[x][y].detected
 				||distanceSq(x,y,this.x,this.y)>FOV_SQ)
 				||!lineOfSight(this.x,this.y,x,y)){
@@ -10278,11 +10267,11 @@ const Rogue = class extends Fighter{
 				}
 			} else{
 				shadowcasting.main(this.x,this.y,FOV,'Aim');
-				if(!rogue.ce){
+				if(!this.ce){
 					flag.skill = false;
 					return;
 				} else
-					[x, y] = [rogue.ce.x, rogue.ce.y];
+					[x, y] = [this.ce.x, this.ce.y];
 			}
 			this.aim(null,x,y,id);
 		}
@@ -10729,6 +10718,12 @@ const Rogue = class extends Fighter{
 	isShowing(){
 		return !this.invisible;
 	}
+
+	removeCe(){
+		this.ce = null;
+		statistics.clearEnemyBar();
+	}
+
 	
 	eventFlag(keyCode){
 		switch(keyCode){
@@ -10918,6 +10913,7 @@ const Enemy = class extends Fighter{
 		super(obj)
 		this.sensing = SENSING_SQ;
 		this.type = 'enemy'; 
+		this.ce = rogue;
 	}
 	
 	gainStats(){
@@ -10999,16 +10995,17 @@ const Enemy = class extends Fighter{
 		let dr = null;
 		if(this.calcCondition(true)===null) return;
 		this.heal()
-		let l =	distanceSq(this.x,this.y,rogue.x,rogue.y);
+		if(!this.ce) this.ce = rogue;
+		let l =	distanceSq(this.x,this.y,this.ce.x,this.ce.y);
 		if(this.paralyzed||this.sleeping){
-			if(this.sleeping<0&&l<=FOV_SQ&&(rogue.aggravating||this.probWakeUp(l)))
+			if(this.sleeping<0&&l<=FOV_SQ&&(this.ce.aggravating||this.probWakeUp(l)))
 				this.wakeUp();
 			else{
 				this.decreaseEnergy();
 				return;
 			}
 		}
-		let los = l<=FOV_SQ? lineOfSight(this.x,this.y,rogue.x,rogue.y):false;
+		let los = l<=FOV_SQ? lineOfSight(this.x,this.y,this.ce.x,this.ce.y):false;
 		if(this.blinded||this.confused||this.moveRnd&&coinToss())
 			dr = this.getDirection(los,ud,true);
 		else if(los)
@@ -11034,8 +11031,8 @@ const Enemy = class extends Fighter{
 		if(loc.trap&&loc.trap.protection){
 			this.attackCircle(loc); 
 			return;
-		} else if(x===rogue.x&&y===rogue.y){
-			this.attack(rogue);
+		} else if(loc.fighter&&this.isOpponent(loc.fighter)){
+			this.attack(loc.fighter);
 			return;
 		}
 		if(loc.door===CLOSE&&(!loc.hidden||this.searching)){
@@ -11056,7 +11053,7 @@ const Enemy = class extends Fighter{
 	getDirection(los,betw,rand){
 		let dr;
 		if(betw)
-			dr = getDirectionBetween(this.x,this.y,rogue.x,rogue.y);
+			dr = getDirectionBetween(this.x,this.y,this.ce.x,this.ce.y);
 		else if(rand)
 			dr = this.blinded? this.dr:DR[rndInt(DR.length-1)]; 
 		if(!this.canMove(dr)) dr = this.getDrAround(dr,los); ///
@@ -11086,7 +11083,7 @@ const Enemy = class extends Fighter{
 		let [x, y] = [this.x+dr.x, this.y+dr.y];
 		let loc = coords[x][y];
 		if(loc.fighter)
-			return loc.fighter.id===ROGUE;
+			return this.isOpponent(loc.fighter);
 		else if(loc.wall&&(!loc.hidden||!this.searching))
 			return false;
 		else if(!this.drTemp&&loc.trap&&loc.trap.protection){
@@ -11097,21 +11094,20 @@ const Enemy = class extends Fighter{
 	}
 	
 	getDrToMinDistance(){
-		let drD,drT;
+		if(this.ce.id!==ROGUE) return this.getDirection(true,true);
+		let drT;
 		let dist = FOV+1;
 		let distCur = rogue.distMap[this.x+','+this.y];
-		let traces = coords[this.x][this.y].traces;
-		for(let drL of DR){
-			let [x, y] = [this.x+drL.x, this.y+drL.y];
+		for(let dr of DR){
+			let [x, y] = [this.x+dr.x, this.y+dr.y];
 			if(dist>rogue.distMap[x+','+y]){
-				if(!this.canMove(drL)) continue;
-				drD = drL;
+				if(!this.canMove(dr)) continue;
+				drT = dr;
 				dist = rogue.distMap[x+','+y];
 				if(dist<distCur) break;
 			}
 		}
-		if(!drD) drD = drT? drT:this.getDirection(true,true);
-		return drD;
+		return drT? drT:this.getDirection(true,true);
 	}
 	
 	attackCircle(loc){
@@ -11132,19 +11128,22 @@ const Enemy = class extends Fighter{
 		delete Enemy.list[this.id];
 		coords[this.x][this.y].detected = false;
 		queue.delete(this);
-		if(rogue.ce&&rogue.ce.id===this.id){
-			rogue.ce = null;
-			statistics.clearEnemyBar();
+		if(rogue.ce&&rogue.ce.id===this.id) rogue.removeCe();
+		for(let key in Enemy.list){
+			let enemy = Enemy.list[key];
+			if(enemy.ce&&enemy.ce.id===this.id) enemy.removeCe();
 		}
 		coords[this.x][this.y].draw();
 		if(!f) return;
 		if(rogue.hallucinated||this.mimic&&!this.identified)
 			hallucinate.undoOne(this);
 		let name = this.getName();
+		let nameE = f.getName(true);
 		message.draw(rogue.cl===ENG?
-		`Defeated ${name}`
-		:`${name}を倒した`);
+		`${nameE} defeated ${name}`
+		:`${nameE}${name}を倒した`);
 		f.gainExp(this.expGain);
+		if(f.id!==ROGUE) return;
 		if(this.material&&this.probMaterial()) this.makeMaterial();
 		this.dropEquipment(this.equipment);
 		this.dropEquipment(this.side);
@@ -11235,7 +11234,7 @@ const Enemy = class extends Fighter{
 				message.draw(rogue.cl===ENG?
 				`${name} shot ${arrow}`
 				:`${name}矢を放った`);
-				this.aim(null,rogue.x,rogue.y);
+				this.aim(null,this.ce.x,this.ce.y);
 				return;
 			} else if(!this.equipment['main'].cursed){
 				this.swap();
@@ -11260,14 +11259,14 @@ const Enemy = class extends Fighter{
 			if(this.castSelfSpell(skill)===null) return;
 		} else{
 			flag.skill = true;
-			let [x, y] = skill.range===0? [this.x, this.y]:[rogue.x,rogue.y];
+			let [x, y] = skill.range===0? [this.x, this.y]:[this.ce.x,this.ce.y];
 			this.aim(null,x,y,id);
 		}
 		return true;
 	}
 	
 	probWakeUp(distanceSq){
-		let perc = (1-distanceSq/FOV_SQ)*100-(rogue.stealth-this.stealth);
+		let perc = (1-distanceSq/FOV_SQ)*100-(this.ce.stealth-this.stealth);
 		if(perc>99)
 			perc = 99;
 		else if(perc<1)
@@ -11364,7 +11363,7 @@ const Enemy = class extends Fighter{
 	}
 	
 	isOpponent(fighter){
-		return fighter.id===ROGUE;
+		return /*fighter.id===ROGUE||*/this.ce&&this.ce.id===fighter.id;
 	}
 	
 	isShowing(){
@@ -11372,6 +11371,9 @@ const Enemy = class extends Fighter{
 			&&!rogue.blinded&&(!this.invisible||rogue.seeInvisible);
 	}
 	
+	removeCe(){
+		this.ce = null;
+	}
 }
 Enemy.list = {};
 
