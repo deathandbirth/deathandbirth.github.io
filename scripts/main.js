@@ -872,9 +872,9 @@ const skillMap = new Map([
 	[RESIST_POISON,      {reqLvl:5,base:10,rate:5,synerzy:1,mp:10,element:'poison' ,color:C_POISON ,kind:'self',type:'spell',name:{a:'Resist Poison',b:'耐毒'},
 							perc:true,durBase:'10d2',durRate:10,
 							desc:{a:'',b:'{dur}ターンの間、毒の耐性を{value}上昇させる'}}],
-	// [HALLUCINATING_MIST, {reqLvl:0,base:  0,rate:0,synerzy:false,mp:1,element:'poison',color:C_POISON,kind:'aim',type:'spell',name:{a:'Hallucinating Mist',b:'幻覚の霧'},
-							// radius:1,reqSynerzy:10,durBase:'10d2',durRate:2,
-							// desc:{a:'',b:'半径{radius}の範囲内の敵を、{dur}ターンの間、幻覚状態にする'}}],
+	[HALLUCINATING_MIST, {reqLvl:20,base: 0,rate:0,synerzy:false,mp:20,element:'poison',color:C_POISON,kind:'aim',type:'spell',name:{a:'Hallucinating Mist',b:'幻覚の霧'},
+							radius:1,reqSynerzy:10,durBase:'10d2',durRate:2,
+							desc:{a:'',b:'半径{radius}の範囲内の敵を、{dur}ターンの間、幻覚状態にする'}}],
 	[CONFUSION,          {reqLvl:0,base:  0,rate:0,synerzy:false,mp:1,element:'poison',color:C_POISON,kind:'self',type:'spell',name:{a:'Confusion',b:'混乱'},
 							durBase:'2d3',durRate:1,
 							desc:{a:'',b:'{dur}ターンの間、混乱状態にする'}}],
@@ -1360,7 +1360,7 @@ const itemTab = {
 			lvl:10,rarity:10,skill:true}],
 		[B_SPELL_3,{nameReal:{a:'Advanced Spells',b:'上級魔術'},color:GRAY,priceRate:30,
 			list:{a:LAVA_FLOW,b:LOWER_RESIST,c:BLIZZARD,d:TORNADO,e:TOWN_PORTAL,f:RESTORE_DURABILITY,g:GRAVITATIONAL_FIELD,
-			h:CURE_ALL,i:SATISFY_HUNGER,j:RESTORE_ALL,k:RESIST_ALL,l:RESTORE_EXPERIENCE,m:EARTHQUAKE},
+			h:CURE_ALL,i:SATISFY_HUNGER,j:RESTORE_ALL,k:RESIST_ALL,l:RESTORE_EXPERIENCE,m:EARTHQUAKE,n:HALLUCINATING_MIST},
 			lvl:20,rarity:30,skill:true}],
 		[B_SKILL_1,{nameReal:{a:'Skills for Beginners',b:'初級武術'},color:BROWN,priceRate:1,shop:true,
 			list:{a:ENCOURAGEMENT,b:BLESSING,c:FIST_OF_CONFUSION,d:RAID,e:PIERCING_ARROW,f:EXPLODING_ARROW,g:PARALYZING_ARROW},
@@ -1393,7 +1393,7 @@ const itemTab = {
 			lvl:30,rarity:50,skill:true}], //earth
 		[B_HIPPOCRATES,{nameReal:{a:'Hippocrates',b:'ヒポクラテス'},color:C_POISON,priceRate:50,
 			list:{a:POISON_BOLT,b:ACID_BALL,c:PESTILENCE,d:SLEEPING_GAS,e:TOUCH_OF_CONFUSION,f:RESIST_POISON,g:LOWER_RESIST,
-			h:VENOM_HANDS,i:CHAIN_DECAY,j:RESTORE_EXPERIENCE},
+			h:VENOM_HANDS,i:CHAIN_DECAY,j:RESTORE_EXPERIENCE,k:HALLUCINATING_MIST},
 			lvl:30,rarity:50,skill:true}], //poison
 		[B_DEMOCRITUS,{nameReal:{a:'Democritus',b:'デモクリトス'},color:SHADOW2,priceRate:50,
 			list:{a:SHORT_TELEPORTATION,b:TELEPORTATION,c:TELEPORT_AWAY,d:DISINTEGRATION},
@@ -2999,6 +2999,8 @@ const audio = {
 		dig:new Audio('sound/dig.wav'),
 		kill_boss:new Audio('sound/kill_boss.wav'),
 		coin:new Audio('sound/coin.wav'),
+		hitwall:new Audio('sound/hitwall.wav'),
+		uncurse:new Audio('sound/uncurse.wav'),
 	},
 	init(){
 		for(let key in this.music)
@@ -3366,11 +3368,10 @@ const map = {
 	},
 	
 	redraw(cX,cY){
-		if(rogue.blinded) return;
 		ctxBuf.clearRect(0,0,canvas.width*2,canvas.height*2);
 		for(let i=0,l=coords.length;i<l;i++){
 			for(let loc of coords[i])
-				if(loc.detected||loc.found) loc.draw(true);
+				loc.draw();
 		}
 		rogue.drawStats();
 	},
@@ -3391,12 +3392,6 @@ const map = {
 		if(!init) rogue.lightenOrDarken('Lighten');
 	},
 };
-
-const goBlind =()=>{
-	ctxBuf.clearRect(0,0,canvas.width*2,canvas.height*2);
-	coords[rogue.x][rogue.y].draw();
-	rogue.removeCe();
-}
 
 const seeInvisible =(see)=>{
 	for(let key in Enemy.list){
@@ -3942,11 +3937,14 @@ const shadowcasting = {
 				loc.draw();
 			}
 		} else if(this.type==='Aim'){
-			if(loc.fighter&&loc.fighter.id!==ROGUE
-			&&(!rogue.ce||this.distanceSaved>distance)
-			&&loc.fighter.isShowing()
-			&&lineOfSight(rogue.x,rogue.y,x,y)){
-				rogue.ce = loc.fighter;
+			let self = this.fighter;
+			let enemy = loc.fighter;
+			if(enemy&&self.id!==enemy.id
+			&&(self.hallucinated||self.isOpponent(enemy))
+			&&(!self.ce||this.distanceSaved>distance)
+			&&enemy.isShowing()
+			&&lineOfSight(self.x,self.y,x,y)){
+				self.ce = enemy;
 				this.distanceSaved = distance;
 			}
 		} else if(loc.fighter
@@ -4244,10 +4242,10 @@ const Location = class extends Position{
 		}
 	}
 	
-	draw(redraw){
-		if(!redraw) this.getSymbol();
-		if(rogue.blinded&&(this.x!==rogue.x||this.y!==rogue.y)) return;
-		if(!redraw) ctxBuf.clearRect(this.x*fs,this.y*fs,fs,fs);
+	draw(){
+		this.getSymbol();
+		ctxBuf.clearRect(this.x*fs,this.y*fs,fs,fs);
+		if(rogue.blinded&&(!this.fighter||this.fighter.id!==ROGUE)) return;
 		ctxBuf.save();
 		ctxBuf.fillStyle = this.color;
 		if(rogue.hallucinated&&!this.shadow) ctxBuf.shadowColor = PURPLE;
@@ -4331,7 +4329,7 @@ const Location = class extends Position{
 					msg += nameTrap;
 			}
 		}
-		if(msg){
+		if(msg&&!rogue.blinded){
 			message.draw(rogue.cl===ENG?
 			`You see ${msg}`
 			:`${msg}が見える`);
@@ -5844,7 +5842,7 @@ const Fighter = class extends Material{
 			let [dmg, rate] = skill&&skill.type==='spell'?	[this.calcSkillValue(skill,lvl,e),100]:
 															this.calcAttack(e,skill,lvl,itemThrow);
 			let msg;
-			let miss = !dmg||e.indestructible;
+			let miss = !dmg||e.indestructible||this.id!==ROGUE&&e.boss;
 			if(miss){
 				msg = rogue.cl===ENG? 'missed':'外れた';
 			} else{
@@ -5860,7 +5858,7 @@ const Fighter = class extends Material{
 					this.deleteAmmo(item);
 			}
 			message.draw(rogue.cl===ENG?
-			`${name} ${msg} ${nameE}${dmg&&!e.indestructible? ' by '+dmg:''} (hit rating ${rate})`//
+			`${name} ${msg} ${nameE}${!miss? ' by '+dmg:''} (hit rating ${rate})`//
 			:`${name}は${nameE}に${msg} (命中率 ${rate})`);
 			count++;
 			if(flag.dash||flag.rest) flag.dash = flag.rest = false;
@@ -6166,7 +6164,11 @@ const Fighter = class extends Material{
 		if(this.poisoned){
 			if(calc){
 				if(!this.indestructible&&--this.hp<=0){
-					this.died(rogue); //
+					let fighter;
+				  	if(this.poisonedId&&this.poisonedId!==this.id)
+						fighter = this.poisonedId===ROGUE? rogue:Enemy.list[this.poisonedId];	
+					this.poisonedId = 0;
+					this.died(fighter);
 					return null;
 				} else if(--this.poisoned===0){
 					message.draw(rogue.cl===ENG?
@@ -6184,6 +6186,7 @@ const Fighter = class extends Material{
 		}
 		if(this.confused){
 			if(calc&&--this.confused===0){
+				if(this.id!==ROGUE) this.removeCe();
 				message.draw(rogue.cl===ENG?
 				`${name} recovered from confusion`
 				:`${name}混乱状態から復帰した`);
@@ -6217,7 +6220,10 @@ const Fighter = class extends Material{
 		}
 		if(this.blinded){
 			if(calc&&--this.blinded===0){
-				if(this.id===ROGUE) map.redraw(rogue.x,rogue.y);
+				if(this.id===ROGUE)
+					map.redraw(rogue.x,rogue.y);
+				else
+					this.removeCe();
 				message.draw(rogue.cl===ENG?
 				`${name} recovered from blindness`
 				:`${name}盲目状態から復帰した`);
@@ -6243,7 +6249,10 @@ const Fighter = class extends Material{
 		}
 		if(this.hallucinated){
 			if(calc&&--this.hallucinated===0){
-				if(this.id===ROGUE) hallucinate.all(true);
+				if(this.id===ROGUE)
+				   	hallucinate.all(true);
+				else
+					this.removeCe();
 				message.draw(rogue.cl===ENG?
 				`${name} recovered from hallucination`
 				:`${name}幻覚状態から復帰した`);
@@ -7496,12 +7505,11 @@ const Fighter = class extends Material{
 				break;
 			case POISON:
 				if(evalPercentage(f.poison)) return;
-				if(!f.poisoned)
-					f.poisoned = 0;
-					message.draw(rogue.cl==ENG?
-					`${name} got poisoned`
-					:`${name}毒を受けた`);
-				if(duration>f.poisoned) f.poisoned = duration;
+				f.poisoned = duration;
+				f.poisonedId = this.id;
+				message.draw(rogue.cl==ENG?
+				`${name} got poisoned`
+				:`${name}毒を受けた`);
 				break;
 			case RADIATION:
 				if(evalPercentage(f.radiation)) return;
@@ -7579,7 +7587,7 @@ const Fighter = class extends Material{
 			case BLINDNESS:
 				if(evalPercentage(f.poison)) return;
 				f.blinded = duration;
-				if(f.id===ROGUE) goBlind();
+				if(f.id===ROGUE) f.goBlind();
 				message.draw(rogue.cl==ENG?
 				`${name} got blinded`
 				:`${name}盲目になった`);
@@ -7609,11 +7617,12 @@ const Fighter = class extends Material{
 				:`${name}感染した`);
 				break;
 			case HALLUCINATION:
-			// case HALLUCINATING_MIST:
+			case HALLUCINATING_MIST:
 				if(evalPercentage(f.poison)) return;
 				let found2;
 				if(!f.hallucinated&&f.id===ROGUE) found2 = true;
 				f.hallucinated = duration;
+				if(f.id!==ROGUE) f.removeCe();
 				if(found2) hallucinate.all();
 				message.draw(rogue.cl==ENG?
 				`${name} got hallucinated`
@@ -7939,7 +7948,7 @@ const Fighter = class extends Material{
 	
 	canRead(book){
 		let found = true;
-		if(this.blinded||!litMapIds[this.x+','+this.y]){
+		if(this.blinded||this.confused||!litMapIds[this.x+','+this.y]){
 			if(this.id===ROGUE){
 				let id = book? M_CANT_READ_BOOK:M_CANT_READ_SCROLL;
 				message.draw(message.get(id));
@@ -8472,6 +8481,10 @@ const Fighter = class extends Material{
  		`${name} forgot everything`
  		:`${name}自らを忘却した`)
 	}
+
+	searchCe(){
+		shadowcasting.main(this.x,this.y,FOV,'Aim',ud,ud,ud,ud,this);
+	}
 }
 
 const Rogue = class extends Fighter{
@@ -8564,7 +8577,7 @@ const Rogue = class extends Fighter{
 				this.cost -= this.timesMove;
 			}			
 		} else
-			return;
+			audio.playSound('hitwall');
 	}
 	
 	rest(){
@@ -8585,6 +8598,9 @@ const Rogue = class extends Fighter{
 		if(loc.door===CLOSE&&!loc.hidden){
 			loc.openOrCloseDoor();
 			rogue.done = true;
+			return;
+		} else if(loc.wall){
+			audio.playSound('hitwall');
 			return;
 		}
 		flag.dash= true;
@@ -9796,7 +9812,7 @@ const Rogue = class extends Fighter{
 			||!lineOfSight(this.x,this.y,x,y))
 				return;
 		} else{
-			shadowcasting.main(this.x,this.y,FOV,'Aim');
+			this.searchCe();
 			if(!this.ce) return;
 			[x, y] = [this.ce.x, this.ce.y];
 		}
@@ -10266,7 +10282,7 @@ const Rogue = class extends Fighter{
 					return;
 				}
 			} else{
-				shadowcasting.main(this.x,this.y,FOV,'Aim');
+				this.searchCe();
 				if(!this.ce){
 					flag.skill = false;
 					return;
@@ -10724,6 +10740,11 @@ const Rogue = class extends Fighter{
 		statistics.clearEnemyBar();
 	}
 
+	goBlind(){
+		ctxBuf.clearRect(0,0,canvas.width*2,canvas.height*2);
+		coords[this.x][this.y].draw();
+		this.removeCe();
+	}
 	
 	eventFlag(keyCode){
 		switch(keyCode){
@@ -10995,7 +11016,10 @@ const Enemy = class extends Fighter{
 		let dr = null;
 		if(this.calcCondition(true)===null) return;
 		this.heal()
-		if(!this.ce) this.ce = rogue;
+		if(!this.ce){ 
+			if(this.hallucinated) this.searchCe();
+			if(!this.ce) this.ce = rogue;
+		}
 		let l =	distanceSq(this.x,this.y,this.ce.x,this.ce.y);
 		if(this.paralyzed||this.sleeping){
 			if(this.sleeping<0&&l<=FOV_SQ&&(this.ce.aggravating||this.probWakeUp(l)))
@@ -11363,7 +11387,8 @@ const Enemy = class extends Fighter{
 	}
 	
 	isOpponent(fighter){
-		return /*fighter.id===ROGUE||*/this.ce&&this.ce.id===fighter.id;
+		return /*fighter.id===ROGUE||*/this.ce&&this.ce.id===fighter.id
+			||this.confused||this.blinded;
 	}
 	
 	isShowing(){
@@ -11589,6 +11614,7 @@ const Item = class extends Material{
 	
 	uncurse(){
 		this.cursed = false;
+		audio.playSound('uncurse');
 	}
 	
 	calcPrice(){
