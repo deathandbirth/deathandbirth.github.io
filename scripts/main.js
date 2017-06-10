@@ -2440,23 +2440,23 @@ const modTab = [
 			]}],
 	]),
 	[ //suffix
-		{name:{a:'of Digging',b:'採掘の'},lvl:1,rarity:0,
+		{name:{a:'of Digging',b:'採掘'},lvl:1,rarity:0,
 			melee:{digging:1}},
-		{name:{a:'of Killer to Animal',b:'動物殺しの'},lvl:1,rarity:0,
+		{name:{a:'of Killer to Animal',b:'動物殺し'},lvl:1,rarity:0,
 			melee:{dmgAnimal:1},missile:{dmgAnimal:1},gloves:{dmgAnimal:1}},
-		{name:{a:'of Killer to Human',b:'人間殺しの'},lvl:5,rarity:0,
+		{name:{a:'of Killer to Human',b:'人間殺し'},lvl:5,rarity:0,
 			melee:{dmgHuman:1},missile:{dmgHuman:1},gloves:{dmgHuman:1},enemy:{dmgHuman:1}},
-		{name:{a:'of Killer to Undead',b:'不死殺しの'},lvl:10,rarity:0,
+		{name:{a:'of Killer to Undead',b:'不死殺し'},lvl:10,rarity:0,
 			melee:{dmgUndead:1},missile:{dmgUndead:1},gloves:{dmgUndead:1}},
-		{name:{a:'of Killer to Dragon',b:'竜殺しの'},lvl:15,rarity:0,
+		{name:{a:'of Killer to Dragon',b:'竜殺し'},lvl:15,rarity:0,
 			melee:{dmgDragon:1},missile:{dmgDragon:1},gloves:{dmgDragon:1}},
-		{name:{a:'of Killer to Giant',b:'巨人殺しの'},lvl:15,rarity:0,
+		{name:{a:'of Killer to Giant',b:'巨人殺し'},lvl:15,rarity:0,
 			melee:{dmgGiant:1},missile:{dmgGiant:1},gloves:{dmgGiant:1}},
-		{name:{a:'of Killer to Demon',b:'悪魔殺しの'},lvl:20,rarity:0,
+		{name:{a:'of Killer to Demon',b:'悪魔殺し'},lvl:20,rarity:0,
 			melee:{dmgDemon:1},missile:{dmgDemon:1},gloves:{dmgDemon:1}},
-		{name:{a:'of Killer to Spirit',b:'精霊殺しの'},lvl:20,rarity:0,
+		{name:{a:'of Killer to Spirit',b:'精霊殺し'},lvl:20,rarity:0,
 			melee:{dmgSpirit:1},missile:{dmgSpirit:1},gloves:{dmgSpirit:1}},
-		{name:{a:'of Multi Color',b:'万色の'},lvl:25,rarity:50,
+		{name:{a:'of Multi Color',b:'万色'},lvl:25,rarity:50,
 			shield:{fire:'2d3',water:'2d3',air:'2d3',earth:'2d3',poison:'2d3'},
 			armor:{fire:'1d3',water:'1d3',air:'1d3',earth:'1d3',poison:'1d3'},
 			cloak:{fire:'1d3',water:'1d3',air:'1d3',earth:'1d3',poison:'1d3'},
@@ -2469,105 +2469,105 @@ const modTab = [
 			light:{fire:'1d3',water:'1d3',air:'1d3',earth:'1d3',poison:'1d3'},
 			gem:{fire:'1d3',water:'1d3',air:'1d3',earth:'1d3',poison:'1d3'},
 			enemy:{fire:'2d3',water:'2d3',air:'2d3',earth:'2d3',poison:'2d3'}},
-		{name:{a:'of All Aound',b:'万能の'},lvl:20,rarity:80,
+		{name:{a:'of All Aound',b:'万能'},lvl:20,rarity:80,
 			melee:{skillAll:1},missile:{skillAll:1},staff:{skillAll:1},
 			amulet:{skillAll:1},ring:{skillAll:1},enemy:{skillAll:1}},
-		{name:{a:'of Strength',b:'筋力の'},lvl:1,rarity:0,
+		{name:{a:'of Strength',b:'筋力'},lvl:1,rarity:0,
 			melee:{str:1},gloves:{str:1},ring:{str:1},enemy:{str:1}},
-		{name:{a:'of Dexterity',b:'器用さの'},lvl:1,rarity:0,
+		{name:{a:'of Dexterity',b:'器用さ'},lvl:1,rarity:0,
 			missile:{dex:1},boots:{dex:1},ring:{dex:1},enemy:{dex:1}},
-		{name:{a:'of Constitution',b:'耐久力の'},lvl:1,rarity:0,
+		{name:{a:'of Constitution',b:'耐久力'},lvl:1,rarity:0,
 			armor:{con:1},belt:{con:1},amulet:{con:1},enemy:{con:1}},
-		{name:{a:'of Intelligence',b:'知力の'},lvl:1,rarity:0,
+		{name:{a:'of Intelligence',b:'知力'},lvl:1,rarity:0,
 			staff:{int:1},helm:{int:1},amulet:{int:1},enemy:{int:1}},
-		{name:{a:'of Speed',b:'速度の'},lvl:10,rarity:50,
+		{name:{a:'of Speed',b:'速度'},lvl:10,rarity:50,
 			cloak:{spd:'1d5'},boots:{spd:'1d5'},ring:{spd:'1d5'},amulet:{spd:'1d5'},enemy:{spd:'1d5'}},
-		{name:{a:'of Magic Finding',b:'魔法具探求の'},lvl:1,rarity:30,
+		{name:{a:'of Magic Finding',b:'魔法具探求'},lvl:1,rarity:30,
 			amulet:{mf:'2d10'},ring:{mf:'1d10'},gem:{mf:'1d5'},enemy:{mf:'2d10'}},
-		{name:{a:'of Gold Finding',b:'財宝探求の'},lvl:1,rarity:0,
+		{name:{a:'of Gold Finding',b:'財宝探求'},lvl:1,rarity:0,
 			amulet:{gf:'2d20'},ring:{gf:'1d20'},gem:{gf:'1d10'},enemy:{gf:'2d20'}},
-		{name:{a:'of Life',b:'生命力の'},lvl:1,rarity:0,
+		{name:{a:'of Life',b:'生命力'},lvl:1,rarity:0,
 			shield:{hp:'1d10'},armor:{hp:'2d10'},belt:{hp:'1d10'},enemy:{hp:'2d5'}},
-		{name:{a:'of Mana',b:'魔力の'},lvl:1,rarity:0,
+		{name:{a:'of Mana',b:'魔力'},lvl:1,rarity:0,
 			staff:{mp:'1d10'},armor:{mp:'2d10'},helm:{mp:'1d10'},enemy:{mp:'2d10'}},
-		{name:{a:'of Life Regeneration',b:'回復力の'},lvl:10,rarity:50,
+		{name:{a:'of Life Regeneration',b:'回復力'},lvl:10,rarity:50,
 			belt:{hpReg:'2d10'},amulet:{hpReg:'2d10'},ring:{hpReg:'1d10'},enemy:{hpReg:'2d10'}},
-		{name:{a:'of Mana Regeneration',b:'魔力回復の'},lvl:10,rarity:50,
+		{name:{a:'of Mana Regeneration',b:'魔力回復'},lvl:10,rarity:50,
 			belt:{mpReg:'2d10'},amulet:{mpReg:'2d10'},ring:{mpReg:'1d10'},enemy:{mpReg:'2d10'}},
-		{name:{a:'of Attack Speed',b:'攻撃速度の'},lvl:10,rarity:20,
+		{name:{a:'of Attack Speed',b:'攻撃速度'},lvl:10,rarity:20,
 			melee:{ias:'5d2'},missile:{ias:'5d2'},gloves:{ias:'5d2'},
 			ring:{ias:'5d2'},enemy:{ias:'5d2'}},
-		{name:{a:'of Faster Cast',b:'詠唱速度の'},lvl:10,rarity:20,
+		{name:{a:'of Faster Cast',b:'詠唱速度'},lvl:10,rarity:20,
 			staff:{fcr:'5d2'},helm:{fcr:'5d2'},
 			amulet:{fcr:'5d2'},enemy:{fcr:'5d2'}},
-		{name:{a:'of Faster Run Walk',b:'早足の'},lvl:10,rarity:20,
+		{name:{a:'of Faster Run Walk',b:'早足'},lvl:10,rarity:20,
 			cloak:{spd:'2d4'},boots:{frw:'5d4'},enemy:{frw:'5d4'}},
-		{name:{a:'of Multiple Hit',b:'倍打の'},lvl:20,rarity:40,
+		{name:{a:'of Multiple Hit',b:'倍打'},lvl:20,rarity:40,
 			melee:{dmgDiceNum:1},missile:{dmgDiceNum:1},staff:{dmgDiceNum:1},enemy:{dmgDiceNum:1}},
-		{name:{a:'of Heavy Hit',b:'強打の'},lvl:10,rarity:0,
+		{name:{a:'of Heavy Hit',b:'強打'},lvl:10,rarity:0,
 			melee:{dmgDiceSides:1},missile:{dmgDiceSides:1},staff:{dmgDiceSides:1},enemy:{dmgDiceSides:1}},
-		{name:{a:'of Life Steal',b:'生命力吸収の'},lvl:10,rarity:20,
+		{name:{a:'of Life Steal',b:'生命力吸収'},lvl:10,rarity:20,
 			melee:{stealLife:'1d3'},missile:{stealLife:'1d3'},staff:{stealLife:'1d3'},gloves:{stealLife:'1d3'},
 			ring:{stealLife:'1d3'},enemy:{stealLife:'1d3'}},
-		{name:{a:'of Mana Steal',b:'魔力吸収の'},lvl:10,rarity:20,
+		{name:{a:'of Mana Steal',b:'魔力吸収'},lvl:10,rarity:20,
 			melee:{stealMana:'1d3'},missile:{stealMana:'1d3'},staff:{stealMana:'1d3'},gloves:{stealMana:'1d3'},
 			ring:{stealMana:'1d3'},enemy:{stealMana:'1d3'}},
-		{name:{a:'of Damage',b:'ダメージの'},lvl:1,rarity:0,
+		{name:{a:'of Damage',b:'ダメージ'},lvl:1,rarity:0,
 			melee:{dmgBonus:'10d3'},missile:{dmgBonus:'10d3'},staff:{dmgBonus:'10d3'},gloves:{dmgBonus:'10d3'},
 			ring:{dmgBonus:'10d3'},enemy:{dmgBonus:'10d3'}},
-		{name:{a:'of Accuracy',b:'精度の'},lvl:1,rarity:0,
+		{name:{a:'of Accuracy',b:'精度'},lvl:1,rarity:0,
 			melee:{rateBonus:'10d3'},missile:{rateBonus:'10d3'},staff:{rateBonus:'10d3'},gloves:{rateBonus:'10d3'},
 			ring:{rateBonus:'10d3'},enemy:{rateBonus:'10d3'}},
-		{name:{a:'of Protection',b:'守りの'},lvl:1,rarity:0,
+		{name:{a:'of Protection',b:'守り'},lvl:1,rarity:0,
 			shield:{acBonus:'10d3'},armor:{acBonus:'10d3'},
 			cloak:{acBonus:'10d3'},belt:{acBonus:'10d3'},helm:{acBonus:'10d3'},gloves:{acBonus:'10d3'},
 			boots:{acBonus:'10d3'},amulet:{acBonus:'10d3'},enemy:{acBonus:'10d3'}},
-		{name:{a:'of Experience',b:'経験の'},lvl:15,rarity:50,
+		{name:{a:'of Experience',b:'経験'},lvl:15,rarity:50,
 			amulet:{expBonus:'2d5'},ring:{expBonus:'1d5'}},
-		{name:{a:'of Stealth',b:'隠密の'},lvl:1,rarity:0,
+		{name:{a:'of Stealth',b:'隠密'},lvl:1,rarity:0,
 			cloak:{stealth:'2d10'},boots:{stealth:'2d10'},amulet:{stealth:'2d10'},enemy:{stealth:'2d10'}},
-		{name:{a:'of Detection',b:'探知の'},lvl:1,rarity:0,
+		{name:{a:'of Detection',b:'探知'},lvl:1,rarity:0,
 			helm:{searching:'2d10'},gloves:{searching:'2d10'},
 			ring:{searching:'1d10'},light:{searching:'2d10'},enemy:{searching:'2d10'}},
-		{name:{a:'of Slow Digestion',b:'遅消化の'},lvl:1,rarity:0,
+		{name:{a:'of Slow Digestion',b:'遅消化'},lvl:1,rarity:0,
 			armor:{digest:'2d10'},belt:{digest:'2d10'},amulet:{digest:'2d10'},ring:{digest:'1d10'}},
-		{name:{a:'of Illumination',b:'イルミネーションの'},lvl:1,rarity:0,
+		{name:{a:'of Illumination',b:'イルミネーション'},lvl:1,rarity:0,
 			light:{lighten:1}},
-		{name:{a:'High Capasity',b:'大容量の'},lvl:1,rarity:50,
+		{name:{a:'High Capasity',b:'大容量'},lvl:1,rarity:50,
 			belt:{numBoxes:1},light:{durationBonus:1000},},
-		{name:{a:'of Sustain Strength',b:'筋力維持の'},lvl:1,rarity:0,
+		{name:{a:'of Sustain Strength',b:'筋力維持'},lvl:1,rarity:0,
 			melee:{strSus:true},shield:{strSus:true},gloves:{strSus:true},
 			ring:{strSus:true},light:{strSus:true}},
-		{name:{a:'of Sustain Dexterity',b:'器用さ維持の'},lvl:1,rarity:0,
+		{name:{a:'of Sustain Dexterity',b:'器用さ維持'},lvl:1,rarity:0,
 			missile:{dexSus:true},shield:{dexSus:true},boots:{dexSus:true},
 			ring:{dexSus:true},light:{dexSus:true}},
-		{name:{a:'of Sustain Constitution',b:'耐久力維持の'},lvl:1,rarity:0,
+		{name:{a:'of Sustain Constitution',b:'耐久力維持'},lvl:1,rarity:0,
 			shield:{conSus:true},armor:{conSus:true},belt:{conSus:true},
 			amulet:{conSus:true},light:{conSus:true}},
-		{name:{a:'of Sustain Intelligence',b:'知力維持の'},lvl:1,rarity:0,
+		{name:{a:'of Sustain Intelligence',b:'知力維持'},lvl:1,rarity:0,
 			staff:{intSus:true},shield:{intSus:true},helm:{intSus:true},
 			amulet:{intSus:true},light:{intSus:true}},
-		{name:{a:'of Levitation',b:'浮遊の'},lvl:1,rarity:80,
+		{name:{a:'of Levitation',b:'浮遊'},lvl:1,rarity:80,
 			cloak:{levi:true},boots:{levi:true},amulet:{levi:true},ring:{levi:true},enemy:{levi:true}},
-		{name:{a:'of Aggravation',b:'憤怒の'},lvl:5,rarity:50,
+		{name:{a:'of Aggravation',b:'憤怒'},lvl:5,rarity:50,
 			melee:{aggravating:true,cursed:true},missile:{aggravating:true,cursed:true},staff:{aggravating:true,cursed:true},
 			shield:{aggravating:true,cursed:true},
 			armor:{aggravating:true,cursed:true},cloak:{aggravating:true,cursed:true},belt:{aggravating:true,cursed:true},
 			helm:{aggravating:true,cursed:true},gloves:{aggravating:true,cursed:true},boots:{aggravating:true,cursed:true},
 			amulet:{aggravating:true,cursed:true},ring:{aggravating:true,cursed:true},light:{aggravating:true,cursed:true},enemy:{aggravating:true,cursed:true}},
-		{name:{a:'of Teleportation',b:'テレポートの'},lvl:5,rarity:50,
+		{name:{a:'of Teleportation',b:'テレポート'},lvl:5,rarity:50,
 			melee:{teleported:true,cursed:true},missile:{teleported:true,cursed:true},staff:{teleported:true,cursed:true},
 			shield:{teleported:true,cursed:true},
 			armor:{teleported:true,cursed:true},cloak:{teleported:true,cursed:true},belt:{teleported:true,cursed:true},
 			helm:{teleported:true,cursed:true},gloves:{teleported:true,cursed:true},boots:{teleported:true,cursed:true},
 			amulet:{teleported:true,cursed:true},ring:{teleported:true,cursed:true},light:{teleported:true,cursed:true},enemy:{teleported:true,cursed:true}},
-		{name:{a:'of Indestructible',b:'破壊不能の'},lvl:30,rarity:80,indestructible:true,
+		{name:{a:'of Indestructible',b:'破壊不能'},lvl:30,rarity:80,indestructible:true,
 			melee:{indestructible:true},missile:{indestructible:true},staff:{indestructible:true},
 			shield:{indestructible:true},
 			armor:{indestructible:true},cloak:{indestructible:true},belt:{indestructible:true},
 			helm:{indestructible:true},gloves:{indestructible:true},boots:{indestructible:true},
 			amulet:{indestructible:true},ring:{indestructible:true},light:{indestructible:true},enemy:{indestructible:true}},
-		{name:{a:'of Durability',b:'耐久度の'},lvl:1,rarity:0,
+		{name:{a:'of Durability',b:'耐久度'},lvl:1,rarity:0,
 			melee:{durabBonus:'2d10'},missile:{durabBonus:'2d10'},staff:{durabBonus:'2d10'},
 			shield:{durabBonus:'2d10'},
 			armor:{durabBonus:'2d10'},cloak:{durabBonus:'2d10'},belt:{durabBonus:'2d10'},
@@ -2924,7 +2924,8 @@ const Data = class{
 
 const data ={ 
 	name:'Player',
-	save(){
+	save(unload){
+		if(unload&&audio.curTrack) audio.music[audio.curTrack].pause();
 		if(flag.died||flag.retry||this.error)
 			return;
 		else if(flag.synthesize)
@@ -2967,7 +2968,7 @@ const data ={
 	}
 };
 {
-  window.addEventListener('beforeunload', data.save.bind(data), false);
+  window.addEventListener('beforeunload', data.save.bind(data,true), false);
   window.addEventListener('error', data.dontSave.bind(data), false);
 }
 const [IN, OUT] = enums(1,2);
@@ -3482,7 +3483,7 @@ const hallucinate = {
 				let pre = modTab[PREFIX].get(bias);
 				let suf = modTab[SUFFIX][sufId];
 				obj.name['a'] = `${pre.name['a']} ${obj.name['a']} ${suf.name['a']}`;
-				obj.name['b'] = `${suf.name['b']}${pre.name['b']}${obj.name['b']}`;
+				obj.name['b'] = `${pre.name['b']}${obj.name['b']} "${suf.name['b']}"`;
 				obj.shadow = AQUA;
 			}
 		} else{
@@ -5385,18 +5386,18 @@ const Material = class extends Thing{
 		if(suf){
 			mergeMod(mods,suf[this.type],perc,max);
 			nameSufA = ' '+suf.name['a'];
-			nameSufB = suf.name['b'];
+			nameSufB = ` "${suf.name['b']}"`;
 		}
 		if(char){
 			if(color) this.color = color;
 			this.name['a'] = `${namePreA}${this.name['a']}${nameSufA}`;
-			this.name['b'] = `${nameSufB}${namePreB}${this.name['b']}`;
+			this.name['b'] = `${namePreB}${this.name['b']}${nameSufB}`;
 			this.getOrLooseStats(mods,true,true);
 			if(pre) this.getBias(bias);
 		} else{
 			if(color) this.colorMod = color;
 			this.nameReal['a'] = `${namePreA}${this.nameReal['a']}${nameSufA}`;
-			this.nameReal['b'] = `${nameSufB}${namePreB}${this.nameReal['b']}`;
+			this.nameReal['b'] = `${namePreB}${this.nameReal['b']}${nameSufB}`;
 			mergeMod(this,mods,ud,ud,ud,true);
 		}
 		this.modList = mods;
@@ -5450,16 +5451,18 @@ const Material = class extends Thing{
 		} while(modSufNums[i]!==ud);
 		this.mod = RARE;
 		this.shadow = this.shadowReal = YELLOW;
+		let nameAffiA = affix.name['a'];
+		let nameAffiB = affix.name['b'];
 		if(char){
 			if(affix.color) this.color = affix.color;
-			this.name['a'] = `${this.name['a']} ${affix.name['a']}`;
-			this.name['b'] = `${affix.name['b']}${this.name['b']}`;
+			this.name['a'] = `${this.name['a']} ${nameAffiA}`;
+			this.name['b'] = `${nameAffiB}${this.name['b']}`;
 			this.getOrLooseStats(mods,true,true);
 			this.getBias(bias);
 		} else{
 			if(affix.color) this.colorMod = affix.color;
-			this.nameReal['a'] = `${this.nameReal['a']} ${affix.name['a']}`;
-			this.nameReal['b'] = `${affix.name['b']}${this.nameReal['b']}`;
+			this.nameReal['a'] = `${this.nameReal['a']} ${nameAffiA}`;
+			this.nameReal['b'] = `${nameAffiB}${this.nameReal['b']}`;
 			mergeMod(this,mods,ud,ud,ud,true);
 		}
 		this.modList = mods;
@@ -8975,7 +8978,7 @@ const Rogue = class extends Fighter{
 					found = this.grabItem(null,key)!==null;
 					continue;
 				}
-				if(!item.identify&&option['auto-identify'].user)
+				if(!item.identified&&option['auto-identify'].user)
 					this.checkItem(item,IDENTIFY);
 				let charged;
 				if(item.type==='scroll'&&option['auto-charge'].user)
@@ -11705,7 +11708,8 @@ const Item = class extends Material{
 							Math.ceil(this.duration/this.durationMax*100)+'%';
 			name += ` [${duration}]`;
 		} else if(type==='material'&&!halluc){
-			 type = materialMap.get(this.material).name[a];
+			 type = materialMap.get(this.material).name[a]
+			 		.replace(a===ENG? /s$/:/類$|製$|材$/,'');
 			 name = a===ENG? `${type} of ${name}`:`${name}の${type}`;
 		}
 		if(this.equipable&&!halluc){
