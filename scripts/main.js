@@ -2977,9 +2977,9 @@ const audio = {
 	volSE:1,
 	music:{
 		title:new Audio('music/title.ogg'),
-		town1:new Audio('music/town1.ogg'),
+		town:new Audio('music/town.ogg'),
 		town2:new Audio('music/town2.ogg'),
-		dungeon1:new Audio('music/dungeon1.ogg'),
+		dungeon:new Audio('music/dungeon.ogg'),
 		dungeon2:new Audio('music/dungeon2.ogg'),
 		dungeon3:new Audio('music/dungeon3.ogg'),
 		dungeon4:new Audio('music/dungeon4.ogg'), 
@@ -2998,10 +2998,11 @@ const audio = {
 		grab:new Audio('sound/grab.wav'),
 		tplevel:new Audio('sound/tplevel.wav'),
 		dig:new Audio('sound/dig.wav'),
-		kill_boss:new Audio('sound/kill_boss.wav'),
 		coin:new Audio('sound/coin.wav'),
 		hitwall:new Audio('sound/hitwall.wav'),
 		uncurse:new Audio('sound/uncurse.wav'),
+		swing:new Audio('sound/swing.wav'),
+		kill:new Audio('sound/kill.wav'),
 	},
 	init(){
 		for(let key in this.music)
@@ -3065,7 +3066,7 @@ const audio = {
 		option.mute.user? track.pause():this.playSafely(track);
 	},
 	getDungeonTrack(lvl,boss){
-		return lvl<10? 'dungeon1':
+		return lvl<10?  'dungeon':
 			   lvl<20? 'dungeon2':
 			   lvl<30? 'dungeon3':
 			   !boss?  'dungeon4':
@@ -8562,8 +8563,10 @@ const Rogue = class extends Fighter{
 					message.draw(message.get(M_DONT_HAVE_AMMO));
 					return null;
 				}
-			} else
+			} else{
+				audio.playSound('swing');
 				this.attack(loc.fighter);
+			}
 			rogue.done= true;
 		} else if(this.stuckTrap){
 			message.draw(message.get(M_STUCK));
@@ -8748,10 +8751,12 @@ const Rogue = class extends Fighter{
 		} else{ 
 			let dr = getDirection(keyCodeDr);
 			let loc = coords[this.x+dr.x][this.y+dr.y];
-			if(loc.fighter)
-				this.attack(loc.fighter);
-			else if(loc.wall)
+			if(loc.wall)
 				this.dig(loc);
+			else{
+				audio.playSound('swing');
+				if(loc.fighter) this.attack(loc.fighter);
+			}
 			rogue.done= true;
 		}
 	}
@@ -8768,6 +8773,7 @@ const Rogue = class extends Fighter{
 				map.redraw(rogue.x,rogue.y);
 		}
 		map.draw(rogue.x,rogue.y);
+		audio.playSound('kill');
 		audio.stop(audio.curTrack);
 		audio.playMusic('gameover');
 		message.draw(message.get(M_DIED));
@@ -11161,6 +11167,7 @@ const Enemy = class extends Fighter{
 			if(enemy.ce&&enemy.ce.id===this.id) enemy.removeCe();
 		}
 		coords[this.x][this.y].draw();
+		audio.playSound('kill',distanceSq(rogue.x,rogue.y,this.x,this.y));
 		if(!f) return;
 		if(rogue.hallucinated||this.mimic&&!this.identified)
 			hallucinate.undoOne(this);
@@ -11180,7 +11187,6 @@ const Enemy = class extends Fighter{
 			creation.stairs(1,DOWN,LOCATION,this.x,this.y,true);
 			if(rogue.cdl===33&&!rogue.lethe) creation.item(1,'potion',P_LETHE,1,LOCATION,this.x,this.y);
 			if(rogue.cdl===33) difficulty.inferno = true;
-			audio.playSound('kill_boss');
 		}
 	}
 	
@@ -11947,7 +11953,7 @@ const creation = {
 		rogue.putDown(true);
 		map.draw(rogue.x,rogue.y); 
 		audio.stop(audio.curTrack);
-		audio.playMusic(!difficulty.inferno? 'town1':'town2');
+		audio.playMusic(!difficulty.inferno? 'town':'town2');
 		initShopItem();
 	},
 	enemy(times=1,type,tabId,position,x,y,summon,magic,bias,boost){
