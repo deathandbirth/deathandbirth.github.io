@@ -6,7 +6,7 @@ const generateNumber = function*(i,j,bit){
 }
 const enums =(i,j)=> [...generateNumber(i,j)];
 const enumsBit =(i,j)=> [...generateNumber(i,j,true)];
-const VERSION = 0.002;
+const VERSION = 0.003;
 const MS = 2; //message space
 const SS = 3; //stats space
 const IN_WIDTH = 47; //canvas.width/fs-1;
@@ -3003,6 +3003,7 @@ const audio = {
 		uncurse:new Audio('sound/uncurse.wav'),
 		swing:new Audio('sound/swing.wav'),
 		kill:new Audio('sound/kill.wav'),
+		paralyze:new Audio('sound/paralyze.wav'),
 	},
 	init(){
 		for(let key in this.music)
@@ -7577,6 +7578,7 @@ const Fighter = class extends Material{
 				message.draw(rogue.cl==ENG?
 				`${name} got paralyzed`
 				:`${name}麻痺した`);
+				audio.playSound('paralyze');
 				break;
 			case SLEEP:
 			case SLEEPING_GAS:
