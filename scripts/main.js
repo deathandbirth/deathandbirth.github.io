@@ -1,6 +1,5 @@
 'use strict';
 let wizard = 0;
-const ud = undefined;
 const generateNumber = function*(i,j,bit){
 	while(i<=j) yield bit? 1<<i++:i++;
 }
@@ -399,8 +398,11 @@ const initShopItem =()=>{
 const createShopItem =(shop)=>{
 	let k = 0;
 	if(shop.gamble){
-		for(let i=0;i<10;i++)
-			shop.list[EA[k++]] = creation.item(1,RANDOM,RANDOM,1,LIST);
+		for(let i=0;i<10;i++){
+			shop.list[EA[k++]] = creation.item({
+				position: LIST,
+			});
+		}
 		return;
 	}
 	for(let type in shop.type){
@@ -421,7 +423,12 @@ const createShopItem =(shop)=>{
 				continue;
 			}
 			let quantity = item.equipable? 1:rndIntBet(10,99);
-			shop.list[EA[k]] = creation.item(1,type,tabId,quantity,LIST);
+			shop.list[EA[k]] = creation.item({
+				type: type,
+				tabId: tabId,
+				quantity: quantity,
+				position: LIST,
+			});
 			inventory.sort(EA[k++],shop.list);
 			if(k===MAX_PACK_COUNT) return;
 			count++;
@@ -2007,7 +2014,7 @@ const fighterTab = {
 			lvl:15,rarity:0,hpRate:-3,mpRate:0,str:3,dex:5,con:2,int:3,spd:0,dmgBase:'1d3', acBase:1,dropNum:0,matRedTimes:2,
 			fire:0,water:0,air:0,earth:0,poison:0,
 			atkType:AT_B,invisible:true,levi:true,moveRnd:true},
-],
+	],
 	hybrids:[
 		{name:{a:'Harpy',b:'ハーピー'},symbol:'H',color:SKY_BLUE,race:HUMAN|ANIMAL,mod:NORMAL,grade:NORMAL,
 			lvl:9,rarity:0,hpRate:-1,mpRate:0,str:2,dex:5,con:2,int:2,spd:10,dmgBase:'2d2', acBase:10,dropNum:1,matRedTimes:2,
@@ -3004,6 +3011,8 @@ const audio = {
 		swing:new Audio('sound/swing.wav'),
 		kill:new Audio('sound/kill.wav'),
 		paralyze:new Audio('sound/paralyze.wav'),
+		blind:new Audio('sound/blind.wav'),
+		probe:new Audio('sound/probe.wav'),
 	},
 	init(){
 		for(let key in this.music)
@@ -3133,7 +3142,14 @@ const distanceSq =(x1,y1,x0,y0)=>{
 }
 
 const circleSearch = {
-	main:function(x0,y0,type,radius,symbol,perc){
+	main({
+		x0,
+		y0,
+		type,
+		radius,
+		symbol,
+		perc,
+	}){
 		this.count = 0; 
 		this.type = type;
 		this.symbol = symbol;
@@ -3167,7 +3183,8 @@ const circleSearch = {
 			}
 		}
 	},
-	do:function(x,y){
+
+	do(x,y){
 		let loc = coords[x][y];
 		switch(this.type){
 			case MAGIC_MAPPING:
@@ -3352,10 +3369,24 @@ const map = {
 				if(town){
 					if(!loc.wall) loc.floor = true;
 				} else if(!loc.floor&&!loc.wall){
-					if(evalPercentage(1))
-						creation.item(1,'coin',1,1,LOCATION,i,j);
-					else if(evalPercentage(0.1))
-						creation.item(1,'gem',1,1,LOCATION,i,j);
+					if(evalPercentage(1)){
+						creation.item({
+							type: 'coin',
+							tabId: 1,
+							position: LOCATION,
+							x: i,
+							y: j,
+						});
+					} else if(evalPercentage(0.1)){
+						creation.item({
+							type: 'gem',
+							tabId: 1,
+							position: LOCATION,
+							x: i,
+							y: j,
+						});
+					}
+
 					loc.wall = WALL_HP;
 				}
 			}
@@ -3510,7 +3541,17 @@ const statistics = {
 		c:{name:{a:'Constitution',b:'耐久力'},term:'con'},
 		d:{name:{a:'Intelligence',b:'知力'},term:'int'},
 	},
-	draw(msg,x,y,color,shadow,measured,right,limit){
+
+	draw({
+		msg,
+		x,
+		y,
+		color,
+		shadow,
+		measured,
+		right,
+		limit,
+	}){
 		ctxStats.save();
 		if(!measured) x *= fs;
 		if(limit) limit *= fs;
@@ -3520,12 +3561,15 @@ const statistics = {
 		ctxStats.fillText(msg,x,canvas.height+y*fs+5,limit);
 		ctxStats.restore();
 	},
+
 	clear(){
 		ctxStats.clearRect(0,canvas.height-SS*fs,canvas.width,SS*fs);
 	},
+
 	clearCondition(){
 		ctxStats.clearRect(0,canvas.height-(SS+2)*fs,canvas.width,2*fs);
 	},
+
 	ShadowAndBar(e){
 		let width = ctxStats.measureText(e.name).width;
 		ctxStats.save();
@@ -3537,6 +3581,7 @@ const statistics = {
 		ctxStats.fillRect(canvas.width/2-width/2-3,(MS+1)*fs,e.hp/e.hpMax*width+6,fs);
 		ctxStats.restore();
 	},
+
 	drawEnemyBar(e,examine){
 		if(!e) return;
 		this.clearEnemyBar();
@@ -3558,9 +3603,11 @@ const statistics = {
 		ctxStats.restore();
 		if(examine) return name;
 	},
+
 	clearEnemyBar(){
 		ctxStats.clearRect(0,MS*fs-5,canvas.width,2*fs+5); //
 	},
+
 	drawCurrentEnemy(enemy){
 		if(!enemy) return;
 		ctxStats.save();
@@ -3809,7 +3856,12 @@ const lineOfSight =(x0,y0,x1,y1,color,skill)=>{
 			cursol.plot(xS,yS,color);
 			if(radius&&(skill.each||loc.fighter&&skill.penetrate)){
 				if(!(loc.wall||loc.door===CLOSE))
-					shadowcasting.main(xS,yS,radius,ud,ud,color);
+					shadowcasting.main({
+						x0: xS,
+						y0: yS,
+						radius: radius,
+						color: color,
+					});
 			} else if(loc.fighter&&(!skill||!skill.penetrate)&&!parabora)
 				break;
 		}
@@ -3821,7 +3873,12 @@ const lineOfSight =(x0,y0,x1,y1,color,skill)=>{
 	}
 	if(color&&radius){
 		if(!los) [xS, yS] = [xT, yT];
-		shadowcasting.main(xS,yS,radius,ud,ud,color);
+		shadowcasting.main({
+			x0: xS,
+			y0: yS,
+			radius: radius,
+			color: color
+		});
 	}
 	return los;
 } 
@@ -3842,7 +3899,17 @@ const shadowcasting = {
 		{xx: 0,xy: 1,yx:-1,yy: 0},
 		{xx: 1,xy: 0,yx: 0,yy:-1},
 	],
-	main(x0,y0,radius,type,lvl,color,lightRad,search,fighter){
+	main({
+		x0, 
+		y0, 
+		radius, 
+		type, 
+		lvl, 
+		color, 
+		lightRad, 
+		search, 
+		fighter,
+	}){
 		if(!radius) return;
 		this.radiusSq = radius**2;
 		this.width = coords.length;
@@ -4044,7 +4111,10 @@ const Queue = class extends BinaryHeap{
 			return;
 		}
 		if(rogue.cdl&&rogue.turn%SPAWN_FREQ===0)
-			creation.enemy(1,RANDOM,RANDOM,AWAY,ud,ud,true);
+			creation.enemy({
+				position: AWAY,
+				summon: true,
+			});
 		rogue.turn++;
 		rogue.healAndHunger();
 		if(!flag.rest) map.draw(rogue.x,rogue.y);
@@ -4103,6 +4173,39 @@ const Node = class extends Position{
 }
 
 const pathfinding = {
+	main({
+		x0,
+		y0,
+		xG,
+		yG,
+		pas,
+		map,
+	}){
+		if(x0===xG&&y0===yG) return [{x:xG,y:yG}]
+		this.init(xG,yG,pas,map);
+		let curNode = this.createNode(x0,y0,0);
+		if(map){
+			var distanceMap = {};
+			distanceMap[x0+','+y0] = 0;
+		}
+		while(this.loop++<MAX_PF_LOOP){
+			curNode = this.createNeighborNodes(curNode);
+			if(!curNode) break;
+			if(map)
+				distanceMap[curNode.x+','+curNode.y] = curNode.gScore;
+			else if(curNode.x===this.xG&&curNode.y===this.yG){
+				this.getPath(curNode);
+				this.pathList.pop();
+				break;
+			}
+			delete this.openSet[curNode.id];
+		}
+		if(map)
+			return distanceMap;
+		else
+			return this.pathList[0]? this.pathList.reverse():null;
+	},
+
 	init(xG,yG,pas,map){
 		this.pas = pas;
 		this.map = map;
@@ -4114,12 +4217,14 @@ const pathfinding = {
 		this.xG = xG; //goal
 		this.yG = yG;
 	},
+
 	createNode(){
 		let node = new Node(...arguments);
 		node.calcScore(this.xG,this.yG,this.pas,this.map);
 		this.idList[node.id] = true;
 		return node;
 	},
+
 	createNeighborNodes(node){
 		let nextNode = null;
 		let newNode = null;
@@ -4152,34 +4257,10 @@ const pathfinding = {
 		}
 		return this.heap.shift();
 	},
+
 	getPath(node){
 		this.pathList.push({x:node.x,y:node.y});
 		if(node.parent) this.getPath(node.parent);
-	},
-	main(x0,y0,xG,yG,pas,map){
-		if(x0===xG&&y0===yG) return [{x:xG,y:yG}]
-		this.init(xG,yG,pas,map);
-		let curNode = this.createNode(x0,y0,0);
-		if(map){
-			var distanceMap = {};
-			distanceMap[x0+','+y0] = 0;
-		}
-		while(this.loop++<MAX_PF_LOOP){
-			curNode = this.createNeighborNodes(curNode);
-			if(!curNode) break;
-			if(map)
-				distanceMap[curNode.x+','+curNode.y] = curNode.gScore;
-			else if(curNode.x===this.xG&&curNode.y===this.yG){
-				this.getPath(curNode);
-				this.pathList.pop();
-				break;
-			}
-			delete this.openSet[curNode.id];
-		}
-		if(map)
-			return distanceMap;
-		else
-			return this.pathList[0]? this.pathList.reverse():null;
 	},
 };
 
@@ -4429,7 +4510,7 @@ const Thing = class{
 			dungeon.rns.shuffle();
 			let i = 0;
 			do{ id = dungeon.rns[i++];
-				if(id===ud){
+				if(id===undefined){
 					dungeon.rns.shuffle();
 					i = 0;
 					id = dungeon.rns[i++];
@@ -4733,13 +4814,28 @@ const Cave = class extends Room{
 					continue;
 				}
 				if(coinToss()){
-					if(coinToss())
-				 		creation.item(1,RANDOM,RANDOM,1,LOCATION,i,j,magic,boost);
-					else
+					if(coinToss()){
+				 		creation.item({
+							position: LOCATION,
+							x: i,
+							y: j,
+							magic: magic,
+							boost: boost,
+						});
+					} else{
 						creation.trap(1,RANDOM,LOCATION,i,j);
+					}
 				}
 				if((!coords[i][j].trap||!coords[i][j].trap.protection)&&evalPercentage(25))
-					creation.enemy(1,type,RANDOM,LOCATION,i,j,false,magic,bias,boost);
+					creation.enemy({
+						type: type,
+						position: LOCATION,
+						x: i,
+						y: j,
+						magic: magic,
+						bias: bias,
+						boost: boost,
+					});
 			}
 		}
 	}
@@ -4796,7 +4892,13 @@ const dungeon = {
 	createPassage(door1,door2){
 		let [x1, y1] = door1.getPosInFrontOf();
 		let [x2, y2] = door2.getPosInFrontOf();
-		let path = pathfinding.main(x1,y1,x2,y2,true);
+		let path = pathfinding.main({
+			x0: x1,
+			y0: y1,
+			xG: x2,
+			yG: y2,
+			pas: true,
+		});
 		if(path===null) throw new Error('path error');
 		coords[x1][y1].floor = true;
 		for(let pos of path)
@@ -4915,7 +5017,7 @@ const inventory = {
 			let item = list[key];
 			if(!flag.pack&&!item
 			||place===P_STASH&&key<l
-			||flag.stash&&a!==ud&&key!=a
+			||flag.stash&&a!==undefined&&key!=a
 			||flag.equip&&!item.equipable
 			||flag.quaff&&item.type!='potion'
 			||flag.read&&item.type!='scroll'&&!item.chargeBook
@@ -5171,7 +5273,7 @@ const Material = class extends Thing{
 				}
 				continue;
 			}
-			if(!char&&(!term.item&&!this[key]||this[key]===ud)
+			if(!char&&(!term.item&&!this[key]||this[key]===undefined)
 			||char&&!term.char)
 				continue;
 			ctsInv.save();
@@ -5330,7 +5432,15 @@ const Material = class extends Thing{
 		this.hardness = mat.hardness;
 		this.toughness = mat.toughness;
 		this.priceRate = mat.priceRate;
-		if(mat.values) mergeMod(this,mat.values,0,1,1);
+		if(mat.values) {
+		   	mergeMod({
+				obj: this,
+				obj2: mat.values,
+				perc: 0,
+				max: 1,
+				min: 1,
+			});
+		}
 		let [nameA, nameB] = [mat.name['a'], mat.name['b']];
 		if(matBase===M_GEM) this.bias = mat.bias;
 		if(gem){
@@ -5378,7 +5488,12 @@ const Material = class extends Thing{
 		let namePreB = '';
 		let mods = {};
 		if(pre){
-			mergeMod(mods,pre[this.type],perc+BIAS_BONUS,max);
+			mergeMod({
+				obj: mods,
+				obj2: pre[this.type],
+				perc: perc + BIAS_BONUS,
+				max: max,
+			});
 			namePreA = pre.name['a']+' ';
 			namePreB = pre.name['b'];
 			color = pre.color;
@@ -5386,7 +5501,12 @@ const Material = class extends Thing{
 		let nameSufA = '';
 		let nameSufB = '';
 		if(suf){
-			mergeMod(mods,suf[this.type],perc,max);
+			mergeMod({
+				obj: mods,
+				obj2: suf[this.type],
+				perc: perc,
+				max: max,
+			});
 			nameSufA = ' '+suf.name['a'];
 			nameSufB = ` "${suf.name['b']}"`;
 		}
@@ -5400,7 +5520,11 @@ const Material = class extends Thing{
 			if(color) this.colorMod = color;
 			this.nameReal['a'] = `${namePreA}${this.nameReal['a']}${nameSufA}`;
 			this.nameReal['b'] = `${namePreB}${this.nameReal['b']}${nameSufB}`;
-			mergeMod(this,mods,ud,ud,ud,true);
+			mergeMod({
+				obj: this,
+				obj2: mods,
+				fixed: true,
+			});
 		}
 		this.modList = mods;
 		this.mod = MAGIC;
@@ -5432,7 +5556,12 @@ const Material = class extends Thing{
 		let min = affix.rarity>=50? Math.floor((affix.rarity-50)/10)+2:1;
 		if(min>max) min = max;
 		let mods = {};
-		mergeMod(mods,pre[this.type],perc+BIAS_BONUS,max);
+		mergeMod({
+			obj: mods,
+			obj2: pre[this.type],
+			perc: perc + BIAS_BONUS,
+			max: max,
+		});
 		let suf;
 		let i = 0;
 		let count = 0;
@@ -5442,7 +5571,13 @@ const Material = class extends Thing{
 			if(suf[this.type]&&suf.lvl<=lvl
 			&&!evalPercentage(suf.rarity)
 			&&!(suf.indestructible&&char&&evalPercentage(99))){
-				mergeMod(mods,suf[this.type],perc,max,min);
+				mergeMod({
+					obj: mods,
+					obj2: suf[this.type],
+					perc: perc,
+					max: max,
+					min: min,
+				});
 				if(++count>=RARE_MOD_NUM){
 					if(count>=min||!evalPercentage(perc2))
 						break;
@@ -5450,7 +5585,7 @@ const Material = class extends Thing{
 						perc2 /= 2;
 				}
 			}
-		} while(modSufNums[i]!==ud);
+		} while(modSufNums[i]!==undefined);
 		this.mod = RARE;
 		this.shadow = this.shadowReal = YELLOW;
 		let nameAffiA = affix.name['a'];
@@ -5465,7 +5600,11 @@ const Material = class extends Thing{
 			if(affix.color) this.colorMod = affix.color;
 			this.nameReal['a'] = `${this.nameReal['a']} ${nameAffiA}`;
 			this.nameReal['b'] = `${nameAffiB}${this.nameReal['b']}`;
-			mergeMod(this,mods,ud,ud,ud,true);
+			mergeMod({
+				obj: this,
+				obj2: mods,
+				fixed: true,
+			});
 		}
 		this.modList = mods;
 	}
@@ -5479,7 +5618,11 @@ const Material = class extends Thing{
 			this.mpRate += 3;
 			this.mpReg += 100;
 		} else{
-			mergeMod(this,unique.values,ud,ud,ud,true);
+			mergeMod({
+				obj: this,
+				obj2: unique.values,
+				fixed: true,
+			});
 			[this.nameReal['a'], this.nameReal['b']] = this.getUniqueName(unique.name,true);
 			this.mod = UNIQUE;
 		}
@@ -5496,7 +5639,14 @@ const Material = class extends Thing{
 	}
 } 
 
-const mergeMod =(obj,obj2,perc,max,min,fixed)=>{
+const mergeMod =({
+	obj,
+	obj2,
+	perc,
+	max,
+	min,
+	fixed,
+})=>{
 	let count = 0;
 	for(let key in obj2){
 		let mod = obj2[key];
@@ -5829,7 +5979,13 @@ const Fighter = class extends Material{
 		return boost;
 	}
 	
-	attack(e,missile,skill,lvl,itemThrow){
+	attack({
+		enemy,
+		missile,
+		skill,
+		lvl,
+		itemThrow,
+	}){
 		let count = 0;
 		let name;
 		if(itemThrow)
@@ -5841,24 +5997,24 @@ const Fighter = class extends Material{
 			name = skill.name[rogue.cl];
 		else
 			name = rogue.cl===ENG? this.getName(true):this.getName()+'の攻撃';
-		let nameE = e.getName();
+		let nameE = enemy.getName();
 		let third = rogue.cl===ENG&&(itemThrow||missile||skill||this.id!==ROGUE);
 		do{
-			let [dmg, rate] = skill&&skill.type==='spell'?	[this.calcSkillValue(skill,lvl,e),100]:
-															this.calcAttack(e,skill,lvl,itemThrow);
+			let [dmg, rate] = skill&&skill.type==='spell'?	[this.calcSkillValue(skill,lvl,enemy),100]:
+															this.calcAttack(enemy,skill,lvl,itemThrow);
 			let msg;
-			let miss = !dmg||e.indestructible||this.id!==ROGUE&&e.boss;
+			let miss = !dmg||enemy.indestructible||this.id!==ROGUE&&enemy.boss;
 			if(miss){
 				msg = rogue.cl===ENG? 'missed':'外れた';
 			} else{
 				msg = rogue.cl===ENG? 'hit':`${dmg}のダメージを与えた`;
 				if(third) msg += 's';
-				e.hp -= dmg;
+				enemy.hp -= dmg;
 			}
 			if(missile||itemThrow){
 				let item = ammo||itemThrow;
 				if(miss||item.indestructible||evalPercentage(50))
-					this.deleteAmmo(item,true,e.x,e.y);
+					this.deleteAmmo(item,true,enemy.x,enemy.y);
 				else
 					this.deleteAmmo(item);
 			}
@@ -5877,53 +6033,53 @@ const Fighter = class extends Material{
 				if(this.stealMana){
 					let percent = this.stealMana>100? 1:this.stealMana/100;
 					let mp = Math.ceil(dmg*percent);
-					if(mp>e.mp) mp = e.mp;
-					e.mp -= mp;
+					if(mp>enemy.mp) mp = enemy.mp;
+					enemy.mp -= mp;
 					this.mp += mp;
 					if(this.mp>this.mpMax) this.mp = this.mpMax;
 				}
-				if(this.dmgFire) this.getElementEffect('fire',1,e);
-				if(this.dmgLightning) this.getElementEffect('lightning',1,e);
-				if(this.dmgPoison) this.getElementEffect('poison',1,e);
-				if(this.dmgAcid) this.getElementEffect('acid',1,e);
-				if(this.cursed&&evalPercentage(50-(e.lvl-this.lvl))) e.gotCursed();
+				if(this.dmgFire) this.getElementEffect('fire',1,enemy);
+				if(this.dmgLightning) this.getElementEffect('lightning',1,enemy);
+				if(this.dmgPoison) this.getElementEffect('poison',1,enemy);
+				if(this.dmgAcid) this.getElementEffect('acid',1,enemy);
+				if(this.cursed&&evalPercentage(50-(enemy.lvl-this.lvl))) enemy.gotCursed();
 				if(!missile){
 					if(this.atkCon&&evalPercentage(this.atkCon))
-						this.haveCast(CONFUSION,1,e);
+						this.haveCast(CONFUSION,1,enemy);
 					if(this.atkPara&&evalPercentage(this.atkPara))
-						this.haveCast(PARALYSIS,1,e);
+						this.haveCast(PARALYSIS,1,enemy);
 					if(this.atkSlow&&evalPercentage(this.atkSlow))
-						this.haveCast(SLOW,10,e);
+						this.haveCast(SLOW,10,enemy);
 					if(this.atkInf&&evalPercentage(this.atkInf))
-						this.haveCast(INFECTION,1,e);
+						this.haveCast(INFECTION,1,enemy);
 					if(this.atkBlind&&evalPercentage(this.atkBlind))
-						this.haveCast(BLINDNESS,1,e);
+						this.haveCast(BLINDNESS,1,enemy);
 					if(this.atkRadi&&evalPercentage(this.atkRadi))
-						this.haveCast(RADIATION,1,e);
+						this.haveCast(RADIATION,1,enemy);
 					if(this.atkCold&&evalPercentage(this.atkCold))
-						this.haveCast(COLD,1,e);
+						this.haveCast(COLD,1,enemy);
 					if(this.atkDrain&&evalPercentage(this.atkDrain))
-						e.decayOrRestore(EXP,false,this.expGain,this);
+						enemy.decayOrRestore(EXP,false,this.expGain,this);
 					if(!skill&&!this.confused){
 						if(this.atkStealGold&&evalPercentage(this.atkStealGold))
-							if(this.stealGold(e)) count = NaN;
+							if(this.stealGold(enemy)) count = NaN;
 						if(count&&this.atkStealItem&&evalPercentage(this.atkStealItem))
-							if(this.stealItem(e)) count = NaN;
+							if(this.stealItem(enemy)) count = NaN;
 					}
 				}
 			}
 			if(!itemThrow&&(!skill||skill.type!=='spell')){
 				if(this.decreaseDurab(true)) count = NaN;
 			}
-			e.decreaseDurab();
-			if(e.hp<=0){
-				e.died(this);
+			enemy.decreaseDurab();
+			if(enemy.hp<=0){
+				enemy.died(this);
 				return;
 			}
-			if(e.sleeping) e.wakeUp();
-			if(this.id===ROGUE) this.getCe(e,!missile&&!skill);
+			if(enemy.sleeping) enemy.wakeUp();
+			if(this.id===ROGUE) this.getCe(enemy,!missile&&!skill);
 			if(skill){
-				this.getElementEffect(skill.element,lvl,e)
+				this.getElementEffect(skill.element,lvl,enemy)
 				return;
 			} else if(itemThrow)
 				return;
@@ -6154,15 +6310,33 @@ const Fighter = class extends Material{
 			var len = fs;
 			if(this.hunger>=800){
 				let condition = rogue.cl===ENG? 'full':textLen.list['full'];
-				statistics.draw(condition,len,j,LIME,ud,true);
+				statistics.draw({
+					msg: condition,
+					x: len,
+					y: j,
+					color: LIME,
+					measured: true,
+				});
 				len += textLen['full'][rogue.cl];
 			} else if(this.hunger>0&&this.hunger<=200){
 				let condition = rogue.cl===ENG? 'hungry':textLen.list['hungry'];
-				statistics.draw(condition,len,j,YELLOW,ud,true);
+				statistics.draw({
+					msg: condition,
+					x: len,
+					y: j,
+					color: YELLOW,
+					measured: true,
+				});
 				len += textLen['hungry'][rogue.cl];
 			} else if(this.hunger===0){
 				let condition = rogue.cl===ENG? 'starved':textLen.list['starved'];
-				statistics.draw(condition,len,j,RED,ud,true);
+				statistics.draw({
+					msg: condition,
+					x: len,
+					y: j,
+					color: RED,
+					measured: true,
+				});
 				len += textLen['starved'][rogue.cl];
 			}
 		}
@@ -6185,7 +6359,13 @@ const Fighter = class extends Material{
 			}
 			if(draw){
 				let condition = rogue.cl===ENG? 'poisoned':textLen.list['poisoned'];
-				statistics.draw(condition,len,j,C_POISON,ud,true);
+				statistics.draw({
+					msg: condition,
+					x: len,
+					y: j,
+					color: C_POISON,
+					measured: true,
+				});
 				len += textLen['poisoned'][rogue.cl];
 			}
 		}
@@ -6198,7 +6378,13 @@ const Fighter = class extends Material{
 			}
 			if(draw){
 				let condition = rogue.cl===ENG? 'confused':textLen.list['confused'];
-				statistics.draw(condition,len,j,YELLOW,ud,true);
+				statistics.draw({
+					msg: condition,
+					x: len,
+					y: j,
+					color: YELLOW,
+					measured: true,
+				});
 				len += textLen['confused'][rogue.cl];
 			}
 		}
@@ -6210,7 +6396,13 @@ const Fighter = class extends Material{
 			}
 			if(draw){
 				let condition = rogue.cl===ENG? 'paralyzed':textLen.list['paralyzed'];
-				statistics.draw(condition,len,j,ORANGE,ud,true);
+				statistics.draw({
+					msg: condition,
+					x: len,
+					y: j,
+					color: ORANGE,
+					measured: true,
+				});
 				len += textLen['paralyzed'][rogue.cl];
 			}
 		}
@@ -6219,7 +6411,13 @@ const Fighter = class extends Material{
 				this.wakeUp();
 			if(draw){
 				let condition = rogue.cl===ENG? 'sleeping':textLen.list['sleeping'];
-				statistics.draw(condition,len,j,ROYALBLUE,ud,true);
+				statistics.draw({
+					msg: condition,
+					x: len,
+					y: j,
+					color: ROYALBLUE,
+					measured: true,
+				});
 				len += textLen['sleeping'][rogue.cl];
 			}
 		}
@@ -6235,7 +6433,13 @@ const Fighter = class extends Material{
 			}
 			if(draw){
 				let condition = rogue.cl===ENG? 'blinded':textLen.list['blinded'];
-				statistics.draw(condition,len,j,GRAY,ud,true);
+				statistics.draw({
+					msg: condition,
+					x: len,
+					y: j,
+					color: GRAY,
+					measured: true,
+				});
 				len += textLen['blinded'][rogue.cl];
 			}
 		}
@@ -6248,7 +6452,13 @@ const Fighter = class extends Material{
 			}
 			if(draw){
 				let condition = rogue.cl===ENG? 'infected':textLen.list['infected'];
-				statistics.draw(condition,len,j,C_INFECTION,ud,true);
+				statistics.draw({
+					msg: condition,
+					x: len,
+					y: j,
+					color: C_INFECTION,
+					measured: true,
+				});
 				len += textLen['infected'][rogue.cl];
 			}
 		}
@@ -6264,7 +6474,13 @@ const Fighter = class extends Material{
 			}
 			if(draw){
 				let condition = rogue.cl===ENG? 'hallucinated':textLen.list['hallucinated'];
-				statistics.draw(condition,len,j,PURPLE,ud,true);
+				statistics.draw({
+					msg: condition,
+					x: len,
+					y: j,
+					color: PURPLE,
+					measured: true,
+				});
 				len += textLen['hallucinated'][rogue.cl];
 			}
 		}
@@ -6276,7 +6492,13 @@ const Fighter = class extends Material{
 			}
 			if(draw){
 				let condition = rogue.cl===ENG? 'canceled':textLen.list['canceled'];
-				statistics.draw(condition,len,j,WHITE,ud,true);
+				statistics.draw({
+					msg: condition,
+					x: len,
+					y: j,
+					color: WHITE,
+					measured: true,
+				});
 				len += textLen['canceled'][rogue.cl];
 			}
 		}
@@ -6289,7 +6511,14 @@ const Fighter = class extends Material{
 			}
 			if(draw){
 				let condition = rogue.cl===ENG? 'see invisible':textLen.list['see invisible'];
-				statistics.draw(condition,len,j,C_LIGHT,C_LIGHT,true);
+				statistics.draw({
+					msg: condition,
+					x: len,
+					y: j,
+					color: C_LIGHT,
+					shadow: C_LIGHT,
+					measured: true,
+				});
 				len += textLen['see invisible'][rogue.cl];
 			}
 		}
@@ -6301,7 +6530,14 @@ const Fighter = class extends Material{
 			}
 			if(draw){
 				let condition = rogue.cl===ENG? 'invisible':textLen.list['invisible'];
-				statistics.draw(condition,len,j,C_LIGHT,C_LIGHT,true);
+				statistics.draw({
+					msg: condition,
+					x: len,
+					y: j,
+					color: C_LIGHT,
+					shadow: C_LIGHT,
+					measured: true,
+				});
 				len += textLen['invisible'][rogue.cl];
 			}
 		}
@@ -6313,7 +6549,13 @@ const Fighter = class extends Material{
 			}
 			if(draw){
 				let condition = rogue.cl===ENG? 'ecco':textLen.list['ecco'];
-				statistics.draw(condition,len,j,C_AIR,ud,true);
+				statistics.draw({
+					msg: condition,
+					x: len,
+					y: j,
+					color: C_AIR,
+					measured: true,
+				});
 				len += textLen['ecco'][rogue.cl];
 			}
 		}
@@ -6331,7 +6573,13 @@ const Fighter = class extends Material{
 			}
 			if(draw){
 				let condition = rogue.cl===ENG? 'enchant self':textLen.list['enchant self'];
-				statistics.draw(condition,len,j,C_EARTH,ud,true);
+				statistics.draw({
+					msg: condition,
+					x: len,
+					y: j,
+					color: C_EARTH,
+					measured: true,
+				});
 				len += textLen['enchant self'][rogue.cl];
 			}
 		}
@@ -6345,7 +6593,13 @@ const Fighter = class extends Material{
 			}
 			if(draw){
 				let condition = rogue.cl===ENG? 'venom hands':textLen.list['venom hands'];
-				statistics.draw(condition,len,j,C_POISON,ud,true);
+				statistics.draw({
+					msg: condition,
+					x: len,
+					y: j,
+					color: C_POISON,
+					measured: true,
+				});
 				len += textLen['venom hands'][rogue.cl];
 			}
 		}
@@ -6359,7 +6613,13 @@ const Fighter = class extends Material{
 			}
 			if(draw){
 				let condition = rogue.cl===ENG? 'confusing hands':textLen.list['confusing hands'];
-				statistics.draw(condition,len,j,C_POISON,ud,true);
+				statistics.draw({
+					msg: condition,
+					x: len,
+					y: j,
+					color: C_POISON,
+					measured: true,
+				});
 				len += textLen['confusing hands'][rogue.cl];
 			}
 		}
@@ -6653,13 +6913,24 @@ const Fighter = class extends Material{
 		}
 		loc.draw();
 		if(this.id===ROGUE&&draw){
-			this.distMap = pathfinding.main(this.x,this.y,ud,ud,ud,true);
+			this.distMap = pathfinding.main({
+				x0: this.x,
+				y0: this.y,
+				map: true,
+			});
 			this.lightenOrDarken('Lighten',move);
 		}
 	}
 	
 	lightenOrDarken(type,search){
-		shadowcasting.main(this.x,this.y,FOV,type,ud,ud,this.lighten,search);
+		shadowcasting.main({
+			x0: this.x, 
+			y0: this.y, 
+			radius: FOV, 
+			type: type, 
+			lightRad: this.lighten, 
+			search: search,
+		});
 	}
 	
 	replace(f){
@@ -7094,7 +7365,7 @@ const Fighter = class extends Material{
 	
 	listAdd(list,item){
 		let a = this.canCarryItem(list,item);
-		if(a!==ud){
+		if(a!==undefined){
 			list[a].quantity += item.quantity;
 			this.gainOrloseWeight(item,item.quantity,true)
 		}
@@ -7112,10 +7383,29 @@ const Fighter = class extends Material{
 		return key;
 	}
 		
-	createItemIntoPack(times,type,tabId,quantity,uniqueId,starter,magic,lvl){
-		for(let i=0;i<times;i++)
-			this.packAdd(creation.item(1,type,tabId,quantity,LIST,
-						ud,ud,magic,ud,lvl,uniqueId,starter));
+	createItemIntoPack({
+		uniqueId,
+		starter,
+		magic,
+		lvl,
+		times=1,
+		type=RANDOM,
+		tabId=RANDOM,
+		quantity=1,
+	}){
+		for(let i=0;i<times;i++){
+			this.packAdd(
+				creation.item({
+					type: type,
+					tabId: tabId,
+					quantity: quantity,
+					position: LIST,
+					magic: magic,
+					lvl: lvl,
+					uniqueId: uniqueId,
+					starter: starter,
+			}));
+		}
 	}
 	
 	getOrLooseStats(s,get,mod){
@@ -7254,7 +7544,11 @@ const Fighter = class extends Material{
 	haveCast(skillId,lvl,f=this,x,y){
 		let skill = skillMap.get(skillId);
 		if(skill.kind==='attack'||skill.kind==='breath'){
-			this.attack(f,false,skill,lvl);
+			this.attack({
+				enemy: f,
+				skill: skill,
+				lvl: lvl,
+			});
 			if(skill.effect&&f.hp>0&&evalPercentage(skill.effect.prob)) this.haveCast(skill.effect.id,lvl,f,x,y);
 			if(!skill.effectSelf&&f.hp>0) return;
 		}
@@ -7468,18 +7762,35 @@ const Fighter = class extends Material{
 				this.repairAll();
 				break;
 			case LIGHT:
-				shadowcasting.main(this.x,this.y,this.calcSkillValue(skill,lvl),'Light');
+				shadowcasting.main({
+					x0: this.x,
+					y0: this.y,
+					radius: this.calcSkillValue(skill,lvl),
+					type: 'Light',
+				});
 				rogue.lightenOrDarken('Lighten');
 				break;
+			case MAGIC_MAPPING:
+				audio.playSound('probe');
 			case MONSTER_DETECTION:
 			case ITEM_DETECTION:
-			case MAGIC_MAPPING:
 			case SCREAM:
-				circleSearch.main(this.x,this.y,skillId,this.calcSkillValue(skill,lvl));
+				circleSearch.main({
+					x0: this.x,
+					y0: this.y,
+					type: skillId,
+					radius: this.calcSkillValue(skill,lvl),
+				});
 				break;
 			case EARTHQUAKE:
 				let percEQ = this.calcSkillValue(skill,lvl);
-				circleSearch.main(this.x,this.y,skillId,skill.radius,ud,percEQ<skill.limit? percEQ:skill.limit);
+				circleSearch.main({
+					x0: this.x,
+					y0: this.y,
+					type: skillId,
+					radius: skill.radius,
+					perc: percEQ < skill.limit ? percEQ : skill.limit,
+				});
 				litMapIds = {};
 				rogue.lightenOrDarken('Lighten');
 				break;
@@ -7597,6 +7908,7 @@ const Fighter = class extends Material{
 				message.draw(rogue.cl==ENG?
 				`${name} got blinded`
 				:`${name}盲目になった`);
+				audio.playSound('blind');
 				break;
 			case INVISIBILITY:
 				if(f.invisible) return;
@@ -7638,7 +7950,12 @@ const Fighter = class extends Material{
 				if(f.id===ROGUE||f.mod===UNIQUE||evalPercentage(f.poison)) return;
 				let [tempX, tempY] = [f.x, f.y];
 				f.died();
-				creation.enemy(1,RANDOM,RANDOM,LOCATION,tempX,tempY,true);
+				creation.enemy({
+					position: LOCATION,
+					x: tempX,
+					y: tempY,
+					summon: true,
+				});
 				message.draw(rogue.cl==ENG?
 				`${name} got polymorphed`
 				:`${name}変容した`);
@@ -7671,7 +7988,15 @@ const Fighter = class extends Material{
 					type = RANDOM;
 				else if(skillId===CREATE_GIANT)
 					type = 'giants';
-				creation.enemy(rndIntBet(1,3),type,RANDOM,LOCATION,this.x,this.y,true,skillId===CREATE_MAGIC_MONSTER);
+				creation.enemy({
+					times: rndIntBet(1,3),
+					type: type,
+					position: LOCATION,
+					x: this.x,
+					y: this.y,
+					summon: true,
+					magic: skillId===CREATE_MAGIC_MONSTER,
+				});
 				break;
 			case CREATE_TRAP:
 				creation.trap(5,RANDOM,LOCATION,this.x,this.y);
@@ -7752,12 +8077,24 @@ const Fighter = class extends Material{
 					audio.playSound('dig',distanceSq(this.x,this.y,x,y));
 				}
 				if(litMapIds[x+','+y]) rogue.lightenOrDarken('Lighten');
-				if(f.material===M_STONE) this.attack(f,false,skill,lvl);
+				if(f.material===M_STONE) {
+				   	this.attack({
+						enemy: f,
+						skill: skill,
+						lvl: lvl,
+					});
+				}
 				break;
 		}
 	}
 	
-	aim(keyCode,x1,y1,nameSkill,ecco){
+	aim({
+		x1,
+		y1,
+		nameSkill,
+		ecco,
+		keyCode=null,
+	}){
 		if(keyCode===88){ //x
 			if(this.blinded){
 				message.draw(message.get(M_CANT_EXAMINE));
@@ -7842,21 +8179,40 @@ const Fighter = class extends Material{
 					}
 					if(!thrown&&skill.each){
 						if(!(coords[xS][yS].wall||coords[xS][yS].door===CLOSE))
-							shadowcasting.main(xS,yS,skill.radius,nameSkill,lvl,ud,ud,ud,this);
+							shadowcasting.main({
+								x0: xS,
+								y0: yS,
+								radius: skill.radius,
+								type: nameSkill,
+								lvl: lvl,
+								fighter: this,
+							});
 					} else if((!parabora||parabora&&x===x1&&y===y1)
 					&&coords[xS][yS].fighter
 					&&(this.isOpponent(coords[xS][yS].fighter))){
 						let fighter = coords[xS][yS].fighter;
 						hit = true;
 						if(thrown){
-							if(flag.arrow)
-								this.attack(fighter,true);
-							else if(flag.throw)
+							if(flag.arrow) {
+								this.attack({
+									enemy: fighter,
+									missile: true,
+								});
+							} else if(flag.throw) {
 								this.haveThrown(ci,fighter,xS,yS);
+							}
+
 							break;
 						}
 						if(skill.radius)
-							shadowcasting.main(xS,yS,skill.radius,nameSkill,lvl,ud,ud,ud,this);
+							shadowcasting.main({
+								x0: xS,
+								y0: yS,
+								radius: skill.radius,
+								type: nameSkill,
+								lvl: lvl,
+								fighter: this,
+							});
 						else
 							this.haveCast(nameSkill,lvl,fighter,xS,yS);
 						if(flag.zap&&!w.identified&&!skill.wall) found = true;
@@ -7872,7 +8228,7 @@ const Fighter = class extends Material{
 					if(!thrown&&skill.wall
 					&&(coords[xS][yS].wall&&!coords[xS][yS].indestructible
 					||coords[xS][yS].door===CLOSE)){
-						this.haveCast(nameSkill,lvl,ud,xS,yS);
+						this.haveCast(nameSkill,lvl,undefined,xS,yS);
 						if(flag.zap&&!w.identified) found = true;
 					} else
 						[xS, yS] = [xT, yT];
@@ -7880,7 +8236,14 @@ const Fighter = class extends Material{
 			}
 			if(flag.died) return;
 			if(!thrown&&skill.radius&&(!hit||skill.penetrate))
-				shadowcasting.main(xS,yS,skill.radius,nameSkill,lvl,ud,ud,ud,this);
+				shadowcasting.main({
+					x0: xS,
+					y0: yS,
+					radius: skill.radius,
+					type: nameSkill,
+					lvl: lvl,
+					fighter: this,
+				});
 			if(thrown){
 				if(!hit) this.deleteAmmo(ci,true,xS,yS);
 				flag.arrow = flag.throw = false;
@@ -7888,7 +8251,12 @@ const Fighter = class extends Material{
 				this.consumeMana(skill);
 				if(!ecco&&this.ecco&&this.mp>=skill.mp){
 					if(steep) [x1, y1] = [y1, x1]; 
-					this.aim(null,x1,y1,nameSkill,true);
+					this.aim({
+						x1: x1,
+						y1: y1,
+						nameSkill: nameSkill,
+						ecco: true,
+					});
 					return;
 				}
 				if(skill.move){
@@ -8157,7 +8525,11 @@ const Fighter = class extends Material{
 			amount = enemy.purse;
 		amount = Math.ceil(amount);
 		enemy.purse -= amount;
-		this.createItemIntoPack(1,'coin',C_COIN,amount);
+		this.createItemIntoPack({
+			type: 'coin',
+			tabId: C_COIN,
+			quantity: amount,
+		});
 		let name = this.getName(true);
 		message.draw(rogue.cl==ENG?
 		`${name} stole $${amount}`
@@ -8449,7 +8821,15 @@ const Fighter = class extends Material{
 	getStarterItems(){
 		for(let item of this.starter){
 			let quantity = item.quantity? item.quantity:1;
-			let itemNew = creation.item(1,item.type,item.tabId,quantity,LIST,ud,ud,ud,ud,this.lvl,item.uniqueId,item.starter);
+			let itemNew = creation.item({
+				type: item.type,
+				tabId: item.tabId,
+				quantity: quantity,
+				position: LIST,
+				lvl: this.lvl,
+				uniqueId: item.uniqueId,
+				starter: item.starter,
+			});
 			itemNew.equipable&&itemNew.type!=='light'? this.equipStarterItem(itemNew,item.side):this.packAdd(itemNew);
 		}
 	}
@@ -8489,7 +8869,13 @@ const Fighter = class extends Material{
 	}
 
 	searchCe(){
-		shadowcasting.main(this.x,this.y,FOV,'Aim',ud,ud,ud,ud,this);
+		shadowcasting.main({
+			x0: this.x, 
+			y0: this.y, 
+			radius: FOV, 
+			type: 'Aim', 
+			fighter: this,
+		});
 	}
 }
 
@@ -8560,14 +8946,14 @@ const Rogue = class extends Fighter{
 					message.draw(rogue.cl===ENG?
 					`You shot ${arrow}`
 					:`矢を放った`);
-					this.aim(keyCodeDr);
+					this.aim({keyCode: keyCodeDr});
 				}else{
 					message.draw(message.get(M_DONT_HAVE_AMMO));
 					return null;
 				}
 			} else{
 				audio.playSound('swing');
-				this.attack(loc.fighter);
+				this.attack({ enemy: loc.fighter });
 			}
 			rogue.done= true;
 		} else if(this.stuckTrap){
@@ -8747,7 +9133,7 @@ const Rogue = class extends Fighter{
 				message.draw(rogue.cl===ENG?
 				`You shot ${arrow}`
 				:`矢を放った`);
-				this.aim(keyCodeDr);
+				this.aim({keyCode: keyCodeDr});
 			} else
 				message.draw(message.get(M_DONT_HAVE_AMMO));
 		} else{ 
@@ -8757,7 +9143,9 @@ const Rogue = class extends Fighter{
 				this.dig(loc);
 			else{
 				audio.playSound('swing');
-				if(loc.fighter) this.attack(loc.fighter);
+				if(loc.fighter) {
+					this.attack({ enemy: loc.fighter });
+				}
 			}
 			rogue.done= true;
 		}
@@ -8800,44 +9188,97 @@ const Rogue = class extends Fighter{
 		ctxStats.fillStyle = BLUE;
 		ctxStats.fillRect((2-this.mp/this.mpMax)*canvas.width/2,canvas.height-SS*fs,canvas.width/2,3);
 		ctxStats.restore();
+
 		let [level, exp, str, dex, con, int, spd] = rogue.cl===ENG?
 			['Level','Exp','Str','Dex','Con','Int','Spd']
 			:['レベル','経験値','筋','器','耐','知','速'];
-		statistics.draw(`${level} ${this.lvl}`,0.5,j,this.lvl<this.lvlMax? YELLOW:ud);
-		statistics.draw(`${exp} ${this.exp}`,5,j,this.exp<this.expMax? YELLOW:ud,this.expBuff? C_BUFF:ud,ud,ud,6);
-		statistics.draw(`$ ${this.purse}`,11.5,j,ud,ud,ud,ud,5);
-		statistics.draw(`HP ${this.hp}/${this.hpMax}`,17,j,this.hp<=0? RED:ud);
-		statistics.draw(`MP ${this.mp}/${this.mpMax}`,24.5,j,this.mp<=0? RED:ud,ud,ud,ud,6);
-		let color = ud; //
-		if(this.str<this.strMax)
-			color = YELLOW;
-		else if(this.strSus)
-			color = LIME;
-		else
-			color = ud;
-		statistics.draw(`${str} ${this.str}`,31,j,color,ud,ud,ud,3);
-		if(this.dex<this.dexMax)
-			color = YELLOW;
-		else if(this.dexSus)
-			color = LIME;
-		else
-			color = ud;
-		statistics.draw(`${dex} ${this.dex}`,34.5,j,color,ud,ud,ud,3);
-		if(this.con<this.conMax)
-			color = YELLOW;
-		else if(this.conSus)
-			color = LIME;
-		else
-			color = ud;
-		statistics.draw(`${con} ${this.con}`,38,j,color,ud,ud,ud,3);
-		if(this.int<this.intMax)
-			color = YELLOW;
-		else if(this.intSus)
-			color = LIME;
-		else
-			color = ud;
-		statistics.draw(`${int} ${this.int}`,41.5,j,color,ud,ud,ud,3);
-		statistics.draw(`${spd} ${this.spd}`,45,j,this.slowed? RED:ud,this.speeded? C_BUFF:ud,ud,ud,2.5);
+		statistics.draw({
+			msg: `${level} ${this.lvl}`,
+			x: 0.5,
+			y: j,
+			color: this.lvl < this.lvlMax ? YELLOW : undefined,
+		});
+
+		statistics.draw({
+			msg: `${exp} ${this.exp}`,
+			x: 5,
+			y: j,
+			color: this.exp < this.expMax ? YELLOW : undefined,
+			shadow: this.expBuff ? C_BUFF : undefined,
+			limit: 6,
+		});
+
+		statistics.draw({
+			msg: `$ ${this.purse}`,
+			x: 11.5,
+			y: j,
+			limit: 5,
+		});
+
+		statistics.draw({
+			msg: `HP ${this.hp}/${this.hpMax}`,
+			x: 17,
+			y: j,
+			color: this.hp <= 0 ? RED : undefined,
+		});
+
+		statistics.draw({
+			msg: `MP ${this.mp}/${this.mpMax}`,
+			x: 24.5,
+			y: j,
+			color: this.mp <= 0 ? RED : undefined,
+			limit: 6,
+		});
+
+		statistics.draw({
+			msg: `${str} ${this.str}`,
+			x: 31,
+			y: j,
+			color: this.str < this.strMax ? YELLOW
+					: this.strSus ? LIME 
+					: undefined,
+			limit: 3,
+		});
+
+		statistics.draw({
+			msg: `${dex} ${this.dex}`,
+			x: 34.5,
+			y: j,
+			color: this.dex < this.dexMax ? YELLOW
+					: this.dexSus ? LIME
+					: undefined,
+			limit: 3,
+		});
+
+		statistics.draw({
+			msg: `${con} ${this.con}`,
+			x: 38,
+			y: j,
+			color: this.con<this.conMax ? YELLOW 
+					: this.conSus ? LIME
+					: undefined,
+			limit: 3,
+		});
+
+		statistics.draw({
+			msg: `${int} ${this.int}`,
+			x: 41.5,
+			y: j,
+			color: this.int < this.intMax ? YELLOW
+					: this.intSus ? LIME
+					: undefined,
+			limit: 3,
+		});
+
+		statistics.draw({
+			msg: `${spd} ${this.spd}`,
+			x: 45,
+			y: j,
+			color: this.slowed ? RED : undefined,
+			shadow: this.speeded ? C_BUFF : undefined,
+			limit: 2.5,
+		});
+
 		let msg;
 		if(!rogue.cdl)
 			msg = rogue.cl===ENG? 'Limbo':'辺獄';
@@ -8853,7 +9294,12 @@ const Rogue = class extends Fighter{
 				msg += rogue.cdl-66;
 			}
 		}
-		statistics.draw(msg,IN_WIDTH+0.5,j+1,ud,ud,ud,true);
+		statistics.draw({
+			msg: msg,
+			x: IN_WIDTH+0.5,
+			y: j+1,
+			right: true,
+		});
 	}
 	
 	drawBoxes(){
@@ -9300,8 +9746,12 @@ const Rogue = class extends Fighter{
 				let skill = skillMap.get(item.nameSkill);
 				if(!skill.wall&&fighter.material!==M_STONE) item.identifyWand();
 			}
-		} else
-			this.attack(fighter,ud,ud,ud,item);
+		} else {
+			this.attack({
+				enemy: fighter,
+				itemThrow: item,
+			});
+		}
 	}
 	
 	read(keyCode,boxItem){
@@ -9332,10 +9782,14 @@ const Rogue = class extends Fighter{
 			if(!boxItem){
 				inventory.clear();
 				flag.aim = true;
-				this.aim(88); //examine
+				this.aim({keyCode: 88}); //examine
 				return;
-			} else
-				this.aim(null,this.x,this.y);
+			} else {
+				this.aim({
+					x1: this.x,
+					y1: this.y,
+				});
+			}
 		} else if(this.haveCast(item.nameSkill,item.skillLvl,this)===null){
 			ci = item;
 			return;
@@ -9477,7 +9931,13 @@ const Rogue = class extends Fighter{
 		let radius = this.calcSkillValue(skill,lvl);
 		let symbol = EA[keyCode-65];
 		if(isShift) symbol = symbol.toUpperCase()
-		circleSearch.main(this.x,this.y,DISINTEGRATION,radius,symbol);
+		circleSearch.main({
+			x0: this.x,
+			y0: this.y,
+			type: DISINTEGRATION,
+			radius: radius,
+			symbol: symbol,
+		});
 		inventory.clear();
 		if(flag.skill){
 			this.consumeMana(skill);
@@ -9527,7 +9987,7 @@ const Rogue = class extends Fighter{
 		let msg = skill.desc[rogue.cl];
 		if(skill.rate){
 			if(!item) flag.skill = true;
-			let value = this.calcSkillValue(skill,lvl,ud,true);
+			let value = this.calcSkillValue(skill,lvl,undefined,true);
 			if(skill.limit&&value>skill.limit) value = skill.limit;
 			if(!isFinite(skill.base)) value = (rogue.cl===ENG? 'about ':'約')+value;
 			if(skill.perc){
@@ -9631,7 +10091,10 @@ const Rogue = class extends Fighter{
 		}
 		let name;
 		if(f1===3&&l===3){
-			this.createItemIntoPack(1,'potion',P_EXTRA_HEALING,1);
+			this.createItemIntoPack({
+				type: 'potion',
+				tabId: P_EXTRA_HEALING,
+			});
 			name = rogue.cl===ENG? 'Potion of Extra Healing':'特大回復の薬';
 		} else if(f2>=1&&l===f2+1){ //wand
 			let item = this.cube['a'];
@@ -9705,7 +10168,11 @@ const Rogue = class extends Fighter{
 				let item2 = this.cube[key];
 				if(item2.type==='material'&&item2.material!==item.material)
 					continue;
-				mergeMod(item,item2.modList,ud,ud,ud,true);
+				mergeMod({
+					obj: item,
+					obj2: item2.modList,
+					fixed: true,
+				});
 				item.embeddedNum++;
 				item.embeddedList.push(item2);
 				found = true;
@@ -9714,7 +10181,7 @@ const Rogue = class extends Fighter{
 				if(item.weapon) 
 					item.calcDmgOne();
 				else{
-					item.dmgDiceNum = item.dmgDiceSides = ud;
+					item.dmgDiceNum = item.dmgDiceSides = undefined;
 					if(item.armor) item.calcAcOne();
 				}
 				this.packAdd(item);
@@ -9780,7 +10247,7 @@ const Rogue = class extends Fighter{
 			}
 		} else{
 			let a = getNumber(keyCode);
-			if(!a||this.boxes[a]===ud) return;
+			if(!a||this.boxes[a]===undefined) return;
 			let item = this.inventoryOut(ci,ci.quantity);
 			ci = null;
 			this.boxAdd(item,a);
@@ -9833,7 +10300,10 @@ const Rogue = class extends Fighter{
 		message.draw(rogue.cl===ENG?
 		`You shot ${arrow}`
 		:`矢を放った`);
-		this.aim(null,x,y);
+		this.aim({
+			x1: x,
+			y1: y,
+		});
 	}
 	
 	examine(keyCode){
@@ -9842,7 +10312,7 @@ const Rogue = class extends Fighter{
 			if(loc.item['a']&&litMapIds[cursol.x+','+cursol.y]
 			&&distanceSq(cursol.x,cursol.y,this.x,this.y)<=FOV_SQ
 			&&lineOfSight(this.x,this.y,cursol.x,cursol.y)){
-				inventory.show(loc.item,RIGHT,ud,P_FLOOR)
+				inventory.show(loc.item,RIGHT,undefined,P_FLOOR)
 				flag.clearInv = true;
 			}
 			return;
@@ -9887,7 +10357,10 @@ const Rogue = class extends Fighter{
 					if(skillMap.get(nameSkill).range===0)
 						[cursol.x, cursol.y] = [this.x, this.y];
 				}
-				this.aim(null,cursol.x,cursol.y);
+				this.aim({
+					x1: cursol.x,
+					y1: cursol.y,
+				});
 			}
 			this.cancelCommand();
 			this.drawStats();
@@ -10274,9 +10747,16 @@ const Rogue = class extends Fighter{
 			rogue.done= true;
 			flag.skill = false;
 		} else if(skill.range===0){
-			this.aim(null,this.x,this.y,id);
+			this.aim({
+				x1: this.x,
+				y1: this.y,
+				nameSkill: id,
+			});
 		} else if(i===0){
-			this.aim(keyCodeDr,ud,ud,id);
+			this.aim({
+				keyCode: keyCodeDr,
+				nameSkill: id,
+			});
 		} else if(skill.wall){
 			flag.regular = false;
 			flag.aim = true;
@@ -10300,7 +10780,11 @@ const Rogue = class extends Fighter{
 				} else
 					[x, y] = [this.ce.x, this.ce.y];
 			}
-			this.aim(null,x,y,id);
+			this.aim({
+				x1: x,
+				y1: y,
+				nameSkill: id,
+			});
 		}
 	}
 	
@@ -10604,7 +11088,7 @@ const Rogue = class extends Fighter{
 		}
 	}
 	
-	healAndHunger (){
+	healAndHunger(){
 		let light = this.equipment['light'];
 		if(light&&light.duration&&light.durab){
 			if(--light.duration===0){
@@ -10783,7 +11267,7 @@ const Rogue = class extends Fighter{
 					this.equipmentList();
 					message.draw(message.get(M_INVESTIGATE)+message.get(M_FLOOR),true)
 				} else if(keyCode===65&&isShift){
-					if(!this.haveBook(ud,true)){
+					if(!this.haveBook(undefined,true)){
 						message.draw(message.get(M_DONT_HAVE_RECIPES));
 						return;
 					}
@@ -11001,10 +11485,22 @@ const Enemy = class extends Fighter{
 		
 		this.sleeping = this.awake||this.aggravating||summon? 0:DEFAULT;
 		if(this.mimic) hallucinate.one(this,false,true);
-		if(this.dropNum)
-			this.createItemIntoPack(this.dropNum,RANDOM,RANDOM,1,ud,ud,this.mf||this.mod===UNIQUE,this.lvl);
-		if(this.gf)
-			this.createItemIntoPack(rndIntBet(1,Math.ceil(this.gf/20)),'coin',C_COIN,1);
+		if (this.dropNum) {
+			this.createItemIntoPack({
+				times: this.dropNum,
+				magic: this.mf || this.mod === UNIQUE,
+				lvl: this.lvl,
+			});
+		}
+
+		if (this.gf) {
+			this.createItemIntoPack({
+				times: rndIntBet(1, Math.ceil(this.gf / 20)),
+				type: 'coin',
+				tabId: C_COIN,
+			});
+		}
+
 		this.hp = this.hpMax;
 		this.mp = this.mpMax;
 		this.energy = summon? -COST_REGULAR:this.spd;
@@ -11042,7 +11538,7 @@ const Enemy = class extends Fighter{
 		}
 		let los = l<=FOV_SQ? lineOfSight(this.x,this.y,this.ce.x,this.ce.y):false;
 		if(this.blinded||this.confused||this.moveRnd&&coinToss())
-			dr = this.getDirection(los,ud,true);
+			dr = this.getDirection(los,undefined,true);
 		else if(los)
 			dr = this.decide(l);
 		else if(l<=FOV_SQ)
@@ -11067,7 +11563,7 @@ const Enemy = class extends Fighter{
 			this.attackCircle(loc); 
 			return;
 		} else if(loc.fighter&&this.isOpponent(loc.fighter)){
-			this.attack(loc.fighter);
+			this.attack({ enemy: loc.fighter });
 			return;
 		}
 		if(loc.door===CLOSE&&(!loc.hidden||this.searching)){
@@ -11187,7 +11683,16 @@ const Enemy = class extends Fighter{
 			this.pack[key].putDown(this.x,this.y,true);
 		if(this.boss&&rogue.cdl===33){
 			creation.stairs(1,DOWN,LOCATION,this.x,this.y,true);
-			if(rogue.cdl===33&&!rogue.lethe) creation.item(1,'potion',P_LETHE,1,LOCATION,this.x,this.y);
+			if(rogue.cdl===33&&!rogue.lethe) {
+				creation.item({
+					type: 'potion',
+					tabId: P_LETHE,
+					position: LOCATION,
+					x: this.x,
+					y: this.y,
+				});
+			}
+			
 			if(rogue.cdl===33) difficulty.inferno = true;
 		}
 	}
@@ -11269,7 +11774,10 @@ const Enemy = class extends Fighter{
 				message.draw(rogue.cl===ENG?
 				`${name} shot ${arrow}`
 				:`${name}矢を放った`);
-				this.aim(null,this.ce.x,this.ce.y);
+				this.aim({
+					x1: this.ce.x,
+					y1: this.ce.y,
+				});
 				return;
 			} else if(!this.equipment['main'].cursed){
 				this.swap();
@@ -11295,7 +11803,11 @@ const Enemy = class extends Fighter{
 		} else{
 			flag.skill = true;
 			let [x, y] = skill.range===0? [this.x, this.y]:[this.ce.x,this.ce.y];
-			this.aim(null,x,y,id);
+			this.aim({
+				x1: x,
+				y1: y,
+				nameSkill: id,
+			});
 		}
 		return true;
 	}
@@ -11568,7 +12080,7 @@ const Item = class extends Material{
     }
 
 	static replacer(key,value){
-		return key==='quantity'||key==='place'||key==='price'? ud:value;
+		return key==='quantity'||key==='place'||key==='price'? undefined:value;
 	}
 
 	dropped(){
@@ -11916,13 +12428,25 @@ const creation = {
 				} else{
 					message.draw('Incorrect syntax');
 				}
-			} else if((num2===ud||num2>0)&&itemTab[type]&&itemTab[type].has(num)){
-				rogue.createItemIntoPack(1,type,num,num2,num3);
+			} else if((num2===undefined||num2>0)&&itemTab[type]&&itemTab[type].has(num)){
+				rogue.createItemIntoPack({
+					type: type,
+					tabId: num,
+					quantity: num2,
+					uniqueId: num3,
+				});
 			} else
 				message.draw('Incorrect syntax');
 		} else if(flag.create===FIGHTER){
 			if(fighterTab[type]&&fighterTab[type][num]){
-				this.enemy(1,type,num,LOCATION,rogue.x,rogue.y,true);
+				this.enemy({
+					type: type,
+					tabId: num,
+					position: LOCATION,
+					x: rogue.x,
+					y: rogue.y,
+					summon: true,
+				});
 				map.draw(rogue.x,rogue.y);
 			} else
 				message.draw('Incorrect syntax');
@@ -11931,16 +12455,28 @@ const creation = {
 		flag.create = false;
 		flag.regular = true;
 	},
+
 	dungeon(){
 		map.init();
 		dungeon.create();
 		let boss = rogue.cdl===33&&!difficulty.inferno;
-		if(boss) this.enemy(1,'misc',2,RANDOM);
+		if(boss) 
+			this.enemy({
+				type: 'misc',
+				tabId: 2,
+				position: RANDOM
+			});
 		this.stairs(rndIntBet(MIN_STAIRS_NUM,MAX_STAIRS_NUM),boss? UP:RANDOM,INIT);
 		this.trap(rndIntBet(MIN_TRAP_NUM,MAX_TRAP_NUM,RANDOM,RANDOM),RANDOM,INIT);
 		rogue.putDown();
-		this.enemy(10,RANDOM,RANDOM,INIT);
-		this.item(10,RANDOM,RANDOM,1,INIT);
+		this.enemy({
+			times: 10,
+			position: INIT,
+		});
+		this.item({
+			times: 10,
+			position: INIT,
+		});
 		map.draw(rogue.x,rogue.y);
 		let track = audio.getDungeonTrack(rogue.cdl,boss);
 		if(audio.curTrack!==track){
@@ -11948,6 +12484,7 @@ const creation = {
 			audio.playMusic(track);
 		}
 	},
+
 	town(){
 		map.init(true);
 		town.createAll();
@@ -11958,41 +12495,56 @@ const creation = {
 		audio.playMusic(!difficulty.inferno? 'town':'town2');
 		initShopItem();
 	},
-	enemy(times=1,type,tabId,position,x,y,summon,magic,bias,boost){
-		if(!bias) bias = RANDOM;
-		if(!boost) boost = rogue.cdl===0? 1:0;
-		let lvl = rogue.cdl+boost;
-		for(let i=0;i<times;i++){
+
+	enemy({
+		position, 
+		x, 
+		y, 
+		summon, 
+		magic, 
+		boost,
+		times=1, 
+		type=RANDOM, 
+		tabId=RANDOM, 
+		bias=RANDOM, 
+	}){
+		if(!boost) boost = !rogue.cdl ? 1 : 0;
+		let lvl = rogue.cdl + boost;
+		for(let i=0; i < times; i++){
 			let [typeT, tabIdT] = [type, tabId];
-			if(type===ud||type===RANDOM){
-				do	typeT = FT[rndInt(FT.length-2)];
-				while(fighterTab[typeT][0].lvl>lvl);
+			if(type === undefined || type === RANDOM){
+				do	typeT = FT[rndInt(FT.length - 2)];
+				while(fighterTab[typeT][0].lvl > lvl);
 			}
+
 			let fighter;
-			if(tabId===ud||tabId===RANDOM){
+			if(tabId === undefined || tabId === RANDOM){
 				let j = 0;
 				let fighterNums = fighterNumsMap.get(typeT);
 				fighterNums.shuffle();
 				do{
 					tabIdT = fighterNums[j++];
-					if(tabIdT===ud) return; //
+					if(tabIdT === undefined) return; //
 					fighter = fighterTab[typeT][tabIdT];
-				} while(fighter.mod===UNIQUE&&rogue.cue[fighter.name[ENG]]
-				||fighter.lvl>lvl||evalPercentage(fighter.rarity));
-			} else
+				} while(fighter.mod === UNIQUE && rogue.cue[fighter.name[ENG]]
+				|| fighter.lvl > lvl || evalPercentage(fighter.rarity));
+			} else {
 				fighter = fighterTab[typeT][tabIdT];
-			let count = fighter.group? rndIntBet(2,4):1;
+			}
+
+			let count = fighter.group ? rndIntBet(2, 4) : 1;
 			let [posT, xT, yT] = [position, x, y];
-			for(let j=0;j<count;j++){
+			for(let j = 0; j < count; j++){
 				let fighterNew = new Enemy(fighter);
-				fighterNew.init(posT,xT,yT,summon,magic,bias,lvl);
-				if(fighter.group&&posT!==LOCATION){
+				fighterNew.init(posT, xT, yT, summon, magic, bias, lvl);
+				if(fighter.group && posT !== LOCATION){
 					posT = LOCATION;
 					[xT, yT] = [fighterNew.x, fighterNew.y];
 				}
 			}
 		}
 	},
+
 	enemyList(){
 		this.enemies = {};
 		for(let key in fighterTab){
@@ -12000,13 +12552,29 @@ const creation = {
 				this.enemies[`${fighter.lvl},${fighter.mod},${key}`] = fighter.name['b'];
 		}
 	},
-	item(times=1,type,tabId,quantity=1,position,x,y,magic,boost,lvl,uniqueId,starter,matBase,matId){
+	
+	item({
+		position,
+		x,
+		y,
+		magic,
+		boost,
+		lvl,
+		uniqueId,
+		starter,
+		matBase,
+		matId,
+		times=1,
+		type=RANDOM,
+		tabId=RANDOM,
+		quantity=1,
+	}){
 		if(!boost) boost = !rogue.cdl? 1:0;
 		if(!lvl) lvl = rogue.cdl+boost;
 		if(uniqueId>=0) magic = true;
 		for(let i=0;i<times;i++){
 			let [typeT, tabIdT] = [type, tabId];
-			if(type===ud||type===RANDOM){
+			if(type===undefined||type===RANDOM){
 				do{	if(magic)
 						typeT = equipmentList[rndInt(equipmentList.length-1)];
 					else
@@ -12014,7 +12582,7 @@ const creation = {
 				} while(evalPercentage(RARITY[typeT])||flag.shop&&typeT==='coin');
 			}
 			let item;
-			if(tabId===ud||tabId===RANDOM){
+			if(tabId===undefined||tabId===RANDOM){
 				let j = 0;
 				let itemNums = itemNumsMap.get(typeT);
 				itemNums.shuffle();
@@ -12034,6 +12602,7 @@ const creation = {
 			}
 		}
 	},
+
 	itemList(){
 		this.items = {};
 		flag.shop = true;
@@ -12046,7 +12615,14 @@ const creation = {
 				let matBase = materialList[i];
 				let materials = materialMap.get(matBase);
 				for(let i=0,l=materials.list.length;i<l;i++){
-					let item = this.item(1,type,tabId,1,LIST,ud,ud,ud,ud,99,ud,ud,matBase,i);
+					let item = this.item({
+						type: type,
+						tabId: tabId,
+						position: LIST,
+						lvl: 99,
+						matBase: matBase,
+						matId: i,
+					});
 					item.embeddedMax = 0;
 					let name = item.getName();
 					this.items[type].push(`${name},${item.weight}kg`);
@@ -12055,15 +12631,17 @@ const creation = {
 		}
 		flag.shop = false;
 	},
+
 	trap(times,tabId,position,x,y,show){
 		for(let i=0;i<times;i++){
 			let tabIdT = tabId;
-			if(tabId===ud||tabId===RANDOM)
+			if(tabId===undefined||tabId===RANDOM)
 				tabIdT = rndInt(trapTab.length-1);
 			let trap = new Trap(trapTab[tabIdT],!show);
 			trap.init(position,x,y);
 		}
 	},
+
 	stairs(times,tabId,position,x,y,show){
 		for(let i=0;i<times;i++){
 			let tabIdT = tabId;
@@ -12076,6 +12654,7 @@ const creation = {
 			staircase.init(position,x,y);
 		}
 	},
+
 };
 
 const searchItemToIdentifiy = {
@@ -12329,7 +12908,7 @@ document.onkeydown = function(e){
 	} else if(flag.disint){
 		rogue.disintegrate(e.keyCode);
 	} else if(flag.aim){
-		rogue.aim(e.keyCode);
+		rogue.aim({keyCode: e.keyCode});
 	} else if(flag.zap){
 		rogue.zap(e.keyCode);
 	} else if(flag.throw){
