@@ -3013,6 +3013,8 @@ const audio = {
 		paralyze:new Audio('sound/paralyze.wav'),
 		blind:new Audio('sound/blind.wav'),
 		probe:new Audio('sound/probe.wav'),
+		summon:new Audio('sound/summon.wav'),
+		hungry:new Audio('sound/hungry.wav'),
 	},
 	init(){
 		for(let key in this.music)
@@ -7997,6 +7999,7 @@ const Fighter = class extends Material{
 					summon: true,
 					magic: skillId===CREATE_MAGIC_MONSTER,
 				});
+				audio.playSound('summon');
 				break;
 			case CREATE_TRAP:
 				creation.trap(5,RANDOM,LOCATION,this.x,this.y);
@@ -11100,11 +11103,15 @@ const Rogue = class extends Fighter{
 		if(this.hunger>0){
 			this.heal();
 			let cost = Math.floor((this.hpReg+this.mpReg-this.digest)/10);
+			let hunTemp = this.hunger;
 			if(cost>0){
 				this.hunger -= cost;
 				if(this.hunger<0) this.hunger = 0;
-			} else if(rogue.turn%(-cost+1)===0)
+			} else if(rogue.turn%(-cost+1)===0) {
 				this.hunger--;
+			}
+
+			if(hunTemp > 200 && this.hunger <= 200) audio.playSound('hungry');
 			if(!this.hunger) message.draw(message.get(M_STARVED));
 		} else{
 			this.hp--;
