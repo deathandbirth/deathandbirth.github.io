@@ -57,21 +57,18 @@ const display = {
             ctx.shadowOffsetX = 1;
             ctx.shadowOffsetY = 1;
             ctx.fillStyle = WHITE;
+            let fontStyle = FONT_STYLE[option.getLanguage()];
             if (key === 'cur') {
-                ctx.font = fs + 6 + 'px Arial';
+                ctx.font = fs + 6 + 'px ' + fontStyle;
                 ctx.strokeStyle = YELLOW;
             } else if (key === 'map') {
-                ctx.font = '10px Arial';
+                ctx.font = '10px ' + fontStyle;
+            } else if (key === 'buf') {
+                ctx.font = fs - 1 + 'px ' + FONT_STYLE[ENG];
             } else {
-                ctx.font = fs + 'px Arial';
+                ctx.font = fs - 1 + 'px ' + fontStyle;
             }
 
-            if (key === 'buf') {
-                ctx.shadowColor = !option.shadow.user ? CLEAR : SHADOW2;
-            } else {
-                ctx.shadowColor = key === 'cur' || key === 'map' ? SHADOW2 : SHADOW;
-            }
-            
             ctx.textAlign = key === 'stats' || key === 'inv' || key === 'msg' ? 'left' : 'center';
         }
 

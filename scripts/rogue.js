@@ -451,6 +451,8 @@ const Rogue = class extends Fighter {
             ctxStats.save();
             ctxStats.textAlign = 'center';
             ctxStats.fillStyle = GRAY;
+            ctxStats.strokeStyle = GRAY;
+            ctxStats.lineWidth = 0.5;
             ctxStats.strokeRect((x + i * 1.4 - 1) * fs, y - 0.5 * fs, fs, fs);
             if (!item) {
                 ctxStats.fillText(i, (x + i * 1.4 - 0.5) * fs, y);
@@ -463,9 +465,9 @@ const Rogue = class extends Fighter {
 				
                 ctxStats.fillStyle = item.color;
                 ctxStats.fillText(item.symbol, (x + i * 1.4 - 0.5) * fs, y);
-                ctxStats.font = fs / 2 + 'px Arial';
+                ctxStats.font = fs / 2 + 'px ' + FONT_STYLE[option.getLanguage()];
                 ctxStats.fillStyle = WHITE;
-                ctxStats.shadowColor = SHADOW;
+                ctxStats.shadowColor = CLEAR;
                 if (item.stroke) ctxStats.strokeText(item.quantity, (x + i * 1.4) * fs, y + 0.6 * fs);
                 ctxStats.fillText(item.quantity, (x + i * 1.4) * fs, y + 0.5 * fs);
                 if (item.charges >= 0 && item.identified) ctxStats.fillText(item.charges, (x + i * 1.4) * fs, y);
@@ -1714,7 +1716,6 @@ const Rogue = class extends Fighter {
             ctxInv.save();
             ctxInv.textAlign = 'center';
             ctxInv.fillText(key.toUpperCase(), i * fs, j * fs);
-            ctxInv.fillText(')', i * fs + fs / 3, j * fs);
             ctxInv.textAlign = 'left';
             ctxInv.fillText(stat.name[option.getLanguage()], (i + 1) * fs, j * fs);
             ctxInv.textAlign = 'right';

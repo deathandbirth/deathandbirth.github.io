@@ -381,8 +381,8 @@ const statistics = {
         if (!enemy) return;
         ctxStats.save();
         ctxStats.textAlign = 'center';
-        ctxStats.fillStyle = GRAY;
-        ctxStats.strokeRect(canvas.width - 2 * fs, canvas.height - 4.5 * fs, fs, fs);
+        ctxStats.strokeStyle = GRAY;
+        ctxStats.strokeRect(canvas.width - 1.95 * fs, canvas.height - 4.45 * fs, fs, fs);
         let symbol = enemy.symbol;
         ctxStats.fillStyle = enemy.color;
         if (enemy.shadow) ctxStats.shadowColor = enemy.shadow;

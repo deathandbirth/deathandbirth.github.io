@@ -32,13 +32,14 @@ const game = {
         this.clearDisplay();
         ctxInv.save();
         ctxInv.textAlign = 'center'
-        ctxInv.font = '40px Arial';
+        let fontStyle = FONT_STYLE[option.getLanguage()];
+        ctxInv.font = '40px ' + fontStyle;
         ctxInv.fillText('Death and Birth', IN_WIDTH / 2 * fs, IN_HEIGHT / 2 * fs);
-        ctxInv.font = '20px Arial';
+        ctxInv.font = '20px ' + fontStyle;
         ctxInv.fillText(option.isEnglish() ?
             '[Enter] to start' :
             '[Enter] 開始', IN_WIDTH / 2 * fs, (IN_HEIGHT / 2 + 2) * fs);
-        ctxInv.font = '15px Arial';
+        ctxInv.font = '15px ' + fontStyle;
         ctxInv.textAlign = 'right';
         ctxInv.fillText(`ver ${VERSION}`, canvas.width - 2 * fs, canvas.height - 2 * fs);
         ctxInv.restore();
@@ -51,9 +52,10 @@ const game = {
         this.clearDisplay();
         ctxInv.save();
         ctxInv.textAlign = 'center'
-        ctxInv.font = '40px Arial';
+        let fontStyle = FONT_STYLE[option.getLanguage()];
+        ctxInv.font = '40px ' + fontStyle;
         ctxInv.fillText('G A M E  O V E R', IN_WIDTH / 2 * fs, IN_HEIGHT / 2 * fs);
-        ctxInv.font = '20px Arial';
+        ctxInv.font = '20px ' + fontStyle;
         ctxInv.fillText(option.isEnglish() ?
             '[Enter] to retry' :
             '[Enter] リトライ', IN_WIDTH / 2 * fs, (IN_HEIGHT / 2 + 2) * fs);

@@ -1402,7 +1402,7 @@ const Material = class extends Thing {
         ctxInv.fillText(name, (i + 0.6) * fs, j * fs, 17.5 * fs); //
         j += 1;
         ctxInv.fillStyle = WHITE;
-        ctxInv.shadowColor = SHADOW;
+        ctxInv.shadowColor = CLEAR;
         if (this.desc) {
             this.desc[option.getLanguage()].replace(/\t/g, '').split('\n').forEach((value, key) => {
                 ctxInv.fillText(key % 2 ? '   ' + value : value, (i - 0.5) * fs, (j++) * fs);
@@ -1429,7 +1429,8 @@ const Material = class extends Thing {
         if (!this.equipable && !this.type == 'gem' && !char) return;
         if (char) {
             fs -= 3;
-            ctxInv.font = fs + 'px Arial';
+            var fontStyle = FONT_STYLE[option.getLanguage()];
+            ctxInv.font = fs - 1 + 'px ' + fontStyle;
 		}
 		
         let count = 0;
@@ -1507,7 +1508,7 @@ const Material = class extends Thing {
 		
         if (char) {
             fs += 3;
-            ctxInv.font = fs + 'px Arial';
+            ctxInv.font = fs - 1 + 'px ' + fontStyle;
         }
     }
 

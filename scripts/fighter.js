@@ -3540,11 +3540,10 @@ const Fighter = class extends Material {
             ctxInv.save();
             ctxInv.textAlign = 'center';
             ctxInv.fillText(EA[k++].toUpperCase(), (i - 0.5) * fs, j * fs);
-            ctxInv.fillText(')', (i - 0.5) * fs + fs / 3, j * fs);
             ctxInv.textAlign = 'left';
             let parts = option.isEnglish() ? key : BPJ[key];
             if (key === 'main' || key === 'off') parts += this.swapped ? 2 : 1;
-            ctxInv.fillText(parts, (i + 0.5) * fs, j * fs);
+            ctxInv.fillText(parts, i * fs, j * fs);
             if (!item) {
                 if (key === 'off' && this.equipment['main'] && this.equipment['main'].twoHanded) {
                     ctxInv.fillText(option.isEnglish() ?
@@ -3580,7 +3579,7 @@ const Fighter = class extends Material {
             if (item.stroke) ctxInv.strokeText(name, (i + 4.5) * fs, j * fs, limit * fs);
             ctxInv.fillText(name, (i + 4.5) * fs, j * fs, limit * fs);
             ctxInv.fillStyle = WHITE;
-            ctxInv.shadowColor = SHADOW;
+            ctxInv.shadowColor = CLEAR;
             ctxInv.textAlign = 'right';
             if (flag.blacksmith) {
                 let price = item.getDurabPrice();
@@ -3658,9 +3657,7 @@ const Fighter = class extends Material {
             ctxInv.save();
             if (bookmark) {
                 if (skill) ctxInv.shadowColor = skill.color;
-                ctxInv.fillText(key === '0' ? main : `F${key}`, (i - 1) * fs, j * fs);
-                ctxInv.textAlign = 'center';
-                ctxInv.fillText(':', (i + 1.25) * fs + fs / 3, j * fs);
+                ctxInv.fillText(key === '0' ? main : `F${key}`, (i - 1) * fs, j * fs, 2 * fs);
                 if (!skill) {
                     j++;
                     ctxInv.restore();
@@ -3675,12 +3672,11 @@ const Fighter = class extends Material {
 
                 ctxInv.textAlign = 'center';
                 ctxInv.fillText(key, i * fs, j * fs);
-                ctxInv.fillText(')', i * fs + fs / 3, j * fs);
 			}
 			
             ctxInv.textAlign = 'left';
             let name = skill.name[option.getLanguage()];
-            ctxInv.fillText(name, (i + 1 + (bookmark ? 1 : 0)) * fs, j * fs);
+            ctxInv.fillText(name, (i + 0.75 + (bookmark ? 1 : 0)) * fs, j * fs, 8 * fs);
             ctxInv.textAlign = 'right';
             let lvl = 0;
             if (list[key].lvl) {
@@ -3717,7 +3713,7 @@ const Fighter = class extends Material {
 			}
 			
             if (skill.reqLvl <= this.lvl && skill.mp > this.mp) {
-                ctxInv.shadowColor = SHADOW;
+                ctxInv.shadowColor = CLEAR;
                 ctxInv.fillStyle = RED;
 			}
 			

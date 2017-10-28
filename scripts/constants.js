@@ -381,7 +381,7 @@ const CLW = { //wizard
 };
 
 //color
-const CLEAR = 'rgba(0, 0, 0, 0)',
+const CLEAR = 'transparent',
     SHADOW = '#848484',
     SHADOW2 = '#333333',
     BLACK = 'black',
@@ -750,6 +750,11 @@ const modBonusMap = new Map([
     [RARE, { fire: 30, water: 30, air: 30, earth: 30, poison: 30, }],
     [UNIQUE, { fire: 50, water: 50, air: 50, earth: 50, poison: 75, }],
 ]);
+
+const FONT_STYLE = {
+    a: 'sans serif',
+    b: "'Yu Gothic', 'Hiragino Kaku Gothic Pro', 'Hiragino Kaku Gothic ProN', 'TakaoExGothic', 'Meiryo', 'MS PGothic', sans-serif",
+};
 
 let fs = 0; //font size
 let rogue;

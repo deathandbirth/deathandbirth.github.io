@@ -66,7 +66,6 @@ const inventory = {
 			}
 
             ctxInv.fillText(char, i * fs, j * fs);
-            ctxInv.fillText(')', i * fs + fs / 3, j * fs);
             if (flag.pack && !item || flag.option || flag.cure) {
                 if (!flag.pack) {
                     ctxInv.textAlign = 'left';
@@ -116,7 +115,7 @@ const inventory = {
             if (item.stroke) ctxInv.strokeText(name, (i + 1.5) * fs, j * fs, 15 * fs);
             ctxInv.fillText(name, (i + 1.5) * fs, j * fs, 15 * fs);
             ctxInv.fillStyle = WHITE;
-            ctxInv.shadowColor = SHADOW;
+            ctxInv.shadowColor = CLEAR;
             ctxInv.textAlign = 'right';
             if (flag.shop || flag.blacksmith) {
                 let price = flag.shop ? item.price * quantity2 : item.getDurabPrice();

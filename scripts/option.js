@@ -46,7 +46,7 @@ const option = {
                 display.change(a, true);
             } else if (this.name === 'language') {
                 this[this.name].user = a;
-                rogue.drawStats();
+                display.change(this.display.user, true);
             } else if (this.name === 'BGM' || this.name === 'SE') {
                 this[this.name].user = a;
                 let vol = (keyCode - 65) / 10;
@@ -61,7 +61,7 @@ const option = {
             flag.option2 = false;
         } else if (this.name === 'shadow') {
             this[this.name].user = !this[this.name].user;
-            ctxBuf.shadowColor = this[this.name].user ? SHADOW2 : CLEAR;
+            //ctxBuf.shadowColor = this[this.name].user ? SHADOW2 : CLEAR;
             map.redraw(rogue.x, rogue.y);
             map.draw(rogue.x, rogue.y);
         } else if (this.name === 'mute') {
