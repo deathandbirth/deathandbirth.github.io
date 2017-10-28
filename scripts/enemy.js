@@ -241,7 +241,7 @@ const Enemy = class extends Fighter {
         if (evalPercentage(25)) {
             if (!loc.hidden) {
                 let name = this.getName(true);
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} broke Magic Circle of Protection` :
                     `${name}守りの魔法円を破壊した`)
 			}
@@ -268,7 +268,7 @@ const Enemy = class extends Fighter {
         if (rogue.hallucinated || this.mimic && !this.identified) hallucinate.undoOne(this);
         let name = this.getName();
         let nameE = f.getName(true);
-        message.draw(rogue.cl === ENG ?
+        message.draw(option.isEnglish() ?
             `${nameE} defeated ${name}` :
             `${nameE}${name}を倒した`);
         f.gainExp(this.expGain);
@@ -374,7 +374,7 @@ const Enemy = class extends Fighter {
                 flag.arrow = true;
                 let name = this.getName(true);
                 let arrow = this.timesMissile === 1 ? 'an arrow' : 'arrows';
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} shot ${arrow}` :
                     `${name}矢を放った`);
                 this.aim({
@@ -513,14 +513,14 @@ const Enemy = class extends Fighter {
     getName(subject) {
         let name;
         if (this.isShowing()) {
-            name = this.name[rogue.cl];
+            name = this.name[option.getLanguage()];
             if (this.cursed && this.mod !== UNIQUE)
-                name = (rogue.cl === ENG ? 'Cursed ' : '呪われた') + name;
+                name = (option.isEnglish() ? 'Cursed ' : '呪われた') + name;
         } else {
-			name = rogue.cl === ENG ? 'Something' : '何か';
+			name = option.isEnglish() ? 'Something' : '何か';
 		}
 
-        if (subject && rogue.cl !== ENG) name += 'は';
+        if (subject && !option.isEnglish()) name += 'は';
         return name;
     }
 

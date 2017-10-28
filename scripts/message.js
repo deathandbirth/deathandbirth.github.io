@@ -485,7 +485,7 @@ const message = {
         ctsInv.save();
         ctsInv.fillText(`[${l}/${MAX_MSG_LIST_LEN}]`, 1.5 * fs, (IN_HEIGHT - MS + 1) * fs);
         ctsInv.textAlign = 'right';
-        ctsInv.fillText(rogue.cl === ENG ?
+        ctsInv.fillText(option.isEnglish() ?
             `Message List [${this.page}/${p}]` :
             `メッセージ項目 [${this.page}/${p}]`,
             24 * fs, (IN_HEIGHT - MS + 1) * fs);
@@ -525,6 +525,6 @@ const message = {
     },
 
     get(id) {
-        return msgMap.get(id)[rogue.cl];
+        return msgMap.get(id)[option.getLanguage()];
     }
 }

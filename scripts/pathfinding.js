@@ -27,15 +27,15 @@ const circleSearch = {
 
         if (this.count) {
             if (this.type === MONSTER_DETECTION) {
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `Detected ${this.count} enemies` :
                     `${this.count}体の敵を検出した`);
             } else if (this.type === ITEM_DETECTION) {
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `Detected ${this.count} items` :
                     `${this.count}個のアイテムを検出した`);
             } else if (this.type === DISINTEGRATION) {
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `Disintegrated ${this.count} enemies` :
                     `${this.count}体の敵を塵にした`);
             }

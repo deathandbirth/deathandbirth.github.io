@@ -2023,7 +2023,7 @@ const Item = class extends Material {
 
     dropped() {
         let name = this.getName();
-        message.draw(rogue.cl === ENG ?
+        message.draw(option.isEnglish() ?
             `Dropped ${name}` :
             `${name}を落とした`)
     }
@@ -2135,7 +2135,7 @@ const Item = class extends Material {
         return i;
     }
 
-    getName(real, quantity = this.quantity, a = rogue.cl, gamble) {
+    getName(real, quantity = this.quantity, a = option.getLanguage(), gamble) {
         let type = this.typeHalluc ? this.typeHalluc : this.type;
         let halluc = !!this.typeHalluc;
         let name;

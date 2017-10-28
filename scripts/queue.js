@@ -27,7 +27,7 @@ const Queue = class extends BinaryHeap {
         if (!flag.rest) map.draw(rogue.x, rogue.y);
         if (rogue.paralyzed || rogue.sleeping) {
             rogue.decreaseEnergy();
-            message.draw(rogue.cl == ENG ?
+            message.draw(option.isEnglish() ?
                 `You are still ${rogue.sleeping? 'sleeping':'paralyzed'}` :
                 `まだ${rogue.sleeping? '昏睡':'麻痺'}している`);
             flag.wait = true;

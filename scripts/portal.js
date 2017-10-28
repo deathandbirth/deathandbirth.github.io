@@ -19,6 +19,6 @@ const Portal = class extends Thing {
     }
 
     getName() {
-        return this.name[rogue.cl];
+        return this.name[option.getLanguage()];
     }
 }

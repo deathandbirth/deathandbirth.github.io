@@ -99,7 +99,7 @@ const Location = class extends Position {
 
         if (this.stairs && !this.hidden) {
             let nameStairs = this.stairs.getName();
-            if (rogue.cl === ENG) {
+            if (option.isEnglish()) {
                 msg += (msg ? ' on ' : '') + nameStairs;
 			} else {
 				msg = nameStairs + (msg ? 'の上に' + msg : '');
@@ -110,15 +110,15 @@ const Location = class extends Position {
             let l = Object.keys(this.item).length;
             let item = this.item[EA[l - 1]];
             if (!this.stairs && !this.hidden && msg) {
-                msg = rogue.cl === ENG ? msg + ' on ' : 'の上に' + msg;
+                msg = option.isEnglish() ? msg + ' on ' : 'の上に' + msg;
             } else if (l === 1 && msg) {
-                msg = rogue.cl === ENG ? msg + ' and ' : 'と' + msg;
+                msg = option.isEnglish() ? msg + ' and ' : 'と' + msg;
 			} else if (l > 1 && msg) {
-				msg = rogue.cl === ENG ? msg + ', ' : 'と' + msg;
+				msg = option.isEnglish() ? msg + ', ' : 'と' + msg;
 			}
 
             let nameItem = item.getName();
-            if (rogue.cl === ENG) {
+            if (option.isEnglish()) {
                 msg = msg + nameItem + (l > 1 ? ' and more' : '');
 			} else {
 				msg = nameItem + (l > 1 ? 'とアイテムの山' : '') + msg;
@@ -143,16 +143,16 @@ const Location = class extends Position {
 			}
 			
             if (msgAdd) {
-                let nameEnter = this.enter.name[rogue.cl];
-                msg = !msg ? nameEnter : nameEnter + (rogue.cl === ENG ? ', ' : 'と') + msg;
+                let nameEnter = this.enter.name[option.getLanguage()];
+                msg = !msg ? nameEnter : nameEnter + (option.isEnglish() ? ', ' : 'と') + msg;
             }
         } else if (this.trap) {
             let nameTrap = this.trap.getName();
             if (flag.examine && !this.hidden) {
-                msg = !msg ? nameTrap : nameTrap + (rogue.cl === ENG ? ', ' : 'と') + msg;
+                msg = !msg ? nameTrap : nameTrap + (option.isEnglish() ? ', ' : 'と') + msg;
 			} else if (!flag.examine) {
                 if (!this.trap.protection && (stepOn || this.hidden && coinToss())) {
-                    message.draw(rogue.cl === ENG ?
+                    message.draw(option.isEnglish() ?
                         `You got caught in ${nameTrap}` :
                         `${nameTrap}に捕まった`);
                     rogue.trapped(this.trap, stepOn);
@@ -163,7 +163,7 @@ const Location = class extends Position {
 		}
 		
         if (msg && !rogue.blinded) {
-            message.draw(rogue.cl === ENG ?
+            message.draw(option.isEnglish() ?
                 `You see ${msg}` :
                 `${msg}が見える`);
             if (!flag.examine && this.item['a'] && !this.enter) rogue.itemAuto(this.item);
@@ -229,13 +229,13 @@ const Location = class extends Position {
         if (this.trap) {
             name = this.trap.getName();
 		} else if (this.door === CLOSE) {
-            name = rogue.cl === ENG ? 'door' : 'ドア';
+            name = option.isEnglish() ? 'door' : 'ドア';
             this.wall = false;
         } else if (this.stairs) {
 			name = this.stairs.getName();
 		}
 		
-        message.draw(rogue.cl === ENG ?
+        message.draw(option.isEnglish() ?
             `You found a hidden ${name}` :
             `隠された${name}を発見した`);
         this.draw();

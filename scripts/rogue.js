@@ -22,7 +22,6 @@ const Rogue = class extends Fighter {
         this.cui = {}; //current unique item
         this.cue = {}; //current unique enemy
         this.eqt = {} //equipment temp
-        this.cl = option.language.user //current language
         this.lethe = 0;
         this.turn = 1;
         this.done = false;
@@ -67,7 +66,7 @@ const Rogue = class extends Fighter {
                 if (ci) {
                     flag.arrow = true;
                     let arrow = this.timesMissile === 1 ? 'an arrow' : 'arrows'
-                    message.draw(rogue.cl === ENG ?
+                    message.draw(option.isEnglish() ?
                         `You shot ${arrow}` :
                         `矢を放った`);
                     this.aim({ keyCode: keyCodeDr });
@@ -270,7 +269,7 @@ const Rogue = class extends Fighter {
             if (ci) {
                 flag.arrow = true;
                 let arrow = this.timesMissile === 1 ? 'an arrow' : 'arrows';
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `You shot ${arrow}` :
                     `矢を放った`);
                 this.aim({ keyCode: keyCodeDr });
@@ -331,7 +330,7 @@ const Rogue = class extends Fighter {
         ctxStats.fillRect((2 - this.mp / this.mpMax) * canvas.width / 2, canvas.height - SS * fs, canvas.width / 2, 3);
         ctxStats.restore();
 
-        let [level, exp, str, dex, con, int, spd] = rogue.cl === ENG ? ['Level', 'Exp', 'Str', 'Dex', 'Con', 'Int', 'Spd'] :
+        let [level, exp, str, dex, con, int, spd] = option.isEnglish() ? ['Level', 'Exp', 'Str', 'Dex', 'Con', 'Int', 'Spd'] :
             ['レベル', '経験値', '筋', '器', '耐', '知', '速'];
         statistics.draw({
             msg: `${level} ${this.lvl}`,
@@ -422,16 +421,16 @@ const Rogue = class extends Fighter {
 
         let msg;
         if (!rogue.cdl) {
-            msg = rogue.cl === ENG ? 'Limbo' : '辺獄';
+            msg = option.isEnglish() ? 'Limbo' : '辺獄';
 		} else {
             if (rogue.cdl >= 1 && rogue.cdl <= 33) {
-                msg = rogue.cl === ENG ? 'Hell B' : '地獄 地下';
+                msg = option.isEnglish() ? 'Hell B' : '地獄 地下';
                 msg += rogue.cdl;
             } else if (rogue.cdl >= 34 && rogue.cdl <= 66) {
-                msg = rogue.cl === ENG ? 'Purgatory' : '煉獄';
+                msg = option.isEnglish() ? 'Purgatory' : '煉獄';
                 msg += rogue.cdl - 33;
             } else if (rogue.cdl >= 67 && rogue.cdl <= 99) {
-                msg = rogue.cl === ENG ? 'Heaven' : '天国';
+                msg = option.isEnglish() ? 'Heaven' : '天国';
                 msg += rogue.cdl - 66;
             }
 		}
@@ -559,8 +558,8 @@ const Rogue = class extends Fighter {
             message.draw(message.get(M_BLACKSMITH), true);
 		}
 		
-        let nameEnter = build.name[rogue.cl];
-        message.draw(rogue.cl === ENG ?
+        let nameEnter = build.name[option.getLanguage()];
+        message.draw(option.isEnglish() ?
             `You entered The ${nameEnter}` :
             `${nameEnter}に入った`);
     }
@@ -589,11 +588,11 @@ const Rogue = class extends Fighter {
                     deleteAndSortItem(list, key);
                     delete Item.list[item.id];
                     if (!charged) {
-                        message.draw(rogue.cl === ENG ?
+                        message.draw(option.isEnglish() ?
                             `Destroyed ${name}` :
                             `${name}を破壊した`);
                     } else {
-                        message.draw(rogue.cl === ENG ?
+                        message.draw(option.isEnglish() ?
                             `Charged ${name}` :
                             `${name}を充填した`);
                     }
@@ -618,7 +617,7 @@ const Rogue = class extends Fighter {
             } else {
                 let name = item.getName();
                 if (item.type === 'coin') this.purse += item.price;
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `Picked up ${name}` :
                     `${name}を拾った`);
                 audio.playSound('grab');
@@ -682,11 +681,11 @@ const Rogue = class extends Fighter {
         this.gainOrloseWeight(item, item.quantity, true);
         let name = item.getName();
         if (item.weapon) {
-            message.draw(rogue.cl === ENG ?
+            message.draw(option.isEnglish() ?
                 `Wielding ${name}` :
                 `${name}を握った`);
         } else {
-            message.draw(rogue.cl === ENG ?
+            message.draw(option.isEnglish() ?
                 `Wearing ${name}` :
                 `${name}を身に付けた`);
 		}
@@ -715,20 +714,20 @@ const Rogue = class extends Fighter {
         if (!item) return;
         let msg;
         if (item.weapon) {
-            msg = rogue.cl === ENG ? 'unwield' : '離す';
+            msg = option.isEnglish() ? 'unwield' : '離す';
 		} else {
-			msg = rogue.cl === ENG ? 'take off' : '外す';
+			msg = option.isEnglish() ? 'take off' : '外す';
 		}
 
         if (item.cursed) {
-            message.draw(rogue.cl === ENG ?
+            message.draw(option.isEnglish() ?
                 `You can't ${msg} the cursed item` :
                 `呪われたアイテムを${msg}ことが出来ない`);
             return null;
 		}
 		
         let name = item.getName();
-        if (rogue.cl === ENG) {
+        if (option.isEnglish()) {
             msg = getUpperCase(msg);
             message.draw(`${msg} ${name}`);
         } else {
@@ -793,7 +792,7 @@ const Rogue = class extends Fighter {
 		}
 
         let name = light.getName();
-        message.draw(rogue.cl === ENG ?
+        message.draw(option.isEnglish() ?
             `Fueled ${name}` :
             `${name}を補給した`);
         rogue.done = true;
@@ -816,7 +815,7 @@ const Rogue = class extends Fighter {
 		}
 		
         let name = item.getName(true, true);
-        message.draw(rogue.cl === ENG ?
+        message.draw(option.isEnglish() ?
             `Ate ${name}` :
             `${name}を食べた`);
         this.haveCast(item.nameSkill, item.skillLvl, this);
@@ -849,7 +848,7 @@ const Rogue = class extends Fighter {
 		}
 		
         let name = item.getName(true, true);
-        message.draw(rogue.cl === ENG ?
+        message.draw(option.isEnglish() ?
             `Quaffed ${name}` :
             `${name}を飲んだ`);
         this.haveCast(item.nameSkill, item.skillLvl, this);
@@ -941,7 +940,7 @@ const Rogue = class extends Fighter {
 		}
 		
         let name = item.getName(true, 1);
-        message.draw(rogue.cl === ENG ?
+        message.draw(option.isEnglish() ?
             `Read ${name}` :
             `${name}を読んだ`);
         flag.read = false;
@@ -989,7 +988,7 @@ const Rogue = class extends Fighter {
 		}
 		
         let name = item.getName();
-        message.draw(rogue.cl === ENG ?
+        message.draw(option.isEnglish() ?
             `Identified ${name}` :
             `${name}を判別した`);
         if (keyCode) {
@@ -1021,7 +1020,7 @@ const Rogue = class extends Fighter {
 		}
 		
         if (found) {
-            message.draw(rogue.cl === ENG ?
+            message.draw(option.isEnglish() ?
                 `Repaired your equipment${forAmount}` :
                 `装備を${forAmount}修復した`);
         }
@@ -1058,14 +1057,14 @@ const Rogue = class extends Fighter {
                 return;
 			}
 			
-            forAmount = rogue.cl === ENG ? ` for $${price}` : `$${price}で`;
+            forAmount = option.isEnglish() ? ` for $${price}` : `$${price}で`;
             if (blacksmithAll) this.repairAll(forAmount);
 		}
 		
         if (!blacksmithAll) {
             this.repairOne(item, isShift);
             let name = item.getName();
-            message.draw(rogue.cl === ENG ?
+            message.draw(option.isEnglish() ?
                 `Repaired ${name}${forAmount}` :
                 `${name}を${forAmount}修復した`);
 		}
@@ -1173,12 +1172,12 @@ const Rogue = class extends Fighter {
     }
 
     getSkillInfo(skill, lvl, item) {
-        let msg = skill.desc[rogue.cl];
+        let msg = skill.desc[option.getLanguage()];
         if (skill.rate) {
             if (!item) flag.skill = true;
             let value = this.calcSkillValue(skill, lvl, undefined, true);
             if (skill.limit && value > skill.limit) value = skill.limit;
-            if (!isFinite(skill.base)) value = (rogue.cl === ENG ? 'about ' : '約') + value;
+            if (!isFinite(skill.base)) value = (option.isEnglish() ? 'about ' : '約') + value;
             if (skill.perc) {
                 if (value > 0) value = '+' + value;
                 value += '%';
@@ -1191,7 +1190,7 @@ const Rogue = class extends Fighter {
 		
         if (skill.radius) msg = msg.replace('{radius}', skill.radius);
         if (skill.durBase) {
-            let duration = rogue.cl === ENG ? 'about ' : '約';
+            let duration = option.isEnglish() ? 'about ' : '約';
             duration += this.calcSkillDur(skill, lvl, true);
             msg = msg.replace('{dur}', duration);
 		}
@@ -1292,7 +1291,7 @@ const Rogue = class extends Fighter {
                 tabId: P_EXTRA_HEALING,
 			});
 			
-            name = rogue.cl === ENG ? 'Potion of Extra Healing' : '特大回復の薬';
+            name = option.isEnglish() ? 'Potion of Extra Healing' : '特大回復の薬';
         } else if (f2 >= 1 && l === f2 + 1) { //wand
             let item = this.cube['a'];
             for (let key in this.cube) {
@@ -1396,7 +1395,7 @@ const Rogue = class extends Fighter {
         if (name) {
             this.cube = {};
             this.cubeIndex = {};
-            message.draw(rogue.cl === ENG ?
+            message.draw(option.isEnglish() ?
                 `Synthesized ${name}` :
                 `${name}を合成した`);
         } else {
@@ -1511,7 +1510,7 @@ const Rogue = class extends Fighter {
         ci = item;
         flag.arrow = true;
         let arrow = this.timesMissile === 1 ? 'an arrow' : 'arrows';
-        message.draw(rogue.cl === ENG ?
+        message.draw(option.isEnglish() ?
             `You shot ${arrow}` :
             `矢を放った`);
         this.aim({
@@ -1717,7 +1716,7 @@ const Rogue = class extends Fighter {
             ctsInv.fillText(key.toUpperCase(), i * fs, j * fs);
             ctsInv.fillText(')', i * fs + fs / 3, j * fs);
             ctsInv.textAlign = 'left';
-            ctsInv.fillText(stat.name[rogue.cl], (i + 1) * fs, j * fs);
+            ctsInv.fillText(stat.name[option.getLanguage()], (i + 1) * fs, j * fs);
             ctsInv.textAlign = 'right';
             ctsInv.fillText(this[stat.term + 'Max'], (i + 22) * fs, (j++) * fs);
             ctsInv.restore();
@@ -1728,7 +1727,7 @@ const Rogue = class extends Fighter {
         ctsInv.fillText(`[${count}/${maxNum}]`, i * fs, (IN_HEIGHT - MS + 1) * fs);
         ctsInv.save();
         ctsInv.textAlign = 'right';
-        let [statPoints, currentValues] = rogue.cl === ENG ? ['Stat Points', 'Current Values'] : ['ステータスポイント', '現在値'];
+        let [statPoints, currentValues] = option.isEnglish() ? ['Stat Points', 'Current Values'] : ['ステータスポイント', '現在値'];
         ctsInv.fillText(`${statPoints} ${this.statPoints} ${currentValues}`, (i + 22) * fs, (IN_HEIGHT - MS + 1) * fs);
         ctsInv.restore();
     }
@@ -1740,8 +1739,8 @@ const Rogue = class extends Fighter {
         let j = MS + 1;
         ctsInv.save();
         ctsInv.shadowColor = skill.color;
-        let nameEle = rogue.cl === ENG ? getUpperCase(skill.element) : ENJ[skill.element];
-        ctsInv.fillText(skill.name[rogue.cl] + ` [${nameEle}]`, i * fs, j++ * fs);
+        let nameEle = option.isEnglish() ? getUpperCase(skill.element) : ENJ[skill.element];
+        ctsInv.fillText(skill.name[option.getLanguage()] + ` [${nameEle}]`, i * fs, j++ * fs);
         ctsInv.shadowColor = SHADOW;
         j++;
         let lvl = 0;
@@ -1751,14 +1750,14 @@ const Rogue = class extends Fighter {
         let msg = this.getSkillInfo(skill, lvl + boost);
         ctsInv.fillText(msg, (i + 1) * fs, (j++) * fs, 22 * fs);
         j++;
-        let [base, perLvl, perSy, durBase] = rogue.cl === ENG ? ['Base', 'per Level', 'per Synerzy', 'Duration Base'] : ['基礎値', 'レベル毎', 'シナジー毎', '期間基礎値'];
+        let [base, perLvl, perSy, durBase] = option.isEnglish() ? ['Base', 'per Level', 'per Synerzy', 'Duration Base'] : ['基礎値', 'レベル毎', 'シナジー毎', '期間基礎値'];
         let perc = skill.perc ? '%' : '';
         if (skill.rate) {
             let skillBase = skill.base;
             if (isFinite(skillBase) && perc && skillBase > 0) {
                 skillBase = '+' + skillBase;
 			} else if (skill.radiusRate) {
-				skillBase = (rogue.cl === ENG ? 'radius ' : '半径') + skillBase;
+				skillBase = (option.isEnglish() ? 'radius ' : '半径') + skillBase;
 			}
 
             ctsInv.fillText(`${base} ${skillBase}${perc}`, (i + 1) * fs, (j++) * fs, 22 * fs);
@@ -1824,8 +1823,8 @@ const Rogue = class extends Fighter {
                 message.draw(message.get(M_CANT_GAIN_STAT));
                 return;
             } else if (isShift && this[statistics.list[a].term + 'Max'] >= MAX_STAT_LVL) {
-                let name = statistics.list[a].name[rogue.cl];
-                message.draw(rogue.cl === ENG ?
+                let name = statistics.list[a].name[option.getLanguage()];
+                message.draw(option.isEnglish() ?
                     `You can't gain ${name} anymore` :
                     `これ以上${name}を取得が出来ない`);
                 return;
@@ -1869,8 +1868,8 @@ const Rogue = class extends Fighter {
                 message.draw(message.get(M_CANT_GAIN_SKILL));
                 return;
             } else if (key && lvl === MAX_SKILL_LVL) {
-                let nameSkill = skill.name[rogue.cl];
-                message.draw(rogue.cl === ENG ?
+                let nameSkill = skill.name[option.getLanguage()];
+                message.draw(option.isEnglish() ?
                     `You can't study ${nameSkill} anymore` :
                     `これ以上${nameSkill}の知識を得られない`);
                 return;
@@ -1897,17 +1896,17 @@ const Rogue = class extends Fighter {
 					i = point;
 				}
 
-                let name = skill.name[rogue.cl];
+                let name = skill.name[option.getLanguage()];
                 if (!key) { //new skill
                     key = EA[Object.keys(this.skill).length];
                     this.skill[key] = {}
                     this.skill[key].id = cs;
                     this.skill[key].lvl = 0;
-                    message.draw(rogue.cl === ENG ?
+                    message.draw(option.isEnglish() ?
                         `You gained ${name}` :
                         `${name}を習得した`);
                 } else {
-                    message.draw(rogue.cl === ENG ?
+                    message.draw(option.isEnglish() ?
                         `You studied ${name} deeply` :
                         `${name}の知識を深めた`);
 				}
@@ -1928,8 +1927,8 @@ const Rogue = class extends Fighter {
 					i = point;
 				}
 
-                let name = stat.name[rogue.cl];
-                message.draw(rogue.cl === ENG ?
+                let name = stat.name[option.getLanguage()];
+                message.draw(option.isEnglish() ?
                     `You gained ${name}` :
                     `${name}を得た`);
                 this.statPoints -= i;
@@ -2115,7 +2114,7 @@ const Rogue = class extends Fighter {
             let i = item.getQuantity(keyCode);
             this.deleteItem(item, i);
             let name = item.getName(false, i)
-            message.draw(rogue.cl === ENG ?
+            message.draw(option.isEnglish() ?
                 `Destroyed ${name}` :
                 `${name}を破壊した`);
             inventory.clear();
@@ -2167,7 +2166,7 @@ const Rogue = class extends Fighter {
 				
                 item.price *= 2;
                 let name = item.getName();
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `Sold ${name} for $${amount}` :
                     `${name}を$${amount}で売却した`);
                 audio.playSound('coin');
@@ -2179,7 +2178,7 @@ const Rogue = class extends Fighter {
                 this.packAdd(item);
                 this.purse -= amount;
                 let name = item.getName();
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `Bought ${name} for $${amount}` :
                     `${name}を$${amount}で購入した`);
                 audio.playSound('grab');
@@ -2256,7 +2255,7 @@ const Rogue = class extends Fighter {
                 item = item.split(i, stash.list);
                 this.packAdd(item);
                 let name = item.getName();
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `Take out ${name}` :
                     `${name}を持物に加えた`);
             } else {
@@ -2264,7 +2263,7 @@ const Rogue = class extends Fighter {
                 let num = this.stashAdd(stash.list, item);
                 stash.page = Math.ceil((Number(num) + 1) / MAX_PACK_COUNT);
                 let name = item.getName();
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `Stored ${name}` :
                     `${name}を保管した`);
 			}
@@ -2349,7 +2348,7 @@ const Rogue = class extends Fighter {
         } else if (name === 'Arrow Trap') {
             let dmg = rndIntBet(4, 6);
             this.hp -= dmg;
-            message.draw(rogue.cl === ENG ?
+            message.draw(option.isEnglish() ?
                 `An arrow hits you by ${dmg}` :
                 `矢はあなたに${dmg}のダメージを与えた`);
             if (this.hp <= 0) this.died();
@@ -2502,8 +2501,8 @@ const Rogue = class extends Fighter {
     getName(subject, proper) {
         let name;
         if (proper) {
-            name = this.name[rogue.cl];
-		} else if (rogue.cl === ENG) {
+            name = this.name[option.getLanguage()];
+		} else if (option.isEnglish()) {
             name = subject ? 'You' : 'you'
         } else {
 			name = subject ? '' : 'あなた';

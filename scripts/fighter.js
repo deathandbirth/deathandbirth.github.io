@@ -2269,7 +2269,7 @@ const Fighter = class extends Material {
             audio.playSound('level');
             this.skillPoints++;
             if (this.id === ROGUE) {
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `Welcome to level ${this.lvl}` :
                     `レベル${this.lvl}へようこそ`);
                 this.statPoints++;
@@ -2459,25 +2459,25 @@ const Fighter = class extends Material {
         if (itemThrow) {
             name = itemThrow.getName(true);
 		} else if (missile) {
-            name = rogue.cl === ENG ? 'An arrow' : '矢';
+            name = option.isEnglish() ? 'An arrow' : '矢';
             var ammo = ci;
         } else if (skill) {
-            name = skill.name[rogue.cl];
+            name = skill.name[option.getLanguage()];
 		} else {
-			name = rogue.cl === ENG ? this.getName(true) : this.getName() + 'の攻撃';
+			name = option.isEnglish() ? this.getName(true) : this.getName() + 'の攻撃';
 		}
 
         let nameE = enemy.getName();
-        let third = rogue.cl === ENG && (itemThrow || missile || skill || this.id !== ROGUE);
+        let third = option.isEnglish() && (itemThrow || missile || skill || this.id !== ROGUE);
         do {
             let [dmg, rate] = skill && skill.type === 'spell' ? [this.calcSkillValue(skill, lvl, enemy), 100] :
                 this.calcAttack(enemy, skill, lvl, itemThrow);
             let msg;
             let miss = !dmg || enemy.indestructible || this.id !== ROGUE && enemy.boss;
             if (miss) {
-                msg = rogue.cl === ENG ? 'missed' : '外れた';
+                msg = option.isEnglish() ? 'missed' : '外れた';
             } else {
-                msg = rogue.cl === ENG ? 'hit' : `${dmg}のダメージを与えた`;
+                msg = option.isEnglish() ? 'hit' : `${dmg}のダメージを与えた`;
                 if (third) msg += 's';
                 enemy.hp -= dmg;
 			}
@@ -2491,7 +2491,7 @@ const Fighter = class extends Material {
 				}
 			}
 			
-            message.draw(rogue.cl === ENG ?
+            message.draw(option.isEnglish() ?
                 `${name} ${msg} ${nameE}${!miss? ' by '+dmg:''} (hit rating ${rate})` :
                 `${name}は${nameE}に${msg} (命中率 ${rate})`);
             count++;
@@ -2785,7 +2785,7 @@ const Fighter = class extends Material {
             statistics.clearCondition();
             var len = fs;
             if (this.hunger >= 800) {
-                let condition = rogue.cl === ENG ? 'full' : textLen.list['full'];
+                let condition = option.isEnglish() ? 'full' : textLen.list['full'];
                 statistics.draw({
                     msg: condition,
                     x: len,
@@ -2794,9 +2794,9 @@ const Fighter = class extends Material {
                     measured: true,
 				});
 				
-                len += textLen['full'][rogue.cl];
+                len += textLen['full'][option.getLanguage()];
             } else if (this.hunger > 0 && this.hunger <= 200) {
-                let condition = rogue.cl === ENG ? 'hungry' : textLen.list['hungry'];
+                let condition = option.isEnglish() ? 'hungry' : textLen.list['hungry'];
                 statistics.draw({
                     msg: condition,
                     x: len,
@@ -2805,9 +2805,9 @@ const Fighter = class extends Material {
                     measured: true,
 				});
 				
-                len += textLen['hungry'][rogue.cl];
+                len += textLen['hungry'][option.getLanguage()];
             } else if (this.hunger === 0) {
-                let condition = rogue.cl === ENG ? 'starved' : textLen.list['starved'];
+                let condition = option.isEnglish() ? 'starved' : textLen.list['starved'];
                 statistics.draw({
                     msg: condition,
                     x: len,
@@ -2816,7 +2816,7 @@ const Fighter = class extends Material {
                     measured: true,
 				});
 				
-                len += textLen['starved'][rogue.cl];
+                len += textLen['starved'][option.getLanguage()];
             }
 		}
 		
@@ -2832,7 +2832,7 @@ const Fighter = class extends Material {
                     this.died(fighter);
                     return null;
                 } else if (--this.poisoned === 0) {
-                    message.draw(rogue.cl === ENG ?
+                    message.draw(option.isEnglish() ?
                         `${name} recovered from poison` :
                         `${name}毒状態から復帰した`);
 				}
@@ -2841,7 +2841,7 @@ const Fighter = class extends Material {
 			}
 			
             if (draw) {
-                let condition = rogue.cl === ENG ? 'poisoned' : textLen.list['poisoned'];
+                let condition = option.isEnglish() ? 'poisoned' : textLen.list['poisoned'];
                 statistics.draw({
                     msg: condition,
                     x: len,
@@ -2850,20 +2850,20 @@ const Fighter = class extends Material {
                     measured: true,
 				});
 				
-                len += textLen['poisoned'][rogue.cl];
+                len += textLen['poisoned'][option.getLanguage()];
             }
 		}
 		
         if (this.confused) {
             if (calc && --this.confused === 0) {
                 if (this.id !== ROGUE) this.removeCe();
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} recovered from confusion` :
                     `${name}混乱状態から復帰した`);
 			}
 			
             if (draw) {
-                let condition = rogue.cl === ENG ? 'confused' : textLen.list['confused'];
+                let condition = option.isEnglish() ? 'confused' : textLen.list['confused'];
                 statistics.draw({
                     msg: condition,
                     x: len,
@@ -2872,19 +2872,19 @@ const Fighter = class extends Material {
                     measured: true,
 				});
 				
-                len += textLen['confused'][rogue.cl];
+                len += textLen['confused'][option.getLanguage()];
             }
 		}
 		
         if (this.paralyzed) {
             if (calc && --this.paralyzed === 0) {
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} recovered from paralysis` :
                     `${name}麻痺状態から復帰した`);
 			}
 			
             if (draw) {
-                let condition = rogue.cl === ENG ? 'paralyzed' : textLen.list['paralyzed'];
+                let condition = option.isEnglish() ? 'paralyzed' : textLen.list['paralyzed'];
                 statistics.draw({
                     msg: condition,
                     x: len,
@@ -2893,14 +2893,14 @@ const Fighter = class extends Material {
                     measured: true,
 				});
 				
-                len += textLen['paralyzed'][rogue.cl];
+                len += textLen['paralyzed'][option.getLanguage()];
             }
 		}
 		
         if (this.sleeping > 0) {
             if (calc && --this.sleeping === 0) this.wakeUp();
             if (draw) {
-                let condition = rogue.cl === ENG ? 'sleeping' : textLen.list['sleeping'];
+                let condition = option.isEnglish() ? 'sleeping' : textLen.list['sleeping'];
                 statistics.draw({
                     msg: condition,
                     x: len,
@@ -2909,7 +2909,7 @@ const Fighter = class extends Material {
                     measured: true,
 				});
 				
-                len += textLen['sleeping'][rogue.cl];
+                len += textLen['sleeping'][option.getLanguage()];
             }
 		}
 		
@@ -2921,13 +2921,13 @@ const Fighter = class extends Material {
 					this.removeCe();
 				}
 
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} recovered from blindness` :
                     `${name}盲目状態から復帰した`);
 			}
 			
             if (draw) {
-                let condition = rogue.cl === ENG ? 'blinded' : textLen.list['blinded'];
+                let condition = option.isEnglish() ? 'blinded' : textLen.list['blinded'];
                 statistics.draw({
                     msg: condition,
                     x: len,
@@ -2936,20 +2936,20 @@ const Fighter = class extends Material {
                     measured: true,
 				});
 				
-                len += textLen['blinded'][rogue.cl];
+                len += textLen['blinded'][option.getLanguage()];
             }
 		}
 		
         if (this.infected > 0) {
             if (calc && coinToss()) this.decayOrRestore();
             if (calc && --this.infected === 0) {
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} recovered from infection` :
                     `${name}感染状態から復帰した`);
 			}
 			
             if (draw) {
-                let condition = rogue.cl === ENG ? 'infected' : textLen.list['infected'];
+                let condition = option.isEnglish() ? 'infected' : textLen.list['infected'];
                 statistics.draw({
                     msg: condition,
                     x: len,
@@ -2958,7 +2958,7 @@ const Fighter = class extends Material {
                     measured: true,
 				});
 				
-                len += textLen['infected'][rogue.cl];
+                len += textLen['infected'][option.getLanguage()];
             }
 		}
 		
@@ -2970,13 +2970,13 @@ const Fighter = class extends Material {
 					this.removeCe();
 				}
 
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} recovered from hallucination` :
                     `${name}幻覚状態から復帰した`);
 			}
 			
             if (draw) {
-                let condition = rogue.cl === ENG ? 'hallucinated' : textLen.list['hallucinated'];
+                let condition = option.isEnglish() ? 'hallucinated' : textLen.list['hallucinated'];
                 statistics.draw({
                     msg: condition,
                     x: len,
@@ -2985,19 +2985,19 @@ const Fighter = class extends Material {
                     measured: true,
 				});
 				
-                len += textLen['hallucinated'][rogue.cl];
+                len += textLen['hallucinated'][option.getLanguage()];
             }
 		}
 		
         if (this.canceled) {
             if (calc && --this.canceled === 0) {
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} recovered from cancellation` :
                     `${name}封印状態から復帰した`);
 			}
 			
             if (draw) {
-                let condition = rogue.cl === ENG ? 'canceled' : textLen.list['canceled'];
+                let condition = option.isEnglish() ? 'canceled' : textLen.list['canceled'];
                 statistics.draw({
                     msg: condition,
                     x: len,
@@ -3006,20 +3006,20 @@ const Fighter = class extends Material {
                     measured: true,
 				});
 				
-                len += textLen['canceled'][rogue.cl];
+                len += textLen['canceled'][option.getLanguage()];
             }
 		}
 		
         if (this.seeInvisible > 0) {
             if (calc && --this.seeInvisible === 0) {
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} can no longer see invisible things` :
                     `${name}もう透明な物体を見ることが出来なくなった`);
                 seeInvisible(false);
 			}
 			
             if (draw) {
-                let condition = rogue.cl === ENG ? 'see invisible' : textLen.list['see invisible'];
+                let condition = option.isEnglish() ? 'see invisible' : textLen.list['see invisible'];
                 statistics.draw({
                     msg: condition,
                     x: len,
@@ -3029,7 +3029,7 @@ const Fighter = class extends Material {
                     measured: true,
 				});
 				
-                len += textLen['see invisible'][rogue.cl];
+                len += textLen['see invisible'][option.getLanguage()];
             }
 		}
 		
@@ -3041,7 +3041,7 @@ const Fighter = class extends Material {
 			}
 			
             if (draw) {
-                let condition = rogue.cl === ENG ? 'invisible' : textLen.list['invisible'];
+                let condition = option.isEnglish() ? 'invisible' : textLen.list['invisible'];
                 statistics.draw({
                     msg: condition,
                     x: len,
@@ -3051,19 +3051,19 @@ const Fighter = class extends Material {
                     measured: true,
 				});
 				
-                len += textLen['invisible'][rogue.cl];
+                len += textLen['invisible'][option.getLanguage()];
             }
 		}
 		
         if (this.ecco) {
             if (calc && --this.ecco === 0) {
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} lost the effect of Ecco` :
                     `${name}エコーの効果を失った`);
 			}
 			
             if (draw) {
-                let condition = rogue.cl === ENG ? 'ecco' : textLen.list['ecco'];
+                let condition = option.isEnglish() ? 'ecco' : textLen.list['ecco'];
                 statistics.draw({
                     msg: condition,
                     x: len,
@@ -3072,7 +3072,7 @@ const Fighter = class extends Material {
                     measured: true,
 				});
 				
-                len += textLen['ecco'][rogue.cl];
+                len += textLen['ecco'][option.getLanguage()];
             }
 		}
 		
@@ -3084,13 +3084,13 @@ const Fighter = class extends Material {
                 this.enchantSelf = 0;
                 this.calcDmg();
                 this.calcAc();
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} lost the effect of Enchant Self` :
                     `${name}自己強化の効果を失った`);
 			}
 			
             if (draw) {
-                let condition = rogue.cl === ENG ? 'enchant self' : textLen.list['enchant self'];
+                let condition = option.isEnglish() ? 'enchant self' : textLen.list['enchant self'];
                 statistics.draw({
                     msg: condition,
                     x: len,
@@ -3099,7 +3099,7 @@ const Fighter = class extends Material {
                     measured: true,
 				});
 				
-                len += textLen['enchant self'][rogue.cl];
+                len += textLen['enchant self'][option.getLanguage()];
             }
 		}
 		
@@ -3107,13 +3107,13 @@ const Fighter = class extends Material {
             if (--this.venomDur === 0) {
                 this.dmgPoison -= this.venom;
                 this.venom = 0;
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} lost the effect of Venom Hands` :
                     `${name}猛毒の手の効果を失った`);
 			}
 			
             if (draw) {
-                let condition = rogue.cl === ENG ? 'venom hands' : textLen.list['venom hands'];
+                let condition = option.isEnglish() ? 'venom hands' : textLen.list['venom hands'];
                 statistics.draw({
                     msg: condition,
                     x: len,
@@ -3122,7 +3122,7 @@ const Fighter = class extends Material {
                     measured: true,
 				});
 				
-                len += textLen['venom hands'][rogue.cl];
+                len += textLen['venom hands'][option.getLanguage()];
             }
 		}
 		
@@ -3130,13 +3130,13 @@ const Fighter = class extends Material {
             if (--this.confusing === 0) {
                 this.atkCon = 0;
                 let name = this.getName(true);
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} lost the effect of Touch of Confusion` :
                     `${name}混乱の手の効果を失った`);
 			}
 			
             if (draw) {
-                let condition = rogue.cl === ENG ? 'confusing hands' : textLen.list['confusing hands'];
+                let condition = option.isEnglish() ? 'confusing hands' : textLen.list['confusing hands'];
                 statistics.draw({
                     msg: condition,
                     x: len,
@@ -3145,7 +3145,7 @@ const Fighter = class extends Material {
                     measured: true,
 				});
 				
-                len += textLen['confusing hands'][rogue.cl];
+                len += textLen['confusing hands'][option.getLanguage()];
             }
 		}
 		
@@ -3168,7 +3168,7 @@ const Fighter = class extends Material {
             if (--this.hpRegBuffDur === 0) {
                 this.hpReg -= this.hpRegBuff;
                 this.hpRegBuff = 0;
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} lost the effect of Life Regeneration` :
                     `${name}再生の効果を失った`);
             }
@@ -3178,7 +3178,7 @@ const Fighter = class extends Material {
             if (--this.mpRegBuffDur === 0) {
                 this.mpReg -= this.mpRegBuff;
                 this.mpRegBuff = 0;
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} lost the effect of Mana Regeneration` :
                     `${name}魔力再生の効果を失った`);
             }
@@ -3188,7 +3188,7 @@ const Fighter = class extends Material {
             if (--this.mfBuffDur === 0) {
                 this.mf -= this.mfBuff;
                 this.mfBuff = 0;
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} lost the effect of Magic Finding` :
                     `${name}魔法具探求の効果を失った`);
             }
@@ -3198,7 +3198,7 @@ const Fighter = class extends Material {
             if (--this.gfBuffDur === 0) {
                 this.gf -= this.gfBuff;
                 this.gfBuff = 0;
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} lost the effect of Gold Finding` :
                     `${name}財宝探求の効果を失った`);
             }
@@ -3208,7 +3208,7 @@ const Fighter = class extends Material {
             if (--this.expBuffDur === 0) {
                 this.expBonus -= this.expBuff;
                 this.expBuff = 0;
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} lost the effect of Experience` :
                     `${name}経験の効果を失った`);
             }
@@ -3218,7 +3218,7 @@ const Fighter = class extends Material {
             if (--this.skillBuffDur === 0) {
                 this.skillAll -= this.skillBuff;
                 this.skillBuff = 0;
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} lost the effect of Skill` :
                     `${name}スキルの効果を失った`);
             }
@@ -3228,7 +3228,7 @@ const Fighter = class extends Material {
         if (this.fireBuffDur) {
             if (--this.fireBuffDur === 0) {
                 this.fireBuff = 0;
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} lost the effect of Resist Fire` :
                     `${name}耐火の効果を失った`);
                 resist = true;
@@ -3238,7 +3238,7 @@ const Fighter = class extends Material {
         if (this.waterBuffDur) {
             if (--this.waterBuffDur === 0) {
                 this.waterBuff = 0;
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} lost the effect of Resist Water` :
                     `${name}耐水の効果を失った`);
                 resist = true;
@@ -3248,7 +3248,7 @@ const Fighter = class extends Material {
         if (this.airBuffDur) {
             if (--this.airBuffDur === 0) {
                 this.airBuff = 0;
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} lost the effect of Resist Air` :
                     `${name}耐風の効果を失った`);
                 resist = true;
@@ -3258,7 +3258,7 @@ const Fighter = class extends Material {
         if (this.earthBuffDur) {
             if (--this.earthBuffDur === 0) {
                 this.earthBuff = 0;
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} lost the effect of Resist Earth` :
                     `${name}耐土の効果を失った`);
                 resist = true;
@@ -3268,7 +3268,7 @@ const Fighter = class extends Material {
         if (this.poisonBuffDur) {
             if (--this.poisonBuffDur === 0) {
                 this.poisonBuff = 0;
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} lost the effect of Resist Poison` :
                     `${name}耐毒の効果を失った`);
                 resist = true;
@@ -3278,7 +3278,7 @@ const Fighter = class extends Material {
         if (this.lowerResDur) {
             if (--this.lowerResDur === 0) {
                 this.lowerRes = 0;
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} recovered from the effect of Lower Resist` :
                     `${name}耐性低下の効果から復帰した`);
                 resist = true;
@@ -3289,7 +3289,7 @@ const Fighter = class extends Material {
         if (this.dmgBuffDur) {
             if (--this.dmgBuffDur === 0) {
                 this.dmgBuff = this.rateBuff = 0;
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} lost the effect of Combat` :
                     `${name}戦闘の効果を失った`);
             }
@@ -3299,7 +3299,7 @@ const Fighter = class extends Material {
         if (this.acBuffDur) {
             if (--this.acBuffDur === 0) {
                 this.acBuff = 0;
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} lost the effect of Armor` :
                     `${name}防護の効果を失った`);
             }
@@ -3308,7 +3308,7 @@ const Fighter = class extends Material {
 		
         if (this.stuckTrap) {
             if (--this.stuckTrap === 0) {
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} can move again` :
                     `${name}動けるようになった`);
             }
@@ -3323,7 +3323,7 @@ const Fighter = class extends Material {
             case STR:
                 if (restore) {
                     if (this.str < this.strMax) {
-                        message.draw(rogue.cl === ENG ?
+                        message.draw(option.isEnglish() ?
                             `${name} restored the strength` :
                             `${name}筋力が元に戻った`);
                         this.str = this.strMax;
@@ -3332,7 +3332,7 @@ const Fighter = class extends Material {
                     return;
 				} else {
                     this.str--;
-                    message.draw(rogue.cl === ENG ?
+                    message.draw(option.isEnglish() ?
                         `${name} got weak` :
                         `${name}薄弱になった`);
 				}
@@ -3343,7 +3343,7 @@ const Fighter = class extends Material {
             case DEX:
                 if (restore) {
                     if (this.dex < this.dexMax) {
-                        message.draw(rogue.cl === ENG ?
+                        message.draw(option.isEnglish() ?
                             `${name} restored the dexterity` :
                             `${name}器用さが元に戻った`);
                         this.dex = this.dexMax;
@@ -3352,7 +3352,7 @@ const Fighter = class extends Material {
                     return;
 				} else {
                     this.dex--;
-                    message.draw(rogue.cl === ENG ?
+                    message.draw(option.isEnglish() ?
                         `${name} got clumsy` :
                         `${name}不器用になった`);
 				}
@@ -3363,7 +3363,7 @@ const Fighter = class extends Material {
             case CON:
                 if (restore) {
                     if (this.con < this.conMax) {
-                        message.draw(rogue.cl === ENG ?
+                        message.draw(option.isEnglish() ?
                             `${name} restored the constitution` :
                             `${name}耐久力が元に戻った`);
                         this.con = this.conMax;
@@ -3372,7 +3372,7 @@ const Fighter = class extends Material {
                     return;
 				} else {
                     this.con--;
-                    message.draw(rogue.cl === ENG ?
+                    message.draw(option.isEnglish() ?
                         `${name} got sick` :
                         `${name}病弱になった`);
 				}
@@ -3382,7 +3382,7 @@ const Fighter = class extends Material {
             case INT:
                 if (restore) {
                     if (this.int < this.intMax) {
-                        message.draw(rogue.cl === ENG ?
+                        message.draw(option.isEnglish() ?
                             `${name} restored the intelligence` :
                             `${name}知力が元に戻った`);
                         this.int = this.intMax;
@@ -3391,7 +3391,7 @@ const Fighter = class extends Material {
                     return;
 				} else {
                     this.int--;
-                    message.draw(rogue.cl === ENG ?
+                    message.draw(option.isEnglish() ?
                         `${name} got stupid` :
                         `${name}愚鈍になった`);
 				}
@@ -3401,7 +3401,7 @@ const Fighter = class extends Material {
             case EXP:
                 if (restore) {
                     if (this.exp < this.expMax) {
-                        message.draw(rogue.cl === ENG ?
+                        message.draw(option.isEnglish() ?
                             `${name} restored the experience` :
                             `${name}経験値が元に戻った`);
                         this.exp = this.expMax;
@@ -3417,7 +3417,7 @@ const Fighter = class extends Material {
                         if (enemy.exp > enemy.expMax) enemy.exp = enemy.expMax;
                     }
                     while (this.exp < calcLevel(this.lvl)) this.lvl--;
-                    message.draw(rogue.cl === ENG ?
+                    message.draw(option.isEnglish() ?
                         `${name} got poor` :
                         `${name}貧弱になった`);
 				}
@@ -3542,12 +3542,12 @@ const Fighter = class extends Material {
             ctsInv.fillText(EA[k++].toUpperCase(), (i - 0.5) * fs, j * fs);
             ctsInv.fillText(')', (i - 0.5) * fs + fs / 3, j * fs);
             ctsInv.textAlign = 'left';
-            let parts = rogue.cl === ENG ? key : BPJ[key];
+            let parts = option.isEnglish() ? key : BPJ[key];
             if (key === 'main' || key === 'off') parts += this.swapped ? 2 : 1;
             ctsInv.fillText(parts, (i + 0.5) * fs, j * fs);
             if (!item) {
                 if (key === 'off' && this.equipment['main'] && this.equipment['main'].twoHanded) {
-                    ctsInv.fillText(rogue.cl === ENG ?
+                    ctsInv.fillText(option.isEnglish() ?
                         `(two-handed)` :
                         `(両手持ち)`, (i + 4.5) * fs, j * fs, 14 * fs);
 				}
@@ -3613,7 +3613,7 @@ const Fighter = class extends Material {
 					ctsInv.fillStyle = RED;
 				}
 
-                ctsInv.fillText(term.name[rogue.cl], (col - 1) * fs, j * fs);
+                ctsInv.fillText(term.name[option.getLanguage()], (col - 1) * fs, j * fs);
                 ctsInv.textAlign = 'right';
                 let value = this[key];
                 if (term.perc) value += '%';
@@ -3635,9 +3635,9 @@ const Fighter = class extends Material {
         let maxNum = MAX_EQUIPMENT_NUM;
         ctsInv.fillText(`[${count}/${maxNum}]`, (i) * fs, (IN_HEIGHT - MS + 1) * fs);
         ctsInv.textAlign = 'right';
-        let total = rogue.cl === ENG ? 'Total' : '計';
+        let total = option.isEnglish() ? 'Total' : '計';
         if (flag.blacksmith) {
-            let cost = rogue.cl === ENG ? 'Total Cost' : '全費用';
+            let cost = option.isEnglish() ? 'Total Cost' : '全費用';
             total = `${cost} $${priceAll} ${total}`;
 		}
 		
@@ -3650,7 +3650,7 @@ const Fighter = class extends Material {
         let i = 1.5 + (bookmark ? 0 : IN_WIDTH / 2);
         let j = MS + 2;
         let count = 0;
-        let main = rogue.cl === ENG ? 'Main' : 'メイン';
+        let main = option.isEnglish() ? 'Main' : 'メイン';
         for (let key in list) {
             if (flag.number && list[key] !== cs) continue;
             let skill;
@@ -3679,7 +3679,7 @@ const Fighter = class extends Material {
 			}
 			
             ctsInv.textAlign = 'left';
-            let name = skill.name[rogue.cl];
+            let name = skill.name[option.getLanguage()];
             ctsInv.fillText(name, (i + 1 + (bookmark ? 1 : 0)) * fs, j * fs);
             ctsInv.textAlign = 'right';
             let lvl = 0;
@@ -3701,7 +3701,7 @@ const Fighter = class extends Material {
                     value = skill.base + bonus;
                     if (skill.limit && value > skill.limit) value = skill.limit;
                     if (skill.radiusRate) {
-                        let radius = rogue.cl === ENG ? 'radius ' : '半径';
+                        let radius = option.isEnglish() ? 'radius ' : '半径';
                         value = `${radius}${value}`;
                     } else if (value > 0) {
 						 value = `+${value}`;
@@ -3748,10 +3748,10 @@ const Fighter = class extends Material {
         ctsInv.fillText(`[${count}/${maxNum}]`, i * fs, j * fs);
         ctsInv.textAlign = 'right';
         // if(!bookmark){
-        // let skillPoints = rogue.cl===ENG? 'Skill Points':'スキルポイント';
+        // let skillPoints = option.isEnglish() ? 'Skill Points':'スキルポイント';
         // ctsInv.fillText(`${skillPoints} ${this.skillPoints}`,(i+10)*fs,j*fs);
         // }
-        let [lvl, value, mp, reqLv, reqSy] = rogue.cl === ENG ? ['Lv', 'Value', 'MP', 'RLv', 'RSy'] :
+        let [lvl, value, mp, reqLv, reqSy] = option.isEnglish() ? ['Lv', 'Value', 'MP', 'RLv', 'RSy'] :
             ['レベル', '値', 'MP', '必レ', '必シ'];
         ctsInv.fillText(lvl, (i + 12) * fs, j * fs);
         ctsInv.fillText(value, (i + 16) * fs, j * fs);
@@ -4156,7 +4156,7 @@ const Fighter = class extends Material {
             case EXTRA_HEAL:
                 let amount = this.calcSkillValue(skill, lvl);
                 f.hp += amount;
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} got well (+${amount})` :
                     `${name}傷が癒えた(+${amount})`);
                 if (f.hp > f.hpMax) f.hp = f.hpMax;
@@ -4185,7 +4185,7 @@ const Fighter = class extends Material {
                 f.hpRegBuff = this.calcSkillValue(skill, lvl);
                 f.hpReg += f.hpRegBuff;
                 f.hpRegBuffDur = duration;
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} got an effect of Life Regeneration` :
                     `${name}再生の効果を得た`);
                 break;
@@ -4194,7 +4194,7 @@ const Fighter = class extends Material {
                 f.mpRegBuff = this.calcSkillValue(skill, lvl);
                 f.mpReg += f.mpRegBuff;
                 f.mpRegBuffDur = duration;
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} got an effect of Mana Regeneration` :
                     `${name}魔力再生の効果を得た`);
                 break;
@@ -4252,7 +4252,7 @@ const Fighter = class extends Material {
             case RESIST_FIRE:
                 f.fireBuff = this.calcSkillValue(skill, lvl);
                 f.fireBuffDur = duration;
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} got an effect of Resist Fire` :
                     `${name}耐火の効果を得た`);
                 f.calcResist();
@@ -4260,7 +4260,7 @@ const Fighter = class extends Material {
             case RESIST_WATER:
                 f.waterBuff = this.calcSkillValue(skill, lvl);
                 f.waterBuffDur = duration;
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} got an effect of Resist Water` :
                     `${name}耐水の効果を得た`);
                 f.calcResist();
@@ -4268,7 +4268,7 @@ const Fighter = class extends Material {
             case RESIST_AIR:
                 f.airBuff = this.calcSkillValue(skill, lvl);
                 f.airBuffDur = duration;
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} got an effect of Resist Air` :
                     `${name}耐風の効果を得た`);
                 f.calcResist();
@@ -4276,7 +4276,7 @@ const Fighter = class extends Material {
             case RESIST_EARTH:
                 f.earthBuff = this.calcSkillValue(skill, lvl);
                 f.earthBuffDur = duration;
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} got an effect of Resist Earth` :
                     `${name}耐土の効果を得た`);
                 f.calcResist();
@@ -4284,7 +4284,7 @@ const Fighter = class extends Material {
             case RESIST_POISON:
                 f.poisonBuff = this.calcSkillValue(skill, lvl);
                 f.poisonBuffDur = duration;
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} got an effect of Resist Poison` :
                     `${name}耐毒の効果を得た`);
                 f.calcResist();
@@ -4292,7 +4292,7 @@ const Fighter = class extends Material {
             case RESIST_ALL:
                 f.fireBuff = f.waterBuff = f.airBuff = f.earthBuff = f.poisonBuff = this.calcSkillValue(skill, lvl);
                 f.fireBuffDur = f.waterBuffDur = f.airBuffDur = f.earthBuffDur = f.poisonBuffDur = duration;
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} got an effect of Resist All` :
                     `${name}全耐性の効果を得た`);
                 f.calcResist();
@@ -4301,7 +4301,7 @@ const Fighter = class extends Material {
                 if (evalPercentage(f.poison)) return;
                 f.lowerRes = this.calcSkillValue(skill, lvl);
                 f.lowerResDur = duration;
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} got an effect of Lower Resist` :
                     `${name}耐性低下の効果を受けた`);
                 f.calcResist();
@@ -4403,7 +4403,7 @@ const Fighter = class extends Material {
             case TOWN_PORTAL:
                 let portal = new Portal(enter[PORTAL]);
                 portal.init(LOCATION, this.x, this.y);
-                message.draw(rogue.cl == ENG ?
+                message.draw(option.isEnglish() ?
                     `Created a Town Portal` :
                     `タウン・ポータルを生成した`);
                 break;
@@ -4411,13 +4411,13 @@ const Fighter = class extends Material {
                 f.spdBuff = this.calcSkillValue(skill, lvl);
                 f.speeded = duration;
                 f.calcSpeed();
-                message.draw(rogue.cl == ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} speeded up` :
                     `${name}加速した`);
                 break;
             case ECCO:
                 f.ecco = duration;
-                message.draw(rogue.cl == ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} got an effect of Ecco` :
                     `${name}エコーの効果を得た`);
                 break;
@@ -4425,7 +4425,7 @@ const Fighter = class extends Material {
                 if (evalPercentage(f.poison)) return;
                 f.poisoned = duration;
                 f.poisonedId = this.id;
-                message.draw(rogue.cl == ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} got poisoned` :
                     `${name}毒を受けた`);
                 break;
@@ -4439,14 +4439,14 @@ const Fighter = class extends Material {
                 f.spdNerf = this.calcSkillValue(skill, lvl);
                 f.slowed = duration;
                 f.calcSpeed();
-                message.draw(rogue.cl == ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} slowed down` :
                     `${name}減速した`);
                 break;
             case CONFUSION:
                 if (evalPercentage(f.poison)) return;
                 f.confused = duration;
-                message.draw(rogue.cl == ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} got confused` :
                     `${name}混乱した`);
                 break;
@@ -4454,7 +4454,7 @@ const Fighter = class extends Material {
                 f.atkCon = this.calcSkillValue(skill, lvl);
                 if (f.atkCon > skill.limit) f.atkCon = skill.limit;
                 f.confusing = duration;
-                message.draw(rogue.cl == ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} got an effect of Touch of Confusion` :
                     `${name}混乱の手の効果を得た`);
                 break;
@@ -4463,7 +4463,7 @@ const Fighter = class extends Material {
                 f.venom = this.calcSkillValue(skill, lvl);
                 f.dmgPoison += f.venom;
                 f.venomDur = duration;
-                message.draw(rogue.cl == ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} got an effect of Venom Hands` :
                     `${name}猛毒の手の効果を得た`);
                 break;
@@ -4481,7 +4481,7 @@ const Fighter = class extends Material {
                 f.acBonus += f.enchantSelf;
                 f.calcDmg();
                 f.calcAc();
-                message.draw(rogue.cl == ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} got an effect of Enchant Self` :
                     `${name}自己強化の効果を得た`);
                 break;
@@ -4489,7 +4489,7 @@ const Fighter = class extends Material {
             case HOLD_MONSTER:
                 if (evalPercentage(f.poison)) return;
                 f.paralyzed = duration;
-                message.draw(rogue.cl == ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} got paralyzed` :
                     `${name}麻痺した`);
                 audio.playSound('paralyze');
@@ -4499,7 +4499,7 @@ const Fighter = class extends Material {
                 if (evalPercentage(f.poison)) return;
                 if (f.sleeping >= 0) {
                     f.sleeping = duration;
-                    message.draw(rogue.cl == ENG ?
+                    message.draw(option.isEnglish() ?
                         `${name} fell asleep` :
                         `${name}昏睡した`);
 				}
@@ -4509,7 +4509,7 @@ const Fighter = class extends Material {
                 if (evalPercentage(f.poison)) return;
                 f.blinded = duration;
                 if (f.id === ROGUE) f.goBlind();
-                message.draw(rogue.cl == ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} got blinded` :
                     `${name}盲目になった`);
                 audio.playSound('blind');
@@ -4523,7 +4523,7 @@ const Fighter = class extends Material {
             case SEE_INVISIBLE:
                 f.seeInvisible = duration;
                 if (f.id === ROGUE) seeInvisible(true);
-                message.draw(rogue.cl == ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} can see invisible things` :
                     `${name}透明の物体が見えるようになった`);
                 if (f.blinded) {
@@ -4535,7 +4535,7 @@ const Fighter = class extends Material {
             case INFECTION:
                 if (evalPercentage(f.infection)) return;
                 f.infected = duration;
-                message.draw(rogue.cl == ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} got infected` :
                     `${name}感染した`);
                 break;
@@ -4547,7 +4547,7 @@ const Fighter = class extends Material {
                 f.hallucinated = duration;
                 if (f.id !== ROGUE) f.removeCe();
                 if (found2) hallucinate.all();
-                message.draw(rogue.cl == ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} got hallucinated` :
                     `${name}幻覚状態になった`);
                 break;
@@ -4562,7 +4562,7 @@ const Fighter = class extends Material {
                     summon: true,
 				});
 				
-                message.draw(rogue.cl == ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} got polymorphed` :
                     `${name}変容した`);
                 break;
@@ -4581,7 +4581,7 @@ const Fighter = class extends Material {
                     coords[f.x][f.y].draw();
 				}
 				
-                message.draw(rogue.cl == ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} got canceled` :
                     `${name}封印された`);
                 break;
@@ -4621,7 +4621,7 @@ const Fighter = class extends Material {
                 f.mfBuff = this.calcSkillValue(skill, lvl);
                 f.mf += f.mfBuff;
                 f.mfBuffDur = duration;
-                message.draw(rogue.cl == ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} got an effect of Magic Finding` :
                     `${name}魔法具探求の効果を得た`);
                 break;
@@ -4630,7 +4630,7 @@ const Fighter = class extends Material {
                 f.gfBuff = this.calcSkillValue(skill, lvl);
                 f.gf += f.gfBuff;
                 f.gfBuffDur = duration;
-                message.draw(rogue.cl == ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} got an effect of Gold Finding` :
                     `${name}財宝探求の効果を得た`);
                 break;
@@ -4639,7 +4639,7 @@ const Fighter = class extends Material {
                 f.expBuff = this.calcSkillValue(skill, lvl);
                 f.expBonus += f.expBuff;
                 f.expBuffDur = duration;
-                message.draw(rogue.cl == ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} got an effect of Experience` :
                     `${name}経験の効果を得た`);
                 break;
@@ -4648,14 +4648,14 @@ const Fighter = class extends Material {
                 f.skillBuff = this.calcSkillValue(skill, lvl);
                 f.skillAll += f.skillBuff;
                 f.skillBuffDur = duration;
-                message.draw(rogue.cl == ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} got an effect of Skill` :
                     `${name}スキルの効果を得た`);
                 break;
             case ENCOURAGEMENT:
                 f.dmgBuff = f.rateBuff = this.calcSkillValue(skill, lvl);
                 f.dmgBuffDur = duration;
-                message.draw(rogue.cl == ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} got an effect of Combat` :
                     `${name}戦闘の効果を得た`);
                 f.calcDmg();
@@ -4663,7 +4663,7 @@ const Fighter = class extends Material {
             case BLESSING:
                 f.acBuff = this.calcSkillValue(skill, lvl);
                 f.acBuffDur = duration;
-                message.draw(rogue.cl == ENG ?
+                message.draw(option.isEnglish() ?
                     `${name} got an effect of Armor` :
                     `${name}守護の効果を得た`);
                 f.calcAc();
@@ -4740,27 +4740,28 @@ const Fighter = class extends Material {
             skill = skillMap.get(nameSkill);
             lvl = w.skillLvl;
             let name = w.getName(false, 1);
-            message.draw(rogue.cl === ENG ?
+            message.draw(option.isEnglish() ?
                 `Zapped ${name}` :
                 `${name}を振った`);
         } else if (flag.skill) {
             if (!nameSkill) nameSkill = cs.id;
             skill = skillMap.get(nameSkill);
             lvl = cs.lvl + this.getSkillBoost(skill);
-            let name = skill.name[rogue.cl];
+            let name = skill.name[option.getLanguage()];
             let nameChar = this.getName(true);
-            message.draw(rogue.cl === ENG ?
+            message.draw(option.isEnglish() ?
                 `${nameChar} cast ${name}` :
                 skill.type === 'spell' ?
                 `${nameChar}${name}を唱えた` :
                 `${nameChar}${name}を放った`);
+            audio.playSound(skill.element);
         } else if (flag.scroll) {
             nameSkill = ci.nameSkill;
             skill = skillMap.get(nameSkill);
             lvl = ci.skillLvl;
         } else if (flag.throw) {
             let name = ci.getName(false, 1);
-            message.draw(rogue.cl === ENG ?
+            message.draw(option.isEnglish() ?
                 `Threw ${name}` :
                 `${name}を投げた`);
 		}
@@ -4996,8 +4997,8 @@ const Fighter = class extends Material {
     castSelfSpell(skill, ecco) {
         let lvl = cs.lvl + this.getSkillBoost(skill);
         let name = this.getName(true);
-        let nameSkill = skill.name[rogue.cl];
-        message.draw(rogue.cl === ENG ?
+        let nameSkill = skill.name[option.getLanguage()];
+        message.draw(option.isEnglish() ?
             `${name} cast ${nameSkill}` :
             skill.type === 'spell' ?
             `${name}${nameSkill}を唱えた` :
@@ -5130,12 +5131,12 @@ const Fighter = class extends Material {
       	    	this.equipment['off'] && this.equipment['off'].cursed) {
             let verb;
             if (this.equipment['main'] && this.equipment['main'].cursed) {
-                verb = rogue.cl === ENG ? 'unwield' : '離す';
+                verb = option.isEnglish() ? 'unwield' : '離す';
 			} else {
-				verb = rogue.cl === ENG ? 'take off' : '外す';
+				verb = option.isEnglish() ? 'take off' : '外す';
 			}
 
-            message.draw(rogue.cl === ENG ?
+            message.draw(option.isEnglish() ?
                 `${name} can't ${verb} the cursed item` :
                 `${name}呪われたアイテムを${verb}事が出来ない`);
             return null;
@@ -5152,7 +5153,7 @@ const Fighter = class extends Material {
         [this.equipment['main'], this.equipment['off'], this.side['a'], this.side['b']] = [itemSideA, itemSideB, itemMain, itemOff];
         this.calcAll();
         this.swapped = !this.swapped;
-        message.draw(rogue.cl === ENG ?
+        message.draw(option.isEnglish() ?
             `${name} swapped gear` :
             `${name}装備を持ち替えた`);
         if (this.id !== ROGUE) return;
@@ -5181,7 +5182,7 @@ const Fighter = class extends Material {
 		});
 		
         let name = this.getName(true);
-        message.draw(rogue.cl == ENG ?
+        message.draw(option.isEnglish() ?
             `${name} stole $${amount}` :
             `${name}$${amount}を盗んだ`);
         this.teleport(false, MIN_TELE_RAD_SQ);
@@ -5216,7 +5217,7 @@ const Fighter = class extends Material {
         this.packAdd(item);
         let nameItem = item.getName();
         let name = this.getName(true);
-        message.draw(rogue.cl == ENG ?
+        message.draw(option.isEnglish() ?
             `${name} stole ${nameItem}` :
             `${name}${nameItem}を盗んだ`);
         this.teleport(false, MIN_TELE_RAD_SQ);
@@ -5261,7 +5262,7 @@ const Fighter = class extends Material {
             this.getOrLooseStats(item);
             this.calcAll();
             let name = item.getName();
-            message.draw(rogue.cl === ENG ?
+            message.draw(option.isEnglish() ?
                 `${name} broke` :
                 `${name}は壊れた`);
             return true;
@@ -5272,7 +5273,7 @@ const Fighter = class extends Material {
         let item = this.equipment[BP[EA[rndInt(MAX_EQUIPMENT_NUM - 1)]]];
         if (!item || item.cursed) return;
         let name = item.getName();
-        message.draw(rogue.cl === ENG ?
+        message.draw(option.isEnglish() ?
             `${name} is cursed` :
             `${name}は呪われた`);
         item.cursed = true;
@@ -5380,7 +5381,7 @@ const Fighter = class extends Material {
         this.sleeping = 0;
         if (this.id !== ROGUE && !this.isShowing()) return;
         let name = this.getName(true);
-        message.draw(rogue.cl === ENG ?
+        message.draw(option.isEnglish() ?
             `${name} woke up` :
             `${name}目覚めた`);
         if (flag.dash || flag.rest) flag.dash = flag.rest = false;
@@ -5537,7 +5538,7 @@ const Fighter = class extends Material {
         this.calcAll();
         if (this.id === ROGUE) this.initBookmarks();
         let name = this.getName(true);
-        message.draw(rogue.cl === ENG ?
+        message.draw(option.isEnglish() ?
             `${name} forgot everything` :
             `${name}自らを忘却した`)
     }

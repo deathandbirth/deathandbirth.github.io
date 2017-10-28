@@ -70,7 +70,7 @@ const inventory = {
             if (flag.pack && !item || flag.option || flag.cure) {
                 if (!flag.pack) {
                     ctsInv.textAlign = 'left';
-                    ctsInv.fillText(item[rogue.cl], (i + 1) * fs, j * fs, 14 * fs);
+                    ctsInv.fillText(item[option.getLanguage()], (i + 1) * fs, j * fs, 14 * fs);
                     ctsInv.textAlign = 'right';
                     if (flag.cure) {
                         let cost = enter[CURE].list[key].cost;
@@ -79,8 +79,8 @@ const inventory = {
                         let msg = '';
                         let opt = option[item['a']];
                         if (opt.choise) {
-                            msg = opt.choise[opt.user][rogue.cl];
-						} else if (rogue.cl === ENG) {
+                            msg = opt.choise[opt.user][option.getLanguage()];
+						} else if (option.isEnglish()) {
                             msg = opt.user ? 'yes' : 'no';
 						} else {
 							msg = opt.user ? 'はい' : 'いいえ';
@@ -112,7 +112,7 @@ const inventory = {
 			}
 
             ctsInv.textAlign = 'left';
-            let name = item.getName(false, item.quantity, rogue.cl, flag.gamble && place === P_SHOP);
+            let name = item.getName(false, item.quantity, option.getLanguage(), flag.gamble && place === P_SHOP);
             if (item.stroke) ctsInv.strokeText(name, (i + 1.5) * fs, j * fs, 15 * fs);
             ctsInv.fillText(name, (i + 1.5) * fs, j * fs, 15 * fs);
             ctsInv.fillStyle = WHITE;
@@ -143,26 +143,26 @@ const inventory = {
         ctsInv.textAlign = 'right';
         let msg = '';
         if (place === P_SHOP) {
-            let weight = rogue.cl === ENG ? 'Weight' : '重量';
+            let weight = option.isEnglish() ? 'Weight' : '重量';
             msg = `${weight} x${quantity2}`;
         } else if (place === P_STASH) {
             msg = ` [${enter[STASH].page}/${MAX_STASH_PAGE}]`;
 		} else {
             if (flag.gain) {
-                let skillPoints = rogue.cl === ENG ? 'Skill Points' : 'スキルポイント';
+                let skillPoints = option.isEnglish() ? 'Skill Points' : 'スキルポイント';
                 msg = `${skillPoints} ${rogue.skillPoints} `;
 			}
 			
-            let total = rogue.cl === ENG ? 'Total' : '計';
+            let total = option.isEnglish() ? 'Total' : '計';
             msg += `${total} ${weight.toFixed(1)}kg`;
 		}
 		
         if (flag.shop) {
             let sellOrCost;
             if (direction === RIGHT) {
-                sellOrCost = rogue.cl === ENG ? 'Sell Value' : '売値';
+                sellOrCost = option.isEnglish() ? 'Sell Value' : '売値';
 			} else {
-				sellOrCost = rogue.cl === ENG ? 'Cost' : '買値';
+				sellOrCost = option.isEnglish() ? 'Cost' : '買値';
 			}
 
             msg = `${sellOrCost} x${quantity2} ${msg}`;

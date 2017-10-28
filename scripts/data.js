@@ -170,7 +170,7 @@ const data = {
             rogue.returnCubeItem();
         }
 
-        message.draw(rogue.cl === ENG ? 'Saved' : '記録した');
+        message.draw(option.isEnglish() ? 'Saved' : '記録した');
         let saveData = new Data();
         localStorage.setItem(this.name, JSON.stringify(saveData));
     },
@@ -182,11 +182,11 @@ const data = {
             saveData.__proto__ = Data.prototype;
             try {
                 saveData.loadInit();
-                message.draw(option.language.user === ENG ? 'Loaded' : '記録を読み込んだ');
+                message.draw(option.isEnglish() ? 'Loaded' : '記録を読み込んだ');
             } catch (e) {
                 this.failed = true;
                 let ver = saveData.ver;
-                ctsInv.fillText(option.language.user === ENG ?
+                ctsInv.fillText(option.isEnglish() ?
                     `Failed to load. In order to delete your save data and continue, please push 'Y'.(ver ${ver})` :
                     `読み込みに失敗しました。セーブデータを消去してゲームを続けるには、'Y'を押してください。(ver ${ver})`, fs, fs);
             }
@@ -206,7 +206,7 @@ const data = {
 
     dontSave() {
         this.error = true;
-        message.draw(option.language.user === ENG ?
+        message.draw(option.isEnglish() ?
             'Error occurred' :
             'エラーが発生した');
     }

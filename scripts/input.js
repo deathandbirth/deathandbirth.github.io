@@ -291,7 +291,7 @@ document.onkeydown = function(e) {
                 game.start();
                 data.failed = false;
                 data.delete(data.name);
-                message.draw(rogue.cl === ENG ?
+                message.draw(option.isEnglish() ?
                     'Deleted the data' :
                     'データ消去しました')
             }

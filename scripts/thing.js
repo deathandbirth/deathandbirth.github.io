@@ -113,7 +113,7 @@ const Thing = class {
     dissapear() {
         this.abort = true;
         let name = this.getName();
-        message.draw(rogue.cl === ENG ?
+        message.draw(option.isEnglish() ?
             `${name} dissapeared` :
             `${name}は消え去った`);
     }

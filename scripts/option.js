@@ -45,7 +45,7 @@ const option = {
                 this[this.name].user = a;
                 display.change(a, true);
             } else if (this.name === 'language') {
-                this[this.name].user = rogue.cl = a;
+                this[this.name].user = a;
                 rogue.drawStats();
             } else if (this.name === 'BGM' || this.name === 'SE') {
                 this[this.name].user = a;
@@ -82,6 +82,14 @@ const option = {
         flag.option2 = true;
         inventory.show(this[this.name].choise, LEFT);
         message.draw(message.get(M_OPTION), true);
+    },
+    
+    isEnglish() {
+        return this.language.user === ENG;
+    },
+
+    getLanguage() {
+        return this.language.user;
     }
 };
 

@@ -1404,7 +1404,7 @@ const Material = class extends Thing {
         ctsInv.fillStyle = WHITE;
         ctsInv.shadowColor = SHADOW;
         if (this.desc) {
-            this.desc[rogue.cl].replace(/\t/g, '').split('\n').forEach((value, key) => {
+            this.desc[option.getLanguage()].replace(/\t/g, '').split('\n').forEach((value, key) => {
                 ctsInv.fillText(key % 2 ? '   ' + value : value, (i - 0.5) * fs, (j++) * fs);
             });
         } else if (this.nameSkill) {
@@ -1415,10 +1415,10 @@ const Material = class extends Thing {
 		}
 
         if (!char) { //
-            let weight = rogue.cl === ENG ? 'weight' : '重量';
+            let weight = option.isEnglish() ? 'weight' : '重量';
             ctsInv.fillText(`${weight} ${this.weight}kg`, (i - 0.5) * fs, (j++) * fs);
         } else {
-            let [lvl, expGain, exp, expNext, totalWeight] = rogue.cl === ENG ? ['Level', 'Exp Gain', 'Exp', 'Exp Next', 'Total Weight'] :
+            let [lvl, expGain, exp, expNext, totalWeight] = option.isEnglish() ? ['Level', 'Exp Gain', 'Exp', 'Exp Next', 'Total Weight'] :
                 ['レベル', '取得経験値', '経験値', '次経験値', '総重量'];
             ctsInv.fillText(`${lvl} ${this.lvl} (${this.lvlMax}), ${exp} ${this.exp} (${this.expMax}), ${expNext} ${this.expNext}, ${expGain} ${this.expGain}, ${totalWeight} ${this.totalWeight}kg (${this.weightLimit}kg)`, (i - 0.5) * fs, j * fs, IN_WIDTH * fs);
             j += 2;
@@ -1453,7 +1453,7 @@ const Material = class extends Thing {
 			}
 
             ctsInv.save();
-            let msg = term.name[rogue.cl];
+            let msg = term.name[option.getLanguage()];
             let value = this[key];
             if (term.plus && !char && this[key] > 0) value = '+' + value;
             if (term.perc) value += '%';
@@ -1475,14 +1475,14 @@ const Material = class extends Thing {
 
             if (term.bool) {
                 if (this[key]) {
-                    value = rogue.cl === ENG ? 'yes' : '有り';
+                    value = option.isEnglish() ? 'yes' : '有り';
 				} else {
-					value = rogue.cl === ENG ? 'no' : '無し';
+					value = option.isEnglish() ? 'no' : '無し';
 				}
 			}
 			
             if (key === 'material') {
-				value = materialMap.get(this[key]).name[rogue.cl];
+				value = materialMap.get(this[key]).name[option.getLanguage()];
 			}
 
             ctsInv.textAlign = 'right';
@@ -1513,15 +1513,15 @@ const Material = class extends Thing {
 
     getAtkTypeName() {
         let value = '';
-        if (this.atkType & AT_S) value += rogue.cl === ENG ? 'Slash' : '斬';
+        if (this.atkType & AT_S) value += option.isEnglish() ? 'Slash' : '斬';
         if (this.atkType & AT_T) {
             if (value) value += '・'
-            value += rogue.cl === ENG ? 'Thrust' : '突';
+            value += option.isEnglish() ? 'Thrust' : '突';
 		}
 		
         if (this.atkType & AT_B) {
             if (value) value += '・'
-            value += rogue.cl === ENG ? 'Blunt' : '打';
+            value += option.isEnglish() ? 'Blunt' : '打';
 		}
 		
         return value;

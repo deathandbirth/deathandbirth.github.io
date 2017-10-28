@@ -15,7 +15,7 @@ const game = {
                 ctsInv.save();
                 ctsInv.fillText(key, (i - 0.5) * fs, j * fs);
                 ctsInv.textAlign = 'left';
-                ctsInv.fillText(list[key][rogue.cl], (i + 4) * fs, (j++) * fs);
+                ctsInv.fillText(list[key][option.getLanguage()], (i + 4) * fs, (j++) * fs);
                 ctsInv.restore();
                 if (j === IN_HEIGHT) {
                     j = MS + 1;
@@ -35,7 +35,7 @@ const game = {
         ctsInv.font = '40px Arial';
         ctsInv.fillText('Death and Birth', IN_WIDTH / 2 * fs, IN_HEIGHT / 2 * fs);
         ctsInv.font = '20px Arial';
-        ctsInv.fillText(option.language.user === ENG ?
+        ctsInv.fillText(option.isEnglish() ?
             '[Enter] to start' :
             '[Enter] 開始', IN_WIDTH / 2 * fs, (IN_HEIGHT / 2 + 2) * fs);
         ctsInv.font = '15px Arial';
@@ -54,7 +54,7 @@ const game = {
         ctsInv.font = '40px Arial';
         ctsInv.fillText('G A M E  O V E R', IN_WIDTH / 2 * fs, IN_HEIGHT / 2 * fs);
         ctsInv.font = '20px Arial';
-        ctsInv.fillText(option.language.user === ENG ?
+        ctsInv.fillText(option.isEnglish() ?
             '[Enter] to retry' :
             '[Enter] リトライ', IN_WIDTH / 2 * fs, (IN_HEIGHT / 2 + 2) * fs);
         ctsInv.restore();

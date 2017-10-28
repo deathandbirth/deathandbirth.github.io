@@ -275,21 +275,21 @@ const Trap = class extends Thing {
 	}
 
 	getName() {
-		let name = this.name[rogue.cl];
+		let name = this.name[option.getLanguage()];
 		if (this.circle) {
-			if (rogue.cl === ENG) {
+			if (option.isEnglish()) {
 				name = `Magic Circle of ${name}`;
 			} else {
 				name = `${name}の魔法円`;
 			}
 		} else if (this.dart) {
-			if (rogue.cl === ENG) {
+			if (option.isEnglish()) {
 				name = `Dart Trap(${name})`;
 			} else {
 				name = `投げ矢の罠(${name})`;
 			}
 		} else if (this.gas) {
-			if (rogue.cl === ENG) {
+			if (option.isEnglish()) {
 				name = `Gas Trap of ${name}`;
 			} else {
 				name = `${name}ガスの罠`;
