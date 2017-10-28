@@ -12,11 +12,11 @@ const game = {
             let i = this.i;
             let j = this.j;
             for (let key in list) {
-                ctsInv.save();
-                ctsInv.fillText(key, (i - 0.5) * fs, j * fs);
-                ctsInv.textAlign = 'left';
-                ctsInv.fillText(list[key][option.getLanguage()], (i + 4) * fs, (j++) * fs);
-                ctsInv.restore();
+                ctxInv.save();
+                ctxInv.fillText(key, (i - 0.5) * fs, j * fs);
+                ctxInv.textAlign = 'left';
+                ctxInv.fillText(list[key][option.getLanguage()], (i + 4) * fs, (j++) * fs);
+                ctxInv.restore();
                 if (j === IN_HEIGHT) {
                     j = MS + 1;
                     i += 14;
@@ -30,18 +30,18 @@ const game = {
 	
     title() {
         this.clearDisplay();
-        ctsInv.save();
-        ctsInv.textAlign = 'center'
-        ctsInv.font = '40px Arial';
-        ctsInv.fillText('Death and Birth', IN_WIDTH / 2 * fs, IN_HEIGHT / 2 * fs);
-        ctsInv.font = '20px Arial';
-        ctsInv.fillText(option.isEnglish() ?
+        ctxInv.save();
+        ctxInv.textAlign = 'center'
+        ctxInv.font = '40px Arial';
+        ctxInv.fillText('Death and Birth', IN_WIDTH / 2 * fs, IN_HEIGHT / 2 * fs);
+        ctxInv.font = '20px Arial';
+        ctxInv.fillText(option.isEnglish() ?
             '[Enter] to start' :
             '[Enter] 開始', IN_WIDTH / 2 * fs, (IN_HEIGHT / 2 + 2) * fs);
-        ctsInv.font = '15px Arial';
-        ctsInv.textAlign = 'right';
-        ctsInv.fillText(`ver ${VERSION}`, canvas.width - 2 * fs, canvas.height - 2 * fs);
-        ctsInv.restore();
+        ctxInv.font = '15px Arial';
+        ctxInv.textAlign = 'right';
+        ctxInv.fillText(`ver ${VERSION}`, canvas.width - 2 * fs, canvas.height - 2 * fs);
+        ctxInv.restore();
         flag.retry = true;
         audio.stop(audio.curTrack);
         audio.playMusic('title');
@@ -49,15 +49,15 @@ const game = {
 	
     over() {
         this.clearDisplay();
-        ctsInv.save();
-        ctsInv.textAlign = 'center'
-        ctsInv.font = '40px Arial';
-        ctsInv.fillText('G A M E  O V E R', IN_WIDTH / 2 * fs, IN_HEIGHT / 2 * fs);
-        ctsInv.font = '20px Arial';
-        ctsInv.fillText(option.isEnglish() ?
+        ctxInv.save();
+        ctxInv.textAlign = 'center'
+        ctxInv.font = '40px Arial';
+        ctxInv.fillText('G A M E  O V E R', IN_WIDTH / 2 * fs, IN_HEIGHT / 2 * fs);
+        ctxInv.font = '20px Arial';
+        ctxInv.fillText(option.isEnglish() ?
             '[Enter] to retry' :
             '[Enter] リトライ', IN_WIDTH / 2 * fs, (IN_HEIGHT / 2 + 2) * fs);
-        ctsInv.restore();
+        ctxInv.restore();
         flag.retry = true;
 	},
 	
@@ -107,7 +107,7 @@ const game = {
     clearDisplay() {
         ctxBuf.clearRect(0, 0, canvas.width * 2, canvas.height * 2);
         ctxMain.clearRect(0, 0, canvas.width, canvas.height);
-        ctsInv.clearRect(0, 0, canvas.width, canvas.height);
+        ctxInv.clearRect(0, 0, canvas.width, canvas.height);
         ctxStats.clearRect(0, 0, canvas.width, canvas.height);
         ctxMsg.clearRect(0, 0, canvas.width, canvas.height);
         // ctxMap.clearRect(0,0,canvas.width,canvas.height);

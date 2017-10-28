@@ -84,7 +84,7 @@ const Location = class extends Position {
         ctxBuf.restore();
     }
 
-    getInfor(stepOn) {
+    getInfo(stepOn) {
         if (flag.examine) {
             let msg = message.get(M_EXAMINE);
             if (wizard) msg += message.get(M_EXAMINE_W);

@@ -24,7 +24,7 @@ let ctxMain = ctxes.main;
 let ctxCur = ctxes.cur;
 let ctxStats = ctxes.stats;
 let ctxMap = ctxes.map;
-let ctsInv = ctxes.inv;
+let ctxInv = ctxes.inv;
 let ctxMsg = ctxes.msg;
 
 const display = {

@@ -110,7 +110,7 @@ document.onkeydown = function(e) {
             case 190: //. stap on, > down stairs
             case 110: //T.
                 if (e.keyCode === 110 || !isShift) {
-                    if (!coords[rogue.x][rogue.y].getInfor(true)) rogue.done = true;
+                    if (!coords[rogue.x][rogue.y].getInfo(true)) rogue.done = true;
                 } else {
 					rogue.downOrUpStairs(e.keyCode);
 				}

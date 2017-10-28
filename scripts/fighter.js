@@ -3537,62 +3537,62 @@ const Fighter = class extends Material {
                 continue;
 			}
 			
-            ctsInv.save();
-            ctsInv.textAlign = 'center';
-            ctsInv.fillText(EA[k++].toUpperCase(), (i - 0.5) * fs, j * fs);
-            ctsInv.fillText(')', (i - 0.5) * fs + fs / 3, j * fs);
-            ctsInv.textAlign = 'left';
+            ctxInv.save();
+            ctxInv.textAlign = 'center';
+            ctxInv.fillText(EA[k++].toUpperCase(), (i - 0.5) * fs, j * fs);
+            ctxInv.fillText(')', (i - 0.5) * fs + fs / 3, j * fs);
+            ctxInv.textAlign = 'left';
             let parts = option.isEnglish() ? key : BPJ[key];
             if (key === 'main' || key === 'off') parts += this.swapped ? 2 : 1;
-            ctsInv.fillText(parts, (i + 0.5) * fs, j * fs);
+            ctxInv.fillText(parts, (i + 0.5) * fs, j * fs);
             if (!item) {
                 if (key === 'off' && this.equipment['main'] && this.equipment['main'].twoHanded) {
-                    ctsInv.fillText(option.isEnglish() ?
+                    ctxInv.fillText(option.isEnglish() ?
                         `(two-handed)` :
                         `(両手持ち)`, (i + 4.5) * fs, j * fs, 14 * fs);
 				}
 				
                 j++;
-                ctsInv.restore();
+                ctxInv.restore();
                 continue;
 			}
 			
-            ctsInv.textAlign = 'center';
-            if (item.shadow) ctsInv.shadowColor = item.shadow;
+            ctxInv.textAlign = 'center';
+            if (item.shadow) ctxInv.shadowColor = item.shadow;
             if (item.stroke) {
-                ctsInv.strokeStyle = item.stroke;
-                ctsInv.strokeText(item.symbol, (i + 4) * fs, j * fs);
+                ctxInv.strokeStyle = item.stroke;
+                ctxInv.strokeText(item.symbol, (i + 4) * fs, j * fs);
 			}
 			
-            ctsInv.fillStyle = item.color;
-            ctsInv.fillText(item.symbol, (i + 4) * fs, j * fs);
+            ctxInv.fillStyle = item.color;
+            ctxInv.fillText(item.symbol, (i + 4) * fs, j * fs);
             if (item.cursed) {
-                ctsInv.fillStyle = RED;
+                ctxInv.fillStyle = RED;
 			} else if (!item.durab) {
-                ctsInv.fillStyle = GRAY;
+                ctxInv.fillStyle = GRAY;
 			} else {
-				ctsInv.fillStyle = WHITE;
+				ctxInv.fillStyle = WHITE;
 			}
 
-            ctsInv.textAlign = 'left';
+            ctxInv.textAlign = 'left';
             let name = item.getName();
             let limit = flag.blacksmith ? 12 : 15;
-            if (item.stroke) ctsInv.strokeText(name, (i + 4.5) * fs, j * fs, limit * fs);
-            ctsInv.fillText(name, (i + 4.5) * fs, j * fs, limit * fs);
-            ctsInv.fillStyle = WHITE;
-            ctsInv.shadowColor = SHADOW;
-            ctsInv.textAlign = 'right';
+            if (item.stroke) ctxInv.strokeText(name, (i + 4.5) * fs, j * fs, limit * fs);
+            ctxInv.fillText(name, (i + 4.5) * fs, j * fs, limit * fs);
+            ctxInv.fillStyle = WHITE;
+            ctxInv.shadowColor = SHADOW;
+            ctxInv.textAlign = 'right';
             if (flag.blacksmith) {
                 let price = item.getDurabPrice();
-                ctsInv.fillText(`$${price}`, (i + 20.3) * fs, j * fs, 3.5 * fs);
+                ctxInv.fillText(`$${price}`, (i + 20.3) * fs, j * fs, 3.5 * fs);
                 priceAll += price;
 			}
 			
-            ctsInv.fillText((item.weight * item.quantity).toFixed(1), (i + 22) * fs, j * fs);
+            ctxInv.fillText((item.weight * item.quantity).toFixed(1), (i + 22) * fs, j * fs);
             weight += item.weight * item.quantity;
             count++;
             j++;
-            ctsInv.restore();
+            ctxInv.restore();
 		}
 		
         if (!flag.destroy && !flag.number && !flag.repair && !flag.blacksmith) {
@@ -3606,15 +3606,15 @@ const Fighter = class extends Material {
                     continue;
 				}
 				
-                ctsInv.save();
-                if (this.findBuffStat(key)) ctsInv.shadowColor = C_BUFF;
+                ctxInv.save();
+                if (this.findBuffStat(key)) ctxInv.shadowColor = C_BUFF;
 				if (this.lowerRes && (key === 'fire' || key === 'water' ||
 						key === 'air' || key === 'earth' || key === 'poison')) {
-					ctsInv.fillStyle = RED;
+					ctxInv.fillStyle = RED;
 				}
 
-                ctsInv.fillText(term.name[option.getLanguage()], (col - 1) * fs, j * fs);
-                ctsInv.textAlign = 'right';
+                ctxInv.fillText(term.name[option.getLanguage()], (col - 1) * fs, j * fs);
+                ctxInv.textAlign = 'right';
                 let value = this[key];
                 if (term.perc) value += '%';
                 if (term.max) {
@@ -3623,8 +3623,8 @@ const Fighter = class extends Material {
                     value += ` (${max})`;
 				}
 				
-                ctsInv.fillText(value, (col + IN_WIDTH / 4 - 2) * fs, (j++) * fs, valueLimit);
-                ctsInv.restore();
+                ctxInv.fillText(value, (col + IN_WIDTH / 4 - 2) * fs, (j++) * fs, valueLimit);
+                ctxInv.restore();
                 if (!(++count2 % 8)) {
                     col += IN_WIDTH / 4;
                     j = row;
@@ -3633,16 +3633,16 @@ const Fighter = class extends Material {
 		}
 		
         let maxNum = MAX_EQUIPMENT_NUM;
-        ctsInv.fillText(`[${count}/${maxNum}]`, (i) * fs, (IN_HEIGHT - MS + 1) * fs);
-        ctsInv.textAlign = 'right';
+        ctxInv.fillText(`[${count}/${maxNum}]`, (i) * fs, (IN_HEIGHT - MS + 1) * fs);
+        ctxInv.textAlign = 'right';
         let total = option.isEnglish() ? 'Total' : '計';
         if (flag.blacksmith) {
             let cost = option.isEnglish() ? 'Total Cost' : '全費用';
             total = `${cost} $${priceAll} ${total}`;
 		}
 		
-        ctsInv.fillText(`${total} ${weight.toFixed(1)}kg`, (i + 22) * fs, (IN_HEIGHT - MS + 1) * fs);
-        ctsInv.textAlign = 'left';
+        ctxInv.fillText(`${total} ${weight.toFixed(1)}kg`, (i + 22) * fs, (IN_HEIGHT - MS + 1) * fs);
+        ctxInv.textAlign = 'left';
     }
 
     showSkill(list, bookmark) {
@@ -3655,33 +3655,33 @@ const Fighter = class extends Material {
             if (flag.number && list[key] !== cs) continue;
             let skill;
             if (list[key]) skill = skillMap.get(list[key].id ? list[key].id : list[key]);
-            ctsInv.save();
+            ctxInv.save();
             if (bookmark) {
-                if (skill) ctsInv.shadowColor = skill.color;
-                ctsInv.fillText(key === '0' ? main : `F${key}`, (i - 1) * fs, j * fs);
-                ctsInv.textAlign = 'center';
-                ctsInv.fillText(':', (i + 1.25) * fs + fs / 3, j * fs);
+                if (skill) ctxInv.shadowColor = skill.color;
+                ctxInv.fillText(key === '0' ? main : `F${key}`, (i - 1) * fs, j * fs);
+                ctxInv.textAlign = 'center';
+                ctxInv.fillText(':', (i + 1.25) * fs + fs / 3, j * fs);
                 if (!skill) {
                     j++;
-                    ctsInv.restore();
+                    ctxInv.restore();
                     continue;
                 }
             } else {
                 if (skill.reqLvl > this.lvl) {
-                    ctsInv.fillStyle = GRAY;
+                    ctxInv.fillStyle = GRAY;
 				} else {
-					ctsInv.shadowColor = skill.color;
+					ctxInv.shadowColor = skill.color;
 				}
 
-                ctsInv.textAlign = 'center';
-                ctsInv.fillText(key, i * fs, j * fs);
-                ctsInv.fillText(')', i * fs + fs / 3, j * fs);
+                ctxInv.textAlign = 'center';
+                ctxInv.fillText(key, i * fs, j * fs);
+                ctxInv.fillText(')', i * fs + fs / 3, j * fs);
 			}
 			
-            ctsInv.textAlign = 'left';
+            ctxInv.textAlign = 'left';
             let name = skill.name[option.getLanguage()];
-            ctsInv.fillText(name, (i + 1 + (bookmark ? 1 : 0)) * fs, j * fs);
-            ctsInv.textAlign = 'right';
+            ctxInv.fillText(name, (i + 1 + (bookmark ? 1 : 0)) * fs, j * fs);
+            ctxInv.textAlign = 'right';
             let lvl = 0;
             if (list[key].lvl) {
                 lvl = list[key].lvl
@@ -3691,7 +3691,7 @@ const Fighter = class extends Material {
 			}
 			
             let boost = this.getSkillBoost(skill);
-            ctsInv.fillText(`${lvl}+${boost}`, (i + 12) * fs, j * fs);
+            ctxInv.fillText(`${lvl}+${boost}`, (i + 12) * fs, j * fs);
             if (skill.rate) {
                 let value;
                 let bonus = skill.rate * (lvl + boost) + (skill.synerzy ? skill.synerzy * this.getSynerzy(skill) : 0);
@@ -3713,28 +3713,28 @@ const Fighter = class extends Material {
                     value = `Avg ${avg}`;
 				}
 				
-                ctsInv.fillText(value, (i + 17) * fs, j * fs);
+                ctxInv.fillText(value, (i + 17) * fs, j * fs);
 			}
 			
             if (skill.reqLvl <= this.lvl && skill.mp > this.mp) {
-                ctsInv.shadowColor = SHADOW;
-                ctsInv.fillStyle = RED;
+                ctxInv.shadowColor = SHADOW;
+                ctxInv.fillStyle = RED;
 			}
 			
-            ctsInv.fillText(skill.mp, (i + 18.5) * fs, j * fs);
+            ctxInv.fillText(skill.mp, (i + 18.5) * fs, j * fs);
             if (skill.reqLvl <= this.lvl) {
-                ctsInv.shadowColor = skill.color;
-                ctsInv.fillStyle = WHITE;
+                ctxInv.shadowColor = skill.color;
+                ctxInv.fillStyle = WHITE;
 			}
 			
-            ctsInv.fillText(skill.reqLvl, (i + 20.5) * fs, j * fs);
-            if (skill.reqSynerzy) ctsInv.fillText(skill.reqSynerzy, (i + 22.5) * fs, j * fs);
-            ctsInv.restore();
+            ctxInv.fillText(skill.reqLvl, (i + 20.5) * fs, j * fs);
+            if (skill.reqSynerzy) ctxInv.fillText(skill.reqSynerzy, (i + 22.5) * fs, j * fs);
+            ctxInv.restore();
             count++;
             j++;
 		}
 		
-        ctsInv.save();
+        ctxInv.save();
         j = MS + 1;
         let maxNum;
         if (flag.gain) {
@@ -3745,20 +3745,20 @@ const Fighter = class extends Material {
 			maxNum = MAX_SKILL_NUM;
 		}
 
-        ctsInv.fillText(`[${count}/${maxNum}]`, i * fs, j * fs);
-        ctsInv.textAlign = 'right';
+        ctxInv.fillText(`[${count}/${maxNum}]`, i * fs, j * fs);
+        ctxInv.textAlign = 'right';
         // if(!bookmark){
         // let skillPoints = option.isEnglish() ? 'Skill Points':'スキルポイント';
-        // ctsInv.fillText(`${skillPoints} ${this.skillPoints}`,(i+10)*fs,j*fs);
+        // ctxInv.fillText(`${skillPoints} ${this.skillPoints}`,(i+10)*fs,j*fs);
         // }
         let [lvl, value, mp, reqLv, reqSy] = option.isEnglish() ? ['Lv', 'Value', 'MP', 'RLv', 'RSy'] :
             ['レベル', '値', 'MP', '必レ', '必シ'];
-        ctsInv.fillText(lvl, (i + 12) * fs, j * fs);
-        ctsInv.fillText(value, (i + 16) * fs, j * fs);
-        ctsInv.fillText(mp, (i + 18.5) * fs, j * fs);
-        ctsInv.fillText(reqLv, (i + 20.5) * fs, j * fs);
-        ctsInv.fillText(reqSy, (i + 22.5) * fs, j * fs);
-        ctsInv.restore();
+        ctxInv.fillText(lvl, (i + 12) * fs, j * fs);
+        ctxInv.fillText(value, (i + 16) * fs, j * fs);
+        ctxInv.fillText(mp, (i + 18.5) * fs, j * fs);
+        ctxInv.fillText(reqLv, (i + 20.5) * fs, j * fs);
+        ctxInv.fillText(reqSy, (i + 22.5) * fs, j * fs);
+        ctxInv.restore();
     }
 
     findBuffStat(key) {
@@ -5372,7 +5372,7 @@ const Fighter = class extends Material {
 		
         if (this.id === ROGUE) {
             coords[this.x][this.y].traces = ++this.numSteps;
-            coords[this.x][this.y].getInfor();
+            coords[this.x][this.y].getInfo();
         }
     }
 

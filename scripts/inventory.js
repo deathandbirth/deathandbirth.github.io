@@ -1,22 +1,22 @@
 const inventory = {
     shadow(direction) {
-        ctsInv.save();
-        ctsInv.shadowColor = CLEAR
-        ctsInv.globalAlpha = 0.9;
-        ctsInv.fillStyle = BLACK;
+        ctxInv.save();
+        ctxInv.shadowColor = CLEAR
+        ctxInv.globalAlpha = 0.9;
+        ctxInv.fillStyle = BLACK;
         if (direction === LEFT || direction === MIDDLE) {
-            ctsInv.fillRect(0, (MS - 0.5) * fs, canvas.width / 2, (IN_HEIGHT - MS + 0.5) * fs);
+            ctxInv.fillRect(0, (MS - 0.5) * fs, canvas.width / 2, (IN_HEIGHT - MS + 0.5) * fs);
 		}
 
 		if (direction === RIGHT || direction === MIDDLE) {
-            ctsInv.fillRect(canvas.width / 2, (MS - 0.5) * fs, canvas.width / 2, (IN_HEIGHT - MS + 0.5) * fs);
+            ctxInv.fillRect(canvas.width / 2, (MS - 0.5) * fs, canvas.width / 2, (IN_HEIGHT - MS + 0.5) * fs);
 		}
 		
-		ctsInv.restore();
+		ctxInv.restore();
 	},
 	
     clear() {
-        ctsInv.clearRect(0, 0, canvas.width, canvas.height /*-SS*fs*/ );
+        ctxInv.clearRect(0, 0, canvas.width, canvas.height /*-SS*fs*/ );
 	},
 	
     show(list, direction, a, place) {
@@ -56,8 +56,8 @@ const inventory = {
 				continue;
 			}
 
-            ctsInv.save();
-            ctsInv.textAlign = 'center';
+            ctxInv.save();
+            ctxInv.textAlign = 'center';
             let char;
             if (place === P_STASH) {
                 char = EA[key - l].toUpperCase();
@@ -65,16 +65,16 @@ const inventory = {
 				char = direction === RIGHT ? key : key.toUpperCase();
 			}
 
-            ctsInv.fillText(char, i * fs, j * fs);
-            ctsInv.fillText(')', i * fs + fs / 3, j * fs);
+            ctxInv.fillText(char, i * fs, j * fs);
+            ctxInv.fillText(')', i * fs + fs / 3, j * fs);
             if (flag.pack && !item || flag.option || flag.cure) {
                 if (!flag.pack) {
-                    ctsInv.textAlign = 'left';
-                    ctsInv.fillText(item[option.getLanguage()], (i + 1) * fs, j * fs, 14 * fs);
-                    ctsInv.textAlign = 'right';
+                    ctxInv.textAlign = 'left';
+                    ctxInv.fillText(item[option.getLanguage()], (i + 1) * fs, j * fs, 14 * fs);
+                    ctxInv.textAlign = 'right';
                     if (flag.cure) {
                         let cost = enter[CURE].list[key].cost;
-                        ctsInv.fillText(`$${cost}`, (i + 22.5) * fs, j * fs);
+                        ctxInv.fillText(`$${cost}`, (i + 22.5) * fs, j * fs);
                     } else if (!flag.option2) {
                         let msg = '';
                         let opt = option[item['a']];
@@ -86,41 +86,41 @@ const inventory = {
 							msg = opt.user ? 'はい' : 'いいえ';
 						}
 
-                        ctsInv.fillText(msg, (i + 22.5) * fs, j * fs);
+                        ctxInv.fillText(msg, (i + 22.5) * fs, j * fs);
                     }
 				}
 				
                 j++;
-                ctsInv.restore();
+                ctxInv.restore();
                 continue;
 			}
 			
-            ctsInv.fillStyle = item.color;
-            if (item.shadow) ctsInv.shadowColor = item.shadow;
+            ctxInv.fillStyle = item.color;
+            if (item.shadow) ctxInv.shadowColor = item.shadow;
             if (item.stroke) {
-                ctsInv.strokeStyle = item.stroke;
-                ctsInv.strokeText(item.symbol, (i + 1) * fs, j * fs);
+                ctxInv.strokeStyle = item.stroke;
+                ctxInv.strokeText(item.symbol, (i + 1) * fs, j * fs);
 			}
 			
-            ctsInv.fillText(item.symbol, (i + 1) * fs, j * fs);
+            ctxInv.fillText(item.symbol, (i + 1) * fs, j * fs);
             if (item.cursed && item.identified) {
-                ctsInv.fillStyle = RED;
+                ctxInv.fillStyle = RED;
 			} else if (item.equipable && !item.durab) {
-                ctsInv.fillStyle = GRAY;
+                ctxInv.fillStyle = GRAY;
 			} else {
-				ctsInv.fillStyle = WHITE;
+				ctxInv.fillStyle = WHITE;
 			}
 
-            ctsInv.textAlign = 'left';
+            ctxInv.textAlign = 'left';
             let name = item.getName(false, item.quantity, option.getLanguage(), flag.gamble && place === P_SHOP);
-            if (item.stroke) ctsInv.strokeText(name, (i + 1.5) * fs, j * fs, 15 * fs);
-            ctsInv.fillText(name, (i + 1.5) * fs, j * fs, 15 * fs);
-            ctsInv.fillStyle = WHITE;
-            ctsInv.shadowColor = SHADOW;
-            ctsInv.textAlign = 'right';
+            if (item.stroke) ctxInv.strokeText(name, (i + 1.5) * fs, j * fs, 15 * fs);
+            ctxInv.fillText(name, (i + 1.5) * fs, j * fs, 15 * fs);
+            ctxInv.fillStyle = WHITE;
+            ctxInv.shadowColor = SHADOW;
+            ctxInv.textAlign = 'right';
             if (flag.shop || flag.blacksmith) {
                 let price = flag.shop ? item.price * quantity2 : item.getDurabPrice();
-                ctsInv.fillText(`$${price}`, (i + 20.3) * fs, j * fs, 3.5 * fs);
+                ctxInv.fillText(`$${price}`, (i + 20.3) * fs, j * fs, 3.5 * fs);
 			}
 			
             let quantity;
@@ -131,16 +131,16 @@ const inventory = {
                 weight += item.weight * quantity;
 			}
 			
-            ctsInv.fillText((item.weight * quantity).toFixed(1), (i + 22.5) * fs, (j++) * fs);
-            ctsInv.restore();
+            ctxInv.fillText((item.weight * quantity).toFixed(1), (i + 22.5) * fs, (j++) * fs);
+            ctxInv.restore();
             if (++count === MAX_PACK_COUNT) break;
 		}
 		
         if (flag.option || flag.cure) return;
         let maxNum = this.getMaxNumber(place);
-        ctsInv.fillText(`[${count}/${maxNum}]`, i * fs, (IN_HEIGHT - MS + 1) * fs);
-        ctsInv.save();
-        ctsInv.textAlign = 'right';
+        ctxInv.fillText(`[${count}/${maxNum}]`, i * fs, (IN_HEIGHT - MS + 1) * fs);
+        ctxInv.save();
+        ctxInv.textAlign = 'right';
         let msg = '';
         if (place === P_SHOP) {
             let weight = option.isEnglish() ? 'Weight' : '重量';
@@ -168,8 +168,8 @@ const inventory = {
             msg = `${sellOrCost} x${quantity2} ${msg}`;
 		}
 		
-        ctsInv.fillText(msg, (i + 22.5) * fs, (IN_HEIGHT - MS + 1) * fs);
-        ctsInv.restore();
+        ctxInv.fillText(msg, (i + 22.5) * fs, (IN_HEIGHT - MS + 1) * fs);
+        ctxInv.restore();
 	},
 	
     getMaxNumber(place) {

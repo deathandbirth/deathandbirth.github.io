@@ -90,7 +90,7 @@ const Rogue = class extends Fighter {
             this.y += dr.y;
             loc.traces = ++this.numSteps;
             this.drawOrErase(true, true);
-            if (!loc.getInfor()) {
+            if (!loc.getInfo()) {
                 rogue.done = true;
                 this.cost -= this.timesMove;
             }
@@ -1566,7 +1566,7 @@ const Rogue = class extends Fighter {
 			} else if (loc.fighter && loc.fighter.id !== ROGUE && loc.fighter.isShowing()) {
                 this.ce = loc.fighter;
             } else if (!flag.aim) {
-                loc.getInfor();
+                loc.getInfo();
                 return;
 			}
 			
@@ -1594,7 +1594,7 @@ const Rogue = class extends Fighter {
         if (!keyCode) {
             if (flag.aim) this.examinePlot();
             cursol.draw(X, Y);
-            coords[cursol.x][cursol.y].getInfor();
+            coords[cursol.x][cursol.y].getInfo();
             return;
 		}
 		
@@ -1663,7 +1663,7 @@ const Rogue = class extends Fighter {
         if (found) map.draw(cursol.cX, cursol.cY);
         if (flag.aim) this.examinePlot();
         cursol.draw(X, Y);
-        coords[cursol.x][cursol.y].getInfor();
+        coords[cursol.x][cursol.y].getInfo();
     }
 
     examinePlot(aim) {
@@ -1711,25 +1711,25 @@ const Rogue = class extends Fighter {
         for (let key in statistics.list) {
             if (a && key !== a) continue;
             let stat = statistics.list[key];
-            ctsInv.save();
-            ctsInv.textAlign = 'center';
-            ctsInv.fillText(key.toUpperCase(), i * fs, j * fs);
-            ctsInv.fillText(')', i * fs + fs / 3, j * fs);
-            ctsInv.textAlign = 'left';
-            ctsInv.fillText(stat.name[option.getLanguage()], (i + 1) * fs, j * fs);
-            ctsInv.textAlign = 'right';
-            ctsInv.fillText(this[stat.term + 'Max'], (i + 22) * fs, (j++) * fs);
-            ctsInv.restore();
+            ctxInv.save();
+            ctxInv.textAlign = 'center';
+            ctxInv.fillText(key.toUpperCase(), i * fs, j * fs);
+            ctxInv.fillText(')', i * fs + fs / 3, j * fs);
+            ctxInv.textAlign = 'left';
+            ctxInv.fillText(stat.name[option.getLanguage()], (i + 1) * fs, j * fs);
+            ctxInv.textAlign = 'right';
+            ctxInv.fillText(this[stat.term + 'Max'], (i + 22) * fs, (j++) * fs);
+            ctxInv.restore();
             count++;
 		}
 		
         let maxNum = count; //
-        ctsInv.fillText(`[${count}/${maxNum}]`, i * fs, (IN_HEIGHT - MS + 1) * fs);
-        ctsInv.save();
-        ctsInv.textAlign = 'right';
+        ctxInv.fillText(`[${count}/${maxNum}]`, i * fs, (IN_HEIGHT - MS + 1) * fs);
+        ctxInv.save();
+        ctxInv.textAlign = 'right';
         let [statPoints, currentValues] = option.isEnglish() ? ['Stat Points', 'Current Values'] : ['ステータスポイント', '現在値'];
-        ctsInv.fillText(`${statPoints} ${this.statPoints} ${currentValues}`, (i + 22) * fs, (IN_HEIGHT - MS + 1) * fs);
-        ctsInv.restore();
+        ctxInv.fillText(`${statPoints} ${this.statPoints} ${currentValues}`, (i + 22) * fs, (IN_HEIGHT - MS + 1) * fs);
+        ctxInv.restore();
     }
 
 
@@ -1737,18 +1737,18 @@ const Rogue = class extends Fighter {
         inventory.shadow(dir);
         let i = 0.5;
         let j = MS + 1;
-        ctsInv.save();
-        ctsInv.shadowColor = skill.color;
+        ctxInv.save();
+        ctxInv.shadowColor = skill.color;
         let nameEle = option.isEnglish() ? getUpperCase(skill.element) : ENJ[skill.element];
-        ctsInv.fillText(skill.name[option.getLanguage()] + ` [${nameEle}]`, i * fs, j++ * fs);
-        ctsInv.shadowColor = SHADOW;
+        ctxInv.fillText(skill.name[option.getLanguage()] + ` [${nameEle}]`, i * fs, j++ * fs);
+        ctxInv.shadowColor = SHADOW;
         j++;
         let lvl = 0;
         let a = this.searchSkill(skill.id);
         if (a) lvl = this.skill[a].lvl;
         let boost = this.getSkillBoost(skill);
         let msg = this.getSkillInfo(skill, lvl + boost);
-        ctsInv.fillText(msg, (i + 1) * fs, (j++) * fs, 22 * fs);
+        ctxInv.fillText(msg, (i + 1) * fs, (j++) * fs, 22 * fs);
         j++;
         let [base, perLvl, perSy, durBase] = option.isEnglish() ? ['Base', 'per Level', 'per Synerzy', 'Duration Base'] : ['基礎値', 'レベル毎', 'シナジー毎', '期間基礎値'];
         let perc = skill.perc ? '%' : '';
@@ -1760,27 +1760,27 @@ const Rogue = class extends Fighter {
 				skillBase = (option.isEnglish() ? 'radius ' : '半径') + skillBase;
 			}
 
-            ctsInv.fillText(`${base} ${skillBase}${perc}`, (i + 1) * fs, (j++) * fs, 22 * fs);
+            ctxInv.fillText(`${base} ${skillBase}${perc}`, (i + 1) * fs, (j++) * fs, 22 * fs);
             if (!isFinite(skill.base)) perc = '%';
             let sign = skill.rate > 0 ? '+' : '';
-            ctsInv.fillText(`${perLvl} ${sign}${skill.rate}${perc}`, (i + 1) * fs, (j++) * fs, 22 * fs);
+            ctxInv.fillText(`${perLvl} ${sign}${skill.rate}${perc}`, (i + 1) * fs, (j++) * fs, 22 * fs);
 		}
 		
         if (skill.synerzy) {
             let sign = skill.synerzy > 0 ? '+' : '';
-            ctsInv.fillText(`${perSy} ${sign}${skill.synerzy}${perc}`, (i + 1) * fs, (j++) * fs, 22 * fs);
+            ctxInv.fillText(`${perSy} ${sign}${skill.synerzy}${perc}`, (i + 1) * fs, (j++) * fs, 22 * fs);
 		}
 		
         if (skill.durBase) {
-            ctsInv.fillText(`${durBase} ${skill.durBase}`, (i + 1) * fs, (j++) * fs, 22 * fs);
+            ctxInv.fillText(`${durBase} ${skill.durBase}`, (i + 1) * fs, (j++) * fs, 22 * fs);
 		}
 		
         if (skill.durRate) {
             let sign = skill.durRate > 0 ? '+' : '';
-            ctsInv.fillText(`${perLvl} ${sign}${skill.durRate}`, (i + 1) * fs, (j++) * fs, 22 * fs);
+            ctxInv.fillText(`${perLvl} ${sign}${skill.durRate}`, (i + 1) * fs, (j++) * fs, 22 * fs);
 		}
 		
-        ctsInv.restore();
+        ctxInv.restore();
     }
 
 

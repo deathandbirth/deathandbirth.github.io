@@ -1381,55 +1381,55 @@ const Material = class extends Thing {
         let i = 1;
         if (direction === RIGHT) i += (IN_WIDTH / 2);
         let j = MS + 1;
-        ctsInv.save();
-        ctsInv.textAlign = 'center';
+        ctxInv.save();
+        ctxInv.textAlign = 'center';
         if (this.shadow) {
-			ctsInv.shadowColor = this.shadow;
+			ctxInv.shadowColor = this.shadow;
 		}
 
         if (this.stroke) {
-            ctsInv.strokeStyle = this.stroke;
-            ctsInv.strokeText(this.symbol, (i) * fs, j * fs);
+            ctxInv.strokeStyle = this.stroke;
+            ctxInv.strokeText(this.symbol, (i) * fs, j * fs);
 		}
 		
-        ctsInv.fillStyle = this.color;
-        ctsInv.fillText(this.symbol, (i) * fs, j * fs);
-        if (this.cursed) ctsInv.fillStyle = RED;
-        ctsInv.fillStyle = this.equipable && !this.durab ? GRAY : WHITE;
-        ctsInv.textAlign = 'left';
+        ctxInv.fillStyle = this.color;
+        ctxInv.fillText(this.symbol, (i) * fs, j * fs);
+        if (this.cursed) ctxInv.fillStyle = RED;
+        ctxInv.fillStyle = this.equipable && !this.durab ? GRAY : WHITE;
+        ctxInv.textAlign = 'left';
         let name = char ? this.getName(false, true) : this.getName(false, 1);
-        if (this.stroke) ctsInv.strokeText(name, (i + 0.6) * fs, j * fs, 17.5 * fs);
-        ctsInv.fillText(name, (i + 0.6) * fs, j * fs, 17.5 * fs); //
+        if (this.stroke) ctxInv.strokeText(name, (i + 0.6) * fs, j * fs, 17.5 * fs);
+        ctxInv.fillText(name, (i + 0.6) * fs, j * fs, 17.5 * fs); //
         j += 1;
-        ctsInv.fillStyle = WHITE;
-        ctsInv.shadowColor = SHADOW;
+        ctxInv.fillStyle = WHITE;
+        ctxInv.shadowColor = SHADOW;
         if (this.desc) {
             this.desc[option.getLanguage()].replace(/\t/g, '').split('\n').forEach((value, key) => {
-                ctsInv.fillText(key % 2 ? '   ' + value : value, (i - 0.5) * fs, (j++) * fs);
+                ctxInv.fillText(key % 2 ? '   ' + value : value, (i - 0.5) * fs, (j++) * fs);
             });
         } else if (this.nameSkill) {
             let msg = rogue.getSkillInfo(skillMap.get(this.nameSkill), this.skillLvl, true);
-            ctsInv.fillText(msg, (i - 0.5) * fs, (j++) * fs, 23 * fs);
+            ctxInv.fillText(msg, (i - 0.5) * fs, (j++) * fs, 23 * fs);
         } else {
 			j++;
 		}
 
         if (!char) { //
             let weight = option.isEnglish() ? 'weight' : '重量';
-            ctsInv.fillText(`${weight} ${this.weight}kg`, (i - 0.5) * fs, (j++) * fs);
+            ctxInv.fillText(`${weight} ${this.weight}kg`, (i - 0.5) * fs, (j++) * fs);
         } else {
             let [lvl, expGain, exp, expNext, totalWeight] = option.isEnglish() ? ['Level', 'Exp Gain', 'Exp', 'Exp Next', 'Total Weight'] :
                 ['レベル', '取得経験値', '経験値', '次経験値', '総重量'];
-            ctsInv.fillText(`${lvl} ${this.lvl} (${this.lvlMax}), ${exp} ${this.exp} (${this.expMax}), ${expNext} ${this.expNext}, ${expGain} ${this.expGain}, ${totalWeight} ${this.totalWeight}kg (${this.weightLimit}kg)`, (i - 0.5) * fs, j * fs, IN_WIDTH * fs);
+            ctxInv.fillText(`${lvl} ${this.lvl} (${this.lvlMax}), ${exp} ${this.exp} (${this.expMax}), ${expNext} ${this.expNext}, ${expGain} ${this.expGain}, ${totalWeight} ${this.totalWeight}kg (${this.weightLimit}kg)`, (i - 0.5) * fs, j * fs, IN_WIDTH * fs);
             j += 2;
 		}
 		
         j++;
-        ctsInv.restore();
+        ctxInv.restore();
         if (!this.equipable && !this.type == 'gem' && !char) return;
         if (char) {
             fs -= 3;
-            ctsInv.font = fs + 'px Arial';
+            ctxInv.font = fs + 'px Arial';
 		}
 		
         let count = 0;
@@ -1452,7 +1452,7 @@ const Material = class extends Thing {
 				continue;
 			}
 
-            ctsInv.save();
+            ctxInv.save();
             let msg = term.name[option.getLanguage()];
             let value = this[key];
             if (term.plus && !char && this[key] > 0) value = '+' + value;
@@ -1461,7 +1461,7 @@ const Material = class extends Thing {
                 value = this.getAtkTypeName();
 			} else if (char) {
 				if (this.findBuffStat(key) || this.modList && this.modList[key]) {
-					ctsInv.shadowColor = C_BUFF;
+					ctxInv.shadowColor = C_BUFF;
 				}
 
                 if (term.max) {
@@ -1470,7 +1470,7 @@ const Material = class extends Thing {
                     value += ` (${max})`;
                 }
             } else if (mod) {
-				ctsInv.shadowColor = C_BUFF;
+				ctxInv.shadowColor = C_BUFF;
 			}
 
             if (term.bool) {
@@ -1485,15 +1485,15 @@ const Material = class extends Thing {
 				value = materialMap.get(this[key]).name[option.getLanguage()];
 			}
 
-            ctsInv.textAlign = 'right';
-            ctsInv.fillText(value, (i - 1 + IN_WIDTH / 4) * fs, j * fs, valueLimit);
-            ctsInv.textAlign = 'left';
-            ctsInv.fillText(msg, (i - 0.5) * fs, (j++) * fs, msgLimit);
+            ctxInv.textAlign = 'right';
+            ctxInv.fillText(value, (i - 1 + IN_WIDTH / 4) * fs, j * fs, valueLimit);
+            ctxInv.textAlign = 'left';
+            ctxInv.fillText(msg, (i - 0.5) * fs, (j++) * fs, msgLimit);
             if (key === 'embeddedNum' && this[key]) {
                 for (let k = 0, l = this.embeddedList.length; k < l; k++) {
                     this.embeddedList[k].__proto__ = Item.prototype;
                     let name = this.embeddedList[k].getName();
-                    ctsInv.fillText(name, (i + 0.5) * fs, (j++) * fs, msgLimit);
+                    ctxInv.fillText(name, (i + 0.5) * fs, (j++) * fs, msgLimit);
                 }
 			}
 			
@@ -1502,12 +1502,12 @@ const Material = class extends Thing {
                 j = MS + 4 + 2;
 			}
 			
-            ctsInv.restore();
+            ctxInv.restore();
 		}
 		
         if (char) {
             fs += 3;
-            ctsInv.font = fs + 'px Arial';
+            ctxInv.font = fs + 'px Arial';
         }
     }
 
