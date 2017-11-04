@@ -43,6 +43,7 @@ const audio = {
         probe2: new Audio('sound/probe2.wav'),
         fire: new Audio('sound/fire.wav'),
         air: new Audio('sound/wind.wav'),
+        acid: new Audio('sound/acid.wav'),
     },
 
     init() {
