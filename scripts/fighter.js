@@ -3539,16 +3539,18 @@ const Fighter = class extends Material {
 			
             ctxInv.save();
             ctxInv.textAlign = 'center';
-            ctxInv.fillText(EA[k++].toUpperCase(), (i - 0.5) * fs, j * fs);
+            display.text(ctxInv, EA[k++].toUpperCase(), i - 0.5, j);
             ctxInv.textAlign = 'left';
             let parts = option.isEnglish() ? key : BPJ[key];
             if (key === 'main' || key === 'off') parts += this.swapped ? 2 : 1;
-            ctxInv.fillText(parts, i * fs, j * fs);
+            display.text(ctxInv, parts, i, j);
             if (!item) {
                 if (key === 'off' && this.equipment['main'] && this.equipment['main'].twoHanded) {
-                    ctxInv.fillText(option.isEnglish() ?
-                        `(two-handed)` :
-                        `(両手持ち)`, (i + 4.5) * fs, j * fs, 14 * fs);
+                    display.text(ctxInv,
+                        option.isEnglish() ?
+                            `(two-handed)` :
+                            `(両手持ち)`,
+                        i + 4.5, j, 14);
 				}
 				
                 j++;
@@ -3564,7 +3566,7 @@ const Fighter = class extends Material {
 			}
 			
             ctxInv.fillStyle = item.color;
-            ctxInv.fillText(item.symbol, (i + 4) * fs, j * fs);
+            display.text(ctxInv, item.symbol, i + 4, j);
             if (item.cursed) {
                 ctxInv.fillStyle = RED;
 			} else if (!item.durab) {
@@ -3577,17 +3579,17 @@ const Fighter = class extends Material {
             let name = item.getName();
             let limit = flag.blacksmith ? 12 : 15;
             if (item.stroke) ctxInv.strokeText(name, (i + 4.5) * fs, j * fs, limit * fs);
-            ctxInv.fillText(name, (i + 4.5) * fs, j * fs, limit * fs);
+            display.text(ctxInv, name, i + 4.5, j, limit);
             ctxInv.fillStyle = WHITE;
             ctxInv.shadowColor = CLEAR;
             ctxInv.textAlign = 'right';
             if (flag.blacksmith) {
                 let price = item.getDurabPrice();
-                ctxInv.fillText(`$${price}`, (i + 20.3) * fs, j * fs, 3.5 * fs);
+                display.text(ctxInv, `$${price}`, i + 20.3, j, 3.5);
                 priceAll += price;
 			}
 			
-            ctxInv.fillText((item.weight * item.quantity).toFixed(1), (i + 22) * fs, j * fs);
+            display.text(ctxInv, (item.weight * item.quantity).toFixed(1), i + 22, j);
             weight += item.weight * item.quantity;
             count++;
             j++;
@@ -3598,7 +3600,7 @@ const Fighter = class extends Material {
             let col = i;
             let row = j;
             let count2 = 0;
-            let valueLimit = 4.5 * fs;
+            let valueLimit = 4.5;
             for (let [key, term] of investigationMap.entries()) {
                 if (!term || !term.equipList) {
                     if (key === 'end') break;
@@ -3612,7 +3614,7 @@ const Fighter = class extends Material {
 					ctxInv.fillStyle = RED;
 				}
 
-                ctxInv.fillText(term.name[option.getLanguage()], (col - 1) * fs, j * fs);
+                display.text(ctxInv, term.name[option.getLanguage()], col - 1, j);
                 ctxInv.textAlign = 'right';
                 let value = this[key];
                 if (term.perc) value += '%';
@@ -3622,7 +3624,7 @@ const Fighter = class extends Material {
                     value += ` (${max})`;
 				}
 				
-                ctxInv.fillText(value, (col + IN_WIDTH / 4 - 2) * fs, (j++) * fs, valueLimit);
+                display.text(ctxInv, value, col + IN_WIDTH / 4 - 2, j++, valueLimit);
                 ctxInv.restore();
                 if (!(++count2 % 8)) {
                     col += IN_WIDTH / 4;
@@ -3632,7 +3634,7 @@ const Fighter = class extends Material {
 		}
 		
         let maxNum = MAX_EQUIPMENT_NUM;
-        ctxInv.fillText(`[${count}/${maxNum}]`, (i) * fs, (IN_HEIGHT - MS + 1) * fs);
+        display.text(ctxInv, `[${count}/${maxNum}]`, i, -SS -1, 0, 0, canvas.height);
         ctxInv.textAlign = 'right';
         let total = option.isEnglish() ? 'Total' : '計';
         if (flag.blacksmith) {
@@ -3640,14 +3642,15 @@ const Fighter = class extends Material {
             total = `${cost} $${priceAll} ${total}`;
 		}
 		
-        ctxInv.fillText(`${total} ${weight.toFixed(1)}kg`, (i + 22) * fs, (IN_HEIGHT - MS + 1) * fs);
+        display.text(ctxInv, `${total} ${weight.toFixed(1)}kg`, i + 22, -SS -1, 0, 0, canvas.height);
         ctxInv.textAlign = 'left';
     }
 
     showSkill(list, bookmark) {
         inventory.shadow(bookmark ? LEFT : RIGHT);
-        let i = 1.5 + (bookmark ? 0 : IN_WIDTH / 2);
+        let i = 1.5;
         let j = MS + 2;
+        let right = bookmark ? 0 : canvas.width / 2;
         let count = 0;
         let main = option.isEnglish() ? 'Main' : 'メイン';
         for (let key in list) {
@@ -3657,7 +3660,7 @@ const Fighter = class extends Material {
             ctxInv.save();
             if (bookmark) {
                 if (skill) ctxInv.shadowColor = skill.color;
-                ctxInv.fillText(key === '0' ? main : `F${key}`, (i - 1) * fs, j * fs, 2 * fs);
+                display.text(ctxInv, key === '0' ? main : `F${key}`, i - 1, j, 2, right);
                 if (!skill) {
                     j++;
                     ctxInv.restore();
@@ -3671,12 +3674,12 @@ const Fighter = class extends Material {
 				}
 
                 ctxInv.textAlign = 'center';
-                ctxInv.fillText(key, i * fs, j * fs);
+                display.text(ctxInv, key, i, j, 0, right);
 			}
 			
             ctxInv.textAlign = 'left';
             let name = skill.name[option.getLanguage()];
-            ctxInv.fillText(name, (i + 0.75 + (bookmark ? 1 : 0)) * fs, j * fs, 8 * fs);
+            display.text(ctxInv, name, i + 0.75 + (bookmark ? 1 : 0), j, 8, right);
             ctxInv.textAlign = 'right';
             let lvl = 0;
             if (list[key].lvl) {
@@ -3687,7 +3690,7 @@ const Fighter = class extends Material {
 			}
 			
             let boost = this.getSkillBoost(skill);
-            ctxInv.fillText(`${lvl}+${boost}`, (i + 12) * fs, j * fs);
+            display.text(ctxInv, `${lvl}+${boost}`, i + 12, j, 0, right);
             if (skill.rate) {
                 let value;
                 let bonus = skill.rate * (lvl + boost) + (skill.synerzy ? skill.synerzy * this.getSynerzy(skill) : 0);
@@ -3709,7 +3712,7 @@ const Fighter = class extends Material {
                     value = `Avg ${avg}`;
 				}
 				
-                ctxInv.fillText(value, (i + 17) * fs, j * fs);
+                display.text(ctxInv, value, i + 17, j, 0, right);
 			}
 			
             if (skill.reqLvl <= this.lvl && skill.mp > this.mp) {
@@ -3717,14 +3720,14 @@ const Fighter = class extends Material {
                 ctxInv.fillStyle = RED;
 			}
 			
-            ctxInv.fillText(skill.mp, (i + 18.5) * fs, j * fs);
+            display.text(ctxInv, skill.mp, i + 18.5, j, 0, right);
             if (skill.reqLvl <= this.lvl) {
                 ctxInv.shadowColor = skill.color;
                 ctxInv.fillStyle = WHITE;
 			}
 			
-            ctxInv.fillText(skill.reqLvl, (i + 20.5) * fs, j * fs);
-            if (skill.reqSynerzy) ctxInv.fillText(skill.reqSynerzy, (i + 22.5) * fs, j * fs);
+            display.text(ctxInv, skill.reqLvl, i + 20.5, j, 0, right);
+            if (skill.reqSynerzy) display.text(ctxInv, skill.reqSynerzy, i + 22.5, j, 0, right);
             ctxInv.restore();
             count++;
             j++;
@@ -3741,19 +3744,15 @@ const Fighter = class extends Material {
 			maxNum = MAX_SKILL_NUM;
 		}
 
-        ctxInv.fillText(`[${count}/${maxNum}]`, i * fs, j * fs);
+        display.text(ctxInv, `[${count}/${maxNum}]`, i, j, 0, right);
         ctxInv.textAlign = 'right';
-        // if(!bookmark){
-        // let skillPoints = option.isEnglish() ? 'Skill Points':'スキルポイント';
-        // ctxInv.fillText(`${skillPoints} ${this.skillPoints}`,(i+10)*fs,j*fs);
-        // }
         let [lvl, value, mp, reqLv, reqSy] = option.isEnglish() ? ['Lv', 'Value', 'MP', 'RLv', 'RSy'] :
             ['レベル', '値', 'MP', '必レ', '必シ'];
-        ctxInv.fillText(lvl, (i + 12) * fs, j * fs);
-        ctxInv.fillText(value, (i + 16) * fs, j * fs);
-        ctxInv.fillText(mp, (i + 18.5) * fs, j * fs);
-        ctxInv.fillText(reqLv, (i + 20.5) * fs, j * fs);
-        ctxInv.fillText(reqSy, (i + 22.5) * fs, j * fs);
+        display.text(ctxInv, lvl, i + 12, j, 0, right);
+        display.text(ctxInv, value, i + 16, j, 0, right);
+        display.text(ctxInv, mp, i + 18.5, j, 0, right);
+        display.text(ctxInv, reqLv, i + 20.5, j, 0, right);
+        display.text(ctxInv, reqSy, i + 22.5, j, 0, right);
         ctxInv.restore();
     }
 

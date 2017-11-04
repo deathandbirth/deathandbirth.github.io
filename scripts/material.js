@@ -1393,34 +1393,34 @@ const Material = class extends Thing {
 		}
 		
         ctxInv.fillStyle = this.color;
-        ctxInv.fillText(this.symbol, (i) * fs, j * fs);
+        display.text(ctxInv, this.symbol, i, j);
         if (this.cursed) ctxInv.fillStyle = RED;
         ctxInv.fillStyle = this.equipable && !this.durab ? GRAY : WHITE;
         ctxInv.textAlign = 'left';
         let name = char ? this.getName(false, true) : this.getName(false, 1);
         if (this.stroke) ctxInv.strokeText(name, (i + 0.6) * fs, j * fs, 17.5 * fs);
-        ctxInv.fillText(name, (i + 0.6) * fs, j * fs, 17.5 * fs); //
+        display.text(ctxInv, name, i + 0.6, j, 17.5);
         j += 1;
         ctxInv.fillStyle = WHITE;
         ctxInv.shadowColor = CLEAR;
         if (this.desc) {
             this.desc[option.getLanguage()].replace(/\t/g, '').split('\n').forEach((value, key) => {
-                ctxInv.fillText(key % 2 ? '   ' + value : value, (i - 0.5) * fs, (j++) * fs);
+                display.text(ctxInv, key % 2 ? '   ' + value : value, i - 0.5, j++);
             });
         } else if (this.nameSkill) {
             let msg = rogue.getSkillInfo(skillMap.get(this.nameSkill), this.skillLvl, true);
-            ctxInv.fillText(msg, (i - 0.5) * fs, (j++) * fs, 23 * fs);
+            display.text(ctxInv, msg, i - 0.5, j++, 23);
         } else {
 			j++;
 		}
 
         if (!char) { //
             let weight = option.isEnglish() ? 'weight' : '重量';
-            ctxInv.fillText(`${weight} ${this.weight}kg`, (i - 0.5) * fs, (j++) * fs);
+            display.text(ctxInv, `${weight} ${this.weight}kg`, i - 0.5, j++);
         } else {
             let [lvl, expGain, exp, expNext, totalWeight] = option.isEnglish() ? ['Level', 'Exp Gain', 'Exp', 'Exp Next', 'Total Weight'] :
                 ['レベル', '取得経験値', '経験値', '次経験値', '総重量'];
-            ctxInv.fillText(`${lvl} ${this.lvl} (${this.lvlMax}), ${exp} ${this.exp} (${this.expMax}), ${expNext} ${this.expNext}, ${expGain} ${this.expGain}, ${totalWeight} ${this.totalWeight}kg (${this.weightLimit}kg)`, (i - 0.5) * fs, j * fs, IN_WIDTH * fs);
+            display.text(ctxInv, `${lvl} ${this.lvl} (${this.lvlMax}), ${exp} ${this.exp} (${this.expMax}), ${expNext} ${this.expNext}, ${expGain} ${this.expGain}, ${totalWeight} ${this.totalWeight}kg (${this.weightLimit}kg)`, i - 0.5, j, IN_WIDTH);
             j += 2;
 		}
 		
@@ -1434,8 +1434,8 @@ const Material = class extends Thing {
 		}
 		
         let count = 0;
-        let msgLimit = 8 * fs;
-        let valueLimit = 5 * fs;
+        let msgLimit = 8;
+        let valueLimit = 5;
         let mod;
         for (let [key, term] of investigationMap.entries()) {
             if (!term) {
@@ -1487,14 +1487,14 @@ const Material = class extends Thing {
 			}
 
             ctxInv.textAlign = 'right';
-            ctxInv.fillText(value, (i - 1 + IN_WIDTH / 4) * fs, j * fs, valueLimit);
+            display.text(ctxInv, value, i - 1 + IN_WIDTH / 4, j, valueLimit);
             ctxInv.textAlign = 'left';
-            ctxInv.fillText(msg, (i - 0.5) * fs, (j++) * fs, msgLimit);
+            display.text(ctxInv, msg, i - 0.5, j++, msgLimit);
             if (key === 'embeddedNum' && this[key]) {
                 for (let k = 0, l = this.embeddedList.length; k < l; k++) {
                     this.embeddedList[k].__proto__ = Item.prototype;
                     let name = this.embeddedList[k].getName();
-                    ctxInv.fillText(name, (i + 0.5) * fs, (j++) * fs, msgLimit);
+                    display.text(ctxInv, name, i + 0.5, j++, msgLimit);
                 }
 			}
 			

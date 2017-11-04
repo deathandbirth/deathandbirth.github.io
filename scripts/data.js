@@ -186,9 +186,11 @@ const data = {
             } catch (e) {
                 this.failed = true;
                 let ver = saveData.ver;
-                ctxInv.fillText(option.isEnglish() ?
-                    `Failed to load. In order to delete your save data and continue, please push 'Y'.(ver ${ver})` :
-                    `読み込みに失敗しました。セーブデータを消去してゲームを続けるには、'Y'を押してください。(ver ${ver})`, fs, fs);
+                display.text(ctxInv,
+                    option.isEnglish() ?
+                        `Failed to load. In order to delete your save data and continue, please push 'Y'.(ver ${ver})` :
+                        `読み込みに失敗しました。セーブデータを消去してゲームを続けるには、'Y'を押してください。(ver ${ver})`,
+                    1, 1);
             }
         } else {
             game.start();

@@ -73,7 +73,7 @@ const Location = class extends Position {
             ctxBuf.strokeText(this.symbol, (this.x + 0.5) * fs, (this.y + 0.5) * fs);
 		}
 		
-        ctxBuf.fillText(this.symbol, (this.x + 0.5) * fs, (this.y + 0.5) * fs);
+        display.text(ctxBuf, this.symbol, this.x + 0.5, this.y + 0.5);
         if (!litMapIds[this.x + ',' + this.y]) {
             ctxBuf.globalAlpha = 0.5;
             ctxBuf.fillStyle = BLACK;

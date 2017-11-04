@@ -12,7 +12,7 @@ const option = {
         j: { a: 'auto-identify', b: '自動識別' }
     },
 
-    display: { defaults: 'b', choise: {} },
+    display: { defaults: 'c', choise: {} },
     shadow: { defaults: false },
     mute: { defaults: false },
     autosave: { defaults: true },

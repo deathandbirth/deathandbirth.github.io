@@ -368,7 +368,7 @@ const statistics = {
         }
 
         if (e.cursed) ctxStats.fillStyle = RED;
-        ctxStats.fillText(`Lv${e.lvl} ${name}`, canvas.width / 2, (MS + 0.5) * fs);
+        display.text(ctxStats, `Lv${e.lvl} ${name}`, 0, MS + 0.5, 0, canvas.width / 2);
         ctxStats.restore();
         if (examine) return name;
     },
@@ -391,7 +391,7 @@ const statistics = {
             ctxStats.strokeText(symbol, canvas.width - 1.5 * fs, canvas.height - 4 * fs);
         }
         
-        ctxStats.fillText(symbol, canvas.width - 1.5 * fs, canvas.height - 4 * fs);
+        display.text(ctxStats, symbol, -1.5, -4, 0, canvas.width, canvas.height);
         ctxStats.restore();
     },
 };
@@ -417,7 +417,7 @@ const cursol = {
         ctxCur.fillStyle = color;
         ctxCur.globalAlpha = 0.3;
         ctxCur.clearRect(X * fs - fs / 2 + canvas.width / 2, Y * fs, fs, fs);
-        ctxCur.fillText('＊', X * fs + canvas.width / 2, (Y + 0.5) * fs);
+        display.text(ctxCur, '＊', X, Y + 0.5, 0, canvas.width / 2);
         ctxCur.restore();
     }
 };

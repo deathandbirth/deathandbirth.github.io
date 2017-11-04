@@ -480,15 +480,15 @@ const message = {
             if (!this.list[i]) break;
             let msg = this.list[i].text;
             if (this.list[i].count > 1) msg += ` (x${this.list[i].count})`;
-            ctxInv.fillText(`${msg}`, 0.5 * fs, (j++) * fs);
+            display.text(ctxInv, `${msg}`, 0.5, j++);
         }
         ctxInv.save();
-        ctxInv.fillText(`[${l}/${MAX_MSG_LIST_LEN}]`, 1.5 * fs, (IN_HEIGHT - MS + 1) * fs);
+        display.text(ctxInv, `[${l}/${MAX_MSG_LIST_LEN}]`, 1.5, IN_HEIGHT - MS + 1);
         ctxInv.textAlign = 'right';
-        ctxInv.fillText(option.isEnglish() ?
+        display.text(ctxInv, option.isEnglish() ?
             `Message List [${this.page}/${p}]` :
             `メッセージ項目 [${this.page}/${p}]`,
-            24 * fs, (IN_HEIGHT - MS + 1) * fs);
+            24, IN_HEIGHT - MS + 1);
         ctxInv.restore();
         message.draw(message.get(M_PREVIOUS), true);
     },
@@ -517,10 +517,10 @@ const message = {
             }
             
             this.delete();
-            ctxMsg.fillText(msg, fs / 2, fs, canvas.width / 2 - fs / 2);
+            display.text(ctxMsg, msg, 0.5, 1, -0.5, 0, 0, canvas.width / 2);
         } else {
             ctxInv.clearRect(0.5 * fs + canvas.width / 2, 0.5 * fs, canvas.width / 2 + 1, fs + 1)
-            ctxInv.fillText(msg, 0.5 * fs + canvas.width / 2, fs, canvas.width / 2 - 0.5 * fs);
+            display.text(ctxInv, msg, 0.5, 1, -0.5, canvas.width / 2, 0, canvas.width / 2);
         }
     },
 

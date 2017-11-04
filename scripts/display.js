@@ -1,36 +1,9 @@
-const canvasIds = ['buf', 'main', 'cur', 'msg', 'stats', 'map', 'inv'];
-const canvas = {};
-const ctxes = {};
-
-{
-    let parent = document.getElementById('container');
-    parent.innerHTML = '';
-    for (let i = 0, l = canvasIds.length; i < l; i++) {
-        let id = canvasIds[i];
-        let child = document.createElement('canvas');
-        canvas[id] = child;
-        ctxes[id] = child.getContext('2d');
-        if (id === 'buf') continue;
-        child.style.position = 'absolute';
-        child.style.left = 0;
-        child.style.top = 0;
-        child.style['z-index'] = i;
-        parent.appendChild(child);
-    }
-}
-
-let ctxBuf = ctxes.buf;
-let ctxMain = ctxes.main;
-let ctxCur = ctxes.cur;
-let ctxStats = ctxes.stats;
-let ctxMap = ctxes.map;
-let ctxInv = ctxes.inv;
-let ctxMsg = ctxes.msg;
-
 const display = {
     list: {
         a: { width: 640, height: 360, fs: 13 },
         b: { width: 768, height: 432, fs: 16 },
+        c: { width: 896, height: 504, fs: 18 },
+        d: { width: 1024, height: 576, fs: 20 },
     },
 
     change(a, draw) {
@@ -49,8 +22,8 @@ const display = {
             cvs.setAttribute('height', list.height * times);
         }
 
-        for (let key in ctxes) {
-            let ctx = ctxes[key];
+        for (let key in this.ctxes) {
+            let ctx = this.ctxes[key];
             if (key === 'main') continue;
             ctx.textBaseline = 'middle';
             ctx.lineJoin = 'round';
@@ -79,4 +52,38 @@ const display = {
             rogue.drawStats();
         }
     },
+
+    text(ctx, msg, x, y, limitX, xPx = 0, yPx = 0, limitXPx = 0) {
+        let limit = limitX ? limitX * fs + limitXPx : undefined;
+        ctx.fillText(msg, x * fs + xPx, y * fs + yPx, limit);
+    }
 };
+
+const canvas = {};
+
+{
+    let canvasIds = ['buf', 'main', 'cur', 'msg', 'stats', 'map', 'inv'];
+    let parent = document.getElementById('container');
+    parent.innerHTML = '';
+    display.ctxes = {};
+    for (let i = 0, l = canvasIds.length; i < l; i++) {
+        let id = canvasIds[i];
+        let child = document.createElement('canvas');
+        canvas[id] = child;
+        display.ctxes[id] = child.getContext('2d');
+        if (id === 'buf') continue;
+        child.style.position = 'absolute';
+        child.style.left = 0;
+        child.style.top = 0;
+        child.style['z-index'] = i;
+        parent.appendChild(child);
+    }
+}
+
+let ctxBuf = display.ctxes.buf;
+let ctxMain = display.ctxes.main;
+let ctxCur = display.ctxes.cur;
+let ctxStats = display.ctxes.stats;
+let ctxMap = display.ctxes.map;
+let ctxInv = display.ctxes.inv;
+let ctxMsg = display.ctxes.msg;

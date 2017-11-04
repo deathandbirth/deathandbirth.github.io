@@ -13,9 +13,9 @@ const game = {
             let j = this.j;
             for (let key in list) {
                 ctxInv.save();
-                ctxInv.fillText(key, (i - 0.5) * fs, j * fs);
+                display.text(ctxInv, key, i - 0.5, j);
                 ctxInv.textAlign = 'left';
-                ctxInv.fillText(list[key][option.getLanguage()], (i + 4) * fs, (j++) * fs);
+                display.text(ctxInv, list[key][option.getLanguage()], i + 4, j++);
                 ctxInv.restore();
                 if (j === IN_HEIGHT) {
                     j = MS + 1;
@@ -34,14 +34,15 @@ const game = {
         ctxInv.textAlign = 'center'
         let fontStyle = FONT_STYLE[option.getLanguage()];
         ctxInv.font = '40px ' + fontStyle;
-        ctxInv.fillText('Death and Birth', IN_WIDTH / 2 * fs, IN_HEIGHT / 2 * fs);
+        display.text(ctxInv, 'Death and Birth', IN_WIDTH / 2, IN_HEIGHT / 2);
         ctxInv.font = '20px ' + fontStyle;
-        ctxInv.fillText(option.isEnglish() ?
+        display.text(ctxInv, option.isEnglish() ?
             '[Enter] to start' :
-            '[Enter] 開始', IN_WIDTH / 2 * fs, (IN_HEIGHT / 2 + 2) * fs);
+            '[Enter] 開始',
+            IN_WIDTH / 2, IN_HEIGHT / 2 + 2);
         ctxInv.font = '15px ' + fontStyle;
         ctxInv.textAlign = 'right';
-        ctxInv.fillText(`ver ${VERSION}`, canvas.width - 2 * fs, canvas.height - 2 * fs);
+        display.text(ctxInv, `ver ${VERSION}`, canvas.width - 2, canvas.height - 2);
         ctxInv.restore();
         flag.retry = true;
         audio.stop(audio.curTrack);
@@ -54,11 +55,12 @@ const game = {
         ctxInv.textAlign = 'center'
         let fontStyle = FONT_STYLE[option.getLanguage()];
         ctxInv.font = '40px ' + fontStyle;
-        ctxInv.fillText('G A M E  O V E R', IN_WIDTH / 2 * fs, IN_HEIGHT / 2 * fs);
+        display.text(ctxInv, 'G A M E  O V E R', IN_WIDTH / 2, IN_HEIGHT / 2);
         ctxInv.font = '20px ' + fontStyle;
-        ctxInv.fillText(option.isEnglish() ?
+        display.text(ctxInv, option.isEnglish() ?
             '[Enter] to retry' :
-            '[Enter] リトライ', IN_WIDTH / 2 * fs, (IN_HEIGHT / 2 + 2) * fs);
+            '[Enter] リトライ',
+            IN_WIDTH / 2, IN_HEIGHT / 2 + 2);
         ctxInv.restore();
         flag.retry = true;
 	},
