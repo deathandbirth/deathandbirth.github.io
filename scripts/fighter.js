@@ -4640,13 +4640,10 @@ const Fighter = class extends Material {
             case SLEEP:
             case SLEEPING_GAS:
                 if (evalPercentage(f.poison)) return;
-                if (f.sleeping >= 0) {
-                    f.sleeping = duration;
-                    message.draw(option.isEnglish() ?
-                        `${name} fell asleep` :
-                        `${name}昏睡した`);
-				}
-				
+                f.sleeping = duration;
+                message.draw(option.isEnglish() ?
+                    `${name} fell asleep` :
+                    `${name}昏睡した`);
                 break;
             case BLINDNESS:
                 if (evalPercentage(f.poison)) return;
