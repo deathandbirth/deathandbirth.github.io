@@ -1387,52 +1387,79 @@ const Material = class extends Thing {
 			ctxInv.shadowColor = this.shadow;
 		}
 
-        if (this.stroke) {
-            ctxInv.strokeStyle = this.stroke;
-            ctxInv.strokeText(this.symbol, (i) * fs, j * fs);
-		}
-		
         ctxInv.fillStyle = this.color;
-        display.text(ctxInv, this.symbol, i, j);
+        display.text({
+            ctx: ctxInv,
+            msg: this.symbol,
+            x: i,
+            y: j,
+            stroke: this.stroke,
+        });
+
         if (this.cursed) ctxInv.fillStyle = RED;
         ctxInv.fillStyle = this.equipable && !this.durab ? GRAY : WHITE;
         ctxInv.textAlign = 'left';
         let name = char ? this.getName(false, true) : this.getName(false, 1);
-        if (this.stroke) ctxInv.strokeText(name, (i + 0.6) * fs, j * fs, 17.5 * fs);
-        display.text(ctxInv, name, i + 0.6, j, 17.5);
+        display.text({
+            ctx: ctxInv,
+            msg: name,
+            x: i + 0.6,
+            y: j,
+            limit: 17.5,
+            stroke: this.stroke,
+        });
+
         j += 1;
         ctxInv.fillStyle = WHITE;
         ctxInv.shadowColor = CLEAR;
         if (this.desc) {
             this.desc[option.getLanguage()].replace(/\t/g, '').split('\n').forEach((value, key) => {
-                display.text(ctxInv, key % 2 ? '   ' + value : value, i - 0.5, j++);
+                display.text({
+                    ctx: ctxInv,
+                    msg: key % 2 ? '   ' + value : value,
+                    x: i - 0.5,
+                    y: j++,
+                });
             });
         } else if (this.nameSkill) {
             let msg = rogue.getSkillInfo(skillMap.get(this.nameSkill), this.skillLvl, true);
-            display.text(ctxInv, msg, i - 0.5, j++, 23);
+            display.text({
+                ctx: ctxInv,
+                msg: msg,
+                x: i - 0.5,
+                y: j++,
+                limit: 23,
+            });
         } else {
 			j++;
 		}
 
         if (!char) { //
             let weight = option.isEnglish() ? 'weight' : '重量';
-            display.text(ctxInv, `${weight} ${this.weight}kg`, i - 0.5, j++);
+            display.text({
+                ctx: ctxInv,
+                msg: `${weight} ${this.weight}kg`,
+                x: i - 0.5,
+                y: j++,
+            });
         } else {
-            let [lvl, expGain, exp, expNext, totalWeight] = option.isEnglish() ? ['Level', 'Exp Gain', 'Exp', 'Exp Next', 'Total Weight'] :
+            let [lvl, expGain, exp, expNext, totalWeight] = option.isEnglish() ?
+                ['Level', 'Exp Gain', 'Exp', 'Exp Next', 'Total Weight'] :
                 ['レベル', '取得経験値', '経験値', '次経験値', '総重量'];
-            display.text(ctxInv, `${lvl} ${this.lvl} (${this.lvlMax}), ${exp} ${this.exp} (${this.expMax}), ${expNext} ${this.expNext}, ${expGain} ${this.expGain}, ${totalWeight} ${this.totalWeight}kg (${this.weightLimit}kg)`, i - 0.5, j, IN_WIDTH);
+            display.text({
+                ctx: ctxInv,
+                msg: `${lvl} ${this.lvl} (${this.lvlMax}), ${exp} ${this.exp} (${this.expMax}), ${expNext} ${this.expNext}, ${expGain} ${this.expGain}, ${totalWeight} ${this.totalWeight}kg (${this.weightLimit}kg)`,
+                x: i - 0.5,
+                y: j,
+                limit: IN_WIDTH,
+            });
+
             j += 2;
 		}
 		
         j++;
         ctxInv.restore();
         if (!this.equipable && !this.type == 'gem' && !char) return;
-        if (char) {
-            fs -= 3;
-            var fontStyle = FONT_STYLE[option.getLanguage()];
-            ctxInv.font = fs - 1 + 'px ' + fontStyle;
-		}
-		
         let count = 0;
         let msgLimit = 8;
         let valueLimit = 5;
@@ -1454,6 +1481,13 @@ const Material = class extends Thing {
 			}
 
             ctxInv.save();
+            let fsChar;
+            if (char) {
+                fsChar = fs - 3;
+                let fontStyle = FONT_STYLE[option.getLanguage()];
+                ctxInv.font = fsChar - 1 + 'px ' + fontStyle;
+            }
+        
             let msg = term.name[option.getLanguage()];
             let value = this[key];
             if (term.plus && !char && this[key] > 0) value = '+' + value;
@@ -1487,14 +1521,36 @@ const Material = class extends Thing {
 			}
 
             ctxInv.textAlign = 'right';
-            display.text(ctxInv, value, i - 1 + IN_WIDTH / 4, j, valueLimit);
+            display.text({
+                ctx: ctxInv,
+                msg: value,
+                x: i - 1 + IN_WIDTH / 4,
+                y: j,
+                limit: valueLimit,
+                fs: fsChar,
+            });
+
             ctxInv.textAlign = 'left';
-            display.text(ctxInv, msg, i - 0.5, j++, msgLimit);
+            display.text({
+                ctx: ctxInv,
+                msg: msg,
+                x: i - 0.5,
+                y: j++,
+                limit: msgLimit,
+                fs: fsChar,
+            });
+
             if (key === 'embeddedNum' && this[key]) {
                 for (let k = 0, l = this.embeddedList.length; k < l; k++) {
                     this.embeddedList[k].__proto__ = Item.prototype;
                     let name = this.embeddedList[k].getName();
-                    display.text(ctxInv, name, i + 0.5, j++, msgLimit);
+                    display.text({
+                        ctx: ctxInv,
+                        msg: name,
+                        x: i + 0.5,
+                        y: j++,
+                        limit: msgLimit,
+                    });
                 }
 			}
 			
@@ -1505,11 +1561,6 @@ const Material = class extends Thing {
 			
             ctxInv.restore();
 		}
-		
-        if (char) {
-            fs += 3;
-            ctxInv.font = fs - 1 + 'px ' + fontStyle;
-        }
     }
 
     getAtkTypeName() {

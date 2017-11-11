@@ -455,22 +455,46 @@ const Rogue = class extends Fighter {
             ctxStats.lineWidth = 0.5;
             ctxStats.strokeRect((x + i * 1.4 - 1) * fs, y - 0.5 * fs, fs, fs);
             if (!item) {
-                display.text(ctxStats, i, x + i * 1.4 - 0.5, -1, 0, 0, canvas.height);
+                display.text({
+                    ctx: ctxStats,
+                    msg: i,
+                    x: x + i * 1.4 - 0.5,
+                    y: -1,
+                    yPx: canvas.height,
+                });
 			} else {
                 if (item.shadow) ctxStats.shadowColor = item.shadow;
-                if (item.stroke) {
-                    ctxStats.strokeStyle = item.stroke;
-                    strokeText(ctxStats, item.symbol, x + i * 1.4 - 0.5, -0.75, 0, 0, canvas.height);
-				}
-				
                 ctxStats.fillStyle = item.color;
-                display.text(ctxStats, item.symbol, x + i * 1.4 - 0.5, -1, 0, 0, canvas.height);
+                display.text({
+                    ctx: ctxStats,
+                    msg: item.symbol,
+                    x: x + i * 1.4 - 0.5,
+                    y: -1,
+                    yPx: canvas.height,
+                    stroke: item.stroke,
+                });
+
                 ctxStats.font = fs / 2 + 'px ' + FONT_STYLE[option.getLanguage()];
                 ctxStats.fillStyle = WHITE;
                 ctxStats.shadowColor = CLEAR;
-                if (item.stroke) ctxStats.strokeText(item.quantity, (x + i * 1.4) * fs, y + 0.6 * fs);
-                display.text(ctxStats, item.quantity, x + i * 1.4, -0.5, 0, 0, canvas.height);
-                if (item.charges >= 0 && item.identified) display.text(ctxStats, item.charges, x + i * 1.4, -1, 0, 0, canvas.height);
+                display.text({
+                    ctx: ctxStats,
+                    msg: item.quantity,
+                    x: x + i * 1.4,
+                    y: -0.5,
+                    yPx: canvas.height,
+                    stroke: item.stroke,
+                });
+
+                if (item.charges >= 0 && item.identified) {
+                    display.text({
+                        ctx: ctxStats,
+                        msg: item.charges,
+                        x: x + i * 1.4,
+                        y: -1,
+                        yPx: canvas.height,
+                    });
+                }
 			}
 			
             ctxStats.restore();
@@ -1715,21 +1739,53 @@ const Rogue = class extends Fighter {
             let stat = statistics.list[key];
             ctxInv.save();
             ctxInv.textAlign = 'center';
-            display.text(ctxInv, key.toUpperCase(), i, j);
+            display.text({
+                ctx: ctxInv,
+                msg: key.toUpperCase(),
+                x: i,
+                y: j,
+            });
+
             ctxInv.textAlign = 'left';
-            display.text(ctxInv, stat.name[option.getLanguage()], i + 1, j);
+            display.text({
+                ctx: ctxInv,
+                msg: stat.name[option.getLanguage()],
+                x: i + 1,
+                y: j,
+            });
+
             ctxInv.textAlign = 'right';
-            display.text(ctxInv, this[stat.term + 'Max'], i + 22, j++);
+            display.text({
+                ctx: ctxInv,
+                msg: this[stat.term + 'Max'],
+                x: i + 22,
+                y: j++,
+            });
+
             ctxInv.restore();
             count++;
 		}
 		
         let maxNum = count; //
-        display.text(ctxInv, `[${count}/${maxNum}]`, i, -SS -1, 0, 0, canvas.height);
+        display.text({
+            ctx: ctxInv,
+            msg: `[${count}/${maxNum}]`,
+            x: i,
+            y: -SS -1,
+            yPx: canvas.height,
+        });
+
         ctxInv.save();
         ctxInv.textAlign = 'right';
         let [statPoints, currentValues] = option.isEnglish() ? ['Stat Points', 'Current Values'] : ['ステータスポイント', '現在値'];
-        display.text(ctxInv, `${statPoints} ${this.statPoints} ${currentValues}`, i + 22, -SS -1, 0, 0, canvas.height);
+        display.text({
+            ctx: ctxInv,
+            msg: `${statPoints} ${this.statPoints} ${currentValues}`,
+            x: i + 22,
+            y: -SS -1,
+            yPx: canvas.height,
+        });
+
         ctxInv.restore();
     }
 
@@ -1741,7 +1797,13 @@ const Rogue = class extends Fighter {
         ctxInv.save();
         ctxInv.shadowColor = skill.color;
         let nameEle = option.isEnglish() ? getUpperCase(skill.element) : ENJ[skill.element];
-        display.text(ctxInv, skill.name[option.getLanguage()] + ` [${nameEle}]`, i, j++);
+        display.text({
+            ctx: ctxInv,
+            msg: skill.name[option.getLanguage()] + ` [${nameEle}]`,
+            x: i,
+            y: j++,
+        });
+
         ctxInv.shadowColor = SHADOW;
         j++;
         let lvl = 0;
@@ -1749,7 +1811,14 @@ const Rogue = class extends Fighter {
         if (a) lvl = this.skill[a].lvl;
         let boost = this.getSkillBoost(skill);
         let msg = this.getSkillInfo(skill, lvl + boost);
-        display.text(ctxInv, msg, i + 1, j++, 22);
+        display.text({
+            ctx: ctxInv,
+            msg: msg,
+            x: i + 1,
+            y: j++,
+            limit: 22,
+        });
+
         j++;
         let [base, perLvl, perSy, durBase] = option.isEnglish() ? ['Base', 'per Level', 'per Synerzy', 'Duration Base'] : ['基礎値', 'レベル毎', 'シナジー毎', '期間基礎値'];
         let perc = skill.perc ? '%' : '';
@@ -1761,24 +1830,55 @@ const Rogue = class extends Fighter {
 				skillBase = (option.isEnglish() ? 'radius ' : '半径') + skillBase;
 			}
 
-            display.text(ctxInv, `${base} ${skillBase}${perc}`, i + 1, j++, 22);
+            display.text({
+                ctx: ctxInv,
+                msg: `${base} ${skillBase}${perc}`,
+                x: i + 1,
+                y: j++,
+                limit: 22,
+            });
+
             if (!isFinite(skill.base)) perc = '%';
             let sign = skill.rate > 0 ? '+' : '';
-            display.text(ctxInv, `${perLvl} ${sign}${skill.rate}${perc}`, i + 1, j++, 22);
+            display.text({
+                ctx: ctxInv,
+                msg: `${perLvl} ${sign}${skill.rate}${perc}`,
+                x: i + 1,
+                y: j++,
+                limit: 22,
+            });
 		}
 		
         if (skill.synerzy) {
             let sign = skill.synerzy > 0 ? '+' : '';
-            display.text(ctxInv, `${perSy} ${sign}${skill.synerzy}${perc}`, i + 1, j++, 22);
+            display.text({
+                ctx: ctxInv,
+                msg: `${perSy} ${sign}${skill.synerzy}${perc}`,
+                x: i + 1,
+                y: j++,
+                limit: 22,
+            });
 		}
 		
         if (skill.durBase) {
-            display.text(ctxInv, `${durBase} ${skill.durBase}`, i + 1, j++, 22);
+            display.text({
+                ctx: ctxInv,
+                msg: `${durBase} ${skill.durBase}`,
+                x: i + 1,
+                y: j++,
+                limit: 22,
+            });
 		}
 		
         if (skill.durRate) {
             let sign = skill.durRate > 0 ? '+' : '';
-            display.text(ctxInv, `${perLvl} ${sign}${skill.durRate}`, i + 1, j++, 22);
+            display.text({
+                ctx: ctxInv,
+                msg: `${perLvl} ${sign}${skill.durRate}`,
+                x: i + 1,
+                y: j++,
+                limit: 22,
+            });
 		}
 		
         ctxInv.restore();

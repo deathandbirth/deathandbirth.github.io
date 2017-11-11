@@ -69,12 +69,15 @@ const minimap = {
         ctxMap.fillStyle = color;
         if (rogue.hallucinated && !shadow) ctxMap.shadowColor = PURPLE;
         if (shadow) ctxMap.shadowColor = shadow;
-        if (stroke) {
-            ctxMap.strokeStyle = stroke;
-            ctxMap.strokeText(symbol, (x + 1.5) * this.fs, (y + 0.5) * this.fs);
-        }
+        display.text({
+            ctx: ctxMap,
+            msg: symbol,
+            x: x + 1.5,
+            y: y + 0.5,
+            stroke: stroke,
+            fs: this.fs,
+        });
 
-        ctxMap.fillText(symbol, (x + 1.5) * this.fs, (y + 0.5) * this.fs);
         ctxMap.restore();
     },
 };
@@ -311,20 +314,27 @@ const statistics = {
     draw({
         msg,
         x,
+        xPx,
         y,
         color,
         shadow,
-        measured,
         right,
         limit,
     }) {
         ctxStats.save();
-        if (!measured) x *= fs;
-        if (limit) limit *= fs;
         if (color) ctxStats.fillStyle = color;
         if (shadow) ctxStats.shadowColor = shadow;
         if (right) ctxStats.textAlign = 'right';
-        ctxStats.fillText(msg, x, canvas.height + y * fs + 5, limit);
+        display.text({
+            ctx: ctxStats,
+            msg: msg,
+            x: x,
+            y: y,
+            limit: limit,
+            xPx: xPx,
+            yPx: canvas.height + 5,
+        });
+
         ctxStats.restore();
     },
 
@@ -362,13 +372,16 @@ const statistics = {
         ctxStats.textAlign = 'center';
         if (e.shadow) ctxStats.shadowColor = e.shadow;
         let name = e.getName(false, true);
-        if (e.stroke) {
-            ctxStats.strokeStyle = e.stroke;
-            ctxStats.strokeText(`Lv${e.lvl} ${name}`, canvas.width / 2, (MS + 0.5) * fs);
-        }
-
         if (e.cursed) ctxStats.fillStyle = RED;
-        display.text(ctxStats, `Lv${e.lvl} ${name}`, 0, MS + 0.5, 0, canvas.width / 2);
+        display.text({
+            ctx: ctxStats,
+            msg: `Lv${e.lvl} ${name}`,
+            x: 0,
+            y: MS + 0.5,
+            xPx: canvas.width / 2,
+            stroke: e.stroke,
+        });
+
         ctxStats.restore();
         if (examine) return name;
     },
@@ -386,12 +399,16 @@ const statistics = {
         let symbol = enemy.symbol;
         ctxStats.fillStyle = enemy.color;
         if (enemy.shadow) ctxStats.shadowColor = enemy.shadow;
-        if (enemy.stroke) {
-            ctxStats.strokeStyle = enemy.stroke;
-            ctxStats.strokeText(symbol, canvas.width - 1.5 * fs, canvas.height - 4 * fs);
-        }
-        
-        display.text(ctxStats, symbol, -1.5, -4, 0, canvas.width, canvas.height);
+        display.text({
+            ctx: ctxStats,
+            msg: symbol,
+            x: -1.5,
+            y: -4,
+            xPx: canvas.width,
+            yPx: canvas.height,
+            stroke: enemy.stroke,
+        });
+
         ctxStats.restore();
     },
 };
@@ -417,7 +434,14 @@ const cursol = {
         ctxCur.fillStyle = color;
         ctxCur.globalAlpha = 0.3;
         ctxCur.clearRect(X * fs - fs / 2 + canvas.width / 2, Y * fs, fs, fs);
-        display.text(ctxCur, '＊', X, Y + 0.5, 0, canvas.width / 2);
+        display.text({
+            ctx: ctxCur,
+            msg: '＊',
+            x: X,
+            y: Y + 0.5,
+            xPx: canvas.width / 2,
+        });
+
         ctxCur.restore();
     }
 };

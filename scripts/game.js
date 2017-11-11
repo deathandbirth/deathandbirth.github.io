@@ -13,9 +13,21 @@ const game = {
             let j = this.j;
             for (let key in list) {
                 ctxInv.save();
-                display.text(ctxInv, key, i - 0.5, j);
+                display.text({
+                    ctx: ctxInv,
+                    msg: key,
+                    x: i - 0.5,
+                    y: j,
+                });
+
                 ctxInv.textAlign = 'left';
-                display.text(ctxInv, list[key][option.getLanguage()], i + 4, j++);
+                display.text({
+                    ctx: ctxInv,
+                    msg: list[key][option.getLanguage()],
+                    x: i + 4,
+                    y: j++,
+                });
+
                 ctxInv.restore();
                 if (j === IN_HEIGHT) {
                     j = MS + 1;
@@ -34,15 +46,32 @@ const game = {
         ctxInv.textAlign = 'center'
         let fontStyle = FONT_STYLE[option.getLanguage()];
         ctxInv.font = '40px ' + fontStyle;
-        display.text(ctxInv, 'Death and Birth', IN_WIDTH / 2, IN_HEIGHT / 2);
+        display.text({
+            ctx: ctxInv,
+            msg: 'Death and Birth',
+            x: IN_WIDTH / 2,
+            y: IN_HEIGHT / 2,
+        });
+
         ctxInv.font = '20px ' + fontStyle;
-        display.text(ctxInv, option.isEnglish() ?
-            '[Enter] to start' :
-            '[Enter] 開始',
-            IN_WIDTH / 2, IN_HEIGHT / 2 + 2);
+        display.text({
+            ctx: ctxInv,
+            msg: option.isEnglish() ?
+                '[Enter] to start' :
+                '[Enter] 開始',
+            x: IN_WIDTH / 2,
+            y: IN_HEIGHT / 2 + 2,
+        });
+
         ctxInv.font = '15px ' + fontStyle;
         ctxInv.textAlign = 'right';
-        display.text(ctxInv, `ver ${VERSION}`, canvas.width - 2, canvas.height - 2);
+        display.text({
+            ctx: ctxInv,
+            msg: `ver ${VERSION}`,
+            xPx: canvas.width - 2,
+            yPx: canvas.height - 2,
+        });
+
         ctxInv.restore();
         flag.retry = true;
         audio.stop(audio.curTrack);
@@ -55,12 +84,23 @@ const game = {
         ctxInv.textAlign = 'center'
         let fontStyle = FONT_STYLE[option.getLanguage()];
         ctxInv.font = '40px ' + fontStyle;
-        display.text(ctxInv, 'G A M E  O V E R', IN_WIDTH / 2, IN_HEIGHT / 2);
+        display.text({
+            ctx: ctxInv,
+            msg: 'G A M E  O V E R',
+            x: IN_WIDTH / 2,
+            y: IN_HEIGHT / 2,
+        });
+
         ctxInv.font = '20px ' + fontStyle;
-        display.text(ctxInv, option.isEnglish() ?
-            '[Enter] to retry' :
-            '[Enter] リトライ',
-            IN_WIDTH / 2, IN_HEIGHT / 2 + 2);
+        display.text({
+            ctx: ctxInv,
+            msg: option.isEnglish() ?
+                '[Enter] to retry' :
+                '[Enter] リトライ',
+            x: IN_WIDTH / 2,
+            y: IN_HEIGHT / 2 + 2,
+        });
+
         ctxInv.restore();
         flag.retry = true;
 	},

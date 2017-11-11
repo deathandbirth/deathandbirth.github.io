@@ -68,12 +68,14 @@ const Location = class extends Position {
         ctxBuf.fillStyle = this.color;
         if (rogue.hallucinated && !this.shadow) ctxBuf.shadowColor = PURPLE;
         if (this.shadow && option.shadow.user) ctxBuf.shadowColor = this.shadow;
-        if (this.stroke) {
-            ctxBuf.strokeStyle = this.stroke;
-            ctxBuf.strokeText(this.symbol, (this.x + 0.5) * fs, (this.y + 0.5) * fs);
-		}
-		
-        display.text(ctxBuf, this.symbol, this.x + 0.5, this.y + 0.5);
+        display.text({
+            ctx: ctxBuf,
+            msg: this.symbol,
+            x: this.x + 0.5,
+            y: this.y + 0.5,
+            stroke: this.stroke,
+        });
+
         if (!litMapIds[this.x + ',' + this.y]) {
             ctxBuf.globalAlpha = 0.5;
             ctxBuf.fillStyle = BLACK;

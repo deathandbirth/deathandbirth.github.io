@@ -67,15 +67,36 @@ const inventory = {
 				char = direction === RIGHT ? key : key.toUpperCase();
 			}
 
-            display.text(ctxInv, char, i, j, 0, right);
+            display.text({
+                ctx: ctxInv,
+                msg: char,
+                x: i,
+                y: j,
+                xPx: right,
+            });
+
             if (flag.pack && !item || flag.option || flag.cure) {
                 if (!flag.pack) {
                     ctxInv.textAlign = 'left';
-                    display.text(ctxInv, item[option.getLanguage()], i + 1, j, 14, right);
+                    display.text({
+                        ctx: ctxInv,
+                        msg: item[option.getLanguage()],
+                        x: i + 1,
+                        y: j,
+                        limit: 14,
+                        xPx: right,
+                    });
+
                     ctxInv.textAlign = 'right';
                     if (flag.cure) {
                         let cost = enter[CURE].list[key].cost;
-                        display.text(ctxInv, `$${cost}`, i + 22.5, j, 0, right);
+                        display.text({
+                            ctx: ctxInv,
+                            msg: `$${cost}`,
+                            x: i + 22.5,
+                            y: j,
+                            limit: right,
+                        });
                     } else if (!flag.option2) {
                         let msg = '';
                         let opt = option[item['a']];
@@ -87,7 +108,13 @@ const inventory = {
 							msg = opt.user ? 'はい' : 'いいえ';
 						}
 
-                        display.text(ctxInv, msg, i + 22.5, j, 0, right);
+                        display.text({
+                            ctx: ctxInv,
+                            msg: msg,
+                            x: i + 22.5,
+                            y: j,
+                            xPx: right,
+                        });
                     }
 				}
 				
@@ -98,12 +125,15 @@ const inventory = {
 			
             ctxInv.fillStyle = item.color;
             if (item.shadow) ctxInv.shadowColor = item.shadow;
-            if (item.stroke) {
-                ctxInv.strokeStyle = item.stroke;
-                ctxInv.strokeText(item.symbol, (i + 1) * fs, j * fs);
-			}
-			
-            display.text(ctxInv, item.symbol, i + 1, j, 0, right);
+            display.text({
+                ctx: ctxInv,
+                msg: item.symbol,
+                x: i + 1,
+                y: j,
+                xPx: right,
+                stroke: item.stroke,
+            });
+
             if (item.cursed && item.identified) {
                 ctxInv.fillStyle = RED;
 			} else if (item.equipable && !item.durab) {
@@ -114,14 +144,29 @@ const inventory = {
 
             ctxInv.textAlign = 'left';
             let name = item.getName(false, item.quantity, option.getLanguage(), flag.gamble && place === P_SHOP);
-            if (item.stroke) ctxInv.strokeText(name, (i + 1.5) * fs, j * fs, 15 * fs);
-            display.text(ctxInv, name, i + 1.5, j, 15, right);
+            display.text({
+                ctx: ctxInv,
+                msg: name,
+                x: i + 1.5,
+                y: j,
+                limit: 15,
+                xPx: right,
+                stroke: item.stroke,
+            });
+
             ctxInv.fillStyle = WHITE;
             ctxInv.shadowColor = CLEAR;
             ctxInv.textAlign = 'right';
             if (flag.shop || flag.blacksmith) {
                 let price = flag.shop ? item.price * quantity2 : item.getDurabPrice();
-                display.text(ctxInv, `$${price}`, i + 20.3, j, 3.5, right);
+                display.text({
+                    ctx: ctxInv,
+                    msg: `$${price}`,
+                    x: i + 20.3,
+                    y: j,
+                    limit: 3.5,
+                    xPx: right,
+                });
 			}
 			
             let quantity;
@@ -132,14 +177,29 @@ const inventory = {
                 weight += item.weight * quantity;
 			}
 			
-            display.text(ctxInv, (item.weight * quantity).toFixed(1), i + 22.5, j++, 0, right);
+            display.text({
+                ctx: ctxInv,
+                msg: (item.weight * quantity).toFixed(1),
+                x: i + 22.5,
+                y: j++,
+                xPx: right,
+            });
+
             ctxInv.restore();
             if (++count === MAX_PACK_COUNT) break;
 		}
 		
         if (flag.option || flag.cure) return;
         let maxNum = this.getMaxNumber(place);
-        display.text(ctxInv, `[${count}/${maxNum}]`, i, -SS - 1, 0, right, canvas.height);
+        display.text({
+            ctx: ctxInv,
+            msg: `[${count}/${maxNum}]`,
+            x: i,
+            y: -SS - 1,
+            xPx: right,
+            yPx: canvas.height,
+        });
+
         ctxInv.save();
         ctxInv.textAlign = 'right';
         let msg = '';
@@ -169,7 +229,15 @@ const inventory = {
             msg = `${sellOrCost} x${quantity2} ${msg}`;
 		}
 		
-        display.text(ctxInv, msg, i + 22.5, -SS - 1, 0, right, canvas.height);
+        display.text({
+            ctx: ctxInv,
+            msg: msg,
+            x: i + 22.5,
+            y: -SS - 1,
+            xPx: right,
+            yPx: canvas.height,
+        });
+
         ctxInv.restore();
 	},
 	

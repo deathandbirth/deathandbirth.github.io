@@ -480,15 +480,32 @@ const message = {
             if (!this.list[i]) break;
             let msg = this.list[i].text;
             if (this.list[i].count > 1) msg += ` (x${this.list[i].count})`;
-            display.text(ctxInv, `${msg}`, 0.5, j++);
+            display.text({
+                ctx: ctxInv,
+                msg: `${msg}`,
+                x: 0.5,
+                y: j++,
+            });
         }
+
         ctxInv.save();
-        display.text(ctxInv, `[${l}/${MAX_MSG_LIST_LEN}]`, 1.5, IN_HEIGHT - MS + 1);
+        display.text({
+            ctx: ctxInv,
+            msg: `[${l}/${MAX_MSG_LIST_LEN}]`,
+            x: 1.5,
+            y: IN_HEIGHT - MS + 1,
+        });
+
         ctxInv.textAlign = 'right';
-        display.text(ctxInv, option.isEnglish() ?
-            `Message List [${this.page}/${p}]` :
-            `メッセージ項目 [${this.page}/${p}]`,
-            24, IN_HEIGHT - MS + 1);
+        display.text({
+            ctx: ctxInv,
+            msg: option.isEnglish() ?
+                `Message List [${this.page}/${p}]` :
+                `メッセージ項目 [${this.page}/${p}]`,
+            x: 24,
+            y: IN_HEIGHT - MS + 1,
+        });
+
         ctxInv.restore();
         message.draw(message.get(M_PREVIOUS), true);
     },
@@ -517,10 +534,25 @@ const message = {
             }
             
             this.delete();
-            display.text(ctxMsg, msg, 0.5, 1, -0.5, 0, 0, canvas.width / 2);
+            display.text({
+                ctx: ctxMsg,
+                msg: msg,
+                x: 0.5,
+                y: 1,
+                limit: -0.5,
+                limitPx: canvas.width / 2,
+            });
         } else {
             ctxInv.clearRect(0.5 * fs + canvas.width / 2, 0.5 * fs, canvas.width / 2 + 1, fs + 1)
-            display.text(ctxInv, msg, 0.5, 1, -0.5, canvas.width / 2, 0, canvas.width / 2);
+            display.text({
+                ctx: ctxInv,
+                msg: msg,
+                x: 0.5,
+                y: 1,
+                limit: -0.5,
+                xPx: canvas.width / 2,
+                limitPx: canvas.width / 2,
+            });
         }
     },
 

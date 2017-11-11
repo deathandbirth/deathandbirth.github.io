@@ -13,6 +13,7 @@ const display = {
         canvas.width = list.width;
         canvas.height = list.height;
         fs = list.fs;
+        this.fs = list.fs;
         minimap.fs = fs / 2;
         for (let key in canvas) {
             if (key === 'width' || key === 'height') continue;
@@ -53,9 +54,26 @@ const display = {
         }
     },
 
-    text(ctx, msg, x, y, limitX, xPx = 0, yPx = 0, limitXPx = 0) {
-        let limit = limitX ? limitX * fs + limitXPx : undefined;
-        ctx.fillText(msg, x * fs + xPx, y * fs + yPx, limit);
+    text({
+        ctx,
+        msg,
+        x = 0,
+        y = 0,
+        limit,
+        xPx = 0,
+        yPx = 0,
+        limitPx = 0,
+        stroke,
+        fs = this.fs,
+    }) {
+        let limitX = limit ? limit * fs + limitPx : undefined;
+        let args = [msg, x * fs + xPx, y * fs + yPx, limitX];
+        if (stroke) {
+            ctx.strokeStyle = stroke;
+            ctx.strokeText(...args);
+        }
+
+        ctx.fillText(...args);
     }
 };
 

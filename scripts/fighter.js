@@ -2788,10 +2788,9 @@ const Fighter = class extends Material {
                 let condition = option.isEnglish() ? 'full' : textLen.list['full'];
                 statistics.draw({
                     msg: condition,
-                    x: len,
+                    xPx: len,
                     y: j,
                     color: LIME,
-                    measured: true,
 				});
 				
                 len += textLen['full'][option.getLanguage()];
@@ -2799,10 +2798,9 @@ const Fighter = class extends Material {
                 let condition = option.isEnglish() ? 'hungry' : textLen.list['hungry'];
                 statistics.draw({
                     msg: condition,
-                    x: len,
+                    xPx: len,
                     y: j,
                     color: YELLOW,
-                    measured: true,
 				});
 				
                 len += textLen['hungry'][option.getLanguage()];
@@ -2810,10 +2808,9 @@ const Fighter = class extends Material {
                 let condition = option.isEnglish() ? 'starved' : textLen.list['starved'];
                 statistics.draw({
                     msg: condition,
-                    x: len,
+                    xPx: len,
                     y: j,
                     color: RED,
-                    measured: true,
 				});
 				
                 len += textLen['starved'][option.getLanguage()];
@@ -2844,10 +2841,9 @@ const Fighter = class extends Material {
                 let condition = option.isEnglish() ? 'poisoned' : textLen.list['poisoned'];
                 statistics.draw({
                     msg: condition,
-                    x: len,
+                    xPx: len,
                     y: j,
                     color: C_POISON,
-                    measured: true,
 				});
 				
                 len += textLen['poisoned'][option.getLanguage()];
@@ -2866,10 +2862,9 @@ const Fighter = class extends Material {
                 let condition = option.isEnglish() ? 'confused' : textLen.list['confused'];
                 statistics.draw({
                     msg: condition,
-                    x: len,
+                    xPx: len,
                     y: j,
                     color: YELLOW,
-                    measured: true,
 				});
 				
                 len += textLen['confused'][option.getLanguage()];
@@ -2887,10 +2882,9 @@ const Fighter = class extends Material {
                 let condition = option.isEnglish() ? 'paralyzed' : textLen.list['paralyzed'];
                 statistics.draw({
                     msg: condition,
-                    x: len,
+                    xPx: len,
                     y: j,
                     color: ORANGE,
-                    measured: true,
 				});
 				
                 len += textLen['paralyzed'][option.getLanguage()];
@@ -2903,10 +2897,9 @@ const Fighter = class extends Material {
                 let condition = option.isEnglish() ? 'sleeping' : textLen.list['sleeping'];
                 statistics.draw({
                     msg: condition,
-                    x: len,
+                    xPx: len,
                     y: j,
                     color: ROYALBLUE,
-                    measured: true,
 				});
 				
                 len += textLen['sleeping'][option.getLanguage()];
@@ -2930,10 +2923,9 @@ const Fighter = class extends Material {
                 let condition = option.isEnglish() ? 'blinded' : textLen.list['blinded'];
                 statistics.draw({
                     msg: condition,
-                    x: len,
+                    xPx: len,
                     y: j,
                     color: GRAY,
-                    measured: true,
 				});
 				
                 len += textLen['blinded'][option.getLanguage()];
@@ -2952,10 +2944,9 @@ const Fighter = class extends Material {
                 let condition = option.isEnglish() ? 'infected' : textLen.list['infected'];
                 statistics.draw({
                     msg: condition,
-                    x: len,
+                    xPx: len,
                     y: j,
                     color: C_INFECTION,
-                    measured: true,
 				});
 				
                 len += textLen['infected'][option.getLanguage()];
@@ -2979,10 +2970,9 @@ const Fighter = class extends Material {
                 let condition = option.isEnglish() ? 'hallucinated' : textLen.list['hallucinated'];
                 statistics.draw({
                     msg: condition,
-                    x: len,
+                    xPx: len,
                     y: j,
                     color: PURPLE,
-                    measured: true,
 				});
 				
                 len += textLen['hallucinated'][option.getLanguage()];
@@ -3000,10 +2990,9 @@ const Fighter = class extends Material {
                 let condition = option.isEnglish() ? 'canceled' : textLen.list['canceled'];
                 statistics.draw({
                     msg: condition,
-                    x: len,
+                    xPx: len,
                     y: j,
                     color: WHITE,
-                    measured: true,
 				});
 				
                 len += textLen['canceled'][option.getLanguage()];
@@ -3022,11 +3011,10 @@ const Fighter = class extends Material {
                 let condition = option.isEnglish() ? 'see invisible' : textLen.list['see invisible'];
                 statistics.draw({
                     msg: condition,
-                    x: len,
+                    xPx: len,
                     y: j,
                     color: C_LIGHT,
                     shadow: C_LIGHT,
-                    measured: true,
 				});
 				
                 len += textLen['see invisible'][option.getLanguage()];
@@ -3044,11 +3032,10 @@ const Fighter = class extends Material {
                 let condition = option.isEnglish() ? 'invisible' : textLen.list['invisible'];
                 statistics.draw({
                     msg: condition,
-                    x: len,
+                    xPx: len,
                     y: j,
                     color: C_LIGHT,
                     shadow: C_LIGHT,
-                    measured: true,
 				});
 				
                 len += textLen['invisible'][option.getLanguage()];
@@ -3066,10 +3053,9 @@ const Fighter = class extends Material {
                 let condition = option.isEnglish() ? 'ecco' : textLen.list['ecco'];
                 statistics.draw({
                     msg: condition,
-                    x: len,
+                    xPx: len,
                     y: j,
                     color: C_AIR,
-                    measured: true,
 				});
 				
                 len += textLen['ecco'][option.getLanguage()];
@@ -3093,10 +3079,9 @@ const Fighter = class extends Material {
                 let condition = option.isEnglish() ? 'enchant self' : textLen.list['enchant self'];
                 statistics.draw({
                     msg: condition,
-                    x: len,
+                    xPx: len,
                     y: j,
                     color: C_EARTH,
-                    measured: true,
 				});
 				
                 len += textLen['enchant self'][option.getLanguage()];
@@ -3116,10 +3101,9 @@ const Fighter = class extends Material {
                 let condition = option.isEnglish() ? 'venom hands' : textLen.list['venom hands'];
                 statistics.draw({
                     msg: condition,
-                    x: len,
+                    xPx: len,
                     y: j,
                     color: C_POISON,
-                    measured: true,
 				});
 				
                 len += textLen['venom hands'][option.getLanguage()];
@@ -3139,10 +3123,9 @@ const Fighter = class extends Material {
                 let condition = option.isEnglish() ? 'confusing hands' : textLen.list['confusing hands'];
                 statistics.draw({
                     msg: condition,
-                    x: len,
+                    xPx: len,
                     y: j,
                     color: C_POISON,
-                    measured: true,
 				});
 				
                 len += textLen['confusing hands'][option.getLanguage()];
@@ -3539,18 +3522,34 @@ const Fighter = class extends Material {
 			
             ctxInv.save();
             ctxInv.textAlign = 'center';
-            display.text(ctxInv, EA[k++].toUpperCase(), i - 0.5, j);
+            display.text({
+                ctx: ctxInv,
+                msg: EA[k++].toUpperCase(),
+                x: i - 0.5,
+                y: j,
+            });
+
             ctxInv.textAlign = 'left';
             let parts = option.isEnglish() ? key : BPJ[key];
             if (key === 'main' || key === 'off') parts += this.swapped ? 2 : 1;
-            display.text(ctxInv, parts, i, j);
+            display.text({
+                ctx: ctxInv,
+                msg: parts,
+                x: i,
+                y: j,
+            });
+
             if (!item) {
                 if (key === 'off' && this.equipment['main'] && this.equipment['main'].twoHanded) {
-                    display.text(ctxInv,
-                        option.isEnglish() ?
+                    display.text({
+                        ctx: ctxInv,
+                        msg: option.isEnglish() ?
                             `(two-handed)` :
                             `(両手持ち)`,
-                        i + 4.5, j, 14);
+                        x: i + 4.5,
+                        y: j,
+                        limit: 14,
+                    });
 				}
 				
                 j++;
@@ -3560,13 +3559,15 @@ const Fighter = class extends Material {
 			
             ctxInv.textAlign = 'center';
             if (item.shadow) ctxInv.shadowColor = item.shadow;
-            if (item.stroke) {
-                ctxInv.strokeStyle = item.stroke;
-                ctxInv.strokeText(item.symbol, (i + 4) * fs, j * fs);
-			}
-			
             ctxInv.fillStyle = item.color;
-            display.text(ctxInv, item.symbol, i + 4, j);
+            display.text({
+                ctx: ctxInv,
+                msg: item.symbol,
+                x: i + 4,
+                y: j,
+                stroke: item.stroke,
+            });
+
             if (item.cursed) {
                 ctxInv.fillStyle = RED;
 			} else if (!item.durab) {
@@ -3578,18 +3579,38 @@ const Fighter = class extends Material {
             ctxInv.textAlign = 'left';
             let name = item.getName();
             let limit = flag.blacksmith ? 12 : 15;
-            if (item.stroke) ctxInv.strokeText(name, (i + 4.5) * fs, j * fs, limit * fs);
-            display.text(ctxInv, name, i + 4.5, j, limit);
+            display.text({
+                ctx: ctxInv,
+                msg: name,
+                x: i + 4.5,
+                y: j,
+                limit: limit,
+                stroke: item.stroke,
+            });
+
             ctxInv.fillStyle = WHITE;
             ctxInv.shadowColor = CLEAR;
             ctxInv.textAlign = 'right';
             if (flag.blacksmith) {
                 let price = item.getDurabPrice();
-                display.text(ctxInv, `$${price}`, i + 20.3, j, 3.5);
+                display.text({
+                    ctx: ctxInv,
+                    msg: `$${price}`,
+                    x: i + 20.3,
+                    y: j,
+                    limit: 3.5,
+                });
+
                 priceAll += price;
 			}
 			
-            display.text(ctxInv, (item.weight * item.quantity).toFixed(1), i + 22, j);
+            display.text({
+                ctx: ctxInv,
+                msg: (item.weight * item.quantity).toFixed(1),
+                x: i + 22,
+                y: j,
+            });
+
             weight += item.weight * item.quantity;
             count++;
             j++;
@@ -3614,7 +3635,13 @@ const Fighter = class extends Material {
 					ctxInv.fillStyle = RED;
 				}
 
-                display.text(ctxInv, term.name[option.getLanguage()], col - 1, j);
+                display.text({
+                    ctx: ctxInv,
+                    msg: term.name[option.getLanguage()],
+                    x: col - 1,
+                    y: j,
+                });
+
                 ctxInv.textAlign = 'right';
                 let value = this[key];
                 if (term.perc) value += '%';
@@ -3624,7 +3651,14 @@ const Fighter = class extends Material {
                     value += ` (${max})`;
 				}
 				
-                display.text(ctxInv, value, col + IN_WIDTH / 4 - 2, j++, valueLimit);
+                display.text({
+                    ctx: ctxInv,
+                    msg: value,
+                    x: col + IN_WIDTH / 4 - 2,
+                    y: j++,
+                    limit: valueLimit,
+                });
+
                 ctxInv.restore();
                 if (!(++count2 % 8)) {
                     col += IN_WIDTH / 4;
@@ -3634,7 +3668,14 @@ const Fighter = class extends Material {
 		}
 		
         let maxNum = MAX_EQUIPMENT_NUM;
-        display.text(ctxInv, `[${count}/${maxNum}]`, i, -SS -1, 0, 0, canvas.height);
+        display.text({
+            ctx: ctxInv,
+            msg: `[${count}/${maxNum}]`,
+            x: i,
+            y: -SS - 1,
+            yPx: canvas.height,
+        });
+
         ctxInv.textAlign = 'right';
         let total = option.isEnglish() ? 'Total' : '計';
         if (flag.blacksmith) {
@@ -3642,7 +3683,14 @@ const Fighter = class extends Material {
             total = `${cost} $${priceAll} ${total}`;
 		}
 		
-        display.text(ctxInv, `${total} ${weight.toFixed(1)}kg`, i + 22, -SS -1, 0, 0, canvas.height);
+        display.text({
+            ctx: ctxInv,
+            msg: `${total} ${weight.toFixed(1)}kg`,
+            x: i + 22,
+            y: -SS - 1,
+            yPx: canvas.height,
+        });
+
         ctxInv.textAlign = 'left';
     }
 
@@ -3660,7 +3708,15 @@ const Fighter = class extends Material {
             ctxInv.save();
             if (bookmark) {
                 if (skill) ctxInv.shadowColor = skill.color;
-                display.text(ctxInv, key === '0' ? main : `F${key}`, i - 1, j, 2, right);
+                display.text({
+                    ctx: ctxInv,
+                    msg: key === '0' ? main : `F${key}`,
+                    x: i - 1,
+                    y: j,
+                    limit: 2,
+                    xPx: right,
+                });
+
                 if (!skill) {
                     j++;
                     ctxInv.restore();
@@ -3674,12 +3730,26 @@ const Fighter = class extends Material {
 				}
 
                 ctxInv.textAlign = 'center';
-                display.text(ctxInv, key, i, j, 0, right);
+                display.text({
+                    ctx: ctxInv,
+                    msg: key,
+                    x: i,
+                    y: j,
+                    xPx: right,
+                });
 			}
 			
             ctxInv.textAlign = 'left';
             let name = skill.name[option.getLanguage()];
-            display.text(ctxInv, name, i + 0.75 + (bookmark ? 1 : 0), j, 8, right);
+            display.text({
+                ctx: ctxInv,
+                msg: name,
+                x: i + 0.75 + (bookmark ? 1 : 0),
+                y: j,
+                limit: 8,
+                xPx: right,
+            });
+
             ctxInv.textAlign = 'right';
             let lvl = 0;
             if (list[key].lvl) {
@@ -3690,7 +3760,14 @@ const Fighter = class extends Material {
 			}
 			
             let boost = this.getSkillBoost(skill);
-            display.text(ctxInv, `${lvl}+${boost}`, i + 12, j, 0, right);
+            display.text({
+                ctx: ctxInv,
+                msg: `${lvl}+${boost}`,
+                x: i + 12,
+                y: j,
+                xPx: right,
+            });
+
             if (skill.rate) {
                 let value;
                 let bonus = skill.rate * (lvl + boost) + (skill.synerzy ? skill.synerzy * this.getSynerzy(skill) : 0);
@@ -3712,7 +3789,13 @@ const Fighter = class extends Material {
                     value = `Avg ${avg}`;
 				}
 				
-                display.text(ctxInv, value, i + 17, j, 0, right);
+                display.text({
+                    ctx: ctxInv,
+                    msg: value,
+                    x: i + 17,
+                    y: j,
+                    xPx: right,
+                });
 			}
 			
             if (skill.reqLvl <= this.lvl && skill.mp > this.mp) {
@@ -3720,14 +3803,37 @@ const Fighter = class extends Material {
                 ctxInv.fillStyle = RED;
 			}
 			
-            display.text(ctxInv, skill.mp, i + 18.5, j, 0, right);
+            display.text({
+                ctx: ctxInv,
+                msg: skill.mp,
+                x: i + 18.5,
+                y: j,
+                xPx: right,
+            });
+
             if (skill.reqLvl <= this.lvl) {
                 ctxInv.shadowColor = skill.color;
                 ctxInv.fillStyle = WHITE;
 			}
 			
-            display.text(ctxInv, skill.reqLvl, i + 20.5, j, 0, right);
-            if (skill.reqSynerzy) display.text(ctxInv, skill.reqSynerzy, i + 22.5, j, 0, right);
+            display.text({
+                ctx: ctxInv,
+                msg: skill.reqLvl,
+                x: i + 20.5,
+                y: j,
+                xPx: right,
+            });
+
+            if (skill.reqSynerzy){
+                display.text({
+                    ctx: ctxInv,
+                    msg: skill.reqSynerzy,
+                    x: i + 22.5,
+                    y: j,
+                    xPx: right,
+                });
+            }
+
             ctxInv.restore();
             count++;
             j++;
@@ -3744,15 +3850,57 @@ const Fighter = class extends Material {
 			maxNum = MAX_SKILL_NUM;
 		}
 
-        display.text(ctxInv, `[${count}/${maxNum}]`, i, j, 0, right);
+        display.text({
+            ctx: ctxInv,
+            msg: `[${count}/${maxNum}]`,
+            x: i,
+            y: j,
+            xPx: right,
+        });
+
         ctxInv.textAlign = 'right';
         let [lvl, value, mp, reqLv, reqSy] = option.isEnglish() ? ['Lv', 'Value', 'MP', 'RLv', 'RSy'] :
             ['レベル', '値', 'MP', '必レ', '必シ'];
-        display.text(ctxInv, lvl, i + 12, j, 0, right);
-        display.text(ctxInv, value, i + 16, j, 0, right);
-        display.text(ctxInv, mp, i + 18.5, j, 0, right);
-        display.text(ctxInv, reqLv, i + 20.5, j, 0, right);
-        display.text(ctxInv, reqSy, i + 22.5, j, 0, right);
+        display.text({
+            ctx: ctxInv,
+            msg: lvl,
+            x: i + 12,
+            y: j,
+            xPx: right,
+        });
+
+        display.text({
+            ctx: ctxInv,
+            msg: value,
+            x: i + 16,
+            y: j,
+            xPx: right,
+        });
+
+        display.text({
+            ctx: ctxInv,
+            msg: mp,
+            x: i + 18.5,
+            y: j,
+            xPx: right,
+        });
+
+        display.text({
+            ctx: ctxInv,
+            msg: reqLv,
+            x: i + 20.5,
+            y: j,
+            xPx: right,
+        });
+
+        display.text({
+            ctx: ctxInv,
+            msg: reqSy,
+            x: i + 22.5,
+            y: j,
+            xPx: right,
+        });
+
         ctxInv.restore();
     }
 
