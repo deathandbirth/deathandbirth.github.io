@@ -1483,7 +1483,7 @@ const Material = class extends Thing {
             ctxInv.save();
             let fsChar;
             if (char) {
-                fsChar = fs - 3;
+                fsChar = display.fs - 3;
                 let fontStyle = FONT_STYLE[option.getLanguage()];
                 ctxInv.font = fsChar - 1 + 'px ' + fontStyle;
             }

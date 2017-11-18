@@ -4,20 +4,35 @@ const inventory = {
         ctxInv.shadowColor = CLEAR
         ctxInv.globalAlpha = 0.9;
         ctxInv.fillStyle = BLACK;
-        let offsetY = (MS - 0.5) * fs;
+        let offsetY = MS - 0.5;
         if (direction === LEFT || direction === MIDDLE) {
-            ctxInv.fillRect(0, offsetY, canvas.width / 2, canvas.height - offsetY - SS * fs);
+            display.rect({
+                ctx: ctxInv,
+                x: 0,
+                y :offsetY,
+                widthPx: canvas.width / 2,
+                height: -offsetY - SS,
+                heightPx: canvas.height,
+            });
 		}
 
 		if (direction === RIGHT || direction === MIDDLE) {
-            ctxInv.fillRect(canvas.width / 2, offsetY, canvas.width / 2, canvas.height - offsetY - SS * fs);
+            display.rect({
+                ctx: ctxInv,
+                x: 0,
+                xPx: canvas.width /2,
+                y :offsetY,
+                widthPx: canvas.width / 2,
+                height: -offsetY - SS,
+                heightPx: canvas.height,
+            });
 		}
 		
 		ctxInv.restore();
 	},
 	
     clear() {
-        ctxInv.clearRect(0, 0, canvas.width, canvas.height /*-SS*fs*/ );
+        display.clearOne(ctxInv);
 	},
 	
     show(list, direction, a, place) {

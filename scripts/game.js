@@ -41,7 +41,7 @@ const game = {
 	},
 	
     title() {
-        this.clearDisplay();
+        display.clearAll();
         ctxInv.save();
         ctxInv.textAlign = 'center'
         let fontStyle = FONT_STYLE[option.getLanguage()];
@@ -79,7 +79,7 @@ const game = {
 	},
 	
     over() {
-        this.clearDisplay();
+        display.clearAll();
         ctxInv.save();
         ctxInv.textAlign = 'center'
         let fontStyle = FONT_STYLE[option.getLanguage()];
@@ -136,7 +136,7 @@ const game = {
 	},
 	
     clearLevel() {
-        this.clearDisplay();
+        display.clearAll();
         rogue.checkUnique();
         Enemy.list = {};
         Item.list = {};
@@ -147,13 +147,4 @@ const game = {
         rogue.portal.x = rogue.portal.y = 0;
         litMapIds = {};
 	},
-
-    clearDisplay() {
-        ctxBuf.clearRect(0, 0, canvas.width * 2, canvas.height * 2);
-        ctxMain.clearRect(0, 0, canvas.width, canvas.height);
-        ctxInv.clearRect(0, 0, canvas.width, canvas.height);
-        ctxStats.clearRect(0, 0, canvas.width, canvas.height);
-        ctxMsg.clearRect(0, 0, canvas.width, canvas.height);
-        // ctxMap.clearRect(0,0,canvas.width,canvas.height);
-    }
 };

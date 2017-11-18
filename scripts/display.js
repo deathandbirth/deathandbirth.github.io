@@ -12,8 +12,8 @@ const display = {
         container.style.height = list.height + 'px';
         canvas.width = list.width;
         canvas.height = list.height;
-        fs = list.fs;
-        this.fs = list.fs;
+        let fs = list.fs;
+        this.fs = fs;
         minimap.fs = fs / 2;
         for (let key in canvas) {
             if (key === 'width' || key === 'height') continue;
@@ -74,6 +74,69 @@ const display = {
         }
 
         ctx.fillText(...args);
+    },
+
+    rect({
+        ctx,
+        x = 0,
+        y = 0,
+        width = 0,
+        height = 0,
+        xPx = 0,
+        yPx = 0,
+        widthPx = 0,
+        heightPx = 0,
+        stroke,
+        clear,
+        fs = this.fs,
+    }) {
+        let args = [x * fs + xPx, y * fs + yPx, width * fs + widthPx, height * fs + heightPx];
+        if (stroke) {
+            ctx.strokeRect(...args);    
+        } else if (clear) {
+            ctx.clearRect(...args);
+        } else {
+            ctx.fillRect(...args);
+        }
+    },
+
+    image({
+        ctx,
+        img,
+        sx,
+        sy,
+        sWidth,
+        sHeight,
+        dx, 
+        dxPx,
+        dy,
+        dWidth,
+        dHeight,
+    }) {
+        let fs = this.fs;
+        ctx.drawImage(img, sx * fs, sy * fs, sWidth * fs, sHeight * fs, dx * fs + dxPx, dy, dWidth * fs, dHeight * fs);
+    },
+
+    clearOne(ctx, buf) {
+        let width = canvas.width;
+        let height = canvas.height;
+        if (buf) {
+            width *= 2;
+            height *= 2;
+        }
+
+        this.rect({
+            ctx: ctx,
+            widthPx: width,
+            heightPx: height,
+            clear: true,
+        });
+    },
+
+    clearAll() {
+        for (let i in this.ctxes) {
+            this.clearOne(this.ctxes[i], i === 'buf');
+        };
     }
 };
 

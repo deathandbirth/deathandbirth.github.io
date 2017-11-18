@@ -2783,7 +2783,7 @@ const Fighter = class extends Material {
         name = this.getName(true);
         if (draw) {
             statistics.clearCondition();
-            var len = fs;
+            var len = display.fs;
             if (this.hunger >= 800) {
                 let condition = option.isEnglish() ? 'full' : textLen.list['full'];
                 statistics.draw({
@@ -5056,7 +5056,7 @@ const Fighter = class extends Material {
 		}
 		
         if (this.id !== ROGUE) return;
-        if (!flag.examine) ctxCur.clearRect(0, 0, canvas.width, canvas.height);
+        if (!flag.examine) display.clearOne(ctxCur);
         inventory.clear();
         rogue.done = true;
         flag.aim = false;

@@ -1,14 +1,16 @@
 const minimap = {
-    clear() {
-        ctxMap.clearRect(0, 0, canvas.width, canvas.height);
-    },
-
     shadow() {
         ctxMap.save();
         ctxMap.shadowColor = CLEAR;
         ctxMap.globalAlpha = 0.9;
         ctxMap.fillStyle = BLACK;
-        ctxMap.fillRect(0, 0, canvas.width, canvas.height - SS * fs);
+        display.rect({
+            ctx: ctxMap,
+            widthPx: canvas.width,
+            height: -SS,
+            heightPx: canvas.height,
+        });
+
         ctxMap.restore();
     },
 
@@ -18,7 +20,7 @@ const minimap = {
             return;
         }
 
-        this.clear();
+        display.clearOne(ctxMap);
         if (keyCode === 77 && isShift) { //M
             flag.minimap = false;
             flag.regular = true;
@@ -133,15 +135,24 @@ const map = {
     },
 
     draw(cX, cY) {
-        ctxMain.clearRect(0, 0, canvas.width, canvas.height);
-        let X = cX - (IN_WIDTH - 1) / 2;
-        let Y = cY - (IN_HEIGHT) / 2;
-        ctxMain.drawImage(canvas.buf, X * fs, Y * fs, IN_WIDTH * fs, IN_HEIGHT * fs,
-            (canvas.width - IN_WIDTH * fs) / 2, 0, IN_WIDTH * fs, IN_HEIGHT * fs);
+        display.clearOne(ctxMain);
+        display.image({
+            ctx: ctxMain,
+            img: canvas.buf,
+            sx: cX - (IN_WIDTH - 1) / 2,
+            sy: cY - IN_HEIGHT / 2,
+            sWidth: IN_WIDTH,
+            sHeight: IN_HEIGHT,
+            dx: -IN_WIDTH / 2, 
+            dxPx: canvas.width / 2,
+            dy: 0,
+            dWidth: IN_WIDTH,
+            dHeight: IN_HEIGHT,
+        });
     },
 
     redraw(cX, cY) {
-        ctxBuf.clearRect(0, 0, canvas.width * 2, canvas.height * 2);
+        display.clearOne(ctxBuf, true)
         for (let i = 0, l = coords.length; i < l; i++) {
             for (let loc of coords[i]) {
                 loc.draw();
@@ -339,11 +350,25 @@ const statistics = {
     },
 
     clear() {
-        ctxStats.clearRect(0, canvas.height - SS * fs, canvas.width, SS * fs);
+        display.rect({
+            ctx: ctxStats,
+            y: -SS,
+            yPx: canvas.height,
+            widthPx: canvas.width,
+            height: SS,
+            clear: true,
+        });
     },
 
     clearCondition() {
-        ctxStats.clearRect(0, canvas.height - (SS + 2) * fs, canvas.width, 2 * fs);
+        display.rect({
+            ctx: ctxStats,
+            y: -SS - 2,
+            yPx: canvas.height,
+            widthPx: canvas.width,
+            height: 2,
+            clear: true,
+        });
     },
 
     ShadowAndBar(e) {
@@ -352,9 +377,23 @@ const statistics = {
         ctxStats.shadowColor = CLEAR;
         ctxStats.fillStyle = BLACK;
         ctxStats.globalAlpha = 0.5;
-        ctxStats.fillRect(canvas.width / 2 - width / 2 - 3, (MS) * fs, width + 6, 2 * fs); //
+        display.rect({
+            ctx: ctxStats,
+            xPx: canvas.width / 2 - width / 2 - 3,
+            y: MS,
+            widthPx: width + 6,
+            height: 2,
+        });
+
         ctxStats.fillStyle = e.getConditionColor();
-        ctxStats.fillRect(canvas.width / 2 - width / 2 - 3, (MS + 1) * fs, e.hp / e.hpMax * width + 6, fs);
+        display.rect({
+            ctx: ctxStats,
+            xPx: canvas.width / 2 - width / 2 - 3,
+            y: MS + 1,
+            widthPx: e.hp / e.hpMax * width + 6,
+            height: 1,
+        });
+
         ctxStats.restore();
     },
 
@@ -387,7 +426,15 @@ const statistics = {
     },
 
     clearEnemyBar() {
-        ctxStats.clearRect(0, MS * fs - 5, canvas.width, 2 * fs + 5); //
+        display.rect({
+            ctx: ctxStats,
+            y: MS,
+            yPx: -5,
+            widthPx: canvas.width,
+            height: 2,
+            heightPx: 5,
+            clear: true,
+        });
     },
 
     drawCurrentEnemy(enemy) {
@@ -395,7 +442,17 @@ const statistics = {
         ctxStats.save();
         ctxStats.textAlign = 'center';
         ctxStats.strokeStyle = GRAY;
-        ctxStats.strokeRect(canvas.width - 1.95 * fs, canvas.height - 4.45 * fs, fs, fs);
+        display.rect({
+            ctx: ctxStats,
+            x: -1.95,
+            xPx: canvas.width,
+            y: -4.45,
+            yPx: canvas.height,
+            width: 1,
+            height: 1,
+            stroke: true,
+        });
+
         let symbol = enemy.symbol;
         ctxStats.fillStyle = enemy.color;
         if (enemy.shadow) ctxStats.shadowColor = enemy.shadow;
@@ -420,11 +477,30 @@ const cursol = {
     },
 
     draw(x, y) {
-        ctxCur.strokeRect(x * fs + canvas.width / 2 - (IN_WIDTH - 1) / 2 * fs - fs / 2, y * fs, fs, fs);
+        display.rect({
+            ctx: ctxCur,
+            x: x - IN_WIDTH / 2,
+            xPx: canvas.width / 2,
+            y: y,
+            width: 1,
+            height: 1,
+            stroke: true,
+        });
     },
 
     clear(x, y) {
-        ctxCur.clearRect(x * fs + canvas.width / 2 - (IN_WIDTH - 1) / 2 * fs - fs / 2 - 1, y * fs - 1, fs + 3, fs + 3);
+        display.rect({
+            ctx: ctxCur,
+            x: x - IN_WIDTH / 2, 
+            xPx: canvas.width / 2 -1,
+            y: y,
+            yPx: -1,
+            width: 1,
+            widthPx: 3,
+            height: 1,
+            heightPx: 3,
+            clear: true,
+        });
     },
 
     plot(x, y, color) {
@@ -433,7 +509,16 @@ const cursol = {
         ctxCur.save();
         ctxCur.fillStyle = color;
         ctxCur.globalAlpha = 0.3;
-        ctxCur.clearRect(X * fs - fs / 2 + canvas.width / 2, Y * fs, fs, fs);
+        display.rect({
+            ctx: ctxCur,
+            x: X - 0.5,
+            xPx: canvas.width / 2,
+            y: Y,
+            width: 1,
+            height: 1,
+            clear: true,
+        });
+
         display.text({
             ctx: ctxCur,
             msg: '＊',

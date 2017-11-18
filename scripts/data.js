@@ -27,7 +27,7 @@ const Data = class {
         }
 
         this.convertCe();
-        game.clearDisplay();
+        display.clearAll();
         display.change(option.display.user, true);
         initFlag();
         this.loadAudio();

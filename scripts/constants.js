@@ -680,8 +680,8 @@ const textLen = {
     init() {
         for (let key in this.list) {
             this[key] = {};
-            this[key].a = ctxStats.measureText(key).width + fs;
-            this[key].b = ctxStats.measureText(this.list[key]).width + fs;
+            this[key].a = ctxStats.measureText(key).width + display.fs;
+            this[key].b = ctxStats.measureText(this.list[key]).width + display.fs;
         }
     },
 };
@@ -756,7 +756,6 @@ const FONT_STYLE = {
     b: "'Yu Gothic', 'Hiragino Kaku Gothic Pro', 'Hiragino Kaku Gothic ProN', 'TakaoExGothic', 'Meiryo', 'MS PGothic', sans-serif",
 };
 
-let fs = 0; //font size
 let rogue;
 let queue;
 let coords; //coords[][]

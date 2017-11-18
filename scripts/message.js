@@ -493,7 +493,8 @@ const message = {
             ctx: ctxInv,
             msg: `[${l}/${MAX_MSG_LIST_LEN}]`,
             x: 1.5,
-            y: IN_HEIGHT - MS + 1,
+            y: - SS - 1,
+            yPx: canvas.height,
         });
 
         ctxInv.textAlign = 'right';
@@ -502,8 +503,10 @@ const message = {
             msg: option.isEnglish() ?
                 `Message List [${this.page}/${p}]` :
                 `メッセージ項目 [${this.page}/${p}]`,
-            x: 24,
-            y: IN_HEIGHT - MS + 1,
+            x: -1,
+            xPx: canvas.width,
+            y: - SS - 1,
+            yPx: canvas.height,
         });
 
         ctxInv.restore();
@@ -512,11 +515,26 @@ const message = {
 
     counter: 0,
     clear(all) {
-        ctxMsg.clearRect(0, 0, canvas.width / (all ? 1 : 2), canvas.height / (all ? 1 : 2));
+        let num = all ? 1 : 2;
+        display.rect({
+            ctx: ctxMsg,
+            widthPx: canvas.width / num,
+            heightPx: canvas.height / num,
+            clear: true,
+        });
     },
 
     delete() {
-        setTimeout(() => ctxMsg.clearRect(0, (this.counter - 0.5) * fs, canvas.width / 2, (this.counter--) * fs + 1), MSG_SPEED);
+        setTimeout(() => {
+            display.rect({
+                ctx: ctxMsg,
+                y: this.counter - 0.5,
+                widthPx: canvas.width / 2,
+                height: this.counter--,
+                heightPx: 1,
+                clear: true,
+            });
+        }, MSG_SPEED);
     },
 
     draw(msg, fixed) {
@@ -525,12 +543,19 @@ const message = {
             if (!this.list[0] || this.list[0].text !== msg) {
                 this.list.unshift({ text: msg, count: 1 });
                 if (this.list.length > MAX_MSG_LIST_LEN) this.list.pop();
-                let curMap = ctxMsg.getImageData(0, 0, canvas.width / 2, (MAX_MSG_LEN - 0.5) * fs);
+                let curMap = ctxMsg.getImageData(0, 0, canvas.width / 2, (MAX_MSG_LEN - 0.5) * display.fs);
                 this.clear();
-                ctxMsg.putImageData(curMap, 0, fs);
+                ctxMsg.putImageData(curMap, 0, display.fs);
             } else {
                 msg += ` (x${++this.list[0].count})`;
-                ctxMsg.clearRect(0, 0.5 * fs, canvas.width / 2 + 1, fs + 1)
+                display.rect({
+                    ctx: ctxMsg,
+                    y: 0.5,
+                    widthPx: canvas.width / 2 + 1,
+                    height: 1,
+                    heightPx: 1,
+                    clear: true,
+                });
             }
             
             this.delete();
@@ -543,7 +568,17 @@ const message = {
                 limitPx: canvas.width / 2,
             });
         } else {
-            ctxInv.clearRect(0.5 * fs + canvas.width / 2, 0.5 * fs, canvas.width / 2 + 1, fs + 1)
+            display.rect({
+                ctx: ctxInv,
+                x: 0.5,
+                xPx: canvas.width / 2,
+                y: 0.5,
+                widthPx: canvas.width / 2 + 1,
+                height: 1,
+                heightPx: 1,
+                clear: true,
+            });
+
             display.text({
                 ctx: ctxInv,
                 msg: msg,

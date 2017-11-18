@@ -62,7 +62,15 @@ const Location = class extends Position {
 
     draw() {
         this.getSymbol();
-        ctxBuf.clearRect(this.x * fs, this.y * fs, fs, fs);
+        display.rect({
+            ctx: ctxBuf,
+            x: this.x,
+            y: this.y,
+            width: 1,
+            height: 1,
+            clear: true,
+        });
+        
         if (rogue.blinded && (!this.fighter || this.fighter.id !== ROGUE)) return;
         ctxBuf.save();
         ctxBuf.fillStyle = this.color;
@@ -80,7 +88,13 @@ const Location = class extends Position {
             ctxBuf.globalAlpha = 0.5;
             ctxBuf.fillStyle = BLACK;
             ctxBuf.shadowColor = CLEAR;
-            ctxBuf.fillRect(this.x * fs, this.y * fs, fs, fs);
+            display.rect({
+                ctx: ctxBuf,
+                x: this.x,
+                y: this.y,
+                width: 1,
+                height: 1,
+            });
 		}
 		
         ctxBuf.restore();

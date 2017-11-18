@@ -325,9 +325,24 @@ const Rogue = class extends Fighter {
         statistics.drawCurrentEnemy(this.ce);
         ctxStats.save();
         ctxStats.fillStyle = this.getConditionColor();
-        ctxStats.fillRect(0, canvas.height - SS * fs, (this.hp / this.hpMax) * canvas.width / 2, 3);
+        display.rect({
+            ctx: ctxStats,
+            y:  -SS,
+            yPx: canvas.height,
+            widthPx: (this.hp / this.hpMax) * canvas.width / 2,
+            heightPx: 3,
+        });
+
         ctxStats.fillStyle = BLUE;
-        ctxStats.fillRect((2 - this.mp / this.mpMax) * canvas.width / 2, canvas.height - SS * fs, canvas.width / 2, 3);
+        display.rect({
+            ctx: ctxStats,
+            xPx: (2 - this.mp / this.mpMax) * canvas.width / 2,
+            y: -SS,
+            yPx: canvas.height,
+            widthPx: canvas.width / 2,
+            heightPx: 3,
+        });
+
         ctxStats.restore();
 
         let [level, exp, str, dex, con, int, spd] = option.isEnglish() ? ['Level', 'Exp', 'Str', 'Dex', 'Con', 'Int', 'Spd'] :
@@ -445,7 +460,6 @@ const Rogue = class extends Fighter {
 
     drawBoxes() {
         let x = 1;
-        let y = canvas.height - fs;
         for (let i = 1; i <= this.numBoxes; i++) {
             let item = this.boxes[i];
             ctxStats.save();
@@ -453,7 +467,16 @@ const Rogue = class extends Fighter {
             ctxStats.fillStyle = GRAY;
             ctxStats.strokeStyle = GRAY;
             ctxStats.lineWidth = 0.5;
-            ctxStats.strokeRect((x + i * 1.4 - 1) * fs, y - 0.5 * fs, fs, fs);
+            display.rect({
+                ctx: ctxStats,
+                x: x + i * 1.4 - 1,
+                y: -1.5,
+                yPx: canvas.height,
+                width: 1,
+                height: 1,
+                stroke: true,
+            });
+
             if (!item) {
                 display.text({
                     ctx: ctxStats,
@@ -474,7 +497,7 @@ const Rogue = class extends Fighter {
                     stroke: item.stroke,
                 });
 
-                ctxStats.font = fs / 2 + 'px ' + FONT_STYLE[option.getLanguage()];
+                ctxStats.font = display.fs / 2 + 'px ' + FONT_STYLE[option.getLanguage()];
                 ctxStats.fillStyle = WHITE;
                 ctxStats.shadowColor = CLEAR;
                 display.text({
@@ -1182,7 +1205,7 @@ const Rogue = class extends Fighter {
         rogue.done = true;
         inventory.clear();
         statistics.clearEnemyBar();
-        ctxCur.clearRect(0, 0, canvas.width, canvas.height);
+        display.clearOne(ctxCur);
     }
 
     investigateOne(keyCode) {
@@ -1697,7 +1720,7 @@ const Rogue = class extends Fighter {
         let [x, y] = [cursol.x, cursol.y];
         let color = WHITE;
         let skill;
-        ctxCur.clearRect(0, 0, canvas.width, canvas.height);
+        display.clearOne(ctxCur);
         if (flag.zap) {
             if (ci.identified || itemTab[ci.type].get(ci.tabId).identified) { //
                 skill = skillMap.get(ci.nameSkill);
@@ -1716,12 +1739,12 @@ const Rogue = class extends Fighter {
         if (flag.synthesize) {
             this.returnCubeItem();
 		} else if (flag.aim || flag.examine) {
-            ctxCur.clearRect(0, 0, canvas.width, canvas.height);
+            display.clearOne(ctxCur);
             map.draw(rogue.x, rogue.y);
             statistics.clearEnemyBar();
             statistics.drawEnemyBar(this.ce);
         } else if (flag.minimap) {
-			minimap.clear();
+            display.clearOne(ctxMap);
 		}
 
         inventory.clear();
@@ -2626,7 +2649,7 @@ const Rogue = class extends Fighter {
     }
 
     goBlind() {
-        ctxBuf.clearRect(0, 0, canvas.width * 2, canvas.height * 2);
+        display.clearOne(ctxBuf, true);
         coords[this.x][this.y].draw();
         this.removeCe();
     }
