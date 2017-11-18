@@ -44,6 +44,8 @@ const audio = {
         fire: new Audio('sound/fire.wav'),
         air: new Audio('sound/wind.wav'),
         acid: new Audio('sound/acid.wav'),
+        speed: new Audio('sound/speed.wav'),
+        slow: new Audio('sound/slow.wav'),
     },
 
     init() {

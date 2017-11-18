@@ -4557,6 +4557,7 @@ const Fighter = class extends Material {
                 message.draw(option.isEnglish() ?
                     `${name} speeded up` :
                     `${name}加速した`);
+                audio.playSound('speed');
                 break;
             case ECCO:
                 f.ecco = duration;
@@ -4585,6 +4586,7 @@ const Fighter = class extends Material {
                 message.draw(option.isEnglish() ?
                     `${name} slowed down` :
                     `${name}減速した`);
+                audio.playSound('slow');
                 break;
             case CONFUSION:
                 if (evalPercentage(f.poison)) return;
