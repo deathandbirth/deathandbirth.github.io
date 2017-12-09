@@ -11,6 +11,7 @@ const game = {
         loop(list) {
             let i = this.i;
             let j = this.j;
+            let ctxInv = display.ctxes.inv;
             for (let key in list) {
                 ctxInv.save();
                 display.text({
@@ -42,6 +43,7 @@ const game = {
 	
     title() {
         display.clearAll();
+        let ctxInv = display.ctxes.inv;
         ctxInv.save();
         ctxInv.textAlign = 'center'
         let fontStyle = FONT_STYLE[option.getLanguage()];
@@ -82,6 +84,7 @@ const game = {
 	
     over() {
         display.clearAll();
+        let ctxInv = display.ctxes.inv;
         ctxInv.save();
         ctxInv.textAlign = 'center'
         let fontStyle = FONT_STYLE[option.getLanguage()];

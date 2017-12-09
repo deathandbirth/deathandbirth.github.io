@@ -323,6 +323,7 @@ const Rogue = class extends Fighter {
         statistics.clear();
         this.drawBoxes();
         statistics.drawCurrentEnemy(this.ce);
+        let ctxStats = display.ctxes.stats;
         ctxStats.save();
         ctxStats.fillStyle = this.getConditionColor();
         display.rect({
@@ -460,6 +461,7 @@ const Rogue = class extends Fighter {
 
     drawBoxes() {
         let x = 1;
+        let ctxStats = display.ctxes.stats;
         for (let i = 1; i <= this.numBoxes; i++) {
             let item = this.boxes[i];
             ctxStats.save();
@@ -1207,7 +1209,7 @@ const Rogue = class extends Fighter {
         rogue.done = true;
         inventory.clear();
         statistics.clearEnemyBar();
-        display.clearOne(ctxCur);
+        display.clearOne(display.ctxes.cur);
     }
 
     investigateOne(keyCode) {
@@ -1722,7 +1724,7 @@ const Rogue = class extends Fighter {
         let [x, y] = [cursol.x, cursol.y];
         let color = WHITE;
         let skill;
-        display.clearOne(ctxCur);
+        display.clearOne(display.ctxes.cur);
         if (flag.zap) {
             if (ci.identified || itemTab[ci.type].get(ci.tabId).identified) { //
                 skill = skillMap.get(ci.nameSkill);
@@ -1741,12 +1743,12 @@ const Rogue = class extends Fighter {
         if (flag.synthesize) {
             this.returnCubeItem();
 		} else if (flag.aim || flag.examine) {
-            display.clearOne(ctxCur);
+            display.clearOne(display.ctxes.cur);
             map.draw(rogue.x, rogue.y);
             statistics.clearEnemyBar();
             statistics.drawEnemyBar(this.ce);
         } else if (flag.minimap) {
-            display.clearOne(ctxMap);
+            display.clearOne(display.ctxes.map);
 		}
 
         inventory.clear();
@@ -1759,6 +1761,7 @@ const Rogue = class extends Fighter {
         let i = 1.5;
         let j = MS + 1;
         let count = 0;
+        let ctxInv = display.ctxes.inv;
         for (let key in statistics.list) {
             if (a && key !== a) continue;
             let stat = statistics.list[key];
@@ -1819,6 +1822,7 @@ const Rogue = class extends Fighter {
         inventory.shadow(dir);
         let i = 0.5;
         let j = MS + 1;
+        let ctxInv = display.ctxes.inv;
         ctxInv.save();
         ctxInv.shadowColor = skill.color;
         let nameEle = option.isEnglish() ? getUpperCase(skill.element) : ENJ[skill.element];
@@ -2651,7 +2655,7 @@ const Rogue = class extends Fighter {
     }
 
     goBlind() {
-        display.clearOne(ctxBuf, true);
+        display.clearOne(display.ctxes.buf, true);
         coords[this.x][this.y].draw();
         this.removeCe();
     }

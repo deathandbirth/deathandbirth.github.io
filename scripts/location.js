@@ -62,6 +62,7 @@ const Location = class extends Position {
 
     draw() {
         this.getSymbol();
+        let ctxBuf = display.ctxes.buf;
         display.rect({
             ctx: ctxBuf,
             x: this.x,

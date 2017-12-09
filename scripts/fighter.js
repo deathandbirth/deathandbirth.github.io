@@ -3511,6 +3511,7 @@ const Fighter = class extends Material {
         let k = 0;
         let weight = 0;
         let count = 0;
+        let ctxInv = display.ctxes.inv;
         if (flag.blacksmith) var priceAll = 0;
         for (let key in this.equipment) {
             let item = this.equipment[key];
@@ -3519,7 +3520,6 @@ const Fighter = class extends Material {
                 k++;
                 continue;
 			}
-			
             ctxInv.save();
             ctxInv.textAlign = 'center';
             display.text({
@@ -3701,6 +3701,7 @@ const Fighter = class extends Material {
         let right = bookmark ? 0 : canvas.width / 2;
         let count = 0;
         let main = option.isEnglish() ? 'Main' : 'メイン';
+        let ctxInv = display.ctxes.inv;
         for (let key in list) {
             if (flag.number && list[key] !== cs) continue;
             let skill;
@@ -5056,7 +5057,7 @@ const Fighter = class extends Material {
 		}
 		
         if (this.id !== ROGUE) return;
-        if (!flag.examine) display.clearOne(ctxCur);
+        if (!flag.examine) display.clearOne(display.ctxes.cur);
         inventory.clear();
         rogue.done = true;
         flag.aim = false;

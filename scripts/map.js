@@ -1,5 +1,6 @@
 const minimap = {
     shadow() {
+        let ctxMap = display.ctxes.map;
         ctxMap.save();
         ctxMap.shadowColor = CLEAR;
         ctxMap.globalAlpha = 0.9;
@@ -20,7 +21,7 @@ const minimap = {
             return;
         }
 
-        display.clearOne(ctxMap);
+        display.clearOne(display.ctxes.map);
         if (keyCode === 77 && isShift) { //M
             flag.minimap = false;
             flag.regular = true;
@@ -67,6 +68,7 @@ const minimap = {
     },
 
     symbol(x, y, symbol, color, shadow, stroke) {
+        let ctxMap = display.ctxes.map;
         ctxMap.save();
         ctxMap.fillStyle = color;
         if (rogue.hallucinated && !shadow) ctxMap.shadowColor = PURPLE;
@@ -135,6 +137,7 @@ const map = {
     },
 
     draw(cX, cY) {
+        let ctxMain = display.ctxes.main;
         display.clearOne(ctxMain);
         display.image({
             ctx: ctxMain,
@@ -152,7 +155,7 @@ const map = {
     },
 
     redraw(cX, cY) {
-        display.clearOne(ctxBuf, true)
+        display.clearOne(display.ctxes.buf, true)
         for (let i = 0, l = coords.length; i < l; i++) {
             for (let loc of coords[i]) {
                 loc.draw();
@@ -332,6 +335,7 @@ const statistics = {
         right,
         limit,
     }) {
+        let ctxStats = display.ctxes.stats;
         ctxStats.save();
         if (color) ctxStats.fillStyle = color;
         if (shadow) ctxStats.shadowColor = shadow;
@@ -351,7 +355,7 @@ const statistics = {
 
     clear() {
         display.rect({
-            ctx: ctxStats,
+            ctx: display.ctxes.stats,
             y: -SS,
             yPx: canvas.height,
             widthPx: canvas.width,
@@ -362,7 +366,7 @@ const statistics = {
 
     clearCondition() {
         display.rect({
-            ctx: ctxStats,
+            ctx: display.ctxes.stats,
             y: -SS - 2,
             yPx: canvas.height,
             widthPx: canvas.width,
@@ -372,6 +376,7 @@ const statistics = {
     },
 
     ShadowAndBar(e) {
+        let ctxStats = display.ctxes.stats;
         let width = ctxStats.measureText(e.name).width;
         ctxStats.save();
         ctxStats.shadowColor = CLEAR;
@@ -407,6 +412,7 @@ const statistics = {
         }
             
         this.ShadowAndBar(e);
+        let ctxStats = display.ctxes.stats;
         ctxStats.save();
         ctxStats.textAlign = 'center';
         if (e.shadow) ctxStats.shadowColor = e.shadow;
@@ -427,7 +433,7 @@ const statistics = {
 
     clearEnemyBar() {
         display.rect({
-            ctx: ctxStats,
+            ctx: display.ctxes.stats,
             y: MS,
             yPx: -5,
             widthPx: canvas.width,
@@ -438,6 +444,7 @@ const statistics = {
     },
 
     drawCurrentEnemy(enemy) {
+        let ctxStats = display.ctxes.stats;
         if (!enemy) return;
         ctxStats.save();
         ctxStats.textAlign = 'center';
@@ -478,7 +485,7 @@ const cursol = {
 
     draw(x, y) {
         display.rect({
-            ctx: ctxCur,
+            ctx: display.ctxes.cur,
             x: x - IN_WIDTH / 2,
             xPx: canvas.width / 2,
             y: y,
@@ -490,7 +497,7 @@ const cursol = {
 
     clear(x, y) {
         display.rect({
-            ctx: ctxCur,
+            ctx: display.ctxes.cur,
             x: x - IN_WIDTH / 2, 
             xPx: canvas.width / 2 -1,
             y: y,
@@ -506,6 +513,7 @@ const cursol = {
     plot(x, y, color) {
         let X = x - this.cX;
         let Y = y - this.cY + (IN_HEIGHT) / 2;
+        let ctxCur = display.ctxes.cur;
         ctxCur.save();
         ctxCur.fillStyle = color;
         ctxCur.globalAlpha = 0.3;

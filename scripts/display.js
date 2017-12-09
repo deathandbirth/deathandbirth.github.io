@@ -160,11 +160,3 @@ const canvas = {};
         parent.appendChild(child);
     }
 }
-
-let ctxBuf = display.ctxes.buf;
-let ctxMain = display.ctxes.main;
-let ctxCur = display.ctxes.cur;
-let ctxStats = display.ctxes.stats;
-let ctxMap = display.ctxes.map;
-let ctxInv = display.ctxes.inv;
-let ctxMsg = display.ctxes.msg;

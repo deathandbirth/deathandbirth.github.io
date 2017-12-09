@@ -476,6 +476,7 @@ const message = {
         inventory.shadow(MIDDLE);
         let i = (this.page - 1) * (IN_HEIGHT - MS - 2);
         let j = MS + 1;
+        let ctxInv = display.ctxes.inv;
         for (i; i < this.page * (IN_HEIGHT - MS - 2); i++) {
             if (!this.list[i]) break;
             let msg = this.list[i].text;
@@ -517,7 +518,7 @@ const message = {
     clear(all) {
         let num = all ? 1 : 2;
         display.rect({
-            ctx: ctxMsg,
+            ctx: display.ctxes.msg,
             widthPx: canvas.width / num,
             heightPx: canvas.height / num,
             clear: true,
@@ -527,7 +528,7 @@ const message = {
     delete() {
         setTimeout(() => {
             display.rect({
-                ctx: ctxMsg,
+                ctx: display.ctxes.msg,
                 y: this.counter - 0.5,
                 widthPx: canvas.width / 2,
                 height: this.counter--,
@@ -540,6 +541,7 @@ const message = {
     draw(msg, fixed) {
         if (!fixed) {
             this.counter++;
+            let ctxMsg = display.ctxes.msg;
             if (!this.list[0] || this.list[0].text !== msg) {
                 this.list.unshift({ text: msg, count: 1 });
                 if (this.list.length > MAX_MSG_LIST_LEN) this.list.pop();
@@ -568,6 +570,7 @@ const message = {
                 limitPx: canvas.width / 2,
             });
         } else {
+			let ctxInv = display.ctxes.inv;
             display.rect({
                 ctx: ctxInv,
                 x: 0.5,

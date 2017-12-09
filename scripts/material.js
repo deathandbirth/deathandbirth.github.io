@@ -1381,6 +1381,7 @@ const Material = class extends Thing {
         let i = 1;
         if (direction === RIGHT) i += (IN_WIDTH / 2);
         let j = MS + 1;
+        let ctxInv = display.ctxes.inv;
         ctxInv.save();
         ctxInv.textAlign = 'center';
         if (this.shadow) {

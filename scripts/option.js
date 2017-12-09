@@ -61,7 +61,6 @@ const option = {
             flag.option2 = false;
         } else if (this.name === 'shadow') {
             this[this.name].user = !this[this.name].user;
-            //ctxBuf.shadowColor = this[this.name].user ? SHADOW2 : CLEAR;
             map.redraw(rogue.x, rogue.y);
             map.draw(rogue.x, rogue.y);
         } else if (this.name === 'mute') {

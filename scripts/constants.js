@@ -678,6 +678,7 @@ const textLen = {
     },
 
     init() {
+        let ctxStats = display.ctxes.stats;
         for (let key in this.list) {
             this[key] = {};
             this[key].a = ctxStats.measureText(key).width + display.fs;

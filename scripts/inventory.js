@@ -1,5 +1,6 @@
 const inventory = {
     shadow(direction) {
+        let ctxInv = display.ctxes.inv;
         ctxInv.save();
         ctxInv.shadowColor = CLEAR
         ctxInv.globalAlpha = 0.9;
@@ -32,7 +33,7 @@ const inventory = {
 	},
 	
     clear() {
-        display.clearOne(ctxInv);
+        display.clearOne(display.ctxes.inv);
 	},
 	
     show(list, direction, a, place) {
@@ -49,6 +50,7 @@ const inventory = {
         let right = direction === RIGHT ? canvas.width / 2 : 0;
         let count = 0;
         let weight = 0.0;
+        let ctxInv = display.ctxes.inv;
         for (let key in list) {
             let item = list[key];
             if (!flag.pack && !item ||

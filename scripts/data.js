@@ -187,7 +187,7 @@ const data = {
                 this.failed = true;
                 let ver = saveData.ver;
                 display.text({
-                    ctx: ctxInv,
+                    ctx: display.ctxes.inv,
                     msg: option.isEnglish() ?
                         `Failed to load. In order to delete your save data and continue, please push 'Y'.(ver ${ver})` :
                         `読み込みに失敗しました。セーブデータを消去してゲームを続けるには、'Y'を押してください。(ver ${ver})`,
