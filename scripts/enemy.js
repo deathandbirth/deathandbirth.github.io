@@ -530,7 +530,7 @@ const Enemy = class extends Fighter {
     }
 
     isShowing() {
-        return (litMapIds[this.x + ',' + this.y] || this.detected) &&
+        return (rogue.litMapIds[this.x + ',' + this.y] || this.detected) &&
             !rogue.blinded && (!this.invisible || rogue.seeInvisible);
     }
 

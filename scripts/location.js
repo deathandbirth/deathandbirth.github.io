@@ -85,7 +85,7 @@ const Location = class extends Position {
             stroke: this.stroke,
         });
 
-        if (!litMapIds[this.x + ',' + this.y]) {
+        if (!rogue.litMapIds[this.x + ',' + this.y]) {
             ctxBuf.globalAlpha = 0.5;
             ctxBuf.fillStyle = BLACK;
             ctxBuf.shadowColor = CLEAR;
@@ -201,7 +201,7 @@ const Location = class extends Position {
 		}
 		
         this.draw();
-        if (litMapIds[this.x + ',' + this.y]) rogue.lightenOrDarken('Lighten');
+        if (rogue.litMapIds[this.x + ',' + this.y]) rogue.lightenOrDarken('Lighten');
     }
 
     deleteItem(a, quantity = 1) {

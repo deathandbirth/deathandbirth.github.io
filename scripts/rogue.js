@@ -1549,7 +1549,7 @@ const Rogue = class extends Fighter {
         let x, y;
         if (this.ce) {
             [x, y] = [this.ce.x, this.ce.y];
-            if (!litMapIds[x + ',' + y] && (!coords[x][y].detected ||
+            if (!this.litMapIds[x + ',' + y] && (!coords[x][y].detected ||
                 distanceSq(x, y, this.x, this.y) > FOV_SQ) ||
                 !lineOfSight(this.x, this.y, x, y)) {
 				return;
@@ -1575,7 +1575,7 @@ const Rogue = class extends Fighter {
     examine(keyCode) {
         if (keyCode === 88) { //x
             let loc = coords[cursol.x][cursol.y];
-            if (loc.item['a'] && litMapIds[cursol.x + ',' + cursol.y] &&
+            if (loc.item['a'] && this.litMapIds[cursol.x + ',' + cursol.y] &&
                 distanceSq(cursol.x, cursol.y, this.x, this.y) <= FOV_SQ &&
                 lineOfSight(this.x, this.y, cursol.x, cursol.y)) {
                 inventory.show(loc.item, RIGHT, undefined, P_FLOOR)
@@ -2145,7 +2145,7 @@ const Rogue = class extends Fighter {
             let x, y;
             if (this.ce) {
                 [x, y] = [this.ce.x, this.ce.y];
-                if (!litMapIds[x + ',' + y] && (!coords[x][y].detected ||
+                if (!this.litMapIds[x + ',' + y] && (!coords[x][y].detected ||
                         distanceSq(x, y, this.x, this.y) > FOV_SQ) ||
                     !lineOfSight(this.x, this.y, x, y)) {
                     flag.skill = false;

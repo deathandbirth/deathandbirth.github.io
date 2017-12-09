@@ -150,6 +150,6 @@ const game = {
         rogue.ce = null;
         queue.list = [];
         rogue.portal.x = rogue.portal.y = 0;
-        litMapIds = {};
+        rogue.litMapIds = {};
 	},
 };

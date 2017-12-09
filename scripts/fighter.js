@@ -4537,7 +4537,7 @@ const Fighter = class extends Material {
                     perc: percEQ < skill.limit ? percEQ : skill.limit,
 				});
 				
-                litMapIds = {};
+                rogue.litMapIds = {};
                 rogue.lightenOrDarken('Lighten');
                 break;
             case SATISFY_HUNGER:
@@ -4834,7 +4834,7 @@ const Fighter = class extends Material {
                     audio.playSound('dig', distanceSq(this.x, this.y, x, y));
 				}
 				
-                if (litMapIds[x + ',' + y]) rogue.lightenOrDarken('Lighten');
+                if (rogue.litMapIds[x + ',' + y]) rogue.lightenOrDarken('Lighten');
                 if (f.material === M_STONE) {
                     this.attack({
                         enemy: f,
@@ -5104,7 +5104,7 @@ const Fighter = class extends Material {
 
     canRead(book) {
         let found = true;
-        if (this.blinded || this.confused || !litMapIds[this.x + ',' + this.y]) {
+        if (this.blinded || this.confused || !rogue.litMapIds[this.x + ',' + this.y]) {
             if (this.id === ROGUE) {
                 let id = book ? M_CANT_READ_BOOK : M_CANT_READ_SCROLL;
                 message.draw(message.get(id));

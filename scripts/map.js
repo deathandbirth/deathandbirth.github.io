@@ -32,7 +32,7 @@ const minimap = {
         if (rogue.blinded) return;
         for (let i = 0, l = coords.length; i < l; i++) {
             for (let loc of coords[i]) {
-                if ((loc.found || loc.detected) && loc.symbol !== '.' && (!loc.fighter || loc.fighter.detected || litMapIds[loc.x + ',' + loc.y])) {
+                if ((loc.found || loc.detected) && loc.symbol !== '.' && (!loc.fighter || loc.fighter.detected || rogue.litMapIds[loc.x + ',' + loc.y])) {
                     if (keyCode === 83 && (rogue.x != loc.x || rogue.y != loc.y) &&
                         (loc.item['a'] || loc.fighter || loc.stairs || loc.enter || loc.trap)) { //s
                         continue;

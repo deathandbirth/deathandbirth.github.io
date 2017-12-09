@@ -6,7 +6,6 @@ const Data = class {
         this.option = option;
         this.difficulty = difficulty;
         this.messageList = message.list;
-        this.litMapIds = litMapIds;
         if (rogue.cdl) this.stashList = enter[STASH].list;
         this.track = audio.curTrack;
         this.date = new Date();
@@ -20,7 +19,10 @@ const Data = class {
         this.loadCoords();
         this.loadDifficulty();
         message.list = this.messageList;
-        litMapIds = this.litMapIds;
+        if(this.ver < 0.003) {
+            rogue.litMapIds = this.litMapIds;
+        }
+
         if (rogue.cdl) {
             this.loadItem(this.stashList);
             enter[STASH].list = this.stashList;

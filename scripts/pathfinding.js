@@ -233,8 +233,8 @@ const shadowcasting = {
         if (search) coords[x0][y0].findHiddenObject();
         if (this.type === 'Lighten') {
             this.lightRadSq = lightRad ** 2;
-            this.oldLitMap = litMapIds;
-            litMapIds = {};
+            this.oldLitMap = rogue.litMapIds;
+            rogue.litMapIds = {};
         }
 
         this.do(x0, y0);
@@ -306,7 +306,7 @@ const shadowcasting = {
             if ((!this.lightRadSq || distance > this.lightRadSq) &&
                 !loc.lighten) return;
             let id = x + ',' + y;
-            litMapIds[id] = true;
+            rogue.litMapIds[id] = true;
             if (this.oldLitMap[id]) {
                 delete this.oldLitMap[id];
             } else {
