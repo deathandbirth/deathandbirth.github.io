@@ -68,8 +68,10 @@ const game = {
         display.text({
             ctx: ctxInv,
             msg: `ver ${VERSION}`,
-            xPx: canvas.width - 2,
-            yPx: canvas.height - 2,
+            x: -2,
+            y: -2,
+            xPx: canvas.width,
+            yPx: canvas.height,
         });
 
         ctxInv.restore();

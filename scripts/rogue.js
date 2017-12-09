@@ -544,6 +544,7 @@ const Rogue = class extends Fighter {
         let loc = coords[this.x][this.y];
         if (!trap && !loc.stairs || loc.hidden) return;
         if (trap || loc.stairs.id === DOWN && keyCode === 190) {
+            if (!trap) audio.playSound('staircase');
             if (option.autosave.user) data.save();
             game.clearLevel();
             if (rogue.cdl === 33) {
@@ -554,6 +555,7 @@ const Rogue = class extends Fighter {
                 creation.dungeon();
             }
         } else if (loc.stairs.id === UP && keyCode === 188) {
+            audio.playSound('staircase');
             if (option.autosave.user) data.save();
             game.clearLevel();
             !--rogue.cdl ? creation.town() : creation.dungeon();

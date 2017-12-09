@@ -46,6 +46,7 @@ const audio = {
         acid: new Audio('sound/acid.wav'),
         speed: new Audio('sound/speed.wav'),
         slow: new Audio('sound/slow.wav'),
+        staircase: new Audio('sound/staircase.wav'),
     },
 
     init() {
