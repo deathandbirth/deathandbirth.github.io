@@ -11,9 +11,9 @@ const inventory = {
                 ctx: ctxInv,
                 x: 0,
                 y :offsetY,
-                widthPx: canvas.width / 2,
+                widthPx: display.width / 2,
                 height: -offsetY - SS,
-                heightPx: canvas.height,
+                heightPx: display.height,
             });
 		}
 
@@ -21,11 +21,11 @@ const inventory = {
             display.rect({
                 ctx: ctxInv,
                 x: 0,
-                xPx: canvas.width /2,
+                xPx: display.width /2,
                 y :offsetY,
-                widthPx: canvas.width / 2,
+                widthPx: display.width / 2,
                 height: -offsetY - SS,
-                heightPx: canvas.height,
+                heightPx: display.height,
             });
 		}
 		
@@ -47,7 +47,7 @@ const inventory = {
         this.shadow(direction);
         let i = 1.5;
         let j = MS + 1;
-        let right = direction === RIGHT ? canvas.width / 2 : 0;
+        let right = direction === RIGHT ? display.width / 2 : 0;
         let count = 0;
         let weight = 0.0;
         let ctxInv = display.ctxes.inv;
@@ -112,7 +112,7 @@ const inventory = {
                             msg: `$${cost}`,
                             x: i + 22.5,
                             y: j,
-                            limit: right,
+                            xPx: right,
                         });
                     } else if (!flag.option2) {
                         let msg = '';
@@ -214,7 +214,7 @@ const inventory = {
             x: i,
             y: -SS - 1,
             xPx: right,
-            yPx: canvas.height,
+            yPx: display.height,
         });
 
         ctxInv.save();
@@ -252,7 +252,7 @@ const inventory = {
             x: i + 22.5,
             y: -SS - 1,
             xPx: right,
-            yPx: canvas.height,
+            yPx: display.height,
         });
 
         ctxInv.restore();

@@ -329,18 +329,18 @@ const Rogue = class extends Fighter {
         display.rect({
             ctx: ctxStats,
             y:  -SS,
-            yPx: canvas.height,
-            widthPx: (this.hp / this.hpMax) * canvas.width / 2,
+            yPx: display.height,
+            widthPx: (this.hp / this.hpMax) * display.width / 2,
             heightPx: 3,
         });
 
         ctxStats.fillStyle = BLUE;
         display.rect({
             ctx: ctxStats,
-            xPx: (2 - this.mp / this.mpMax) * canvas.width / 2,
+            xPx: (2 - this.mp / this.mpMax) * display.width / 2,
             y: -SS,
-            yPx: canvas.height,
-            widthPx: canvas.width / 2,
+            yPx: display.height,
+            widthPx: display.width / 2,
             heightPx: 3,
         });
 
@@ -473,7 +473,7 @@ const Rogue = class extends Fighter {
                 ctx: ctxStats,
                 x: x + i * 1.4 - 1,
                 y: -1.5,
-                yPx: canvas.height,
+                yPx: display.height,
                 width: 1,
                 height: 1,
                 stroke: true,
@@ -485,7 +485,7 @@ const Rogue = class extends Fighter {
                     msg: i,
                     x: x + i * 1.4 - 0.5,
                     y: -1,
-                    yPx: canvas.height,
+                    yPx: display.height,
                 });
 			} else {
                 if (item.shadow) ctxStats.shadowColor = item.shadow;
@@ -495,7 +495,7 @@ const Rogue = class extends Fighter {
                     msg: item.symbol,
                     x: x + i * 1.4 - 0.5,
                     y: -1,
-                    yPx: canvas.height,
+                    yPx: display.height,
                     stroke: item.stroke,
                 });
 
@@ -507,7 +507,7 @@ const Rogue = class extends Fighter {
                     msg: item.quantity,
                     x: x + i * 1.4,
                     y: -0.5,
-                    yPx: canvas.height,
+                    yPx: display.height,
                     stroke: item.stroke,
                 });
 
@@ -517,7 +517,7 @@ const Rogue = class extends Fighter {
                         msg: item.charges,
                         x: x + i * 1.4,
                         y: -1,
-                        yPx: canvas.height,
+                        yPx: display.height,
                     });
                 }
 			}
@@ -1800,7 +1800,7 @@ const Rogue = class extends Fighter {
             msg: `[${count}/${maxNum}]`,
             x: i,
             y: -SS -1,
-            yPx: canvas.height,
+            yPx: display.height,
         });
 
         ctxInv.save();
@@ -1811,7 +1811,7 @@ const Rogue = class extends Fighter {
             msg: `${statPoints} ${this.statPoints} ${currentValues}`,
             x: i + 22,
             y: -SS -1,
-            yPx: canvas.height,
+            yPx: display.height,
         });
 
         ctxInv.restore();

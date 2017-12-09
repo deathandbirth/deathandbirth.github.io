@@ -72,8 +72,8 @@ const game = {
             msg: `ver ${VERSION}`,
             x: -2,
             y: -2,
-            xPx: canvas.width,
-            yPx: canvas.height,
+            xPx: display.width,
+            yPx: display.height,
         });
 
         ctxInv.restore();

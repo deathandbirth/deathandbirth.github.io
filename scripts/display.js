@@ -10,14 +10,14 @@ const display = {
         let list = this.list[a];
         container.style.width = list.width + 'px';
         container.style.height = list.height + 'px';
-        canvas.width = list.width;
-        canvas.height = list.height;
+        this.width = list.width;
+        this.height = list.height;
         let fs = list.fs;
         this.fs = fs;
         minimap.fs = fs / 2;
-        for (let key in canvas) {
+        for (let key in this.canvases) {
             if (key === 'width' || key === 'height') continue;
-            let cvs = canvas[key];
+            let cvs = this.canvases[key];
             let times = key === 'buf' ? 2 : 1;
             cvs.setAttribute('width', list.width * times);
             cvs.setAttribute('height', list.height * times);
@@ -118,8 +118,8 @@ const display = {
     },
 
     clearOne(ctx, buf) {
-        let width = canvas.width;
-        let height = canvas.height;
+        let width = this.width;
+        let height = this.height;
         if (buf) {
             width *= 2;
             height *= 2;
@@ -140,17 +140,16 @@ const display = {
     }
 };
 
-const canvas = {};
-
 {
     let canvasIds = ['buf', 'main', 'cur', 'msg', 'stats', 'map', 'inv'];
     let parent = document.getElementById('container');
     parent.innerHTML = '';
+    display.canvases = {};
     display.ctxes = {};
     for (let i = 0, l = canvasIds.length; i < l; i++) {
         let id = canvasIds[i];
         let child = document.createElement('canvas');
-        canvas[id] = child;
+        display.canvases[id] = child;
         display.ctxes[id] = child.getContext('2d');
         if (id === 'buf') continue;
         child.style.position = 'absolute';

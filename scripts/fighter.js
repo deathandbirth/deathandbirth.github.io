@@ -3673,7 +3673,7 @@ const Fighter = class extends Material {
             msg: `[${count}/${maxNum}]`,
             x: i,
             y: -SS - 1,
-            yPx: canvas.height,
+            yPx: display.height,
         });
 
         ctxInv.textAlign = 'right';
@@ -3688,7 +3688,7 @@ const Fighter = class extends Material {
             msg: `${total} ${weight.toFixed(1)}kg`,
             x: i + 22,
             y: -SS - 1,
-            yPx: canvas.height,
+            yPx: display.height,
         });
 
         ctxInv.textAlign = 'left';
@@ -3698,7 +3698,7 @@ const Fighter = class extends Material {
         inventory.shadow(bookmark ? LEFT : RIGHT);
         let i = 1.5;
         let j = MS + 2;
-        let right = bookmark ? 0 : canvas.width / 2;
+        let right = bookmark ? 0 : display.width / 2;
         let count = 0;
         let main = option.isEnglish() ? 'Main' : 'メイン';
         let ctxInv = display.ctxes.inv;

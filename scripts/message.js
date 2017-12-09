@@ -495,7 +495,7 @@ const message = {
             msg: `[${l}/${MAX_MSG_LIST_LEN}]`,
             x: 1.5,
             y: - SS - 1,
-            yPx: canvas.height,
+            yPx: display.height,
         });
 
         ctxInv.textAlign = 'right';
@@ -505,9 +505,9 @@ const message = {
                 `Message List [${this.page}/${p}]` :
                 `メッセージ項目 [${this.page}/${p}]`,
             x: -1,
-            xPx: canvas.width,
+            xPx: display.width,
             y: - SS - 1,
-            yPx: canvas.height,
+            yPx: display.height,
         });
 
         ctxInv.restore();
@@ -519,8 +519,8 @@ const message = {
         let num = all ? 1 : 2;
         display.rect({
             ctx: display.ctxes.msg,
-            widthPx: canvas.width / num,
-            heightPx: canvas.height / num,
+            widthPx: display.width / num,
+            heightPx: display.height / num,
             clear: true,
         });
     },
@@ -530,7 +530,7 @@ const message = {
             display.rect({
                 ctx: display.ctxes.msg,
                 y: this.counter - 0.5,
-                widthPx: canvas.width / 2,
+                widthPx: display.width / 2,
                 height: this.counter--,
                 heightPx: 1,
                 clear: true,
@@ -545,7 +545,7 @@ const message = {
             if (!this.list[0] || this.list[0].text !== msg) {
                 this.list.unshift({ text: msg, count: 1 });
                 if (this.list.length > MAX_MSG_LIST_LEN) this.list.pop();
-                let curMap = ctxMsg.getImageData(0, 0, canvas.width / 2, (MAX_MSG_LEN - 0.5) * display.fs);
+                let curMap = ctxMsg.getImageData(0, 0, display.width / 2, (MAX_MSG_LEN - 0.5) * display.fs);
                 this.clear();
                 ctxMsg.putImageData(curMap, 0, display.fs);
             } else {
@@ -553,7 +553,7 @@ const message = {
                 display.rect({
                     ctx: ctxMsg,
                     y: 0.5,
-                    widthPx: canvas.width / 2 + 1,
+                    widthPx: display.width / 2 + 1,
                     height: 1,
                     heightPx: 1,
                     clear: true,
@@ -567,16 +567,16 @@ const message = {
                 x: 0.5,
                 y: 1,
                 limit: -0.5,
-                limitPx: canvas.width / 2,
+                limitPx: display.width / 2,
             });
         } else {
 			let ctxInv = display.ctxes.inv;
             display.rect({
                 ctx: ctxInv,
                 x: 0.5,
-                xPx: canvas.width / 2,
+                xPx: display.width / 2,
                 y: 0.5,
-                widthPx: canvas.width / 2 + 1,
+                widthPx: display.width / 2 + 1,
                 height: 1,
                 heightPx: 1,
                 clear: true,
@@ -588,8 +588,8 @@ const message = {
                 x: 0.5,
                 y: 1,
                 limit: -0.5,
-                xPx: canvas.width / 2,
-                limitPx: canvas.width / 2,
+                xPx: display.width / 2,
+                limitPx: display.width / 2,
             });
         }
     },

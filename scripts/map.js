@@ -7,9 +7,9 @@ const minimap = {
         ctxMap.fillStyle = BLACK;
         display.rect({
             ctx: ctxMap,
-            widthPx: canvas.width,
+            widthPx: display.width,
             height: -SS,
-            heightPx: canvas.height,
+            heightPx: display.height,
         });
 
         ctxMap.restore();
@@ -141,13 +141,13 @@ const map = {
         display.clearOne(ctxMain);
         display.image({
             ctx: ctxMain,
-            img: canvas.buf,
+            img: display.canvases.buf,
             sx: cX - (IN_WIDTH - 1) / 2,
             sy: cY - IN_HEIGHT / 2,
             sWidth: IN_WIDTH,
             sHeight: IN_HEIGHT,
             dx: -IN_WIDTH / 2, 
-            dxPx: canvas.width / 2,
+            dxPx: display.width / 2,
             dy: 0,
             dWidth: IN_WIDTH,
             dHeight: IN_HEIGHT,
@@ -347,7 +347,7 @@ const statistics = {
             y: y,
             limit: limit,
             xPx: xPx,
-            yPx: canvas.height + 5,
+            yPx: display.height + 5,
         });
 
         ctxStats.restore();
@@ -357,8 +357,8 @@ const statistics = {
         display.rect({
             ctx: display.ctxes.stats,
             y: -SS,
-            yPx: canvas.height,
-            widthPx: canvas.width,
+            yPx: display.height,
+            widthPx: display.width,
             height: SS,
             clear: true,
         });
@@ -368,8 +368,8 @@ const statistics = {
         display.rect({
             ctx: display.ctxes.stats,
             y: -SS - 2,
-            yPx: canvas.height,
-            widthPx: canvas.width,
+            yPx: display.height,
+            widthPx: display.width,
             height: 2,
             clear: true,
         });
@@ -384,7 +384,7 @@ const statistics = {
         ctxStats.globalAlpha = 0.5;
         display.rect({
             ctx: ctxStats,
-            xPx: canvas.width / 2 - width / 2 - 3,
+            xPx: display.width / 2 - width / 2 - 3,
             y: MS,
             widthPx: width + 6,
             height: 2,
@@ -393,7 +393,7 @@ const statistics = {
         ctxStats.fillStyle = e.getConditionColor();
         display.rect({
             ctx: ctxStats,
-            xPx: canvas.width / 2 - width / 2 - 3,
+            xPx: display.width / 2 - width / 2 - 3,
             y: MS + 1,
             widthPx: e.hp / e.hpMax * width + 6,
             height: 1,
@@ -423,7 +423,7 @@ const statistics = {
             msg: `Lv${e.lvl} ${name}`,
             x: 0,
             y: MS + 0.5,
-            xPx: canvas.width / 2,
+            xPx: display.width / 2,
             stroke: e.stroke,
         });
 
@@ -436,7 +436,7 @@ const statistics = {
             ctx: display.ctxes.stats,
             y: MS,
             yPx: -5,
-            widthPx: canvas.width,
+            widthPx: display.width,
             height: 2,
             heightPx: 5,
             clear: true,
@@ -452,9 +452,9 @@ const statistics = {
         display.rect({
             ctx: ctxStats,
             x: -1.95,
-            xPx: canvas.width,
+            xPx: display.width,
             y: -4.45,
-            yPx: canvas.height,
+            yPx: display.height,
             width: 1,
             height: 1,
             stroke: true,
@@ -468,8 +468,8 @@ const statistics = {
             msg: symbol,
             x: -1.5,
             y: -4,
-            xPx: canvas.width,
-            yPx: canvas.height,
+            xPx: display.width,
+            yPx: display.height,
             stroke: enemy.stroke,
         });
 
@@ -487,7 +487,7 @@ const cursol = {
         display.rect({
             ctx: display.ctxes.cur,
             x: x - IN_WIDTH / 2,
-            xPx: canvas.width / 2,
+            xPx: display.width / 2,
             y: y,
             width: 1,
             height: 1,
@@ -499,7 +499,7 @@ const cursol = {
         display.rect({
             ctx: display.ctxes.cur,
             x: x - IN_WIDTH / 2, 
-            xPx: canvas.width / 2 -1,
+            xPx: display.width / 2 -1,
             y: y,
             yPx: -1,
             width: 1,
@@ -520,7 +520,7 @@ const cursol = {
         display.rect({
             ctx: ctxCur,
             x: X - 0.5,
-            xPx: canvas.width / 2,
+            xPx: display.width / 2,
             y: Y,
             width: 1,
             height: 1,
@@ -532,7 +532,7 @@ const cursol = {
             msg: '＊',
             x: X,
             y: Y + 0.5,
-            xPx: canvas.width / 2,
+            xPx: display.width / 2,
         });
 
         ctxCur.restore();
