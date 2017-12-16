@@ -1,5 +1,4 @@
 'use strict';
-let wizard = 0;
 const generateNumber = function*(i, j, bit) {
     while (i <= j) yield bit ? 1 << i++ : i++;
 }

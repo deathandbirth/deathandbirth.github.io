@@ -124,7 +124,7 @@ const input = {
                         'データ消去しました')
                 }
             } else if (keyCode === 13) { //Enter
-                if (wizard && rogue) {
+                if (rogue && rogue.isWizard) {
                     rogue.revive();
                 } else if (!flag.retry) {
                     game.over();
@@ -208,7 +208,7 @@ const input = {
                 break;
             case 65: //a add bookmark, A alchemy, ^a *create monster*
                 if (this.isCtrl) {
-                    if (!wizard) break;
+                    if (!rogue.isWizard) break;
                     flag.create = FIGHTER;
                     creation.input();
                     message.draw('Input type and tagId', true);
@@ -269,7 +269,7 @@ const input = {
                 break;
             case 69: //e equipmentList, E eat, ^e *enlightenment*
                 if (this.isCtrl) {
-                    if (!wizard) break;
+                    if (!rogue.isWizard) break;
                     map.lighten();
                     map.draw(rogue.x, rogue.y);
                 } else if (this.isShift) {
@@ -326,7 +326,7 @@ const input = {
                 break;
             case 73: //i inventory, I investigate, ^i *create item*
                 if (this.isCtrl) {
-                    if (!wizard) break;
+                    if (!rogue.isWizard) break;
                     flag.create = ITEM;
                     creation.input();
                     message.draw('Input type, tagId and quantity', true);
@@ -375,7 +375,7 @@ const input = {
                 break;
             case 81: //q quaff, Q quit, ^q *create trap*
                 if (this.isCtrl) {
-                    if (!wizard) break;
+                    if (!rogue.isWizard) break;
                     rogue.haveCast(CREATE_TRAP, 10);
                     map.draw(rogue.x, rogue.y);
                 } else if (this.isShift) {
@@ -470,7 +470,7 @@ const input = {
             case 90: //z zap, ^z *indestructible*
                 if (this.isShift) break;
                 if (this.isCtrl) {
-                    if (!wizard) break;
+                    if (!rogue.isWizard) break;
                     rogue.indestructible = !rogue.indestructible;
                 } else {
                     flag.zap = true;

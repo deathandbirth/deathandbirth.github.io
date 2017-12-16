@@ -1593,9 +1593,9 @@ const Rogue = class extends Fighter {
                     fighter.investigate(MIDDLE, true);
 				} else if (keyCode === 77) {
                     fighter.showSkill(fighter.skill);
-				} else if (keyCode === 69 && wizard) {
+				} else if (keyCode === 69 && this.isWizard) {
                     fighter.equipmentList();
-				} else if (keyCode === 73 && wizard) {
+				} else if (keyCode === 73 && this.isWizard) {
 					fighter.showInventory(P_PACK);
 				}
 

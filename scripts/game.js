@@ -5,7 +5,7 @@ const game = {
             this.j = MS + 1;
             inventory.shadow(MIDDLE);
             this.loop(CL);
-            if (wizard) this.loop(CLW);
+            if (rogue.isWizard) this.loop(CLW);
 		},
 		
         loop(list) {

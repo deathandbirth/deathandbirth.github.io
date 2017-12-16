@@ -104,7 +104,7 @@ const Location = class extends Position {
     getInfo(stepOn) {
         if (flag.examine) {
             let msg = message.get(M_EXAMINE);
-            if (wizard) msg += message.get(M_EXAMINE_W);
+            if (rogue.isWizard) msg += message.get(M_EXAMINE_W);
             message.draw(msg + ` (${cursol.x},${cursol.y})`, true);
 		}
 		
