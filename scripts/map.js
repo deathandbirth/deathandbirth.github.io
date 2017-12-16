@@ -16,13 +16,13 @@ const minimap = {
     },
 
     draw(keyCode) {
-        if (!(keyCode === 65 || keyCode === 83 || keyCode === 67 || keyCode === 73 || keyCode === 77 && isShift ||
-            keyCode === 188 && isShift || keyCode === 190 && isShift || keyCode === 80 || keyCode === 84)) { //a,s,c,i,m,<,>,p,t
+        if (!(keyCode === 65 || keyCode === 83 || keyCode === 67 || keyCode === 73 || keyCode === 77 && input.isShift ||
+            keyCode === 188 && input.isShift || keyCode === 190 && input.isShift || keyCode === 80 || keyCode === 84)) { //a,s,c,i,m,<,>,p,t
             return;
         }
 
         display.clearOne(display.ctxes.map);
-        if (keyCode === 77 && isShift) { //M
+        if (keyCode === 77 && input.isShift) { //M
             flag.minimap = false;
             flag.regular = true;
             return;

@@ -695,7 +695,7 @@ const difficulty = {
 
 const flag = {
     died: true,
-    wait: true,
+    wait: false,
     regular: false,
     arrow: false,
     scroll: false,
@@ -764,5 +764,3 @@ let ca = ''; //current alphabet
 let cn = 1; //current number
 let ci = null; //current item
 let cs = ''; //current skill
-let isShift = false;
-let isCtrl = false;

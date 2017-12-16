@@ -943,7 +943,7 @@ const Rogue = class extends Fighter {
     throw (keyCode) {
         if (this.switchInventory(keyCode, M_THROW)) return;
         let a = getAlphabetOrNumber(keyCode);
-        if (!a || isShift) return;
+        if (!a || input.isShift) return;
         let item = this.getItem(a, flag.floor);
         if (!item) return;
         inventory.clear();
@@ -1115,7 +1115,7 @@ const Rogue = class extends Fighter {
 		}
 		
         if (!blacksmithAll) {
-            this.repairOne(item, isShift);
+            this.repairOne(item, input.isShift);
             let name = item.getName();
             message.draw(option.isEnglish() ?
                 `Repaired ${name}${forAmount}` :
@@ -1167,7 +1167,7 @@ const Rogue = class extends Fighter {
 
         let radius = this.calcSkillValue(skill, lvl);
         let symbol = EA[keyCode - 65];
-        if (isShift) symbol = symbol.toUpperCase()
+        if (input.isShift) symbol = symbol.toUpperCase()
         circleSearch.main({
             x0: this.x,
             y0: this.y,
@@ -1260,14 +1260,14 @@ const Rogue = class extends Fighter {
 		
         if (this.switchInventory(keyCode, M_SYNTHESIZE)) return;
         let a = getAlphabetOrNumber(keyCode);
-        if (!a || !isShift && l === MAX_CUBE_COUNT) {
+        if (!a || !input.isShift && l === MAX_CUBE_COUNT) {
             if (a) message.draw(message.get(M_CANT_ADD));
             return;
 		}
 		
-        let item = isShift ? this.cube[a] : this.getItem(a, flag.floor);
+        let item = input.isShift ? this.cube[a] : this.getItem(a, flag.floor);
         if (!item || item.alchemy) return;
-        if (isShift) {
+        if (input.isShift) {
             this.returnItem(item, this.cubeIndex[a])
             deleteAndSortItem(this.cube, a);
             deleteAndSortItem(this.cubeIndex, a);
@@ -1488,7 +1488,7 @@ const Rogue = class extends Fighter {
 
     packOrUnpack(keyCode) {
         if (flag.pack !== P_PACK) {
-            if (this.switchInventory(keyCode, M_PACK_OR_UNPACK) || isShift) return;
+            if (this.switchInventory(keyCode, M_PACK_OR_UNPACK) || input.isShift) return;
             let a = getAlphabetOrNumber(keyCode);
             if (!a) return;
             let item = this.getItem(a, flag.floor);
@@ -1658,7 +1658,7 @@ const Rogue = class extends Fighter {
         let height = coords[0].length;
         if (x < 0 || x >= width || y < 0 || y >= height) return;
         let [xinc, yinc] = [dr.x, dr.y];
-        if (isShift) {
+        if (input.isShift) {
             xinc *= 10;
             yinc *= 10;
             if (cursol.x + xinc < 0) {
@@ -1916,7 +1916,7 @@ const Rogue = class extends Fighter {
 
     addOrRemoveBookmark(keyCode) {
         if (flag.bookmark === 1) {
-            if (keyCode >= 112 || isShift && keyCode === 77) { //F1~, M
+            if (keyCode >= 112 || input.isShift && keyCode === 77) { //F1~, M
                 let i = keyCode === 77 ? 0 : keyCode - 111;
                 if (!this.bookmarks[i]) return;
                 this.bookmarks[i] = null;
@@ -1932,7 +1932,7 @@ const Rogue = class extends Fighter {
                 message.draw(message.get(M_BOOKMARK2), true);
             }
         } else {
-            if (!(isShift && keyCode === 77) && (keyCode < 112 || keyCode > 123)) return;
+            if (!(input.isShift && keyCode === 77) && (keyCode < 112 || keyCode > 123)) return;
             let i = keyCode === 77 ? 0 : keyCode - 111;
             this.bookmarks[i] = this.skill[ca].id;
             flag.bookmark = 1;
@@ -1946,13 +1946,13 @@ const Rogue = class extends Fighter {
     gainStatOrSkill(keyCode) {
         if (flag.gain === 1 && !flag.number) {
             let a = getAlphabet(keyCode);
-            if (!a || isShift && !statistics.list[a] || !isShift && !this.pack[a]) return;
-            if (!isShift && (this.pack[a].type !== 'book' || !this.pack[a].skill || !this.canRead(true))) {
+            if (!a || input.isShift && !statistics.list[a] || !input.isShift && !this.pack[a]) return;
+            if (!input.isShift && (this.pack[a].type !== 'book' || !this.pack[a].skill || !this.canRead(true))) {
                 return;
-			} else if (isShift && !this.statPoints) {
+			} else if (input.isShift && !this.statPoints) {
                 message.draw(message.get(M_CANT_GAIN_STAT));
                 return;
-            } else if (isShift && this[statistics.list[a].term + 'Max'] >= MAX_STAT_LVL) {
+            } else if (input.isShift && this[statistics.list[a].term + 'Max'] >= MAX_STAT_LVL) {
                 let name = statistics.list[a].name[option.getLanguage()];
                 message.draw(option.isEnglish() ?
                     `You can't gain ${name} anymore` :
@@ -1962,7 +1962,7 @@ const Rogue = class extends Fighter {
 			
             ca = a;
             inventory.clear();
-            if (isShift) {
+            if (input.isShift) {
                 this.showStats(a);
                 flag.gain = 3;
                 flag.number = true;
@@ -1978,7 +1978,7 @@ const Rogue = class extends Fighter {
             let id = this.pack[ca].list[a];
             if (!id) return;
             let skill = skillMap.get(id);
-            if (isShift) {
+            if (input.isShift) {
                 inventory.clear();
                 this.showSkill(this.pack[ca].list);
                 this.showSKillDetail(skill, LEFT);
@@ -2075,7 +2075,7 @@ const Rogue = class extends Fighter {
     }
 
     castSkill(keyCode) {
-        if (isCtrl && keyCode === 83 && Object.keys(this.skill).length >= 2) { //S
+        if (input.isCtrl && keyCode === 83 && Object.keys(this.skill).length >= 2) { //S
             flag.skill = false;
             flag.sortSkill = 1;
             inventory.clear();
@@ -2087,7 +2087,7 @@ const Rogue = class extends Fighter {
         let a = getAlphabet(keyCode);
         if (!a || !this.skill[a]) return;
         let skill = skillMap.get(this.skill[a].id);
-        if (isShift) {
+        if (input.isShift) {
             inventory.clear();
             this.showSkill(this.skill);
             this.showSKillDetail(skill, LEFT);
@@ -2192,7 +2192,7 @@ const Rogue = class extends Fighter {
             item = this.boxes[a];
 		} else if (floor) {
             item = coords[this.x][this.y].item[a];
-        } else if (isShift) {
+        } else if (input.isShift) {
             item = this.equipment[BP[a]];
 		} else {
 			item = this.pack[a];
@@ -2228,7 +2228,7 @@ const Rogue = class extends Fighter {
             if (!a) return;
             let item = this.getItem(a, flag.floor);
             if (!item) return;
-            if (item.indestructible || item.cursed && isShift && flag.floor) {
+            if (item.indestructible || item.cursed && input.isShift && flag.floor) {
                 message.draw(message.get(M_CANT_DESTROY));
                 return;
 			}
@@ -2259,12 +2259,12 @@ const Rogue = class extends Fighter {
         if (!flag.number) {
             let a = getAlphabet(keyCode);
             if (!a) return;
-            let item = isShift ? shop.list[a] : this.pack[a];
+            let item = input.isShift ? shop.list[a] : this.pack[a];
             if (!item) return;
-            if (!isShift && Object.keys(shop.list).length === MAX_PACK_COUNT) {
+            if (!input.isShift && Object.keys(shop.list).length === MAX_PACK_COUNT) {
                 message.draw(message.get(M_CANT_SELL));
                 return;
-            } else if (isShift && Object.keys(this.pack).length >= MAX_PACK_COUNT &&
+            } else if (input.isShift && Object.keys(this.pack).length >= MAX_PACK_COUNT &&
                 !this.canCarryItem(this.pack, item) &&
                 !this.canCarryItem(this.boxes, item)) {
                 message.draw(message.get(M_CANT_CARRY));
@@ -2343,7 +2343,7 @@ const Rogue = class extends Fighter {
 			}
 			
             let a, item;
-            if (isShift) {
+            if (input.isShift) {
                 if (!getAlphabet(keyCode)) return;
                 a = keyCode - 65 + (stash.page - 1) * MAX_PACK_COUNT;
                 item = stash.list[a];
@@ -2354,11 +2354,11 @@ const Rogue = class extends Fighter {
 			}
 			
             if (!item) return;
-            if (!isShift && Object.keys(stash.list).length === MAX_STASH_COUNT &&
+            if (!input.isShift && Object.keys(stash.list).length === MAX_STASH_COUNT &&
                 !this.canCarryItem(stash.list, item)) {
                 message.draw(message.get(M_CANT_ADD));
                 return;
-            } else if (isShift && Object.keys(this.pack).length >= MAX_PACK_COUNT &&
+            } else if (input.isShift && Object.keys(this.pack).length >= MAX_PACK_COUNT &&
                 !this.canCarryItem(this.pack, item) &&
                 !this.canCarryItem(this.boxes, item)) {
                 message.draw(message.get(M_CANT_CARRY));
@@ -2674,19 +2674,19 @@ const Rogue = class extends Fighter {
                 break;
             case 73: //i
             case 65: //a
-                if (isCtrl) {
+                if (input.isCtrl) {
                     if (!wizard) return;
                     flag.create = keyCode === 73 ? ITEM : FIGHTER;
                     creation.input();
                     message.draw(keyCode === 73 ?
                         'Input type, tagId and quantity' :
                         'Input type and tagId', true);
-                } else if (keyCode === 73 && isShift) {
+                } else if (keyCode === 73 && input.isShift) {
                     flag.investigate = true;
                     this.showInventory(P_PACK);
                     this.equipmentList();
                     message.draw(message.get(M_INVESTIGATE) + message.get(M_FLOOR), true)
-                } else if (keyCode === 65 && isShift) {
+                } else if (keyCode === 65 && input.isShift) {
                     if (!this.haveBook(undefined, true)) {
                         message.draw(message.get(M_DONT_HAVE_RECIPES));
                         return;
@@ -2705,7 +2705,7 @@ const Rogue = class extends Fighter {
 				
                 break;
             case 69: //e
-                if (isShift) {
+                if (input.isShift) {
                     flag.eat = true;
                     this.showInventory(P_PACK);
                     message.draw(message.get(M_EAT) + message.get(M_FLOOR), true);
@@ -2713,7 +2713,7 @@ const Rogue = class extends Fighter {
 				
                 break;
             case 68: //d
-                if (isCtrl) {
+                if (input.isCtrl) {
                     message.draw(message.get(M_DESTROY) + message.get(M_FLOOR), true);
                     flag.destroy = true;
                     this.showInventory(P_PACK);
@@ -2727,7 +2727,7 @@ const Rogue = class extends Fighter {
 				
                 break;
             case 70: //f
-                if (isShift) {
+                if (input.isShift) {
                     if (!this.equipment['light']) {
                         message.draw(message.get(M_DONT_EQUIP_LIGHT));
                         return;
@@ -2759,7 +2759,7 @@ const Rogue = class extends Fighter {
                 message.draw(message.get(M_EQUIP) + message.get(M_FLOOR), true);
                 break;
             case 84: //t
-                if (isShift) {
+                if (input.isShift) {
                     if (this.isNaked()) {
                         message.draw(message.get(M_DONT_HAVE_EQUIPMENT));
                         return;
@@ -2777,7 +2777,7 @@ const Rogue = class extends Fighter {
 				
                 break;
             case 81: //q
-                if (isShift) {
+                if (input.isShift) {
                     flag.quit = true;
                     message.draw(message.get(M_ASK_TO_QUIT));
                     message.draw(message.get(M_QUIT), true);
@@ -2800,14 +2800,14 @@ const Rogue = class extends Fighter {
                 message.draw(message.get(M_ZAP) + message.get(M_FLOOR), true);
                 break;
             case 191: //?
-                if (isShift) {
+                if (input.isShift) {
                     flag.help = true;
                     game.help.main();
 				}
 				
                 break;
             case 80: //p
-                if (isCtrl) {
+                if (input.isCtrl) {
                     message.previous(72); //h
                     flag.message = true;
                 } else {
@@ -2829,7 +2829,7 @@ const Rogue = class extends Fighter {
                 this.examine();
                 break;
             case 77: //m
-                if (isShift) {
+                if (input.isShift) {
                     minimap.draw(65);
                     message.draw(message.get(M_MINIMAP), true);
                     flag.minimap = true;
