@@ -3024,7 +3024,7 @@ const Fighter = class extends Material {
         if (this.invisibility) {
             if (calc && --this.invisibility === 0) {
                 this.invisible = false;
-                coords[this.x][this.y].draw();
+                map.coords[this.x][this.y].draw();
                 //message.draw();
 			}
 			
@@ -3430,7 +3430,7 @@ const Fighter = class extends Material {
 
 
     drawOrErase(draw, move) {
-        let loc = coords[this.x][this.y];
+        let loc = map.coords[this.x][this.y];
         if (draw) {
             loc.fighter = this;
             loc.detected = this.detected;
@@ -3440,8 +3440,8 @@ const Fighter = class extends Material {
 		}
 		
         if (!draw && this.mod !== NORMAL && option.shadow.user) {
-            coords[this.x][this.y + 1].draw();
-            coords[this.x + 1][this.y].draw();
+            map.coords[this.x][this.y + 1].draw();
+            map.coords[this.x + 1][this.y].draw();
 		}
 		
         loc.draw();
@@ -3474,9 +3474,9 @@ const Fighter = class extends Material {
         this.drawOrErase(true);
         f.drawOrErase(true);
         if (this.id === ROGUE) {
-            coords[this.x][this.y].traces = ++this.numSteps;
+            map.coords[this.x][this.y].traces = ++this.numSteps;
 		} else if (f.id === ROGUE) {
-			coords[f.x][f.y].traces = ++f.numSteps;
+			map.coords[f.x][f.y].traces = ++f.numSteps;
 		}
     }
 
@@ -3489,14 +3489,14 @@ const Fighter = class extends Material {
                 this.equipmentList(BP[a]);
                 break;
             case P_FLOOR:
-                inventory.show(coords[this.x][this.y].item, RIGHT, a, place);
+                inventory.show(map.coords[this.x][this.y].item, RIGHT, a, place);
                 break;
             case P_BOX:
                 inventory.show(this.boxes, LEFT, a, place);
                 break;
             case P_SHOP:
             case P_STASH:
-                inventory.show(coords[this.x][this.y].enter.list, LEFT, a, place);
+                inventory.show(map.coords[this.x][this.y].enter.list, LEFT, a, place);
                 break;
             case P_CUBE:
                 inventory.show(this.cube, LEFT, a, place);
@@ -3993,7 +3993,7 @@ const Fighter = class extends Material {
                 list = this.equipment;
                 break;
             case P_FLOOR:
-                list = coords[item.x][item.y].item;
+                list = map.coords[item.x][item.y].item;
                 break;
 		}
 		
@@ -4661,7 +4661,7 @@ const Fighter = class extends Material {
                 if (f.invisible) return;
                 f.invisibility = duration;
                 f.invisible = true;
-                coords[f.x][f.y].draw();
+                map.coords[f.x][f.y].draw();
                 break;
             case SEE_INVISIBLE:
                 f.seeInvisible = duration;
@@ -4715,13 +4715,13 @@ const Fighter = class extends Material {
                 if (f.invisible) {
                     if (f.invisible !== DEFAULT) f.invisibility = 0;
                     f.invisible = false;
-                    coords[x][y].draw();
+                    map.coords[x][y].draw();
 				}
 				
                 if (f.mimic && !f.identified) {
                     hallucinate.undoOne(f);
                     f.identified = true;
-                    coords[f.x][f.y].draw();
+                    map.coords[f.x][f.y].draw();
 				}
 				
                 message.draw(option.isEnglish() ?
@@ -4824,11 +4824,12 @@ const Fighter = class extends Material {
                 this.cost -= 3;
                 break;
             case STONE_TO_MUD:
-                if (coords[x][y].wall || coords[x][y].door === CLOSE) {
-                    if (coords[x][y].wall) {
-                        coords[x][y].deleteWall(true);
+                if (map.coords[x][y].wall || map.coords[x][y].door === CLOSE) {
+                    let loc = map.coords[x][y];
+                    if (loc.wall) {
+                        loc.deleteWall(true);
 					} else {
-						coords[x][y].deleteDoor(true);
+						loc.deleteDoor(true);
 					}
 
                     audio.playSound('dig', distanceSq(this.x, this.y, x, y));
@@ -4918,6 +4919,7 @@ const Fighter = class extends Material {
             let hit = false;
             let [xS, yS] = [this.x, this.y];
             if (thrown || skill.range !== 0) {
+                let loc;
                 let parabora = !dr && (thrown || skill.parabora);
                 let rangeSq = !thrown && skill.range ? skill.range ** 2 : FOV_SQ;
                 if (dr)[x1, y1] = [this.x + dr.x * FOV, this.y + dr.y * FOV];
@@ -4938,13 +4940,14 @@ const Fighter = class extends Material {
 					}
 					
                     [xS, yS] = !steep ? [x, y] : [y, x];
+                    loc = map.coords[xS][yS];
                     if (distanceSq(x, y, x0, y0) > rangeSq) {
                         los = false;
                         break;
 					}
-					
+                    
                     if (!thrown && skill.each) {
-                        if (!(coords[xS][yS].wall || coords[xS][yS].door === CLOSE))
+                        if (!(loc.wall || loc.door === CLOSE))
                             shadowcasting.main({
                                 x0: xS,
                                 y0: yS,
@@ -4954,9 +4957,8 @@ const Fighter = class extends Material {
                                 fighter: this,
 							});
                     } else if ((!parabora || parabora && x === x1 && y === y1) &&
-                        coords[xS][yS].fighter &&
-                        (this.isOpponent(coords[xS][yS].fighter))) {
-                        let fighter = coords[xS][yS].fighter;
+                        loc.fighter && (this.isOpponent(loc.fighter))) {
+                        let fighter = loc.fighter;
                         hit = true;
                         if (thrown) {
                             if (flag.arrow) {
@@ -4988,7 +4990,7 @@ const Fighter = class extends Material {
                         if (!skill.penetrate) break;
 					}
 					
-                    if (coords[xS][yS].wall || coords[xS][yS].door === CLOSE) {
+                    if (loc.wall || loc.door === CLOSE) {
                         los = false;
                         break;
 					}
@@ -4998,8 +5000,8 @@ const Fighter = class extends Material {
 				
                 if (!los) {
                     if (!thrown && skill.wall &&
-                      		(coords[xS][yS].wall && !coords[xS][yS].indestructible ||
-                            coords[xS][yS].door === CLOSE)) {
+                      		(loc.wall && !loc.indestructible ||
+                            loc.door === CLOSE)) {
                         this.haveCast(nameSkill, lvl, undefined, xS, yS);
                         if (flag.zap && !w.identified) found = true;
                     } else {
@@ -5177,7 +5179,7 @@ const Fighter = class extends Material {
     getAmmo(throwType) {
         let item = this.getAmmoLoop(this.boxes, throwType);
         if (!item) item = this.getAmmoLoop(this.pack, throwType);
-        if (!item) item = this.getAmmoLoop(coords[this.x][this.y].item, throwType);
+        if (!item) item = this.getAmmoLoop(map.coords[this.x][this.y].item, throwType);
         return item;
     }
 
@@ -5217,7 +5219,7 @@ const Fighter = class extends Material {
                 this.deleteBoxItem(item.indexOf(this.boxes), quantity);
                 break;
             case P_FLOOR:
-                let loc = coords[item.x][item.y];
+                let loc = map.coords[item.x][item.y];
                 loc.deleteItem(item.indexOf(loc.item), quantity);
                 break;
             case P_EQUIPMENT:
@@ -5257,7 +5259,7 @@ const Fighter = class extends Material {
                 a = item.indexOf(this.boxes);
                 break;
             case P_FLOOR:
-                let loc = coords[item.x][item.y];
+                let loc = map.coords[item.x][item.y];
                 a = item.indexOf(loc.item);
                 break;
             case P_EQUIPMENT:
@@ -5514,8 +5516,9 @@ const Fighter = class extends Material {
 		}
 		
         if (this.id === ROGUE) {
-            coords[this.x][this.y].traces = ++this.numSteps;
-            coords[this.x][this.y].getInfo();
+            let loc = map.coords[this.x][this.y];
+            loc.traces = ++this.numSteps;
+            loc.getInfo();
         }
     }
 

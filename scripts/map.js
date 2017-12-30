@@ -30,8 +30,8 @@ const minimap = {
 
         this.shadow();
         if (rogue.blinded) return;
-        for (let i = 0, l = coords.length; i < l; i++) {
-            for (let loc of coords[i]) {
+        for (let i = 0, l = map.coords.length; i < l; i++) {
+            for (let loc of map.coords[i]) {
                 if ((loc.found || loc.detected) && loc.symbol !== '.' && (!loc.fighter || loc.fighter.detected || rogue.litMapIds[loc.x + ',' + loc.y])) {
                     if (keyCode === 83 && (rogue.x != loc.x || rogue.y != loc.y) &&
                         (loc.item['a'] || loc.fighter || loc.stairs || loc.enter || loc.trap)) { //s
@@ -88,27 +88,27 @@ const minimap = {
 
 const map = {
     init(town) {
-        coords = [];
+        this.coords = [];
         let width = town ? IN_WIDTH : WIDTH;
         let height = town ? IN_HEIGHT : HEIGHT;
         for (let i = 0; i < width; i++) {
-            coords.push([]);
+            this.coords.push([]);
             for (let j = 0; j < height; j++) {
-                coords[i].push(new Location(i, j));
+                this.coords[i].push(new Location(i, j));
                 if (i === 0 || i === width - 1 || j === 0 || j === height - 1) {
-                    coords[i][j].indestructible = true;
-                    coords[i][j].wall = WALL_HP;
+                    this.coords[i][j].indestructible = true;
+                    this.coords[i][j].wall = WALL_HP;
                 }
             }
         }
     },
 
     fill(town) {
-        let width = coords.length;
-        let height = coords[0].length;
+        let width = this.coords.length;
+        let height = this.coords[0].length;
         for (let i = 1; i < width - 1; i++) {
             for (let j = 1; j < height - 1; j++) {
-                let loc = coords[i][j];
+                let loc = this.coords[i][j];
                 if (town) {
                     if (!loc.wall) loc.floor = true;
                 } else if (!loc.floor && !loc.wall) {
@@ -156,8 +156,8 @@ const map = {
 
     redraw(cX, cY) {
         display.clearOne(display.ctxes.buf, true)
-        for (let i = 0, l = coords.length; i < l; i++) {
-            for (let loc of coords[i]) {
+        for (let i = 0, l = this.coords.length; i < l; i++) {
+            for (let loc of this.coords[i]) {
                 loc.draw();
             }
         }
@@ -166,8 +166,8 @@ const map = {
     },
 
     lighten(init) {
-        for (let i = 0, l = coords.length; i < l; i++) {
-            for (let loc of coords[i]) {
+        for (let i = 0, l = this.coords.length; i < l; i++) {
+            for (let loc of this.coords[i]) {
                 if (loc.hidden) {
                     loc.hidden = false;
                     loc.wall = false;
@@ -189,7 +189,7 @@ const seeInvisible = (see) => {
     for (let key in Enemy.list) {
         let enemy = Enemy.list[key];
         if (enemy.invisible) {
-            coords[enemy.x][enemy.y].draw();
+            map.coords[enemy.x][enemy.y].draw();
             if (!see && rogue.ce && rogue.ce.id === enemy.id) rogue.removeCe();
         }
     }
@@ -213,7 +213,7 @@ const hallucinate = {
                 this.undoOne(list[key]);
             }
 
-            coords[list[key].x][list[key].y].getSymbol();
+            map.coords[list[key].x][list[key].y].getSymbol();
         }
     },
 

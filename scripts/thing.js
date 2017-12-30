@@ -31,18 +31,18 @@ const Thing = class {
                 room = dungeon.list[id];
                 x = rndIntBet(room.x + 1, room.x + room.width - 2);
                 y = rndIntBet(room.y + 1, room.y + room.height - 2);
-                loc = coords[x][y];
+                loc = map.coords[x][y];
             } while ((loc.wall || loc.door ||
                     loc.fighter || loc.item['a'] ||
 					loc.trap || loc.enter || loc.stairs) &&
 					++count < 1000
 			);
         } else {
-            let [width, height] = [coords.length, coords[0].length];
+            let [width, height] = [map.coords.length, map.coords[0].length];
             do {
                 x = rndInt(width - 2) + 1;
                 y = rndInt(height - 2) + 1;
-                loc = coords[x][y];
+                loc = map.coords[x][y];
             } while ((loc.wall || loc.door ||
                     loc.fighter || loc.item['a'] ||
                     loc.trap || loc.enter || loc.stairs ||
@@ -60,8 +60,8 @@ const Thing = class {
 
     spiralSearch(x0, y0, type, count = 0) {
         let [x, y] = [x0, y0];
-        let width = coords.length;
-        let height = coords[0].length;
+        let width = map.coords.length;
+        let height = map.coords[0].length;
         let loop = 0;
         let limit = type === ITEM && count < MAX_SEARCH_RANGE ? count : MAX_SEARCH_RANGE;
         if (this.spiralSearchCheck(x, y, x0, y0, type, count)) return;
@@ -93,7 +93,7 @@ const Thing = class {
     }
 
     spiralSearchCheck(x, y, x0, y0, type, count) {
-        let loc = coords[x][y];
+        let loc = map.coords[x][y];
         if (!loc.wall && loc.door !== CLOSE && !loc.enter) {
             if ((type === FIGHTER && !loc.fighter ||
                     type === ITEM && !loc.trap && !loc.door &&

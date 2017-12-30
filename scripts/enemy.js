@@ -145,7 +145,7 @@ const Enemy = class extends Fighter {
 
     move(dr, los) {
         let [x, y] = [this.x + dr.x, this.y + dr.y];
-        let loc = coords[x][y];
+        let loc = map.coords[x][y];
         if (loc.trap && loc.trap.protection) {
             this.attackCircle(loc);
             return;
@@ -206,7 +206,7 @@ const Enemy = class extends Fighter {
 
     canMove(dr) {
         let [x, y] = [this.x + dr.x, this.y + dr.y];
-        let loc = coords[x][y];
+        let loc = map.coords[x][y];
         if (loc.fighter) {
             return this.isOpponent(loc.fighter);
 		} else if (loc.wall && (!loc.hidden || !this.searching)) {
@@ -252,9 +252,10 @@ const Enemy = class extends Fighter {
 
     died(f) {
         this.abort = true;
-        coords[this.x][this.y].fighter = null;
+        let loc = map.coords[this.x][this.y];
+        loc.fighter = null;
         delete Enemy.list[this.id];
-        coords[this.x][this.y].detected = false;
+        loc.detected = false;
         queue.delete(this);
         if (rogue.ce && rogue.ce.id === this.id) rogue.removeCe();
         for (let key in Enemy.list) {
@@ -262,7 +263,7 @@ const Enemy = class extends Fighter {
             if (enemy.ce && enemy.ce.id === this.id) enemy.removeCe();
 		}
 		
-        coords[this.x][this.y].draw();
+        loc.draw();
         audio.playSound('kill', distanceSq(rogue.x, rogue.y, this.x, this.y));
         if (!f) return;
         if (rogue.hallucinated || this.mimic && !this.identified) hallucinate.undoOne(this);

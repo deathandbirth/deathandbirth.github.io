@@ -52,7 +52,7 @@ const Cave = class extends Room {
     create() {
         for (let i = this.x; i < this.x + this.width; i++) {
             for (let j = this.y; j < this.y + this.height; j++) {
-                let loc = coords[i][j];
+                let loc = map.coords[i][j];
                 loc.lighten = this.lighten;
                 if (!loc.indestructible &&
                     	(i === this.x || i === this.x + this.width - 1 ||
@@ -89,13 +89,14 @@ const Cave = class extends Room {
             x = this.x + this.width - 1;
             y = rndIntBet(this.y + 1, this.y + this.height - 2);
 		}
-		
-        coords[x][y].door = CLOSE;
+        
+        let loc = map.coords[x][y]; 
+        loc.door = CLOSE;
         if (evalPercentage(10)) {
-            coords[x][y].hidden = true;
+            loc.hidden = true;
 		} else {
-            coords[x][y].wall = false;
-            coords[x][y].floor = true;
+            loc.wall = false;
+            loc.floor = true;
 		}
 		
         this.doorIds.push(i);
@@ -126,14 +127,15 @@ const Cave = class extends Room {
 		
         for (let i = this.x; i < this.x + this.width; i++) {
             for (let j = this.y; j < this.y + this.height; j++) {
+                let loc = map.coords[i][j];
                 if (i === this.x || i === this.x + this.width - 1 ||
                   	j === this.y || j === this.y + this.height - 1) {
                     if (magic) {
-                        if (coords[i][j].wall && !coords[i][j].hidden) {
-                            coords[i][j].indestructible = true;
+                        if (loc.wall && !loc.hidden) {
+                            loc.indestructible = true;
 						} else {
-                            if (coords[i][j].door) coords[i][j].hidden = true;
-                            coords[i][j].wall = WALL_HP;
+                            if (loc.door) loc.hidden = true;
+                            loc.wall = WALL_HP;
                         }
 					}
 					
@@ -154,7 +156,7 @@ const Cave = class extends Room {
                     }
 				}
 				
-                if ((!coords[i][j].trap || !coords[i][j].trap.protection) && evalPercentage(25)) {
+                if ((!loc.trap || !loc.trap.protection) && evalPercentage(25)) {
                     creation.enemy({
                         type: type,
                         position: LOCATION,
@@ -231,9 +233,9 @@ const dungeon = {
             pas: true,
         });
         if (path === null) throw new Error('path error');
-        coords[x1][y1].floor = true;
+        map.coords[x1][y1].floor = true;
         for (let pos of path) {
-			coords[pos.x][pos.y].floor = true;
+			map.coords[pos.x][pos.y].floor = true;
 		}
 		
         door1.connected = door2.connected = true;
@@ -244,7 +246,7 @@ const dungeon = {
             if (!room) continue;
             for (let door of room.doors) {
                 if (door === null || door.connected) continue;
-                let loc = coords[door.x][door.y];
+                let loc = map.coords[door.x][door.y];
                 loc.hidden = false;
                 loc.floor = false;
                 loc.door = false;

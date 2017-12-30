@@ -23,9 +23,10 @@ const Staircase = class extends Thing {
     putDown(x, y) {
         this.spiralSearch(x, y, STAIRCASE);
         if (this.abort) return;
-        coords[this.x][this.y].stairs = this;
-        coords[this.x][this.y].hidden = this.hidden;
-        if (!this.hidden) coords[this.x][this.y].draw();
+        let loc = map.coords[this.x][this.y];
+        loc.stairs = this;
+        loc.hidden = this.hidden;
+        if (!this.hidden) loc.draw();
         Staircase.list[this.x + ',' + this.y] = this;
     }
 

@@ -758,7 +758,6 @@ const FONT_STYLE = {
 
 let rogue;
 let queue;
-let coords; //coords[][]
 let ca = ''; //current alphabet
 let cn = 1; //current number
 let ci = null; //current item

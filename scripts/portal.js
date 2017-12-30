@@ -5,17 +5,18 @@ const Portal = class extends Thing {
 
     putDown(x, y) {
         if (rogue.portal.x || rogue.portal.y) {
-            let [x2, y2] = [rogue.portal.x, rogue.portal.y];
-            coords[x2][y2].enter = null;
-            coords[x2][y2].draw();
+            let loc = map.coords[rogue.portal.x][rogue.portal.y];
+            loc.enter = null;
+            loc.draw();
             rogue.portal.x = rogue.portal.y = 0;
 		}
 
         this.spiralSearch(x, y, ENTER);
         if (this.abort) return;
         [rogue.portal.x, rogue.portal.y] = [this.x, this.y];
-        coords[this.x][this.y].enter = this;
-        coords[this.x][this.y].draw();
+        let loc = map.coords[this.x][this.y];
+        loc.enter = this;
+        loc.draw();
     }
 
     getName() {

@@ -512,7 +512,7 @@ const input = {
                 if (this.isCtrl) break;
                 if (keyCode === 190 && this.isShift) {
                     rogue.downOrUpStairs(keyCode);
-                } else if (!coords[rogue.x][rogue.y].getInfo(true)) {
+                } else if (!map.coords[rogue.x][rogue.y].getInfo(true)) {
                     rogue.done = true;
                 }
 

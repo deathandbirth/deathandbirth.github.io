@@ -2,7 +2,7 @@ const Data = class {
     constructor() {
         this.convertCe(true);
         this.saveItemTab();
-        this.coords = coords;
+        this.coords = map.coords;
         this.option = option;
         this.difficulty = difficulty;
         this.messageList = message.list;
@@ -73,8 +73,8 @@ const Data = class {
 
     loadCoords() {
         queue.list = [];
-        coords = this.coords;
-        for (let locs of coords) {
+        map.coords = this.coords;
+        for (let locs of map.coords) {
             for (let loc of locs) {
                 loc.__proto__ = Location.prototype;
                 if (loc.fighter) {

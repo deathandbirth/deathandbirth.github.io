@@ -1990,11 +1990,12 @@ const Item = class extends Material {
         if (this.abort) return;
         this.place = P_FLOOR;
         Item.list[this.id] = this;
-        let l = Object.keys(coords[this.x][this.y].item).length;
-        coords[this.x][this.y].item[EA[l]] = this;
+        let loc = map.coords[this.x][this.y];
+        let l = Object.keys(loc.item).length;
+        loc.item[EA[l]] = this;
         if (sound) audio.playSound(this.type);
         if (rogue.hallucinated) hallucinate.one(this);
-        coords[this.x][this.y].draw();
+        loc.draw();
     }
 
     indexOf(list) {

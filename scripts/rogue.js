@@ -56,7 +56,7 @@ const Rogue = class extends Fighter {
 			dr = getDirection(keyCodeDr);
 		}
 
-        let loc = coords[this.x + dr.x][this.y + dr.y];
+        let loc = map.coords[this.x + dr.x][this.y + dr.y];
         if (loc.door === CLOSE && !loc.hidden) {
             loc.openOrCloseDoor();
             rogue.done = true;
@@ -113,7 +113,7 @@ const Rogue = class extends Fighter {
     dash(keyCodeDr) {
         if (this.confused) return;
         let dr = getDirection(keyCodeDr);
-        let loc = coords[this.x + dr.x][this.y + dr.y];
+        let loc = map.coords[this.x + dr.x][this.y + dr.y];
         if (loc.door === CLOSE && !loc.hidden) {
             loc.openOrCloseDoor();
             rogue.done = true;
@@ -129,13 +129,13 @@ const Rogue = class extends Fighter {
         var count = 0;
         var wallLUp = false;
         var wallRUp = false;
-        if (coords[this.x + drLUp.x][this.y + drLUp.y].wall) wallLUp = true;
-        if (coords[this.x + drRUp.x][this.y + drRUp.y].wall) wallRUp = true;
+        if (map.coords[this.x + drLUp.x][this.y + drLUp.y].wall) wallLUp = true;
+        if (map.coords[this.x + drRUp.x][this.y + drRUp.y].wall) wallRUp = true;
         this.dashLoop(dr, drLUp, drRUp, wallLUp, wallRUp, count);
     }
 
     dashLoop(dr, drLUp, drRUp, wallLUp, wallRUp, count) {
-        let loc = coords[this.x + dr.x][this.y + dr.y];
+        let loc = map.coords[this.x + dr.x][this.y + dr.y];
         if (!loc.wall && loc.door !== CLOSE &&
             !flag.died) {
             if (this.move(null, dr) === null) flag.dash = false;
@@ -150,18 +150,18 @@ const Rogue = class extends Fighter {
     dashCheck(dr, drLUp, drRUp, wallLUp, wallRUp, count) {
         var found = false;
         if (wallLUp && !wallRUp) {
-            if (!coords[this.x + drLUp.x][this.y + drLUp.y].wall ||
-           		coords[this.x + drRUp.x][this.y + drRUp.y].wall) {
+            if (!map.coords[this.x + drLUp.x][this.y + drLUp.y].wall ||
+           		map.coords[this.x + drRUp.x][this.y + drRUp.y].wall) {
 				found = true;
 			}
         } else if (!wallLUp && wallRUp) {
-            if (!coords[this.x + drRUp.x][this.y + drRUp.y].wall ||
-               	coords[this.x + drLUp.x][this.y + drLUp.y].wall) {
+            if (!map.coords[this.x + drRUp.x][this.y + drRUp.y].wall ||
+               	map.coords[this.x + drLUp.x][this.y + drLUp.y].wall) {
 				found = true;
 			}
         } else if (wallLUp && wallRUp) {
             if (count) {
-                dr = coords[this.x + dr.x][this.y + dr.y].wall ?
+                dr = map.coords[this.x + dr.x][this.y + dr.y].wall ?
                     this.dashSearch(dr, drLUp, drRUp) : null;
                 if (!dr) {
                     found = true;
@@ -172,13 +172,13 @@ const Rogue = class extends Fighter {
                 }
 			}
 			
-            if (!coords[this.x + drLUp.x][this.y + drLUp.y].wall ||
-               	!coords[this.x + drRUp.x][this.y + drRUp.y].wall) {
+            if (!map.coords[this.x + drLUp.x][this.y + drLUp.y].wall ||
+               	!map.coords[this.x + drRUp.x][this.y + drRUp.y].wall) {
 				count++;
 			}
         } else {
-            if (coords[this.x + drLUp.x][this.y + drLUp.y].wall ||
-          	    coords[this.x + drRUp.x][this.y + drRUp.y].wall) {
+            if (map.coords[this.x + drLUp.x][this.y + drLUp.y].wall ||
+          	    map.coords[this.x + drRUp.x][this.y + drRUp.y].wall) {
 				found = true;
 			}
 		}
@@ -194,7 +194,7 @@ const Rogue = class extends Fighter {
         let key1 = -1;
         let keyDia = -1;
         for (let key in DR) {
-            if (!coords[this.x + DR[key].x][this.y + DR[key].y].wall &&
+            if (!map.coords[this.x + DR[key].x][this.y + DR[key].y].wall &&
                	-DR[key].x !== dr.x && -DR[key].y !== dr.y) {
                 if (key < 4) {
                     if (key1 !== -1) {
@@ -221,7 +221,7 @@ const Rogue = class extends Fighter {
         let count = 0;
         for (let key in DR) {
             let [x, y] = [this.x + DR[key].x, this.y + DR[key].y]
-            let loc = coords[x][y];
+            let loc = map.coords[x][y];
             if (loc.door === (flag.openDoor ? CLOSE : OPEN) &&
                 !loc.fighter && !loc.item['a'] && !loc.hidden) {
                 if (!count)[tempX, tempY] = [x, y];
@@ -230,7 +230,7 @@ const Rogue = class extends Fighter {
 		}
 		
         if (count === 1) {
-            coords[tempX][tempY].openOrCloseDoor();
+            map.coords[tempX][tempY].openOrCloseDoor();
             this.done = true;
 		}
 		
@@ -240,7 +240,7 @@ const Rogue = class extends Fighter {
     openOrCloseDoor(keyCode) {
         let dr = getDirection(keyCode);
         if (!dr) return;
-        let loc = coords[this.x + dr.x][this.y + dr.y];
+        let loc = map.coords[this.x + dr.x][this.y + dr.y];
         if (loc.door === (flag.openDoor ? CLOSE : OPEN) &&
             !loc.item['a'] && !loc.fighter) {
             loc.openOrCloseDoor();
@@ -254,7 +254,7 @@ const Rogue = class extends Fighter {
     searchHiddenObject() {
         for (let i = this.x - 1; i <= this.x + 1; i++) {
             for (let j = this.y - 1; j <= this.y + 1; j++) {
-				coords[i][j].findHiddenObject();
+				map.coords[i][j].findHiddenObject();
 			}
 		}
 		
@@ -278,7 +278,7 @@ const Rogue = class extends Fighter {
 			}
         } else {
             let dr = getDirection(keyCodeDr);
-            let loc = coords[this.x + dr.x][this.y + dr.y];
+            let loc = map.coords[this.x + dr.x][this.y + dr.y];
             if (loc.wall) {
                 this.dig(loc);
 			} else {
@@ -536,14 +536,14 @@ const Rogue = class extends Fighter {
 
     putDown(town) {
         town ? this.getStartPointInTown() : this.getPositionRandomly(true);
-        coords[this.x][this.y].traces = ++this.numSteps;
+        map.coords[this.x][this.y].traces = ++this.numSteps;
         this.drawOrErase(true);
         this.drawStats();
         queue.push(this);
     }
 
     downOrUpStairs(keyCode, trap) {
-        let loc = coords[this.x][this.y];
+        let loc = map.coords[this.x][this.y];
         if (!trap && !loc.stairs || loc.hidden) return;
         if (trap || loc.stairs.id === DOWN && keyCode === 190) {
             if (!trap) audio.playSound('staircase');
@@ -655,7 +655,7 @@ const Rogue = class extends Fighter {
     }
 
     grabItem(keyCode, a) {
-        let loc = coords[this.x][this.y];
+        let loc = map.coords[this.x][this.y];
         if (flag.grab) {
             if (keyCode) a = getAlphabet(keyCode);
             if (!a || !loc.item[a]) return;
@@ -1193,8 +1193,8 @@ const Rogue = class extends Fighter {
         let skill = skillMap.get(WORMHOLE);
         let lvl = cs.lvl + this.getSkillBoost(skill);
         let radiusSq = this.calcSkillValue(skill, lvl) ** 2;
-        if (!coords[x][y].found || coords[x][y].wall ||
-            coords[x][y].door === CLOSE ||
+        let loc = map.coords[x][y];
+        if (!loc.found || loc.wall || loc.door === CLOSE ||
             distanceSq(x, y, this.x, this.y) > radiusSq) {
             message.draw(message.get(M_CANT_TELE));
             return;
@@ -1549,7 +1549,7 @@ const Rogue = class extends Fighter {
         let x, y;
         if (this.ce) {
             [x, y] = [this.ce.x, this.ce.y];
-            if (!this.litMapIds[x + ',' + y] && (!coords[x][y].detected ||
+            if (!this.litMapIds[x + ',' + y] && (!map.coords[x][y].detected ||
                 distanceSq(x, y, this.x, this.y) > FOV_SQ) ||
                 !lineOfSight(this.x, this.y, x, y)) {
 				return;
@@ -1574,7 +1574,7 @@ const Rogue = class extends Fighter {
 
     examine(keyCode) {
         if (keyCode === 88) { //x
-            let loc = coords[cursol.x][cursol.y];
+            let loc = map.coords[cursol.x][cursol.y];
             if (loc.item['a'] && this.litMapIds[cursol.x + ',' + cursol.y] &&
                 distanceSq(cursol.x, cursol.y, this.x, this.y) <= FOV_SQ &&
                 lineOfSight(this.x, this.y, cursol.x, cursol.y)) {
@@ -1585,7 +1585,7 @@ const Rogue = class extends Fighter {
             return;
         } else if (keyCode === 67 || keyCode === 77 ||
             keyCode === 69 || keyCode === 73) { //c,m,e,i
-            let loc = coords[cursol.x][cursol.y];
+            let loc = map.coords[cursol.x][cursol.y];
             let fighter = loc.fighter;
             if (fighter && fighter.isShowing() &&
                 (fighter.id === ROGUE || !rogue.hallucinated)) {
@@ -1604,7 +1604,7 @@ const Rogue = class extends Fighter {
 			
             return;
         } else if (keyCode === 84 || keyCode === 82) { //t,r
-            let loc = coords[cursol.x][cursol.y];
+            let loc = map.coords[cursol.x][cursol.y];
             if (flag.wormhole) {
                 if (keyCode === 82) {
                     flag.wormhole = false;
@@ -1647,15 +1647,15 @@ const Rogue = class extends Fighter {
         if (!keyCode) {
             if (flag.aim) this.examinePlot();
             cursol.draw(X, Y);
-            coords[cursol.x][cursol.y].getInfo();
+            map.coords[cursol.x][cursol.y].getInfo();
             return;
 		}
 		
         let dr = getDirection(keyCode);
         if (!dr) return;
         let [x, y] = [cursol.x + dr.x, cursol.y + dr.y];
-        let width = coords.length;
-        let height = coords[0].length;
+        let width = map.coords.length;
+        let height = map.coords[0].length;
         if (x < 0 || x >= width || y < 0 || y >= height) return;
         let [xinc, yinc] = [dr.x, dr.y];
         if (input.isShift) {
@@ -1716,7 +1716,7 @@ const Rogue = class extends Fighter {
         if (found) map.draw(cursol.cX, cursol.cY);
         if (flag.aim) this.examinePlot();
         cursol.draw(X, Y);
-        coords[cursol.x][cursol.y].getInfo();
+        map.coords[cursol.x][cursol.y].getInfo();
     }
 
     examinePlot(aim) {
@@ -2145,7 +2145,7 @@ const Rogue = class extends Fighter {
             let x, y;
             if (this.ce) {
                 [x, y] = [this.ce.x, this.ce.y];
-                if (!this.litMapIds[x + ',' + y] && (!coords[x][y].detected ||
+                if (!this.litMapIds[x + ',' + y] && (!map.coords[x][y].detected ||
                         distanceSq(x, y, this.x, this.y) > FOV_SQ) ||
                     !lineOfSight(this.x, this.y, x, y)) {
                     flag.skill = false;
@@ -2191,7 +2191,7 @@ const Rogue = class extends Fighter {
         if (isFinite(a)) {
             item = this.boxes[a];
 		} else if (floor) {
-            item = coords[this.x][this.y].item[a];
+            item = map.coords[this.x][this.y].item[a];
         } else if (input.isShift) {
             item = this.equipment[BP[a]];
 		} else {
@@ -2255,7 +2255,7 @@ const Rogue = class extends Fighter {
     }
 
     shop(keyCode) {
-        let shop = coords[this.x][this.y].enter;
+        let shop = map.coords[this.x][this.y].enter;
         if (!flag.number) {
             let a = getAlphabet(keyCode);
             if (!a) return;
@@ -2326,7 +2326,7 @@ const Rogue = class extends Fighter {
     }
 
     stash(keyCode) {
-        let stash = coords[this.x][this.y].enter;
+        let stash = map.coords[this.x][this.y].enter;
         if (!flag.number) {
             if (keyCode === 188 || keyCode === 190) { //, .
                 if (keyCode === 190 && stash.page < MAX_STASH_PAGE) {
@@ -2409,7 +2409,7 @@ const Rogue = class extends Fighter {
     }
 
     cureShop(keyCode) {
-        let cure = coords[this.x][this.y].enter;
+        let cure = map.coords[this.x][this.y].enter;
         let a = getAlphabet(keyCode);
         if (!a || !cure.list[a]) return;
         let cost = cure.list[a].cost;
@@ -2459,8 +2459,9 @@ const Rogue = class extends Fighter {
 
     trapped(trap, stepOn) {
         if (flag.dash) flag.dash = false;
-        if (coords[this.x][this.y].hidden) coords[this.x][this.y].hidden = false;
-        if (coinToss()) coords[this.x][this.y].deleteTrap();
+        let loc = map.coords[this.x][this.y];
+        if (loc.hidden) loc.hidden = false;
+        if (coinToss()) loc.deleteTrap();
         if (trap.nameSkill) {
             this.haveCast(trap.nameSkill, trap.lvl, this);
             return;
@@ -2656,7 +2657,7 @@ const Rogue = class extends Fighter {
 
     goBlind() {
         display.clearOne(display.ctxes.buf, true);
-        coords[this.x][this.y].draw();
+        map.coords[this.x][this.y].draw();
         this.removeCe();
     }
 }

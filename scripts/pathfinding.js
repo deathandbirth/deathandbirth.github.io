@@ -11,8 +11,8 @@ const circleSearch = {
         this.type = type;
         this.symbol = symbol;
         this.perc = perc;
-        let width = coords.length;
-        let height = coords[0].length;
+        let width = map.coords.length;
+        let height = map.coords[0].length;
         let radiusSq = radius ** 2;
         for (let j = 0; j <= radius; j++) {
             let col = -radius;
@@ -43,7 +43,7 @@ const circleSearch = {
     },
 
     do(x, y) {
-        let loc = coords[x][y];
+        let loc = map.coords[x][y];
         switch (this.type) {
             case MAGIC_MAPPING:
             case ITEM_DETECTION:
@@ -153,7 +153,7 @@ const lineOfSight = (x0, y0, x1, y1, color, skill) => {
         }
 
         [xS, yS] = !steep ? [x, y] : [y, x];
-        let loc = coords[xS][yS];
+        let loc = map.coords[xS][yS];
         if (color) {
             if (distanceSq(x, y, x0, y0) > rangeSq) {
                 los = false;
@@ -224,13 +224,13 @@ const shadowcasting = {
     }) {
         if (!radius) return;
         this.radiusSq = radius ** 2;
-        this.width = coords.length;
-        this.height = coords[0].length;
+        this.width = map.coords.length;
+        this.height = map.coords[0].length;
         this.type = type;
         this.lvl = lvl;
         this.color = color;
         this.fighter = fighter;
-        if (search) coords[x0][y0].findHiddenObject();
+        if (search) map.coords[x0][y0].findHiddenObject();
         if (this.type === 'Lighten') {
             this.lightRadSq = lightRad ** 2;
             this.oldLitMap = rogue.litMapIds;
@@ -246,7 +246,7 @@ const shadowcasting = {
         if (this.type === 'Lighten') {
             for (let key in this.oldLitMap) {
                 let [x, y] = key.split(',');
-                coords[x][y].draw();
+                map.coords[x][y].draw();
             }
         }
     },
@@ -258,8 +258,9 @@ const shadowcasting = {
             if (l > this.radiusSq) break;
             let [x, y] = [x0 + x1, y0 + y1];
             this.do(x, y, l);
-            if (search && j === 1) coords[x][y].findHiddenObject();
-            if (coords[x][y].wall || coords[x][y].door === CLOSE) break;
+            let loc = map.coords[x][y];
+            if (search && j === 1) loc.findHiddenObject();
+            if (loc.wall || loc.door === CLOSE) break;
         }
     },
 
@@ -282,14 +283,15 @@ const shadowcasting = {
                     if (l <= this.radiusSq) this.do(x, y, l);
                 }
 
+                let loc = map.coords[x][y];
                 if (blocked) {
-                    if (coords[x][y].wall || coords[x][y].door === CLOSE) {
+                    if (loc.wall || loc.door === CLOSE) {
                         this.rightSlopeSaved = rightBlockSlope;
                     } else {
                         blocked = false;
                         leftSlope = this.rightSlopeSaved;
                     }
-                } else if (coords[x][y].wall || coords[x][y].door === CLOSE) {
+                } else if (loc.wall || loc.door === CLOSE) {
                     blocked = true;
                     this.rightSlopeSaved = rightBlockSlope;
                     if (leftBlockSlope <= leftSlope) this.around(tr, x0, y0, radius, xc + 1, leftSlope, leftBlockSlope);
@@ -299,7 +301,7 @@ const shadowcasting = {
     },
 
     do(x, y, distance) {
-        let loc = coords[x][y];
+        let loc = map.coords[x][y];
         if (this.color) {
             cursol.plot(x, y, this.color);
         } else if (this.type === 'Lighten') {
@@ -512,7 +514,8 @@ const pathfinding = {
             if (this.map && gScore > FOV || this.pas && ++count > 4) break;
             let x = node.x + DR[key].x;
             let y = node.y + DR[key].y;
-            if (!coords[x][y].wall && (!this.pas || coords[x][y].door !== CLOSE)) {
+            let loc = map.coords[x][y];
+            if (!loc.wall && (!this.pas || loc.door !== CLOSE)) {
                 let id = x + ',' + y;
                 if (!this.idList[id]) {
                     newNode = this.createNode(x, y, gScore, node);

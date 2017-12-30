@@ -10,8 +10,9 @@ const Build = class extends Room {
     create() {
         for (let i = this.x; i < this.x + this.width; i++) {
             for (let j = this.y; j < this.y + this.height; j++) {
-                coords[i][j].wall = WALL_HP;
-                coords[i][j].indestructible = true;
+                let loc = map.coords[i][j];
+                loc.wall = WALL_HP;
+                loc.indestructible = true;
             }
 		}
 		
@@ -23,16 +24,18 @@ const Build = class extends Room {
         if (this.id === 0 || this.id === 1) {
             if (this.id === 1) {
 				[x, y] = [this.x + BUILD_WIDTH - 1, this.y];
-                coords[x][y].enter = enter[CURE];
-                coords[x][y].deleteWall();
+                let loc = map.coords[x][y];
+                loc.enter = enter[CURE];
+                loc.deleteWall();
 			}
 			
 			[x, y] = [this.x + BUILD_WIDTH - 1, this.y + BUILD_HEIGHT - 1];
         } else if (this.id === 2 || this.id === 3) {
             if (this.id === 2) {
 				[x, y] = [this.x, this.y];
-                coords[x][y].enter = enter[BLACKSMITH];
-                coords[x][y].deleteWall();
+                let loc = map.coords[x][y];
+                loc.enter = enter[BLACKSMITH];
+                loc.deleteWall();
 			}
 			
 			[x, y] = [this.x, this.y + BUILD_HEIGHT - 1];
@@ -42,8 +45,9 @@ const Build = class extends Room {
 			[x, y] = [this.x, this.y];
 		}
 
-        coords[x][y].enter = enter[this.id + 2];
-        coords[x][y].deleteWall();
+        let loc = map.coords[x][y];
+        loc.enter = enter[this.id + 2];
+        loc.deleteWall();
     }
 }
 
@@ -58,7 +62,7 @@ const town = {
             this.createOne(x, y, i, BUILD_WIDTH, BUILD_HEIGHT);
 		}
 		
-        coords[POSITION.stash.x][POSITION.stash.y].enter = enter[STASH];
+        map.coords[POSITION.stash.x][POSITION.stash.y].enter = enter[STASH];
         map.fill(true);
         map.lighten(true);
 	},
