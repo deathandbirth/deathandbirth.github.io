@@ -27,12 +27,10 @@ const Staircase = class extends Thing {
         loc.stairs = this;
         loc.hidden = this.hidden;
         if (!this.hidden) loc.draw();
-        Staircase.list[this.x + ',' + this.y] = this;
+        map.staircaseList[this.x + ',' + this.y] = this;
     }
 
     getName() {
         return this.name[option.getLanguage()];
     }
 }
-
-Staircase.list = {};

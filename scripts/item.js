@@ -1984,12 +1984,12 @@ const Item = class extends Material {
     putDown(x, y, sound) {
         do {
 			this.id = Math.random();
-		} while (Item.list[this.id]);
+		} while (map.itemList[this.id]);
 
         this.spiralSearch(x, y, ITEM);
         if (this.abort) return;
         this.place = P_FLOOR;
-        Item.list[this.id] = this;
+        map.itemList[this.id] = this;
         let loc = map.coords[this.x][this.y];
         let l = Object.keys(loc.item).length;
         loc.item[EA[l]] = this;
@@ -2230,7 +2230,7 @@ const Item = class extends Material {
 				deleteAndSortItem(list, a);
 			}
 
-            if (this.place === P_FLOOR) delete Item.list[item.id];
+            if (this.place === P_FLOOR) delete map.itemList[item.id];
 		}
 		
         return item;
@@ -2355,7 +2355,6 @@ const Item = class extends Material {
     }
 }
 
-Item.list = {};
 Item.initTab();
 
 const searchItemToIdentifiy = {
@@ -2365,9 +2364,9 @@ const searchItemToIdentifiy = {
             this.loop(rogue.boxes, nameReal, type);
 		}
 		
-        this.loop(Item.list, nameReal, type);
-        for (let key in Enemy.list) {
-			this.loop(Enemy.list[key].pack, nameReal, type);
+        this.loop(map.itemList, nameReal, type);
+        for (let key in map.enemyList) {
+			this.loop(map.enemyList[key].pack, nameReal, type);
 		}
 	},
 	

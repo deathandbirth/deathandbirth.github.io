@@ -757,7 +757,6 @@ const FONT_STYLE = {
 };
 
 let rogue;
-let queue;
 let ca = ''; //current alphabet
 let cn = 1; //current number
 let ci = null; //current item

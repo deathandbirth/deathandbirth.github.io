@@ -12,7 +12,7 @@ const input = {
 
     onkeydown(e) {
         if (flag.wait) {
-            if (!flag.died) queue.moveAll();
+            if (!flag.died) map.queue.moveAll();
             return false;
         }
        
@@ -135,7 +135,7 @@ const input = {
         } else {
             if (rogue.done) {
                 rogue.decreaseEnergy();
-                queue.moveAll();
+                map.queue.moveAll();
             }
             
             if (flag.equipment) {

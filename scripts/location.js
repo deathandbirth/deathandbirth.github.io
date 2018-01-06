@@ -208,7 +208,7 @@ const Location = class extends Position {
         let item = this.item[a];
         item.quantity -= quantity;
         if (!item.quantity) {
-            delete Item.list[item.id];
+            delete map.itemList[item.id];
             deleteAndSortItem(this.item, a);
 		}
 		

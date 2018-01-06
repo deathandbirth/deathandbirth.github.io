@@ -72,7 +72,7 @@ const Data = class {
     }
 
     loadCoords() {
-        queue.list = [];
+        map.init(false, true);
         map.coords = this.coords;
         for (let locs of map.coords) {
             for (let loc of locs) {
@@ -83,10 +83,10 @@ const Data = class {
                         rogue = loc.fighter;
                     } else {
                         loc.fighter.__proto__ = Enemy.prototype;
-                        Enemy.list[loc.fighter.id] = loc.fighter;
+                        map.enemyList[loc.fighter.id] = loc.fighter;
                     }
 
-                    queue.push(loc.fighter);
+                    map.queue.push(loc.fighter);
                     this.loadItem(loc.fighter.boxes);
                     this.loadItem(loc.fighter.equipment);
                     this.loadItem(loc.fighter.side);
@@ -95,7 +95,11 @@ const Data = class {
 
                 if (loc.item['a']) this.loadItem(loc.item, true);
                 if (loc.trap) loc.trap.__proto__ = Trap.prototype;
-                if (loc.stairs) loc.stairs.__proto__ = Staircase.prototype;
+                if (loc.stairs) {
+                    loc.stairs.__proto__ = Staircase.prototype;
+                    map.staircaseList[loc.x + ',' + loc.y] = loc.stairs;
+                }
+
                 if (loc.enter) this.loadEntrance(loc);
             }
         }
@@ -105,7 +109,7 @@ const Data = class {
         for (let key in list) {
             if (!list[key]) continue;
             list[key].__proto__ = Item.prototype;
-            if (floor) Item.list[list[key].id] = list[key];
+            if (floor) map.itemList[list[key].id] = list[key];
         }
     }
 
@@ -138,14 +142,14 @@ const Data = class {
     }
 
     convertCe(save) {
-        if (rogue.ce) rogue.ce = save ? rogue.ce.id : Enemy.list[rogue.ce];
-        for (let key in Enemy.list) {
-            let enemy = Enemy.list[key];
+        if (rogue.ce) rogue.ce = save ? rogue.ce.id : map.enemyList[rogue.ce];
+        for (let key in map.enemyList) {
+            let enemy = map.enemyList[key];
             if (enemy.ce) {
                 if (save) {
                     enemy.ce = enemy.ce.id;
                 } else {
-                    enemy.ce = enemy.ce === ROGUE ? rogue : Enemy.list[enemy.ce];
+                    enemy.ce = enemy.ce === ROGUE ? rogue : map.enemyList[enemy.ce];
                 }
             }
         }

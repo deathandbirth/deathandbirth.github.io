@@ -87,8 +87,13 @@ const minimap = {
 };
 
 const map = {
-    init(town) {
+    init(town, load) {
         this.coords = [];
+        this.queue = new Queue();
+        this.enemyList = {};
+        this.itemList = {};
+        this.staircaseList = {};
+        if (load) return;
         let width = town ? IN_WIDTH : WIDTH;
         let height = town ? IN_HEIGHT : HEIGHT;
         for (let i = 0; i < width; i++) {
@@ -186,8 +191,8 @@ const map = {
 };
 
 const seeInvisible = (see) => {
-    for (let key in Enemy.list) {
-        let enemy = Enemy.list[key];
+    for (let key in map.enemyList) {
+        let enemy = map.enemyList[key];
         if (enemy.invisible) {
             map.coords[enemy.x][enemy.y].draw();
             if (!see && rogue.ce && rogue.ce.id === enemy.id) rogue.removeCe();
@@ -199,8 +204,8 @@ const seeInvisible = (see) => {
 
 const hallucinate = {
     all(undo) {
-        this.search(Enemy.list, true, undo);
-        this.search(Item.list, false, undo);
+        this.search(map.enemyList, true, undo);
+        this.search(map.itemList, false, undo);
         map.redraw(rogue.x, rogue.y);
     },
 

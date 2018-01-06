@@ -50,5 +50,3 @@ const Queue = class extends BinaryHeap {
         return this.list[i].energy > this.list[j].energy;
     }
 }
-
-queue = new Queue();

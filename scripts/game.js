@@ -143,12 +143,8 @@ const game = {
     clearLevel() {
         display.clearAll();
         rogue.checkUnique();
-        Enemy.list = {};
-        Item.list = {};
-        Staircase.list = {};
         rogue.numSteps = 0;
         rogue.ce = null;
-        queue.list = [];
         rogue.portal.x = rogue.portal.y = 0;
         rogue.litMapIds = {};
 	},

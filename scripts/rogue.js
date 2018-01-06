@@ -101,7 +101,7 @@ const Rogue = class extends Fighter {
 
     rest() {
         this.decreaseEnergy();
-        queue.moveAll();
+        map.queue.moveAll();
         if (flag.rest && (this.hp !== this.hpMax || this.mp !== this.mpMax)) {
             setTimeout(this.rest.bind(this), WAIT_TIME);
 		} else {
@@ -140,7 +140,7 @@ const Rogue = class extends Fighter {
             !flag.died) {
             if (this.move(null, dr) === null) flag.dash = false;
             this.decreaseEnergy();
-            queue.moveAll();
+            map.queue.moveAll();
             if (flag.dash) this.dashCheck(dr, drLUp, drRUp, wallLUp, wallRUp, count);
         } else {
 			flag.dash = false;
@@ -539,7 +539,7 @@ const Rogue = class extends Fighter {
         map.coords[this.x][this.y].traces = ++this.numSteps;
         this.drawOrErase(true);
         this.drawStats();
-        queue.push(this);
+        map.queue.push(this);
     }
 
     downOrUpStairs(keyCode, trap) {
@@ -639,7 +639,7 @@ const Rogue = class extends Fighter {
                     found = true
                     let name = item.getName();
                     deleteAndSortItem(list, key);
-                    delete Item.list[item.id];
+                    delete map.itemList[item.id];
                     if (!charged) {
                         message.draw(option.isEnglish() ?
                             `Destroyed ${name}` :
@@ -2575,9 +2575,9 @@ const Rogue = class extends Fighter {
     }
 
     checkUnique() {
-        this.checkUniqueLoop(Item.list);
-        for (let key in Enemy.list) {
-            let enemy = Enemy.list[key];
+        this.checkUniqueLoop(map.itemList);
+        for (let key in map.enemyList) {
+            let enemy = map.enemyList[key];
             this.checkUniqueLoop(enemy.pack);
             this.checkUniqueLoop(enemy.equipment);
             this.checkUniqueLoop(enemy.side);

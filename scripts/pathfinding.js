@@ -108,7 +108,7 @@ const circleSearch = {
                             if (this.cui[id]) delete this.cui[id];
                         }
 
-                        delete Item.list[item.id];
+                        delete map.itemList[item.id];
                     }
                     loc.item = items;
                 }

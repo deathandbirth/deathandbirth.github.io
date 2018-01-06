@@ -2822,7 +2822,7 @@ const Fighter = class extends Material {
                 if (!this.indestructible && --this.hp <= 0) {
                     let fighter;
                     if (this.poisonedId && this.poisonedId !== this.id) {
-						fighter = this.poisonedId === ROGUE ? rogue : Enemy.list[this.poisonedId];
+						fighter = this.poisonedId === ROGUE ? rogue : map.enemyList[this.poisonedId];
 					}
 
                     this.poisonedId = 0;
@@ -5478,7 +5478,7 @@ const Fighter = class extends Material {
     decreaseEnergy() {
         this.energy -= (this.spd < 0 ? -this.spd : 0) + this.cost + rndIntBet(-1, 1);
         if (this.cost !== COST_REGULAR) this.cost = COST_REGULAR;
-        queue.update(this);
+        map.queue.update(this);
     }
 
     increaseEnergy() {
