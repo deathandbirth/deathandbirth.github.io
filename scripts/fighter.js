@@ -5407,6 +5407,7 @@ const Fighter = class extends Material {
             this.getOrLooseStats(item);
             this.calcAll();
             let name = item.getName();
+            audio.playSound('broken');
             message.draw(option.isEnglish() ?
                 `${name} broke` :
                 `${name}は壊れた`);

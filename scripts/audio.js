@@ -47,6 +47,7 @@ const audio = {
         speed: new Audio('sound/speed.wav'),
         slow: new Audio('sound/slow.wav'),
         staircase: new Audio('sound/staircase.wav'),
+        broken: new Audio('sound/broken.wav'),
     },
 
     init() {

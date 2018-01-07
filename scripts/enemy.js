@@ -240,6 +240,7 @@ const Enemy = class extends Fighter {
     attackCircle(loc) {
         if (evalPercentage(25)) {
             if (!loc.hidden) {
+                audio.playSound('broken');
                 let name = this.getName(true);
                 message.draw(option.isEnglish() ?
                     `${name} broke Magic Circle of Protection` :
