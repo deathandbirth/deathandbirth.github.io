@@ -2460,7 +2460,7 @@ const Fighter = class extends Material {
             name = itemThrow.getName(true);
 		} else if (missile) {
             name = option.isEnglish() ? 'An arrow' : '矢';
-            var ammo = ci;
+            var ammo = this.ci;
         } else if (skill) {
             name = skill.name[option.getLanguage()];
 		} else {
@@ -3703,7 +3703,7 @@ const Fighter = class extends Material {
         let main = option.isEnglish() ? 'Main' : 'メイン';
         let ctxInv = display.ctxes.inv;
         for (let key in list) {
-            if (flag.number && list[key] !== cs) continue;
+            if (flag.number && list[key] !== this.cs) continue;
             let skill;
             if (list[key]) skill = skillMap.get(list[key].id ? list[key].id : list[key]);
             ctxInv.save();
@@ -4878,8 +4878,8 @@ const Fighter = class extends Material {
 		
         let skill, lvl;
         if (flag.zap) {
-            var w = ci;
-            ci = null;
+            var w = this.ci;
+            this.ci = null;
             nameSkill = w.nameSkill;
             skill = skillMap.get(nameSkill);
             lvl = w.skillLvl;
@@ -4888,9 +4888,9 @@ const Fighter = class extends Material {
                 `Zapped ${name}` :
                 `${name}を振った`);
         } else if (flag.skill) {
-            if (!nameSkill) nameSkill = cs.id;
+            if (!nameSkill) nameSkill = this.cs.id;
             skill = skillMap.get(nameSkill);
-            lvl = cs.lvl + this.getSkillBoost(skill);
+            lvl = this.cs.lvl + this.getSkillBoost(skill);
             let name = skill.name[option.getLanguage()];
             let nameChar = this.getName(true);
             message.draw(option.isEnglish() ?
@@ -4900,11 +4900,11 @@ const Fighter = class extends Material {
                 `${nameChar}${name}を放った`);
             audio.playSound(skill.element);
         } else if (flag.scroll) {
-            nameSkill = ci.nameSkill;
+            nameSkill = this.ci.nameSkill;
             skill = skillMap.get(nameSkill);
-            lvl = ci.skillLvl;
+            lvl = this.ci.skillLvl;
         } else if (flag.throw) {
-            let name = ci.getName(false, 1);
+            let name = this.ci.getName(false, 1);
             message.draw(option.isEnglish() ?
                 `Threw ${name}` :
                 `${name}を投げた`);
@@ -4967,7 +4967,7 @@ const Fighter = class extends Material {
                                     missile: true,
                                 });
                             } else if (flag.throw) {
-                                this.haveThrown(ci, fighter, xS, yS);
+                                this.haveThrown(this.ci, fighter, xS, yS);
                             }
 
                             break;
@@ -5023,7 +5023,7 @@ const Fighter = class extends Material {
 			}
 
             if (thrown) {
-                if (!hit) this.deleteAmmo(ci, true, xS, yS);
+                if (!hit) this.deleteAmmo(this.ci, true, xS, yS);
                 flag.arrow = flag.throw = false;
             } else if (flag.skill) {
                 this.consumeMana(skill);
@@ -5046,10 +5046,10 @@ const Fighter = class extends Material {
 						this.teleport(false, false, xS, yS, true);
 					}
                 }
-                if (skill.type === 'missile') this.deleteAmmo(ci);
+                if (skill.type === 'missile') this.deleteAmmo(this.ci);
                 flag.skill = false;
             } else if (flag.scroll) {
-                if (flag.aim) this.deleteItem(ci, 1);
+                if (flag.aim) this.deleteItem(this.ci, 1);
                 flag.scroll = false;
             } else if (flag.zap) {
                 if (found) w.identifyWand();
@@ -5089,8 +5089,8 @@ const Fighter = class extends Material {
             if (!this.haveMissile(true)) {
                 check = false;
             } else {
-                ci = this.getAmmo(this.equipment['main'].throwType);
-                if (!ci) {
+                this.ci = this.getAmmo(this.equipment['main'].throwType);
+                if (!this.ci) {
                     msgId = M_DONT_HAVE_AMMO;
                     check = false;
                 }
@@ -5140,7 +5140,7 @@ const Fighter = class extends Material {
     }
 
     castSelfSpell(skill, ecco) {
-        let lvl = cs.lvl + this.getSkillBoost(skill);
+        let lvl = this.cs.lvl + this.getSkillBoost(skill);
         let name = this.getName(true);
         let nameSkill = skill.name[option.getLanguage()];
         message.draw(option.isEnglish() ?
@@ -5198,7 +5198,7 @@ const Fighter = class extends Material {
 		} else {
             item = this.inventoryOut(item, 1);
             item.putDown(x, y, true);
-            ci = null;
+            this.ci = null;
         }
     }
 
@@ -5227,7 +5227,7 @@ const Fighter = class extends Material {
                 break;
 		}
 		
-        ci = null;
+        this.ci = null;
     }
 
     reduceItemCharge(item) {

@@ -297,8 +297,8 @@ const input = {
                     flag.regular = false;
                 } else {
                     if (!rogue.haveMissile(true)) break;
-                    ci = rogue.getAmmo(rogue.equipment['main'].throwType);
-                    if (!ci) {
+                    rogue.ci = rogue.getAmmo(rogue.equipment['main'].throwType);
+                    if (!rogue.ci) {
                         message.draw(message.get(M_DONT_HAVE_AMMO));
                         break;
 					}

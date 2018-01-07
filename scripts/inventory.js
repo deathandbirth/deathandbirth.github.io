@@ -38,7 +38,7 @@ const inventory = {
 	
     show(list, direction, a, place) {
         if (flag.shop) {
-            var quantity2 = !cn ? 1 : Number(cn);
+            var quantity2 = !rogue.cn ? 1 : Number(rogue.cn);
             if (a && quantity2 > list[a].quantity) quantity2 = list[a].quantity;
         } else if (place === P_STASH) {
 			var l = (enter[STASH].page - 1) * MAX_PACK_COUNT;

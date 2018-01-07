@@ -757,7 +757,3 @@ const FONT_STYLE = {
 };
 
 let rogue;
-let ca = ''; //current alphabet
-let cn = 1; //current number
-let ci = null; //current item
-let cs = ''; //current skill

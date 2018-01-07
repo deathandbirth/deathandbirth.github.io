@@ -2124,10 +2124,10 @@ const Item = class extends Material {
 		}
     }
 
-    getQuantity(keyCode) {
+    getQuantity(keyCode, num) {
         let i;
         if (keyCode === 13) { //Enter
-            i = Number(cn);
+            i = Number(num);
             if (i > this.quantity) i = this.quantity;
         } else {
 			i = this.quantity;

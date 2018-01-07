@@ -370,8 +370,8 @@ const Enemy = class extends Fighter {
 		}
 		
         if (this.haveMissile()) {
-            ci = this.getAmmo(this.equipment['main'].throwType);
-            if (ci) {
+            this.ci = this.getAmmo(this.equipment['main'].throwType);
+            if (this.ci) {
                 flag.arrow = true;
                 let name = this.getName(true);
                 let arrow = this.timesMissile === 1 ? 'an arrow' : 'arrows';
@@ -404,7 +404,7 @@ const Enemy = class extends Fighter {
             if (l ** 2 < distance) return;
 		}
 		
-        cs = this.skill[a];
+        this.cs = this.skill[a];
         if (skill.kind === 'self') {
             if (this.castSelfSpell(skill) === null) return;
         } else {
