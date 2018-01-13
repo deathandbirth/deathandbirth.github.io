@@ -294,7 +294,7 @@ const Enemy = class extends Fighter {
                 });
             }
 
-            if (rogue.cdl === 33) difficulty.inferno = true;
+            if (rogue.cdl === 33) rogue.inferno = true;
         }
     }
 

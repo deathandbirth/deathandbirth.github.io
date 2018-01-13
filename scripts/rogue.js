@@ -2471,7 +2471,7 @@ const Rogue = class extends Fighter {
         if (name === 'Trap Door') {
             if (this.levi && !stepOn) {
                 message.draw(message.get(M_FLOAT));
-			} else if (rogue.cdl !== 33 || difficulty.inferno) {
+			} else if (rogue.cdl !== 33 || this.inferno) {
 				this.downOrUpStairs(null, true);
 			}
         } else if (name === 'Bear Trap') {

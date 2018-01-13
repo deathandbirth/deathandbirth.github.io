@@ -65,7 +65,7 @@ const creation = {
     dungeon() {
         map.init();
         dungeon.create();
-        let boss = rogue.cdl === 33 && !difficulty.inferno;
+        let boss = rogue.cdl === 33 && !rogue.inferno;
         if (boss) {
             this.enemy({
                 type: 'misc',
@@ -102,7 +102,7 @@ const creation = {
         rogue.putDown(true);
         map.draw(rogue.x, rogue.y);
         audio.stop(audio.curTrack);
-        audio.playMusic(!difficulty.inferno ? 'town' : 'town2');
+        audio.playMusic(!rogue.inferno ? 'town' : 'town2');
         initShopItem();
     },
 

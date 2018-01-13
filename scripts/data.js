@@ -4,7 +4,6 @@ const Data = class {
         this.saveItemTab();
         this.coords = map.coords;
         this.option = option;
-        this.difficulty = difficulty;
         this.messageList = message.list;
         if (rogue.cdl) this.stashList = enter[STASH].list;
         this.track = audio.curTrack;
@@ -17,10 +16,10 @@ const Data = class {
         getRndName.init();
         this.loadItemTab();
         this.loadCoords();
-        this.loadDifficulty();
         message.list = this.messageList;
         if(this.ver < 0.003) {
             rogue.litMapIds = this.litMapIds;
+            rogue.inferno = this.difficulty.inferno;
         }
 
         if (rogue.cdl) {
@@ -132,12 +131,6 @@ const Data = class {
             }
 
             option[key2].user = this.option[key2].user;
-        }
-    }
-
-    loadDifficulty() {
-        for (let key in this.difficulty) {
-            difficulty[key] = this.difficulty[key];
         }
     }
 

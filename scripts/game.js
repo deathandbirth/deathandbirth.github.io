@@ -130,7 +130,6 @@ const game = {
         initFlag();
         initTab();
         audio.init();
-        difficulty.init();
         rogue = new Rogue();
         rogue.init();
         enter[STASH].list = [];

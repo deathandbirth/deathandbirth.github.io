@@ -686,12 +686,6 @@ const textLen = {
     },
 };
 
-const difficulty = {
-    init() {
-        this.inferno = this.purgatorio = this.paradiso = false;
-    }
-};
-
 const flag = {
     died: true,
     wait: false,
