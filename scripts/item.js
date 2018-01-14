@@ -220,7 +220,7 @@ const itemTab = {
     book: new Map([
         [B_BLANK_PAPER, {
             nameReal: { a: 'Blank Paper', b: '白紙' },
-            color: GRAY,
+            color: colorList.gray,
             type2: 'Charge Book',
             priceRate: 5,
             shop: true,
@@ -230,7 +230,7 @@ const itemTab = {
 		
         [B_ALCHEMY_1, {
             nameReal: { a: 'Alchemy for Beginners', b: '初級錬金術' },
-            color: RED,
+            color: colorList.red,
             type2: 'recipe',
             priceRate: 1,
             shop: true,
@@ -242,7 +242,7 @@ const itemTab = {
 		
         [B_SPELL_1, {
             nameReal: { a: 'Spells for Beginners', b: '初級魔術' },
-            color: GRAY,
+            color: colorList.gray,
             priceRate: 1,
             shop: true,
             lvl: 1,
@@ -270,7 +270,7 @@ const itemTab = {
 		
         [B_SPELL_2, {
             nameReal: { a: 'Intermediate Spells', b: '中級魔術' },
-            color: GRAY,
+            color: colorList.gray,
             priceRate: 10,
             shop: true,
             lvl: 10,
@@ -300,7 +300,7 @@ const itemTab = {
 		
         [B_SPELL_3, {
             nameReal: { a: 'Advanced Spells', b: '上級魔術' },
-            color: GRAY,
+            color: colorList.gray,
             priceRate: 30,
             lvl: 20,
             rarity: 30,
@@ -325,7 +325,7 @@ const itemTab = {
 		
         [B_SKILL_1, {
             nameReal: { a: 'Skills for Beginners', b: '初級武術' },
-            color: BROWN,
+            color: colorList.brown,
             priceRate: 1,
             shop: true,
             lvl: 1,
@@ -344,7 +344,7 @@ const itemTab = {
 		
         [B_SKILL_2, {
             nameReal: { a: 'Intermediate Skills', b: '中級武術' },
-            color: BROWN,
+            color: colorList.brown,
             priceRate: 10,
             shop: true,
             lvl: 15,
@@ -360,7 +360,7 @@ const itemTab = {
 		
         [B_ARES, {
             nameReal: { a: 'Ares', b: 'アレス' },
-            color: BRONZE,
+            color: colorList.bronze,
             priceRate: 50,
             lvl: 30,
             rarity: 50,
@@ -376,7 +376,7 @@ const itemTab = {
 		
         [B_APOLLO, {
             nameReal: { a: 'Apollo', b: 'アポロン' },
-            color: ORANGE,
+            color: colorList.orange,
             priceRate: 50,
             lvl: 30,
             rarity: 50,
@@ -393,7 +393,7 @@ const itemTab = {
 		
         [B_HERACLITUS, { //fire
             nameReal: { a: 'Heraclitus', b: 'ヘラクレイトス' },
-            color: C_FIRE,
+            color: colorList.fire,
             priceRate: 50,
             lvl: 30,
             rarity: 50,
@@ -414,7 +414,7 @@ const itemTab = {
 		
         [B_THALES, { //water
             nameReal: { a: 'Thales', b: 'タレス' },
-            color: C_WATER,
+            color: colorList.water,
             priceRate: 50,
             lvl: 30,
             rarity: 50,
@@ -436,7 +436,7 @@ const itemTab = {
 		
         [B_ANAXIMENES, { //air
             nameReal: { a: 'Anaximenes', b: 'アナクシメネス' },
-            color: C_AIR,
+            color: colorList.air,
             priceRate: 50,
             lvl: 30,
             rarity: 50,
@@ -456,7 +456,7 @@ const itemTab = {
 		
         [B_XENOPHANES, { //earth
             nameReal: { a: 'Xenophanes', b: 'クセノパネス' },
-            color: C_EARTH,
+            color: colorList.earth,
             priceRate: 50,
             lvl: 30,
             rarity: 50,
@@ -485,7 +485,7 @@ const itemTab = {
 		
         [B_HIPPOCRATES, { //poison
             nameReal: { a: 'Hippocrates', b: 'ヒポクラテス' },
-            color: C_POISON,
+            color: colorList.poison,
             priceRate: 50,
             lvl: 30,
             rarity: 50,
@@ -507,7 +507,7 @@ const itemTab = {
 		
         [B_DEMOCRITUS, { //atom
             nameReal: { a: 'Democritus', b: 'デモクリトス' },
-            color: SHADOW2,
+            color: colorList.atom,
             priceRate: 50,
             lvl: 30,
             rarity: 70,
@@ -526,7 +526,7 @@ const itemTab = {
             nameReal: { a: 'Ration', b: 'レーション' },
             nameSkill: SATISFY_HUNGER,
             skillLvl: 20,
-            color: BROWN,
+            color: colorList.brown,
             priceRate: 1,
             shop: true,
             lvl: 1,
@@ -853,7 +853,7 @@ const itemTab = {
             nameReal: { a: 'Lethe', b: 'レテ' },
             nameSkill: RESPEC,
             skillLvl: 10,
-            color: WHITE,
+            color: colorList.white,
             type2: 'water',
             lethe: true,
             priceRate: 200,
@@ -867,7 +867,7 @@ const itemTab = {
             nameReal: { a: 'Short Teleportation', b: 'ショート・テレポート' },
             nameSkill: SHORT_TELEPORTATION,
             skillLvl: 10,
-            color: WHITE,
+            color: colorList.white,
             priceRate: 1,
             shop: true,
             lvl: 1,
@@ -878,7 +878,7 @@ const itemTab = {
             nameReal: { a: 'Teleportation', b: 'テレポート' },
             nameSkill: TELEPORTATION,
             skillLvl: 10,
-            color: WHITE,
+            color: colorList.white,
             priceRate: 1.5,
             shop: true,
             lvl: 1,
@@ -889,7 +889,7 @@ const itemTab = {
             nameReal: { a: 'Remove Curse', b: '解呪' },
             nameSkill: REMOVE_CURSE,
             skillLvl: 10,
-            color: WHITE,
+            color: colorList.white,
             priceRate: 2,
             shop: true,
             lvl: 1,
@@ -900,7 +900,7 @@ const itemTab = {
             nameReal: { a: 'Identify', b: '識別' },
             nameSkill: IDENTIFY,
             skillLvl: 10,
-            color: WHITE,
+            color: colorList.white,
             priceRate: 1,
             shop: true,
             lvl: 1,
@@ -911,7 +911,7 @@ const itemTab = {
             nameReal: { a: 'Monster Detection', b: 'モンスター感知' },
             nameSkill: MONSTER_DETECTION,
             skillLvl: 10,
-            color: WHITE,
+            color: colorList.white,
             priceRate: 1,
             shop: true,
             lvl: 5,
@@ -922,7 +922,7 @@ const itemTab = {
             nameReal: { a: 'Item Detection', b: 'アイテム感知' },
             nameSkill: ITEM_DETECTION,
             skillLvl: 10,
-            color: WHITE,
+            color: colorList.white,
             priceRate: 2,
             shop: true,
             lvl: 10,
@@ -933,7 +933,7 @@ const itemTab = {
             nameReal: { a: 'Magic Mapping', b: '魔法地図' },
             nameSkill: MAGIC_MAPPING,
             skillLvl: 10,
-            color: WHITE,
+            color: colorList.white,
             priceRate: 3,
             shop: true,
             lvl: 15,
@@ -944,7 +944,7 @@ const itemTab = {
             nameReal: { a: 'Town Portal', b: 'タウン・ポータル' },
             nameSkill: TOWN_PORTAL,
             skillLvl: 10,
-            color: WHITE,
+            color: colorList.white,
             priceRate: 1,
             shop: true,
             lvl: 5,
@@ -955,7 +955,7 @@ const itemTab = {
             nameReal: { a: 'Touch of Confusion', b: '混乱の手' },
             nameSkill: TOUCH_OF_CONFUSION,
             skillLvl: 10,
-            color: WHITE,
+            color: colorList.white,
             priceRate: 4,
             shop: true,
             lvl: 10,
@@ -966,7 +966,7 @@ const itemTab = {
             nameReal: { a: 'Hold Monster', b: 'モンスター束縛' },
             nameSkill: HOLD_MONSTER,
             skillLvl: 10,
-            color: WHITE,
+            color: colorList.white,
             priceRate: 10,
             lvl: 10,
             rarity: 20
@@ -976,7 +976,7 @@ const itemTab = {
             nameReal: { a: 'Aggravate Monster', b: '反感' },
             nameSkill: SCREAM,
             skillLvl: 10,
-            color: WHITE,
+            color: colorList.white,
             priceRate: 0.1,
             lvl: 1,
             rarity: 0
@@ -986,7 +986,7 @@ const itemTab = {
             nameReal: { a: 'Create Monster', b: 'モンスター生成' },
             nameSkill: CREATE_MONSTER,
             skillLvl: 10,
-            color: WHITE,
+            color: colorList.white,
             priceRate: 0.1,
             lvl: 5,
             rarity: 0
@@ -996,7 +996,7 @@ const itemTab = {
             nameReal: { a: 'Create Magic Monster', b: 'マジック・モンスター生成' },
             nameSkill: CREATE_MAGIC_MONSTER,
             skillLvl: 10,
-            color: WHITE,
+            color: colorList.white,
             priceRate: 0.1,
             lvl: 20,
             rarity: 50
@@ -1006,7 +1006,7 @@ const itemTab = {
             nameReal: { a: 'Create Trap', b: 'トラップ生成' },
             nameSkill: CREATE_TRAP,
             skillLvl: 10,
-            color: WHITE,
+            color: colorList.white,
             priceRate: 0.1,
             lvl: 3,
             rarity: 0
@@ -1016,7 +1016,7 @@ const itemTab = {
             nameReal: { a: 'Restore Durability', b: '耐久度復活' },
             nameSkill: RESTORE_DURABILITY,
             skillLvl: 10,
-            color: WHITE,
+            color: colorList.white,
             priceRate: 1,
             shop: true,
             lvl: 10,
@@ -1027,7 +1027,7 @@ const itemTab = {
             nameReal: { a: 'Repair All', b: '全修復' },
             nameSkill: REPAIR_ALL,
             skillLvl: 10,
-            color: WHITE,
+            color: colorList.white,
             priceRate: 20,
             lvl: 20,
             rarity: 50
@@ -1037,7 +1037,7 @@ const itemTab = {
             nameReal: { a: 'Disintegration', b: '分解' },
             nameSkill: DISINTEGRATION,
             skillLvl: 10,
-            color: WHITE,
+            color: colorList.white,
             priceRate: 100,
             lvl: 30,
             rarity: 80
@@ -1047,7 +1047,7 @@ const itemTab = {
             nameReal: { a: 'Magic Circle of Protection', b: '守護魔法円' },
             nameSkill: MAGIC_CIRCLE_OF_PROTECTION,
             skillLvl: 10,
-            color: WHITE,
+            color: colorList.white,
             priceRate: 30,
             lvl: 30,
             rarity: 50
@@ -1057,7 +1057,7 @@ const itemTab = {
             nameReal: { a: 'Light', b: '光' },
             nameSkill: LIGHT,
             skillLvl: 10,
-            color: WHITE,
+            color: colorList.white,
             priceRate: 1,
             shop: true,
             lvl: 1,
@@ -1068,7 +1068,7 @@ const itemTab = {
             nameReal: { a: 'Spiderweb', b: 'スパイダー・ウェブ' },
             nameSkill: GRAVITATIONAL_FIELD,
             skillLvl: 10,
-            color: WHITE,
+            color: colorList.white,
             priceRate: 50,
             lvl: 20,
             rarity: 30
@@ -1078,7 +1078,7 @@ const itemTab = {
             nameReal: { a: 'Earthquake', b: '地震' },
             nameSkill: EARTHQUAKE,
             skillLvl: 20,
-            color: WHITE,
+            color: colorList.white,
             priceRate: 25,
             lvl: 20,
             rarity: 30
@@ -1710,7 +1710,7 @@ const itemTab = {
     amulet: new Map([
         [A_AMULET, {
             nameReal: { a: 'Amulet', b: '首飾り' },
-            color: ORANGE,
+            color: colorList.orange,
             mod: MAGIC,
             lvl: 1,
             rarity: 0,
@@ -1722,7 +1722,7 @@ const itemTab = {
     ring: new Map([
         [R_RING, {
             nameReal: { a: 'Ring', b: '指輪' },
-            color: RED,
+            color: colorList.red,
             mod: MAGIC,
             lvl: 1,
             rarity: 0,
@@ -1743,7 +1743,7 @@ const itemTab = {
     oil: new Map([
         [O_OLIVE_OIL, {
             nameReal: { a: 'Olive Oil', b: 'オリーブ油' },
-            color: YELLOW,
+            color: colorList.yellow,
             duration: 2500,
             weight: 0.3,
             priceRate: 1,
@@ -1756,7 +1756,7 @@ const itemTab = {
     ammo: new Map([
         [A_ROCK, {
             nameReal: { a: 'Rock', b: '石' },
-            color: GRAY,
+            color: colorList.gray,
             throwType: 'sling',
             weight: 0.1,
             priceRate: 1,
@@ -1769,7 +1769,7 @@ const itemTab = {
 		
         [A_ARROW, {
             nameReal: { a: 'Arrow', b: '矢' },
-            color: BROWN,
+            color: colorList.brown,
             throwType: 'bow',
             weight: 0.02,
             priceRate: 2,
@@ -1782,7 +1782,7 @@ const itemTab = {
 		
         [A_BOLT, {
             nameReal: { a: 'Bolt', b: 'ボルト' },
-            color: BROWN,
+            color: colorList.brown,
             throwType: 'crossbow',
             weight: 0.04,
             priceRate: 3,
@@ -1797,7 +1797,7 @@ const itemTab = {
     coin: new Map([
         [C_COIN, {
             nameReal: { a: 'Coin', b: '硬貨' },
-            color: YELLOW,
+            color: colorList.yellow,
             lvl: 1,
             rarity: 0
         }],

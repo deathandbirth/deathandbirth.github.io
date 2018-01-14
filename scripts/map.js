@@ -2,9 +2,9 @@ const minimap = {
     shadow() {
         let ctxMap = display.ctxes.map;
         ctxMap.save();
-        ctxMap.shadowColor = CLEAR;
+        ctxMap.shadowColor = colorList.clear;
         ctxMap.globalAlpha = 0.9;
-        ctxMap.fillStyle = BLACK;
+        ctxMap.fillStyle = colorList.black;
         display.rect({
             ctx: ctxMap,
             widthPx: display.width,
@@ -71,7 +71,7 @@ const minimap = {
         let ctxMap = display.ctxes.map;
         ctxMap.save();
         ctxMap.fillStyle = color;
-        if (rogue.hallucinated && !shadow) ctxMap.shadowColor = PURPLE;
+        if (rogue.hallucinated && !shadow) ctxMap.shadowColor = colorList.purple;
         if (shadow) ctxMap.shadowColor = shadow;
         display.text({
             ctx: ctxMap,
@@ -272,8 +272,8 @@ const hallucinate = {
                 }
             }
 
-            obj.shadow = GOLD;
-            obj.stroke = INDIGO;
+            obj.shadow = colorList.gold;
+            obj.stroke = colorList.indigo;
         } else if (coinToss()) {
             obj.stroke = 0;
             let bias = rndIntBet(1, MAX_BIAS_NUMS);
@@ -282,14 +282,14 @@ const hallucinate = {
                 let aff = affixes[rndInt(affixes.length - 1)];
                 obj.name['a'] = `${obj.name['a']} ${aff.name['a']}`;
                 obj.name['b'] = `${aff.name['b']}${obj.name['b']}`;
-                obj.shadow = YELLOW;
+                obj.shadow = colorList.yellow;
             } else {
                 let sufId = rndInt(modTab[SUFFIX].length - 1);
                 let pre = modTab[PREFIX].get(bias);
                 let suf = modTab[SUFFIX][sufId];
                 obj.name['a'] = `${pre.name['a']} ${obj.name['a']} ${suf.name['a']}`;
                 obj.name['b'] = `${pre.name['b']}${obj.name['b']} "${suf.name['b']}"`;
-                obj.shadow = AQUA;
+                obj.shadow = colorList.aqua;
             }
         } else {
             obj.shadow = 0;
@@ -385,8 +385,8 @@ const statistics = {
         let ctxStats = display.ctxes.stats;
         let width = ctxStats.measureText(e.name).width;
         ctxStats.save();
-        ctxStats.shadowColor = CLEAR;
-        ctxStats.fillStyle = BLACK;
+        ctxStats.shadowColor = colorList.clear;
+        ctxStats.fillStyle = colorList.black;
         ctxStats.globalAlpha = 0.5;
         display.rect({
             ctx: ctxStats,
@@ -423,7 +423,7 @@ const statistics = {
         ctxStats.textAlign = 'center';
         if (e.shadow) ctxStats.shadowColor = e.shadow;
         let name = e.getName(false, true);
-        if (e.cursed) ctxStats.fillStyle = RED;
+        if (e.cursed) ctxStats.fillStyle = colorList.red;
         display.text({
             ctx: ctxStats,
             msg: `Lv${e.lvl} ${name}`,
@@ -454,7 +454,7 @@ const statistics = {
         if (!enemy) return;
         ctxStats.save();
         ctxStats.textAlign = 'center';
-        ctxStats.strokeStyle = GRAY;
+        ctxStats.strokeStyle = colorList.gray;
         display.rect({
             ctx: ctxStats,
             x: -1.95,

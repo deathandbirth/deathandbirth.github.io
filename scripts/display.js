@@ -30,11 +30,11 @@ const display = {
             ctx.lineJoin = 'round';
             ctx.shadowOffsetX = 1;
             ctx.shadowOffsetY = 1;
-            ctx.fillStyle = WHITE;
+            ctx.fillStyle = colorList.white;
             let fontStyle = FONT_STYLE[option.getLanguage()];
             if (key === 'cur') {
                 ctx.font = fs + 6 + 'px ' + fontStyle;
-                ctx.strokeStyle = YELLOW;
+                ctx.strokeStyle = colorList.yellow;
             } else if (key === 'map') {
                 ctx.font = '10px ' + fontStyle;
             } else if (key === 'buf') {

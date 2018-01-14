@@ -3,7 +3,7 @@ const fighterTab = {
 		{
 			name: { a: 'Giant Ant', b: '巨蟻' },
 			symbol: 'a',
-			color: C_ACID,
+			color: colorList.acid,
 			race: ANIMAL,
 			mod: NORMAL,
 			grade: NORMAL,
@@ -36,7 +36,7 @@ const fighterTab = {
 		{
 			name: { a: 'Giant Bat', b: '大蝙蝠' },
 			symbol: 'b',
-			color: GRAY,
+			color: colorList.gray,
 			race: ANIMAL,
 			mod: NORMAL,
 			grade: NORMAL,
@@ -69,7 +69,7 @@ const fighterTab = {
 		{
             name: { a: 'She-wolf', b: '雌狼' },
             symbol: 'c',
-            color: BROWN,
+            color: colorList.brown,
             race: ANIMAL,
             mod: NORMAL,
             grade: NORMAL,
@@ -100,7 +100,7 @@ const fighterTab = {
         {
             name: { a: 'Laelaps, the Hound of Cephalus', b: '狩人ケパロスの猟犬ラエラプス' },
             symbol: 'c',
-            color: BROWN,
+            color: colorList.brown,
             race: ANIMAL,
             mod: UNIQUE,
             grade: NORMAL,
@@ -131,7 +131,7 @@ const fighterTab = {
 		{
             name: { a: 'Lion', b: '獅子' },
             symbol: 'f',
-            color: YELLOW,
+            color: colorList.yellow,
             race: ANIMAL,
             mod: NORMAL,
             grade: NORMAL,
@@ -161,7 +161,7 @@ const fighterTab = {
         {
             name: { a: 'Nemean lion', b: 'ネメアの獅子' },
             symbol: 'f',
-            color: YELLOW,
+            color: colorList.yellow,
             race: ANIMAL,
             mod: UNIQUE,
             grade: NORMAL,
@@ -287,7 +287,7 @@ const fighterTab = {
 		{
             name: { a: 'Snake Woman', b: '蛇女' },
             symbol: 'h',
-            color: GREEN,
+            color: colorList.green,
             mod: NORMAL,
             grade: NORMAL,
             lvl: 8,
@@ -315,7 +315,7 @@ const fighterTab = {
         {
             name: { a: 'Calypso, the Sea Goddess', b: '海の女神カリュプソ' },
             symbol: 'h',
-            color: BLUE,
+            color: colorList.blue,
             mod: UNIQUE,
             grade: NORMAL,
             lvl: 30,
@@ -354,7 +354,7 @@ const fighterTab = {
 		{
 			name: { a: 'Incubuses', b: '夢魔' },
 			symbol: 'i',
-			color: GRAY,
+			color: colorList.gray,
 			race: DEMON,
 			mod: NORMAL,
 			grade: NORMAL,
@@ -388,7 +388,7 @@ const fighterTab = {
 		{
 			name: { a: 'Mimic', b: 'ミミック' },
 			symbol: 'm',
-			color: BROWN,
+			color: colorList.brown,
 			mod: NORMAL,
 			grade: NORMAL,
 			lvl: 10,
@@ -420,7 +420,7 @@ const fighterTab = {
 		{
             name: { a: 'Warrior', b: '戦士' },
             symbol: 'p',
-            color: BROWN,
+            color: colorList.brown,
             race: HUMAN,
             mod: NORMAL,
             grade: NORMAL,
@@ -454,7 +454,7 @@ const fighterTab = {
         {
             name: { a: 'Hunter', b: '狩人' },
             symbol: 'p',
-            color: RED,
+            color: colorList.red,
             race: HUMAN,
             mod: NORMAL,
             grade: NORMAL,
@@ -490,7 +490,7 @@ const fighterTab = {
         {
             name: { a: 'Magus', b: '魔術師' },
             symbol: 'p',
-            color: PURPLE,
+            color: colorList.purple,
             race: HUMAN,
             mod: NORMAL,
             grade: NORMAL,
@@ -530,7 +530,7 @@ const fighterTab = {
         {
             name: { a: 'Thief', b: '盗賊' },
             symbol: 'p',
-            color: GRAY,
+            color: colorList.gray,
             race: HUMAN,
             mod: NORMAL,
             grade: NORMAL,
@@ -567,7 +567,7 @@ const fighterTab = {
         {
             name: { a: 'Iros, the Beggar', b: '乞食イロス' },
             symbol: 'p',
-            color: BROWN,
+            color: colorList.brown,
             race: HUMAN,
             mod: UNIQUE,
             grade: NORMAL,
@@ -598,7 +598,7 @@ const fighterTab = {
         {
             name: { a: 'Dolon, the Spy', b: '偵察者ドロン' },
             symbol: 'p',
-            color: BRONZE,
+            color: colorList.bronze,
             race: HUMAN,
             mod: UNIQUE,
             grade: NORMAL,
@@ -632,7 +632,7 @@ const fighterTab = {
         {
             name: { a: 'Pandarus, the Archer of Troy', b: 'トロイアの射手パンダロス' },
             symbol: 'p',
-            color: BRONZE,
+            color: colorList.bronze,
             race: HUMAN,
             mod: UNIQUE,
             grade: NORMAL,
@@ -673,7 +673,7 @@ const fighterTab = {
         {
             name: { a: 'Nestor, the Knight of Gerenia', b: 'ゲレニアの騎士ネストル' },
             symbol: 'p',
-            color: BRONZE,
+            color: colorList.bronze,
             race: HUMAN,
             mod: UNIQUE,
             grade: NORMAL,
@@ -710,7 +710,7 @@ const fighterTab = {
         {
             name: { a: 'Orlando, the Frenzy', b: '狂乱のオルランド' },
             symbol: 'p',
-            color: ORANGE,
+            color: colorList.orange,
             race: HUMAN,
             mod: UNIQUE,
             grade: NORMAL,
@@ -747,7 +747,7 @@ const fighterTab = {
 		{
             name: { a: 'Horse', b: '馬' },
             symbol: 'q',
-            color: ORANGE,
+            color: colorList.orange,
             race: ANIMAL,
             mod: NORMAL,
             grade: NORMAL,
@@ -778,7 +778,7 @@ const fighterTab = {
         {
             name: { a: 'Rays of the Sun, the Horse of Rhesus', b: 'トラキア王レソスの馬 `陽光の矢`' },
             symbol: 'q',
-            color: BROWN,
+            color: colorList.brown,
             race: ANIMAL,
             mod: UNIQUE,
             grade: NORMAL,
@@ -808,7 +808,7 @@ const fighterTab = {
         {
             name: { a: 'Boar', b: '猪' },
             symbol: 'q',
-            color: BROWN,
+            color: colorList.brown,
             race: ANIMAL,
             mod: NORMAL,
             grade: NORMAL,
@@ -838,7 +838,7 @@ const fighterTab = {
         {
             name: { a: 'Calydonian Boar', b: 'カリュドーンの大猪' },
             symbol: 'q',
-            color: BROWN,
+            color: colorList.brown,
             race: ANIMAL,
             mod: UNIQUE,
             grade: NORMAL,
@@ -901,7 +901,7 @@ const fighterTab = {
 		{
 			name: { a: 'Giant Worm', b: '大芋虫' },
 			symbol: 'w',
-			color: WHITE,
+			color: colorList.white,
 			race: ANIMAL,
 			mod: NORMAL,
 			grade: NORMAL,
@@ -935,7 +935,7 @@ const fighterTab = {
 		{
 			name: { a: 'Living Bush', b: '生ける繁み' },
 			symbol: 'z',
-			color: GRAY,
+			color: colorList.gray,
 			race: UNDEAD,
 			mod: NORMAL,
 			grade: NORMAL,
@@ -969,7 +969,7 @@ const fighterTab = {
 		{
 			name: { a: 'Fallen Angel', b: '堕天使' },
 			symbol: 'A',
-			color: SHADOW,
+			color: colorList.shadow,
 			race: DEMON,
 			mod: NORMAL,
 			grade: NORMAL,
@@ -1007,7 +1007,7 @@ const fighterTab = {
 		{
             name: { a: 'Eagle', b: '鷲' },
             symbol: 'B',
-            color: SHADOW,
+            color: colorList.shadow,
             race: ANIMAL,
             mod: NORMAL,
             grade: NORMAL,
@@ -1038,7 +1038,7 @@ const fighterTab = {
         {
             name: { a: 'Aedon, the Nightingale', b: '夜鶯アエドン' },
             symbol: 'B',
-            color: SHADOW,
+            color: colorList.shadow,
             race: ANIMAL,
             mod: UNIQUE,
             grade: NORMAL,
@@ -1074,7 +1074,7 @@ const fighterTab = {
         {
             name: { a: 'Nisos, the White-tailed Eagle', b: '尾白鷲ニソス' },
             symbol: 'B',
-            color: SHADOW,
+            color: colorList.shadow,
             race: ANIMAL,
             mod: UNIQUE,
             grade: NORMAL,
@@ -1201,7 +1201,7 @@ const fighterTab = {
 		{
             name: { a: 'Dragon', b: '竜' },
             symbol: 'D',
-            color: GREEN,
+            color: colorList.green,
             race: DRAGON,
             mod: MAGIC,
             grade: NORMAL,
@@ -1231,7 +1231,7 @@ const fighterTab = {
         {
             name: { a: 'Dragon, the Never-sleeping', b: '眠らずの竜' },
             symbol: 'D',
-            color: GREEN,
+            color: colorList.green,
             race: DRAGON,
             mod: UNIQUE,
             grade: NORMAL,
@@ -1268,7 +1268,7 @@ const fighterTab = {
 		{
 			name: { a: 'Elemental', b: '精霊' },
 			symbol: 'E',
-			color: WHITE,
+			color: colorList.white,
 			race: SPIRIT,
 			mod: MAGIC,
 			grade: NORMAL,
@@ -1299,7 +1299,7 @@ const fighterTab = {
 		{
 			name: { a: 'Fairy', b: '妖精' },
 			symbol: 'F',
-			color: LIME,
+			color: colorList.lime,
 			race: SPIRIT,
 			mod: NORMAL,
 			grade: NORMAL,
@@ -1334,7 +1334,7 @@ const fighterTab = {
 		{
 			name: { a: 'Phantom', b: '亡者' },
 			symbol: 'G',
-			color: SKY_BLUE,
+			color: colorList.skyblue,
 			race: UNDEAD,
 			mod: NORMAL,
 			grade: NORMAL,
@@ -1367,7 +1367,7 @@ const fighterTab = {
 		{
             name: { a: 'Harpy', b: 'ハーピー' },
             symbol: 'H',
-            color: SKY_BLUE,
+            color: colorList.skyblue,
             race: HUMAN | ANIMAL,
             mod: NORMAL,
             grade: NORMAL,
@@ -1402,7 +1402,7 @@ const fighterTab = {
         {
             name: { a: 'Centaur', b: 'ケンタウロス' },
             symbol: 'H',
-            color: YELLOW,
+            color: colorList.yellow,
             race: HUMAN | ANIMAL,
             mod: NORMAL,
             grade: NORMAL,
@@ -1437,7 +1437,7 @@ const fighterTab = {
         {
             name: { a: 'Minotaur', b: 'ミノタウロス' },
             symbol: 'H',
-            color: ORANGE,
+            color: colorList.orange,
             race: HUMAN | ANIMAL,
             mod: NORMAL,
             grade: NORMAL,
@@ -1471,7 +1471,7 @@ const fighterTab = {
 		{
 			name: { a: 'Nymph', b: 'ニンフ' },
 			symbol: 'N',
-			color: OLIVE,
+			color: colorList.olive,
 			race: SPIRIT,
 			mod: NORMAL,
 			grade: NORMAL,
@@ -1503,7 +1503,7 @@ const fighterTab = {
 		{
             name: { a: 'Serpent', b: '大蛇' },
             symbol: 'J',
-            color: PURPLE,
+            color: colorList.purple,
             race: ANIMAL,
             mod: NORMAL,
             grade: NORMAL,
@@ -1533,7 +1533,7 @@ const fighterTab = {
         {
             name: { a: 'Amphisbaena,the Serpent of the Two-headed', b: '双頭の大蛇`アンフィスバエナ`' },
             symbol: 'J',
-            color: PURPLE,
+            color: colorList.purple,
             race: ANIMAL,
             mod: UNIQUE,
             grade: NORMAL,
@@ -1569,7 +1569,7 @@ const fighterTab = {
 		{
             name: { a: 'Hydra', b: 'ヒュドラ' },
             symbol: 'M',
-            color: GREEN,
+            color: colorList.green,
             mod: NORMAL,
             grade: NORMAL,
             lvl: 28,
@@ -1605,7 +1605,7 @@ const fighterTab = {
         {
             name: { a: 'Scylla, the Sea-monster', b: '海の怪物スキュラ' },
             symbol: 'M',
-            olor: GREEN,
+            olor: colorList.green,
             mod: UNIQUE,
             grade: NORMAL,
             lvl: 30,
@@ -1641,7 +1641,7 @@ const fighterTab = {
 		{
             name: { a: 'Giant', b: '巨人' },
             symbol: 'P',
-            color: YELLOW,
+            color: colorList.yellow,
             race: GIANT,
             mod: NORMAL,
             grade: NORMAL,
@@ -1671,7 +1671,7 @@ const fighterTab = {
         {
             name: { a: 'Cyclopes', b: 'サイクロプス' },
             symbol: 'P',
-            color: ORANGE,
+            color: colorList.orange,
             race: GIANT,
             mod: NORMAL,
             grade: NORMAL,
@@ -1705,7 +1705,7 @@ const fighterTab = {
         {
             name: { a: 'Polyphemus,the One Eyed Giant', b: '隻眼の巨人ポリュペモス' },
             symbol: 'P',
-            color: ORANGE,
+            color: colorList.orange,
             race: GIANT,
             mod: UNIQUE,
             grade: NORMAL,
@@ -1741,7 +1741,7 @@ const fighterTab = {
 		{
             name: { a: 'Giant Spider', b: '大蜘蛛' },
             symbol: 'S',
-            color: GRAY,
+            color: colorList.gray,
             race: ANIMAL,
             mod: NORMAL,
             grade: NORMAL,
@@ -1771,7 +1771,7 @@ const fighterTab = {
         {
             name: { a: 'Giant Scorpion', b: '大サソリ' },
             symbol: 'S',
-            color: BROWN,
+            color: colorList.brown,
             race: ANIMAL,
             mod: NORMAL,
             grade: NORMAL,
@@ -1803,7 +1803,7 @@ const fighterTab = {
 		{
 			name: { a: 'Demon', b: '悪魔' },
 			symbol: 'U',
-			color: GRAY,
+			color: colorList.gray,
 			race: DEMON,
 			mod: NORMAL,
 			grade: NORMAL,
@@ -1839,7 +1839,7 @@ const fighterTab = {
 		{
 			name: { a: 'Vampire', b: '吸血鬼' },
 			symbol: 'V',
-			color: GRAY,
+			color: colorList.gray,
 			race: UNDEAD,
 			mod: NORMAL,
 			grade: NORMAL,
@@ -1871,7 +1871,7 @@ const fighterTab = {
 		{
 			name: { a: 'Wraith', b: '生霊' },
 			symbol: 'W',
-			color: GRAY,
+			color: colorList.gray,
 			race: UNDEAD,
 			mod: NORMAL,
 			grade: NORMAL,
@@ -2006,7 +2006,7 @@ const fighterTab = {
 		{
             name: { a: 'Rogue', b: 'ローグ' },
             symbol: '@',
-            color: WHITE,
+            color: colorList.white,
             race: HUMAN,
             mod: NORMAL,
             grade: NORMAL,
@@ -2044,7 +2044,7 @@ const fighterTab = {
         {
             name: { a: 'Yeti', b: 'イエティ' },
             symbol: 'Y',
-            color: WHITE,
+            color: colorList.white,
             mod: NORMAL,
             grade: NORMAL,
             lvl: 1,
@@ -2071,7 +2071,7 @@ const fighterTab = {
         {
             name: { a: 'Beelzebub, the Lord of the Flies', b: '蝿の王ベルゼブブ' },
             symbol: 'U',
-            color: GRAY,
+            color: colorList.gray,
             race: DEMON,
             mod: UNIQUE,
             grade: NORMAL,
@@ -2766,15 +2766,15 @@ const Fighter = class extends Material {
     }
 
     getConditionColor() {
-        return this.sleeping ? ROYALBLUE :
-            this.paralyzed ? ORANGE :
-            this.confused ? YELLOW :
-            this.blinded ? GRAY :
-            this.hallucinated ? PURPLE :
-            this.canceled ? WHITE :
-            this.infected ? C_INFECTION :
-            this.poisoned ? C_POISON :
-            RED;
+        return this.sleeping ? colorList.royalblue :
+            this.paralyzed ? colorList.orange :
+            this.confused ? colorList.yellow :
+            this.blinded ? colorList.gray :
+            this.hallucinated ? colorList.purple :
+            this.canceled ? colorList.white :
+            this.infected ? colorList.infection :
+            this.poisoned ? colorList.poison :
+            colorList.red;
     }
 
     calcCondition(calc, draw) {
@@ -2790,7 +2790,7 @@ const Fighter = class extends Material {
                     msg: condition,
                     xPx: len,
                     y: j,
-                    color: LIME,
+                    color: colorList.lime,
 				});
 				
                 len += textLen['full'][option.getLanguage()];
@@ -2800,7 +2800,7 @@ const Fighter = class extends Material {
                     msg: condition,
                     xPx: len,
                     y: j,
-                    color: YELLOW,
+                    color: colorList.yellow,
 				});
 				
                 len += textLen['hungry'][option.getLanguage()];
@@ -2810,7 +2810,7 @@ const Fighter = class extends Material {
                     msg: condition,
                     xPx: len,
                     y: j,
-                    color: RED,
+                    color: colorList.red,
 				});
 				
                 len += textLen['starved'][option.getLanguage()];
@@ -2843,7 +2843,7 @@ const Fighter = class extends Material {
                     msg: condition,
                     xPx: len,
                     y: j,
-                    color: C_POISON,
+                    color: colorList.poison,
 				});
 				
                 len += textLen['poisoned'][option.getLanguage()];
@@ -2864,7 +2864,7 @@ const Fighter = class extends Material {
                     msg: condition,
                     xPx: len,
                     y: j,
-                    color: YELLOW,
+                    color: colorList.yellow,
 				});
 				
                 len += textLen['confused'][option.getLanguage()];
@@ -2884,7 +2884,7 @@ const Fighter = class extends Material {
                     msg: condition,
                     xPx: len,
                     y: j,
-                    color: ORANGE,
+                    color: colorList.orange,
 				});
 				
                 len += textLen['paralyzed'][option.getLanguage()];
@@ -2899,7 +2899,7 @@ const Fighter = class extends Material {
                     msg: condition,
                     xPx: len,
                     y: j,
-                    color: ROYALBLUE,
+                    color: colorList.royalblue,
 				});
 				
                 len += textLen['sleeping'][option.getLanguage()];
@@ -2925,7 +2925,7 @@ const Fighter = class extends Material {
                     msg: condition,
                     xPx: len,
                     y: j,
-                    color: GRAY,
+                    color: colorList.gray,
 				});
 				
                 len += textLen['blinded'][option.getLanguage()];
@@ -2946,7 +2946,7 @@ const Fighter = class extends Material {
                     msg: condition,
                     xPx: len,
                     y: j,
-                    color: C_INFECTION,
+                    color: colorList.infection,
 				});
 				
                 len += textLen['infected'][option.getLanguage()];
@@ -2972,7 +2972,7 @@ const Fighter = class extends Material {
                     msg: condition,
                     xPx: len,
                     y: j,
-                    color: PURPLE,
+                    color: colorList.purple,
 				});
 				
                 len += textLen['hallucinated'][option.getLanguage()];
@@ -2992,7 +2992,7 @@ const Fighter = class extends Material {
                     msg: condition,
                     xPx: len,
                     y: j,
-                    color: WHITE,
+                    color: colorList.white,
 				});
 				
                 len += textLen['canceled'][option.getLanguage()];
@@ -3013,8 +3013,8 @@ const Fighter = class extends Material {
                     msg: condition,
                     xPx: len,
                     y: j,
-                    color: C_LIGHT,
-                    shadow: C_LIGHT,
+                    color: colorList.light,
+                    shadow: colorList.light,
 				});
 				
                 len += textLen['see invisible'][option.getLanguage()];
@@ -3034,8 +3034,8 @@ const Fighter = class extends Material {
                     msg: condition,
                     xPx: len,
                     y: j,
-                    color: C_LIGHT,
-                    shadow: C_LIGHT,
+                    color: colorList.light,
+                    shadow: colorList.light,
 				});
 				
                 len += textLen['invisible'][option.getLanguage()];
@@ -3055,7 +3055,7 @@ const Fighter = class extends Material {
                     msg: condition,
                     xPx: len,
                     y: j,
-                    color: C_AIR,
+                    color: colorList.air,
 				});
 				
                 len += textLen['ecco'][option.getLanguage()];
@@ -3081,7 +3081,7 @@ const Fighter = class extends Material {
                     msg: condition,
                     xPx: len,
                     y: j,
-                    color: C_EARTH,
+                    color: colorList.earth,
 				});
 				
                 len += textLen['enchant self'][option.getLanguage()];
@@ -3103,7 +3103,7 @@ const Fighter = class extends Material {
                     msg: condition,
                     xPx: len,
                     y: j,
-                    color: C_POISON,
+                    color: colorList.poison,
 				});
 				
                 len += textLen['venom hands'][option.getLanguage()];
@@ -3125,7 +3125,7 @@ const Fighter = class extends Material {
                     msg: condition,
                     xPx: len,
                     y: j,
-                    color: C_POISON,
+                    color: colorList.poison,
 				});
 				
                 len += textLen['confusing hands'][option.getLanguage()];
@@ -3570,11 +3570,11 @@ const Fighter = class extends Material {
             });
 
             if (item.cursed) {
-                ctxInv.fillStyle = RED;
+                ctxInv.fillStyle = colorList.red;
 			} else if (!item.durab) {
-                ctxInv.fillStyle = GRAY;
+                ctxInv.fillStyle = colorList.gray;
 			} else {
-				ctxInv.fillStyle = WHITE;
+				ctxInv.fillStyle = colorList.white;
 			}
 
             ctxInv.textAlign = 'left';
@@ -3589,8 +3589,8 @@ const Fighter = class extends Material {
                 stroke: item.stroke,
             });
 
-            ctxInv.fillStyle = WHITE;
-            ctxInv.shadowColor = CLEAR;
+            ctxInv.fillStyle = colorList.white;
+            ctxInv.shadowColor = colorList.clear;
             ctxInv.textAlign = 'right';
             if (flag.blacksmith) {
                 let price = item.getDurabPrice();
@@ -3630,10 +3630,10 @@ const Fighter = class extends Material {
 				}
 				
                 ctxInv.save();
-                if (this.findBuffStat(key)) ctxInv.shadowColor = C_BUFF;
+                if (this.findBuffStat(key)) ctxInv.shadowColor = colorList.buff;
 				if (this.lowerRes && (key === 'fire' || key === 'water' ||
 						key === 'air' || key === 'earth' || key === 'poison')) {
-					ctxInv.fillStyle = RED;
+					ctxInv.fillStyle = colorList.red;
 				}
 
                 display.text({
@@ -3726,7 +3726,7 @@ const Fighter = class extends Material {
                 }
             } else {
                 if (skill.reqLvl > this.lvl) {
-                    ctxInv.fillStyle = GRAY;
+                    ctxInv.fillStyle = colorList.gray;
 				} else {
 					ctxInv.shadowColor = skill.color;
 				}
@@ -3801,8 +3801,8 @@ const Fighter = class extends Material {
 			}
 			
             if (skill.reqLvl <= this.lvl && skill.mp > this.mp) {
-                ctxInv.shadowColor = CLEAR;
-                ctxInv.fillStyle = RED;
+                ctxInv.shadowColor = colorList.clear;
+                ctxInv.fillStyle = colorList.red;
 			}
 			
             display.text({
@@ -3815,7 +3815,7 @@ const Fighter = class extends Material {
 
             if (skill.reqLvl <= this.lvl) {
                 ctxInv.shadowColor = skill.color;
-                ctxInv.fillStyle = WHITE;
+                ctxInv.fillStyle = colorList.white;
 			}
 			
             display.text({

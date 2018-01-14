@@ -40,16 +40,16 @@ const materialMap = new Map([
         tRate: 6,
         pRate: 1,
         list: [
-            { name: { a: 'Hemp', b: '麻' }, color: C_FLAX },
-            { name: { a: 'Wool', b: '羊毛' }, color: WHITE }, //Fleece?
-            { name: { a: 'Cotton', b: '綿' }, color: WHITE },
-            { name: { a: 'Silk', b: '絹' }, color: WHITE },
-            { name: { a: 'Mohair', b: 'モヘヤ' }, color: WHITE }, //アンゴラ山羊
-            { name: { a: 'Cashmere', b: 'カシミア' }, color: WHITE }, //カシミヤ山羊
-            { name: { a: 'Camel', b: 'キャメル' }, color: WHITE }, //ラクダ
-            { name: { a: 'Angora', b: 'アンゴラ' }, color: WHITE }, //アンゴラヤギ、アンゴラウサギ,モヘヤ?
-            { name: { a: 'Vicuna', b: 'ビキューナ' }, color: WHITE }, //ラクダ科
-            { name: { a: 'Spiderweb', b: 'スパイダーウェブ' }, color: WHITE },
+            { name: { a: 'Hemp', b: '麻' }, color: colorList.flax },
+            { name: { a: 'Wool', b: '羊毛' }, color: colorList.white }, //Fleece?
+            { name: { a: 'Cotton', b: '綿' }, color: colorList.white },
+            { name: { a: 'Silk', b: '絹' }, color: colorList.white },
+            { name: { a: 'Mohair', b: 'モヘヤ' }, color: colorList.white }, //アンゴラ山羊
+            { name: { a: 'Cashmere', b: 'カシミア' }, color: colorList.white }, //カシミヤ山羊
+            { name: { a: 'Camel', b: 'キャメル' }, color: colorList.white }, //ラクダ
+            { name: { a: 'Angora', b: 'アンゴラ' }, color: colorList.white }, //アンゴラヤギ、アンゴラウサギ,モヘヤ?
+            { name: { a: 'Vicuna', b: 'ビキューナ' }, color: colorList.white }, //ラクダ科
+            { name: { a: 'Spiderweb', b: 'スパイダーウェブ' }, color: colorList.white },
         ]
 	}],
 	
@@ -59,17 +59,17 @@ const materialMap = new Map([
         tRate: 7,
         pRate: 1.1,
         list: [
-            { name: { a: 'Chicken Feather', b: '鶏羽' }, color: BROWN },
-            { name: { a: 'Peafowl Feather', b: '孔雀羽' }, color: C_TEAL },
-            { name: { a: 'Eagle Feather', b: '鷲羽' }, color: SHADOW },
-            { name: { a: 'Hawk Feather', b: '鷹羽' }, color: C_BEIGE_GRAY },
-            { name: { a: 'Bat Feather', b: '蝙蝠羽' }, color: SHADOW },
-            { name: { a: 'Fairy Feather', b: 'フェアリー・フェザー' }, color: LIME },
-            { name: { a: 'Harpy Feather', b: 'ハーピー・フェザー' }, color: SKY_BLUE },
-            { name: { a: 'Griffin Feather', b: 'グリフォン・フェザー' }, color: WHITE },
-            { name: { a: 'Angel Feather', b: 'エンジェル・フェザー' }, color: WHITE, },
-            { name: { a: 'Phoenix Feather', b: 'フェニックス・フェザー' }, color: RED, values: { fire: '1d10' } },
-            { name: { a: 'Pegasus Feather', b: 'ペガサス・フェザー' }, color: WHITE },
+            { name: { a: 'Chicken Feather', b: '鶏羽' }, color: colorList.brown },
+            { name: { a: 'Peafowl Feather', b: '孔雀羽' }, color: colorList.teal },
+            { name: { a: 'Eagle Feather', b: '鷲羽' }, color: colorList.shadow },
+            { name: { a: 'Hawk Feather', b: '鷹羽' }, color: colorList.beigegray },
+            { name: { a: 'Bat Feather', b: '蝙蝠羽' }, color: colorList.shadow },
+            { name: { a: 'Fairy Feather', b: 'フェアリー・フェザー' }, color: colorList.lime },
+            { name: { a: 'Harpy Feather', b: 'ハーピー・フェザー' }, color: colorList.skyblue },
+            { name: { a: 'Griffin Feather', b: 'グリフォン・フェザー' }, color: colorList.white },
+            { name: { a: 'Angel Feather', b: 'エンジェル・フェザー' }, color: colorList.white, },
+            { name: { a: 'Phoenix Feather', b: 'フェニックス・フェザー' }, color: colorList.red, values: { fire: '1d10' } },
+            { name: { a: 'Pegasus Feather', b: 'ペガサス・フェザー' }, color: colorList.white },
             //セイレン?
         ]
 	}],
@@ -80,18 +80,18 @@ const materialMap = new Map([
         tRate: 9,
         pRate: 1.2,
         list: [
-            { name: { a: 'Rabbit Fur', b: '兎毛皮' }, color: C_BEIGE },
-            { name: { a: 'Boar Fur', b: '猪毛皮' }, color: BROWN },
-            { name: { a: 'Wolf Fur', b: '狼毛皮' }, color: C_BEIGE_GRAY },
-            { name: { a: 'Jackal Fur', b: 'ジャッカル毛皮' }, color: C_GOLDEN_YELLOW },
-            { name: { a: 'Raccoon Fur', b: 'ラクーン毛皮' }, color: C_BEIGE_GRAY },
-            { name: { a: 'Mink Fur', b: 'ミンク毛皮' }, color: LIGHTGREY },
-            { name: { a: 'Rum Fur', b: 'ラム毛皮' }, color: C_BEIGE },
-            { name: { a: 'Fox Fur', b: '狐毛皮' }, color: C_FOX },
-            { name: { a: 'Skunk Fur', b: 'スカンク毛皮' }, color: SHADOW },
-            { name: { a: 'Lion Fur', b: 'ライオン毛皮' }, color: C_GOLDEN_YELLOW },
-            { name: { a: 'Manticore Fur', b: 'マンティコア毛皮' }, color: RED },
-            { name: { a: 'Cerberus Fur', b: 'ケルベロス毛皮' }, color: GRAY },
+            { name: { a: 'Rabbit Fur', b: '兎毛皮' }, color: colorList.beige },
+            { name: { a: 'Boar Fur', b: '猪毛皮' }, color: colorList.brown },
+            { name: { a: 'Wolf Fur', b: '狼毛皮' }, color: colorList.beigegray },
+            { name: { a: 'Jackal Fur', b: 'ジャッカル毛皮' }, color: colorList.goldenyellow },
+            { name: { a: 'Raccoon Fur', b: 'ラクーン毛皮' }, color: colorList.beigegray },
+            { name: { a: 'Mink Fur', b: 'ミンク毛皮' }, color: colorList.lightgrey },
+            { name: { a: 'Rum Fur', b: 'ラム毛皮' }, color: colorList.beige },
+            { name: { a: 'Fox Fur', b: '狐毛皮' }, color: colorList.fox },
+            { name: { a: 'Skunk Fur', b: 'スカンク毛皮' }, color: colorList.shadow },
+            { name: { a: 'Lion Fur', b: 'ライオン毛皮' }, color: colorList.goldenyellow },
+            { name: { a: 'Manticore Fur', b: 'マンティコア毛皮' }, color: colorList.red },
+            { name: { a: 'Cerberus Fur', b: 'ケルベロス毛皮' }, color: colorList.gray },
         ]
 	}],
 	
@@ -101,13 +101,13 @@ const materialMap = new Map([
         tRate: 10,
         pRate: 1.3,
         list: [
-            { name: { a: 'Deerhide', b: '鹿皮' }, color: C_GOLDEN_YELLOW },
-            { name: { a: 'Sheepskin', b: '羊皮' }, color: C_BEIGE },
-            { name: { a: 'Goatskin', b: '山羊皮' }, color: C_BEIGE_GRAY },
-            { name: { a: 'Horsehide', b: '馬皮' }, color: BROWN },
-            { name: { a: 'Cowhide', b: '牛皮' }, color: WHITE },
-            { name: { a: 'Demonhide', b: 'デーモン・ハイド' }, color: SHADOW },
-            { name: { a: 'Wyrmhide', b: 'ワイアーム・ハイド' }, color: GREEN },
+            { name: { a: 'Deerhide', b: '鹿皮' }, color: colorList.goldenyellow },
+            { name: { a: 'Sheepskin', b: '羊皮' }, color: colorList.beige },
+            { name: { a: 'Goatskin', b: '山羊皮' }, color: colorList.beigegray },
+            { name: { a: 'Horsehide', b: '馬皮' }, color: colorList.brown },
+            { name: { a: 'Cowhide', b: '牛皮' }, color: colorList.white },
+            { name: { a: 'Demonhide', b: 'デーモン・ハイド' }, color: colorList.shadow },
+            { name: { a: 'Wyrmhide', b: 'ワイアーム・ハイド' }, color: colorList.green },
         ]
 	}],
 	
@@ -117,14 +117,14 @@ const materialMap = new Map([
         tRate: 8,
         pRate: 1.4,
         list: [
-            { name: { a: 'Serpentskin', b: '蛇皮' }, color: PURPLE },
-            { name: { a: 'Lizard Skin', b: 'トカゲ皮' }, color: LIGHTGREEN },
-            { name: { a: 'Fish Scale', b: '魚鱗' }, color: BLUE },
-            { name: { a: 'Sharkskin', b: '鮫皮' }, color: SILVER },
-            { name: { a: 'Nagascale', b: 'ナーガ鱗' }, color: DARKGREEN },
-            { name: { a: 'Hydrascale', b: 'ヒュドラ鱗' }, color: GREEN },
-            { name: { a: 'Dragonscale', b: '竜鱗' }, color: GREEN },
-            { name: { a: 'Lamiascale', b: 'ラミア鱗' }, color: C_TEAL },
+            { name: { a: 'Serpentskin', b: '蛇皮' }, color: colorList.purple },
+            { name: { a: 'Lizard Skin', b: 'トカゲ皮' }, color: colorList.lightgreen },
+            { name: { a: 'Fish Scale', b: '魚鱗' }, color: colorList.blue },
+            { name: { a: 'Sharkskin', b: '鮫皮' }, color: colorList.silver },
+            { name: { a: 'Nagascale', b: 'ナーガ鱗' }, color: colorList.darkgreen },
+            { name: { a: 'Hydrascale', b: 'ヒュドラ鱗' }, color: colorList.green },
+            { name: { a: 'Dragonscale', b: '竜鱗' }, color: colorList.green },
+            { name: { a: 'Lamiascale', b: 'ラミア鱗' }, color: colorList.teal },
         ]
 	}],
 	
@@ -134,15 +134,15 @@ const materialMap = new Map([
         tRate: 5,
         pRate: 1.5,
         list: [
-            { name: { a: 'Tin Plated', b: '錫メッキ' }, color: TIN },
-            { name: { a: 'Zinc Plated', b: '亜鉛メッキ' }, color: C_ZINC },
-            { name: { a: 'Cadmium Plated', b: 'カドミウムメッキ' }, color: C_CADMIUM },
-            { name: { a: 'Chrome Plated', b: 'クロムメッキ' }, color: C_CHROME },
-            { name: { a: 'Copper Plated', b: '銅メッキ' }, color: C_COPPER },
-            { name: { a: 'Silver Plated', b: '銀メッキ' }, color: SILVER },
-            { name: { a: 'Gold Plated', b: '金メッキ' }, color: GOLD },
-            { name: { a: 'Platinum Plated', b: 'プラチナメッキ' }, color: C_PLATINUM },
-            { name: { a: 'Alumite', b: 'アルマイト' }, color: C_ALUMINIUM },
+            { name: { a: 'Tin Plated', b: '錫メッキ' }, color: colorList.tin },
+            { name: { a: 'Zinc Plated', b: '亜鉛メッキ' }, color: colorList.zinc },
+            { name: { a: 'Cadmium Plated', b: 'カドミウムメッキ' }, color: colorList.cadmium },
+            { name: { a: 'Chrome Plated', b: 'クロムメッキ' }, color: colorList.chrome },
+            { name: { a: 'Copper Plated', b: '銅メッキ' }, color: colorList.copper },
+            { name: { a: 'Silver Plated', b: '銀メッキ' }, color: colorList.silver },
+            { name: { a: 'Gold Plated', b: '金メッキ' }, color: colorList.gold },
+            { name: { a: 'Platinum Plated', b: 'プラチナメッキ' }, color: colorList.platinum },
+            { name: { a: 'Alumite', b: 'アルマイト' }, color: colorList.aluminium },
             //Gilded
         ]
 	}],
@@ -153,17 +153,17 @@ const materialMap = new Map([
         tRate: 3,
         pRate: 1.6,
         list: [
-            { name: { a: 'Poplar', b: 'ポプラ' }, color: C_BEIGE },
-            { name: { a: 'Walnut', b: 'クルミ' }, color: C_WALNUT },
-            { name: { a: 'Cypress', b: 'イトスギ' }, color: C_CYPRESS },
-            { name: { a: 'Oak', b: '樫' }, color: C_OAK },
-            { name: { a: 'Beech', b: 'ブナ' }, color: C_BEECH },
-            { name: { a: 'Ash', b: 'トネリコ' }, color: C_ASH },
-            { name: { a: 'Ebony', b: '黒檀' }, color: C_EBONY },
-            { name: { a: 'Rosewood', b: '紫檀' }, color: C_ROSEWOOD },
-            { name: { a: 'Teak', b: 'チーク' }, color: C_TEAK },
-            { name: { a: 'Mahogany', b: 'マホガニー' }, color: C_MAHOGANY },
-            { name: { a: 'Life Tree', b: '生命樹' }, color: BROWN },
+            { name: { a: 'Poplar', b: 'ポプラ' }, color: colorList.beige },
+            { name: { a: 'Walnut', b: 'クルミ' }, color: colorList.walnut },
+            { name: { a: 'Cypress', b: 'イトスギ' }, color: colorList.cypress },
+            { name: { a: 'Oak', b: '樫' }, color: colorList.oak },
+            { name: { a: 'Beech', b: 'ブナ' }, color: colorList.beech },
+            { name: { a: 'Ash', b: 'トネリコ' }, color: colorList.ash },
+            { name: { a: 'Ebony', b: '黒檀' }, color: colorList.ebony },
+            { name: { a: 'Rosewood', b: '紫檀' }, color: colorList.rosewood },
+            { name: { a: 'Teak', b: 'チーク' }, color: colorList.teak },
+            { name: { a: 'Mahogany', b: 'マホガニー' }, color: colorList.mahogany },
+            { name: { a: 'Life Tree', b: '生命樹' }, color: colorList.brown },
             //Cedar
         ]
 	}],
@@ -174,11 +174,11 @@ const materialMap = new Map([
         tRate: 2,
         pRate: 1.7,
         list: [
-            { name: { a: 'Bone', b: '骨' }, color: WHITE },
-            { name: { a: 'Giantbone', b: 'ジャイアント・ボーン' }, color: WHITE },
-            { name: { a: 'Dragonbone', b: '竜骨' }, color: WHITE },
-            { name: { a: 'Demonbone', b: 'デーモン・ボーン' }, color: WHITE },
-            { name: { a: 'Vampirebone', b: 'ヴァンパイア・ボーン' }, color: WHITE },
+            { name: { a: 'Bone', b: '骨' }, color: colorList.white },
+            { name: { a: 'Giantbone', b: 'ジャイアント・ボーン' }, color: colorList.white },
+            { name: { a: 'Dragonbone', b: '竜骨' }, color: colorList.white },
+            { name: { a: 'Demonbone', b: 'デーモン・ボーン' }, color: colorList.white },
+            { name: { a: 'Vampirebone', b: 'ヴァンパイア・ボーン' }, color: colorList.white },
 
         ]
 	}],
@@ -189,11 +189,11 @@ const materialMap = new Map([
         tRate: 4,
         pRate: 1.8,
         list: [
-            { name: { a: 'Coral', b: '珊瑚' }, color: CORAL },
-            { name: { a: 'Scorpion Shell', b: 'サソリ殻' }, color: SHADOW },
-            { name: { a: 'Crab Shell', b: '蟹殻' }, color: ORANGE },
-            { name: { a: 'Turtle Shell', b: '亀甲羅' }, color: BROWN },
-            { name: { a: 'Scarab Shell', b: 'スカラブ殻' }, color: GRAY }, //スカラベ
+            { name: { a: 'Coral', b: '珊瑚' }, color: colorList.coral },
+            { name: { a: 'Scorpion Shell', b: 'サソリ殻' }, color: colorList.shadow },
+            { name: { a: 'Crab Shell', b: '蟹殻' }, color: colorList.orange },
+            { name: { a: 'Turtle Shell', b: '亀甲羅' }, color: colorList.brown },
+            { name: { a: 'Scarab Shell', b: 'スカラブ殻' }, color: colorList.gray }, //スカラベ
         ]
 	}],
 	
@@ -203,18 +203,18 @@ const materialMap = new Map([
         tRate: 3,
         pRate: 1.9,
         list: [
-            { name: { a: 'Tin', b: '錫' }, color: TIN },
-            { name: { a: 'Copper', b: '銅' }, color: C_COPPER },
-            { name: { a: 'Brass', b: '黄銅' }, color: BRASS },
-            { name: { a: 'Bronze', b: '青銅' }, color: BRONZE },
-            { name: { a: 'Iron', b: '鉄' }, color: C_IRON },
-            { name: { a: 'Steel', b: '鋼' }, color: STEEL },
-            { name: { a: 'Silver', b: '銀' }, color: SILVER },
-            { name: { a: 'Gold', b: '金' }, color: GOLD },
-            { name: { a: 'Platinum', b: 'プラチナ' }, color: C_PLATINUM },
-            { name: { a: 'Titanium', b: 'チタン' }, color: C_TITANIUM },
-            { name: { a: 'Adamantite', b: 'アダマンタイト' }, color: STEEL },
-            { name: { a: 'Orichalcum', b: 'オリハルコン' }, color: BRASS },
+            { name: { a: 'Tin', b: '錫' }, color: colorList.tin },
+            { name: { a: 'Copper', b: '銅' }, color: colorList.copper },
+            { name: { a: 'Brass', b: '黄銅' }, color: colorList.brass },
+            { name: { a: 'Bronze', b: '青銅' }, color: colorList.bronze },
+            { name: { a: 'Iron', b: '鉄' }, color: colorList.iron },
+            { name: { a: 'Steel', b: '鋼' }, color: colorList.steel },
+            { name: { a: 'Silver', b: '銀' }, color: colorList.silver },
+            { name: { a: 'Gold', b: '金' }, color: colorList.gold },
+            { name: { a: 'Platinum', b: 'プラチナ' }, color: colorList.platinum },
+            { name: { a: 'Titanium', b: 'チタン' }, color: colorList.titanium },
+            { name: { a: 'Adamantite', b: 'アダマンタイト' }, color: colorList.steel },
+            { name: { a: 'Orichalcum', b: 'オリハルコン' }, color: colorList.brass },
         ]
 	}],
 	
@@ -224,20 +224,20 @@ const materialMap = new Map([
         tRate: 1,
         pRate: 2,
         list: [
-            { name: { a: 'Stone', b: '石' }, color: WHITE },
-            { name: { a: 'Hematite', b: 'ヘマタイト' }, color: WHITE },
-            { name: { a: 'Moonstone', b: 'ムーンストーン' }, color: SKY_BLUE },
-            { name: { a: 'Obsidian', b: '黒曜石' }, color: SHADOW },
-            { name: { a: 'Onyx', b: 'オニキス' }, color: SHADOW },
-            { name: { a: 'Morion', b: 'モリオン' }, color: SHADOW },
-            { name: { a: 'Crystal', b: 'クリスタル' }, color: WHITE },
-            { name: { a: 'Tourmaline', b: 'トルマリン' }, color: C_LIGHTNING },
-            { name: { a: 'Beryl', b: 'ベリル' }, color: LIGHTGREEN },
-            { name: { a: 'Spinel', b: 'スピネル' }, color: PINK },
-            { name: { a: 'Corundum', b: 'コランダム' }, color: WHITE },
-            { name: { a: 'Ceramic', b: 'セラミック' }, color: WHITE },
-            { name: { a: 'Meteorite', b: '隕石' }, color: GRAY },
-            { name: { a: 'Black Diamond', b: 'ブラック・ダイヤモンド' }, color: SHADOW },
+            { name: { a: 'Stone', b: '石' }, color: colorList.white },
+            { name: { a: 'Hematite', b: 'ヘマタイト' }, color: colorList.white },
+            { name: { a: 'Moonstone', b: 'ムーンストーン' }, color: colorList.skyblue },
+            { name: { a: 'Obsidian', b: '黒曜石' }, color: colorList.shadow },
+            { name: { a: 'Onyx', b: 'オニキス' }, color: colorList.shadow },
+            { name: { a: 'Morion', b: 'モリオン' }, color: colorList.shadow },
+            { name: { a: 'Crystal', b: 'クリスタル' }, color: colorList.white },
+            { name: { a: 'Tourmaline', b: 'トルマリン' }, color: colorList.lightning },
+            { name: { a: 'Beryl', b: 'ベリル' }, color: colorList.lightgreen },
+            { name: { a: 'Spinel', b: 'スピネル' }, color: colorList.pink },
+            { name: { a: 'Corundum', b: 'コランダム' }, color: colorList.white },
+            { name: { a: 'Ceramic', b: 'セラミック' }, color: colorList.white },
+            { name: { a: 'Meteorite', b: '隕石' }, color: colorList.gray },
+            { name: { a: 'Black Diamond', b: 'ブラック・ダイヤモンド' }, color: colorList.shadow },
             //Gargoyle
         ]
 	}],
@@ -248,21 +248,21 @@ const materialMap = new Map([
         tRate: 2,
         pRate: 3,
         list: [
-            { name: { a: 'Ruby', b: 'ルビー' }, lvl: 1, rarity: 0, color: C_FIRE, bias: BIAS_FIRE },
-            { name: { a: 'Turquoise', b: 'ターコイズ' }, lvl: 1, rarity: 0, color: C_AIR, bias: BIAS_AIR },
-            { name: { a: 'Aquamarine', b: 'アクアマリン' }, lvl: 1, rarity: 0, color: C_WATER, bias: BIAS_WATER },
-            { name: { a: 'Amber', b: 'アンバー' }, lvl: 1, rarity: 0, color: C_EARTH, bias: BIAS_EARTH },
-            { name: { a: 'Emerald', b: 'エメラルド' }, lvl: 1, rarity: 0, color: C_POISON, bias: BIAS_POISON },
-            { name: { a: 'Diamond', b: 'ダイヤモンド' }, lvl: 10, rarity: 30, color: C_LIGHT, bias: BIAS_LIGHT },
-            { name: { a: 'Topaz', b: 'トパーズ' }, lvl: 10, rarity: 30, color: C_LIGHTNING, bias: BIAS_LIGHTNING },
-            { name: { a: 'Sapphire', b: 'サファイア' }, lvl: 10, rarity: 30, color: C_COLD, bias: BIAS_COLD },
-            { name: { a: 'Black Opal', b: '黒真珠' }, lvl: 10, rarity: 30, color: C_GRAVITY, bias: BIAS_GRAVITY },
-            { name: { a: 'Jade', b: '翡翠' }, lvl: 10, rarity: 30, color: C_INFECTION, bias: BIAS_INFECTION },
-            { name: { a: 'Garnet', b: 'ガーネット' }, lvl: 20, rarity: 50, color: C_MAGMA, bias: BIAS_MAGMA },
-            { name: { a: 'Chrysoberyl', b: 'クリソベリル' }, lvl: 20, rarity: 50, color: C_ACID, bias: BIAS_ACID }, //キャッツアイ,アレキサンドライト
-            { name: { a: 'Fluorite', b: 'フローライト' }, lvl: 20, rarity: 50, color: C_RADIATION, bias: BIAS_RADIATION },
-            { name: { a: 'Tanzanite', b: 'タンザナイト' }, lvl: 20, rarity: 50, color: C_BLIZZARD, bias: BIAS_BLIZZARD },
-            { name: { a: 'Citrine', b: 'シトリン' }, lvl: 20, rarity: 50, color: C_SAND, bias: BIAS_SAND },
+            { name: { a: 'Ruby', b: 'ルビー' }, lvl: 1, rarity: 0, color: colorList.fire, bias: BIAS_FIRE },
+            { name: { a: 'Turquoise', b: 'ターコイズ' }, lvl: 1, rarity: 0, color: colorList.air, bias: BIAS_AIR },
+            { name: { a: 'Aquamarine', b: 'アクアマリン' }, lvl: 1, rarity: 0, color: colorList.water, bias: BIAS_WATER },
+            { name: { a: 'Amber', b: 'アンバー' }, lvl: 1, rarity: 0, color: colorList.earth, bias: BIAS_EARTH },
+            { name: { a: 'Emerald', b: 'エメラルド' }, lvl: 1, rarity: 0, color: colorList.poison, bias: BIAS_POISON },
+            { name: { a: 'Diamond', b: 'ダイヤモンド' }, lvl: 10, rarity: 30, color: colorList.light, bias: BIAS_LIGHT },
+            { name: { a: 'Topaz', b: 'トパーズ' }, lvl: 10, rarity: 30, color: colorList.lightning, bias: BIAS_LIGHTNING },
+            { name: { a: 'Sapphire', b: 'サファイア' }, lvl: 10, rarity: 30, color: colorList.cold, bias: BIAS_COLD },
+            { name: { a: 'Black Opal', b: '黒真珠' }, lvl: 10, rarity: 30, color: colorList.gravity, bias: BIAS_GRAVITY },
+            { name: { a: 'Jade', b: '翡翠' }, lvl: 10, rarity: 30, color: colorList.infection, bias: BIAS_INFECTION },
+            { name: { a: 'Garnet', b: 'ガーネット' }, lvl: 20, rarity: 50, color: colorList.magma, bias: BIAS_MAGMA },
+            { name: { a: 'Chrysoberyl', b: 'クリソベリル' }, lvl: 20, rarity: 50, color: colorList.acid, bias: BIAS_ACID }, //キャッツアイ,アレキサンドライト
+            { name: { a: 'Fluorite', b: 'フローライト' }, lvl: 20, rarity: 50, color: colorList.radiation, bias: BIAS_RADIATION },
+            { name: { a: 'Tanzanite', b: 'タンザナイト' }, lvl: 20, rarity: 50, color: colorList.blizzard, bias: BIAS_BLIZZARD },
+            { name: { a: 'Citrine', b: 'シトリン' }, lvl: 20, rarity: 50, color: colorList.sand, bias: BIAS_SAND },
         ]
     }],
 ]);
@@ -288,12 +288,12 @@ const materialMap = new Map([
 }
 
 const mineralTab = [
-    { name: { a: 'Nickel', b: 'ニッケル' }, color: C_NICKEL },
-    { name: { a: 'Cobalt', b: 'コバルト' }, color: C_COBALT },
-    { name: { a: 'Magnesium', b: 'マグネシウム' }, color: C_MAGNESIUM },
-    { name: { a: 'Chrome', b: 'クロム' }, color: C_CHROME },
-    { name: { a: 'Carbon', b: 'カーボン' }, color: C_CARBON },
-    { name: { a: 'Silicon', b: 'シリコン' }, color: WHITE },
+    { name: { a: 'Nickel', b: 'ニッケル' }, color: colorList.nickel },
+    { name: { a: 'Cobalt', b: 'コバルト' }, color: colorList.cobalt },
+    { name: { a: 'Magnesium', b: 'マグネシウム' }, color: colorList.magnesium },
+    { name: { a: 'Chrome', b: 'クロム' }, color: colorList.chrome },
+    { name: { a: 'Carbon', b: 'カーボン' }, color: colorList.carbon },
+    { name: { a: 'Silicon', b: 'シリコン' }, color: colorList.white },
 ];
 
 {
@@ -307,7 +307,7 @@ const modTab = [
     new Map([ //prefix
         [BIAS_FIRE, {
             name: { a: 'Fire', b: '火炎の' },
-            color: C_FIRE,
+            color: colorList.fire,
             lvl: 0,
             rarity: 0,
             melee: { dmgFire: '1d10' },
@@ -344,7 +344,7 @@ const modTab = [
 		
         [BIAS_WATER, {
             name: { a: 'Aqua', b: '水の' },
-            color: C_WATER,
+            color: colorList.water,
             lvl: 0,
             rarity: 0,
             melee: { water: '1d10' },
@@ -383,7 +383,7 @@ const modTab = [
 		
         [BIAS_AIR, {
             name: { a: 'Air', b: '大気の' },
-            color: C_AIR,
+            color: colorList.air,
             lvl: 0,
             rarity: 0,
             melee: { air: '1d10' },
@@ -425,7 +425,7 @@ const modTab = [
 		
         [BIAS_EARTH, {
             name: { a: 'Earth', b: '大地の' },
-            color: C_EARTH,
+            color: colorList.earth,
             lvl: 0,
             rarity: 0,
             melee: { earth: '1d10' },
@@ -462,7 +462,7 @@ const modTab = [
 		
         [BIAS_POISON, {
             name: { a: 'Poison', b: '毒の' },
-            color: C_POISON,
+            color: colorList.poison,
             lvl: 0,
             rarity: 0,
             melee: { dmgPoison: '1d10' },
@@ -501,7 +501,7 @@ const modTab = [
 		
         [BIAS_LIGHT, {
             name: { a: 'Light', b: '光の' },
-            color: C_LIGHT,
+            color: colorList.light,
             lvl: 10,
             rarity: 30,
             melee: { dmgFire: '2d10' },
@@ -541,7 +541,7 @@ const modTab = [
 		
         [BIAS_COLD, {
             name: { a: 'Cold', b: '冷気の' },
-            color: C_COLD,
+            color: colorList.cold,
             lvl: 10,
             rarity: 30,
             melee: { atkCold: '10d2' },
@@ -577,7 +577,7 @@ const modTab = [
 		
         [BIAS_LIGHTNING, {
             name: { a: 'Lightning', b: '稲妻の' },
-            color: C_LIGHTNING,
+            color: colorList.lightning,
             lvl: 10,
             rarity: 30,
             melee: { dmgLightning: '1d10' },
@@ -615,7 +615,7 @@ const modTab = [
 		
         [BIAS_GRAVITY, {
             name: { a: 'Gravity', b: '重力の' },
-            color: C_GRAVITY,
+            color: colorList.gravity,
             lvl: 10,
             rarity: 30,
             melee: { atkSlow: '10d2' },
@@ -651,7 +651,7 @@ const modTab = [
 		
         [BIAS_INFECTION, {
             name: { a: 'Infection', b: '感染の' },
-            color: C_INFECTION,
+            color: colorList.infection,
             lvl: 10,
             rarity: 30,
             melee: { dmgPoison: '2d10' },
@@ -685,7 +685,7 @@ const modTab = [
 		
         [BIAS_SAND, {
             name: { a: 'Sand', b: '砂の' },
-            color: C_SAND,
+            color: colorList.sand,
             lvl: 20,
             rarity: 50,
             melee: { earth: '1d10', air: '1d10' },
@@ -714,7 +714,7 @@ const modTab = [
 		
         [BIAS_BLIZZARD, {
             name: { a: 'Blizzard', b: '吹雪の' },
-            color: C_BLIZZARD,
+            color: colorList.blizzard,
             lvl: 20,
             rarity: 50,
             melee: { water: '1d10', air: '1d10' },
@@ -743,7 +743,7 @@ const modTab = [
 		
         [BIAS_ACID, {
             name: { a: 'Acid', b: '酸の' },
-            color: C_ACID,
+            color: colorList.acid,
             lvl: 20,
             rarity: 50,
             melee: { water: '1d10', poison: '1d10' },
@@ -772,7 +772,7 @@ const modTab = [
 		
         [BIAS_MAGMA, {
             name: { a: 'Magma', b: '溶岩の' },
-            color: C_MAGMA,
+            color: colorList.magma,
             lvl: 20,
             rarity: 50,
             melee: { fire: '1d10', earth: '1d10' },
@@ -803,7 +803,7 @@ const modTab = [
 		
         [BIAS_RADIATION, {
             name: { a: 'Radioactive', b: '放射能の' },
-            color: C_RADIATION,
+            color: colorList.radiation,
             lvl: 20,
             rarity: 50,
             melee: { fire: '1d10', poison: '1d10' },
@@ -1397,8 +1397,8 @@ const Material = class extends Thing {
             stroke: this.stroke,
         });
 
-        if (this.cursed) ctxInv.fillStyle = RED;
-        ctxInv.fillStyle = this.equipable && !this.durab ? GRAY : WHITE;
+        if (this.cursed) ctxInv.fillStyle = colorList.red;
+        ctxInv.fillStyle = this.equipable && !this.durab ? colorList.gray : colorList.white;
         ctxInv.textAlign = 'left';
         let name = char ? this.getName(false, true) : this.getName(false, 1);
         display.text({
@@ -1411,8 +1411,8 @@ const Material = class extends Thing {
         });
 
         j += 1;
-        ctxInv.fillStyle = WHITE;
-        ctxInv.shadowColor = CLEAR;
+        ctxInv.fillStyle = colorList.white;
+        ctxInv.shadowColor = colorList.clear;
         if (this.desc) {
             this.desc[option.getLanguage()].replace(/\t/g, '').split('\n').forEach((value, key) => {
                 display.text({
@@ -1497,7 +1497,7 @@ const Material = class extends Thing {
                 value = this.getAtkTypeName();
 			} else if (char) {
 				if (this.findBuffStat(key) || this.modList && this.modList[key]) {
-					ctxInv.shadowColor = C_BUFF;
+					ctxInv.shadowColor = colorList.buff;
 				}
 
                 if (term.max) {
@@ -1506,7 +1506,7 @@ const Material = class extends Thing {
                     value += ` (${max})`;
                 }
             } else if (mod) {
-				ctxInv.shadowColor = C_BUFF;
+				ctxInv.shadowColor = colorList.buff;
 			}
 
             if (term.bool) {
@@ -1788,7 +1788,7 @@ const Material = class extends Thing {
 		
         this.modList = mods;
         this.mod = MAGIC;
-        this.shadow = this.shadowReal = AQUA;
+        this.shadow = this.shadowReal = colorList.aqua;
     }
 
     getRare(bias, lvl) {
@@ -1856,7 +1856,7 @@ const Material = class extends Thing {
 		} while (modSufNums[i] !== undefined);
 		
         this.mod = RARE;
-        this.shadow = this.shadowReal = YELLOW;
+        this.shadow = this.shadowReal = colorList.yellow;
         let nameAffiA = affix.name['a'];
         let nameAffiB = affix.name['b'];
         if (char) {
@@ -1880,8 +1880,8 @@ const Material = class extends Thing {
     }
 
     getUnique(unique) {
-        this.shadow = this.shadowReal = GOLD;
-        this.stroke = this.strokeReal = INDIGO;
+        this.shadow = this.shadowReal = colorList.gold;
+        this.stroke = this.strokeReal = colorList.indigo;
         if (this.type === 'enemy') {
             rogue.cue[this.name[ENG]] = true;
             this.hpRate += 3;

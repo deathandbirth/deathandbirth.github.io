@@ -2,7 +2,7 @@ const entranceList = {
     stash: {
         name: { a: 'Stash', b: '物置箱' },
         symbol: '&',
-        color: BROWN,
+        color: colorList.brown,
         page: 1,
         stash: true,
     },
@@ -10,7 +10,7 @@ const entranceList = {
     book: {
         name: { a: 'Book Shop', b: '魔法書店' },
         symbol: '?',
-        color: GRAY,
+        color: colorList.gray,
         shop: true,
         type: { 'book': 10 },
     },
@@ -18,7 +18,7 @@ const entranceList = {
     general: { 
         name: { a: 'General Shop', b: '雑貨屋' },
         symbol: ':',
-        color: BROWN,
+        color: colorList.brown,
         shop: true,
         type: { 'food': 2, 'light': 6, 'oil': 2, },
     },
@@ -26,7 +26,7 @@ const entranceList = {
     potion: {
         name: { a: 'Potion Shop', b: '薬屋' },
         symbol: '!',
-        color: BLUE,
+        color: colorList.blue,
         shop: true,
         type: { 'potion': 15 },
     },
@@ -34,7 +34,7 @@ const entranceList = {
     scroll: {
         name: { a: 'Scroll Shop', b: '巻物店' },
         symbol: '?',
-        color: WHITE,
+        color: colorList.white,
         shop: true,
         type: { 'scroll': 15 },
     },
@@ -42,7 +42,7 @@ const entranceList = {
     wand: {
         name: { a: 'Wand Shop', b: '魔法棒店' },
         symbol: '-',
-        color: WHITE,
+        color: colorList.white,
         shop: true,
         type: { 'wand': 10 },
     },
@@ -50,7 +50,7 @@ const entranceList = {
     weapon: { 
         name: { a: 'Weapon Shop', b: '武器屋' },
         symbol: '|',
-        color: WHITE,
+        color: colorList.white,
         shop: true,
         equipment: true,
         type: { 'melee': 8, 'missile': 3, 'staff': 2, 'ammo': 6 },
@@ -59,7 +59,7 @@ const entranceList = {
     armor: {
         name: { a: 'Armor Shop', b: '防具屋' },
         symbol: '[',
-        color: GRAY,
+        color: colorList.gray,
         shop: true,
         equipment: true,
         type: { 'shield': 2, 'armor': 3, 'cloak': 2, 'belt': 2, 'helm': 2, 'gloves': 2, 'boots': 2 },
@@ -68,7 +68,7 @@ const entranceList = {
     gamble: {
         name: { a: 'Gamble Shop', b: 'ギャンブル店' },
         symbol: '$',
-        color: YELLOW,
+        color: colorList.yellow,
         gamble: true,
         shop: true,
     },
@@ -76,7 +76,7 @@ const entranceList = {
     cure: {
         name: { a: 'Cure Shop', b: '治療店' },
         symbol: '+',
-        color: LIME,
+        color: colorList.lime,
         cure: true,
         list: {
             a: { a: 'recover completely', b: '全快する', cost: 400 },
@@ -90,7 +90,7 @@ const entranceList = {
     blacksmith: {
         name: { a: 'Blacksmith Shop', b: '鍛冶屋' },
         symbol: '/',
-        color: GRAY,
+        color: colorList.gray,
         blacksmith: true,
     },
 };

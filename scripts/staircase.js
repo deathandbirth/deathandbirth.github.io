@@ -2,14 +2,14 @@ const stairsMap = new Map([
 	[DOWN, {
         name: { a: 'down staircase', b: '下り階段' },
         symbol: '>',
-        color: WHITE,
+        color: colorList.white,
         id: DOWN,
 	}],
 	
 	[UP, {
         name: { a: 'up staircase', b: '上り階段' },
         symbol: '<',
-        color: WHITE,
+        color: colorList.white,
         id: UP,
     }],
 ]);

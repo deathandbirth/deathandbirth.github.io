@@ -2,7 +2,7 @@ const trapTab = [
 	{
 		name: { a: 'Protection', b: '守り' },
 		symbol: ';',
-		color: WHITE,
+		color: colorList.white,
 		circle: true,
 		protection: true
 	},
@@ -10,7 +10,7 @@ const trapTab = [
 	{
 		name: { a: 'Teleportation', b: 'テレポート' },
 		symbol: ';',
-		color: SKY_BLUE,
+		color: colorList.skyblue,
 		circle: true,
 		nameSkill: TELEPORTATION,
 		lvl: 10,
@@ -19,7 +19,7 @@ const trapTab = [
 	{
 		name: { a: 'Summons', b: '召喚' },
 		symbol: ';',
-		color: PURPLE,
+		color: colorList.purple,
 		circle: true,
 		nameSkill: CREATE_MONSTER,
 		lvl: 10,
@@ -28,7 +28,7 @@ const trapTab = [
 	{
 		name: { a: 'Life Regeneration', b: '再生' },
 		symbol: ';',
-		color: CORAL,
+		color: colorList.coral,
 		circle: true,
 		nameSkill: LIFE_REGENERATION,
 		lvl: 10,
@@ -37,7 +37,7 @@ const trapTab = [
 	{
 		name: { a: 'Mana Regeneration', b: '魔力再生' },
 		symbol: ';',
-		color: LIGHTBLUE,
+		color: colorList.lightblue,
 		circle: true,
 		nameSkill: MANA_REGENERATION,
 		lvl: 10,
@@ -46,7 +46,7 @@ const trapTab = [
 	{
 		name: { a: 'Experience', b: '経験' },
 		symbol: ';',
-		color: BRONZE,
+		color: colorList.bronze,
 		circle: true,
 		nameSkill: EXPERIENCE,
 		lvl: 10,
@@ -55,7 +55,7 @@ const trapTab = [
 	{
 		name: { a: 'Skill', b: 'スキル' },
 		symbol: ';',
-		color: GOLD,
+		color: colorList.gold,
 		circle: true,
 		nameSkill: SKILL,
 		lvl: 3,
@@ -64,7 +64,7 @@ const trapTab = [
 	{
 		name: { a: 'Magic Finding', b: '魔法具探求' },
 		symbol: ';',
-		color: AQUA,
+		color: colorList.aqua,
 		circle: true,
 		nameSkill: MAGIC_FINDING,
 		lvl: 10,
@@ -73,7 +73,7 @@ const trapTab = [
 	{
 		name: { a: 'Gold Finding', b: '財宝探求' },
 		symbol: ';',
-		color: YELLOW,
+		color: colorList.yellow,
 		circle: true,
 		nameSkill: GOLD_FINDING,
 		lvl: 10,
@@ -82,7 +82,7 @@ const trapTab = [
 	{
 		name: { a: 'Resist Fire', b: '耐火' },
 		symbol: ';',
-		color: C_FIRE,
+		color: colorList.fire,
 		circle: true,
 		nameSkill: RESIST_FIRE,
 		lvl: 10,
@@ -91,7 +91,7 @@ const trapTab = [
 	{
 		name: { a: 'Resist Water', b: '耐水' },
 		symbol: ';',
-		color: C_WATER,
+		color: colorList.water,
 		circle: true,
 		nameSkill: RESIST_WATER,
 		lvl: 10,
@@ -100,7 +100,7 @@ const trapTab = [
 	{
 		name: { a: 'Resist Air', b: '耐風' },
 		symbol: ';',
-		color: C_AIR,
+		color: colorList.air,
 		circle: true,
 		nameSkill: RESIST_AIR,
 		lvl: 10,
@@ -109,7 +109,7 @@ const trapTab = [
 	{
 		name: { a: 'Resist Earth', b: '耐土' },
 		symbol: ';',
-		color: C_EARTH,
+		color: colorList.earth,
 		circle: true,
 		nameSkill: RESIST_EARTH,
 		lvl: 10,
@@ -118,7 +118,7 @@ const trapTab = [
 	{
 		name: { a: 'Resist Poison', b: '耐毒' },
 		symbol: ';',
-		color: C_POISON,
+		color: colorList.poison,
 		circle: true,
 		nameSkill: RESIST_POISON,
 		lvl: 10,
@@ -127,7 +127,7 @@ const trapTab = [
 	{
 		name: { a: 'Combat', b: '戦闘' },
 		symbol: ';',
-		color: STEEL,
+		color: colorList.steel,
 		circle: true,
 		nameSkill: ENCOURAGEMENT,
 		lvl: 10,
@@ -136,7 +136,7 @@ const trapTab = [
 	{
 		name: { a: 'Armor', b: '防護' },
 		symbol: ';',
-		color: BRASS,
+		color: colorList.brass,
 		circle: true,
 		nameSkill: BLESSING,
 		lvl: 10,
@@ -145,25 +145,25 @@ const trapTab = [
 	{
 		name: { a: 'Trap Door', b: '隠し扉の罠' },
 		symbol: '^',
-		color: WHITE
+		color: colorList.white
 	},
 
 	{
 		name: { a: 'Bear Trap', b: '虎挟み' },
 		symbol: '^',
-		color: SHADOW
+		color: colorList.shadow
 	},
 
 	{
 		name: { a: 'Arrow Trap', b: '矢の罠' },
 		symbol: '^',
-		color: WHITE
+		color: colorList.white
 	},
 
 	{
 		name: { a: 'Weakness', b: '薄弱' },
 		symbol: '^',
-		color: C_POISON,
+		color: colorList.poison,
 		dart: true,
 		nameSkill: WEAKNESS,
 		lvl: 1,
@@ -172,7 +172,7 @@ const trapTab = [
 	{
 		name: { a: 'Clumsiness', b: '不器用' },
 		symbol: '^',
-		color: C_POISON,
+		color: colorList.poison,
 		dart: true,
 		nameSkill: CLUMSINESS,
 		lvl: 1,
@@ -181,7 +181,7 @@ const trapTab = [
 	{
 		name: { a: 'Sickliness', b: '病弱' },
 		symbol: '^',
-		color: C_POISON,
+		color: colorList.poison,
 		dart: true,
 		nameSkill: SICKLINESS,
 		lvl: 1,
@@ -190,7 +190,7 @@ const trapTab = [
 	{
 		name: { a: 'Stupidity', b: '愚鈍' },
 		symbol: '^',
-		color: C_POISON,
+		color: colorList.poison,
 		dart: true,
 		nameSkill: STUPIDITY,
 		lvl: 1,
@@ -199,7 +199,7 @@ const trapTab = [
 	{
 		name: { a: 'Poison', b: '毒' },
 		symbol: '^',
-		color: C_POISON,
+		color: colorList.poison,
 		gas: true,
 		nameSkill: POISON,
 		lvl: 1,
@@ -208,7 +208,7 @@ const trapTab = [
 	{
 		name: { a: 'Sleepness', b: '睡眠' },
 		symbol: '^',
-		color: ROYALBLUE,
+		color: colorList.royalblue,
 		gas: true,
 		nameSkill: SLEEP,
 		lvl: 1,
@@ -217,7 +217,7 @@ const trapTab = [
 	{
 		name: { a: 'Hallucination', b: '幻覚' },
 		symbol: '^',
-		color: PURPLE,
+		color: colorList.purple,
 		gas: true,
 		nameSkill: HALLUCINATION,
 		lvl: 1,
@@ -226,7 +226,7 @@ const trapTab = [
 	{
 		name: { a: 'Paralysis', b: '麻痺' },
 		symbol: '^',
-		color: ORANGE,
+		color: colorList.orange,
 		gas: true,
 		nameSkill: PARALYSIS,
 		lvl: 1,
@@ -235,7 +235,7 @@ const trapTab = [
 	{
 		name: { a: 'Confusion', b: '混乱' },
 		symbol: '^',
-		color: YELLOW,
+		color: colorList.yellow,
 		gas: true,
 		nameSkill: CONFUSION,
 		lvl: 1,
@@ -244,7 +244,7 @@ const trapTab = [
 	{
 		name: { a: 'Blindness', b: '盲目' },
 		symbol: '^',
-		color: GRAY,
+		color: colorList.gray,
 		gas: true,
 		nameSkill: BLINDNESS,
 		lvl: 1,
@@ -253,7 +253,7 @@ const trapTab = [
 	{
 		name: { a: 'Bacteria', b: '細菌' },
 		symbol: '^',
-		color: C_INFECTION,
+		color: colorList.infection,
 		gas: true,
 		nameSkill: INFECTION,
 		lvl: 1,

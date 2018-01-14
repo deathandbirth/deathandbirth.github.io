@@ -12,7 +12,7 @@ const Location = class extends Position {
             this.stroke = this.fighter.stroke;
         } else if (!this.found) {
             this.symbol = ' ';
-            this.color = WHITE;
+            this.color = colorList.white;
             this.shadow = 0;
             this.stroke = 0;
         } else if (this.enter) {
@@ -27,12 +27,12 @@ const Location = class extends Position {
             this.stroke = 0;
         } else if (this.door && !this.hidden) {
             this.symbol = this.door === CLOSE ? '+' : '\'';
-            this.color = BROWN;
+            this.color = colorList.brown;
             this.shadow = 0;
             this.stroke = 0;
         } else if (this.wall) {
             this.symbol = '#';
-            this.color = this.indestructible ? BROWN : GRAY;
+            this.color = this.indestructible ? colorList.brown : colorList.gray;
             this.shadow = 0;
             this.stroke = 0;
         } else if (this.item['a']) {
@@ -54,7 +54,7 @@ const Location = class extends Position {
             this.stroke = 0;
         } else if (this.floor) {
             this.symbol = '.';
-            this.color = WHITE;
+            this.color = colorList.white;
             this.shadow = 0;
             this.stroke = 0;
         }
@@ -75,7 +75,7 @@ const Location = class extends Position {
         if (rogue.blinded && (!this.fighter || this.fighter.id !== ROGUE)) return;
         ctxBuf.save();
         ctxBuf.fillStyle = this.color;
-        if (rogue.hallucinated && !this.shadow) ctxBuf.shadowColor = PURPLE;
+        if (rogue.hallucinated && !this.shadow) ctxBuf.shadowColor = colorList.purple;
         if (this.shadow && option.shadow.user) ctxBuf.shadowColor = this.shadow;
         display.text({
             ctx: ctxBuf,
@@ -87,8 +87,8 @@ const Location = class extends Position {
 
         if (!rogue.litMapIds[this.x + ',' + this.y]) {
             ctxBuf.globalAlpha = 0.5;
-            ctxBuf.fillStyle = BLACK;
-            ctxBuf.shadowColor = CLEAR;
+            ctxBuf.fillStyle = colorList.black;
+            ctxBuf.shadowColor = colorList.clear;
             display.rect({
                 ctx: ctxBuf,
                 x: this.x,

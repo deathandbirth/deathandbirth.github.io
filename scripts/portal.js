@@ -3,8 +3,8 @@ const Portal = class extends Thing {
         super();
         this.name = { a: 'Portal', b: 'ポータル' };
         this.symbol = '＊';
-        this.color = WHITE;
-        this.stroke = SKY_BLUE;
+        this.color = colorList.white;
+        this.stroke = colorList.skyblue;
         this.portal = true;
     }
 

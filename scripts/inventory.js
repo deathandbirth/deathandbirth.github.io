@@ -2,9 +2,9 @@ const inventory = {
     shadow(direction) {
         let ctxInv = display.ctxes.inv;
         ctxInv.save();
-        ctxInv.shadowColor = CLEAR
+        ctxInv.shadowColor = colorList.clear
         ctxInv.globalAlpha = 0.9;
-        ctxInv.fillStyle = BLACK;
+        ctxInv.fillStyle = colorList.black;
         let offsetY = MS - 0.5;
         if (direction === LEFT || direction === MIDDLE) {
             display.rect({
@@ -152,11 +152,11 @@ const inventory = {
             });
 
             if (item.cursed && item.identified) {
-                ctxInv.fillStyle = RED;
+                ctxInv.fillStyle = colorList.red;
 			} else if (item.equipable && !item.durab) {
-                ctxInv.fillStyle = GRAY;
+                ctxInv.fillStyle = colorList.gray;
 			} else {
-				ctxInv.fillStyle = WHITE;
+				ctxInv.fillStyle = colorList.white;
 			}
 
             ctxInv.textAlign = 'left';
@@ -171,8 +171,8 @@ const inventory = {
                 stroke: item.stroke,
             });
 
-            ctxInv.fillStyle = WHITE;
-            ctxInv.shadowColor = CLEAR;
+            ctxInv.fillStyle = colorList.white;
+            ctxInv.shadowColor = colorList.clear;
             ctxInv.textAlign = 'right';
             if (flag.shop || flag.blacksmith) {
                 let price = flag.shop ? item.price * quantity2 : item.getDurabPrice();

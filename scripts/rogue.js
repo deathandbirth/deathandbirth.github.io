@@ -333,7 +333,7 @@ const Rogue = class extends Fighter {
             heightPx: 3,
         });
 
-        ctxStats.fillStyle = BLUE;
+        ctxStats.fillStyle = colorList.blue;
         display.rect({
             ctx: ctxStats,
             xPx: (2 - this.mp / this.mpMax) * display.width / 2,
@@ -351,15 +351,15 @@ const Rogue = class extends Fighter {
             msg: `${level} ${this.lvl}`,
             x: 0.5,
             y: j,
-            color: this.lvl < this.lvlMax ? YELLOW : undefined,
+            color: this.lvl < this.lvlMax ? colorList.yellow : undefined,
         });
 
         statistics.draw({
             msg: `${exp} ${this.exp}`,
             x: 5,
             y: j,
-            color: this.exp < this.expMax ? YELLOW : undefined,
-            shadow: this.expBuff ? C_BUFF : undefined,
+            color: this.exp < this.expMax ? colorList.yellow : undefined,
+            shadow: this.expBuff ? colorList.buff : undefined,
             limit: 6,
         });
 
@@ -374,14 +374,14 @@ const Rogue = class extends Fighter {
             msg: `HP ${this.hp}/${this.hpMax}`,
             x: 17,
             y: j,
-            color: this.hp <= 0 ? RED : undefined,
+            color: this.hp <= 0 ? colorList.red : undefined,
         });
 
         statistics.draw({
             msg: `MP ${this.mp}/${this.mpMax}`,
             x: 24.5,
             y: j,
-            color: this.mp <= 0 ? RED : undefined,
+            color: this.mp <= 0 ? colorList.red : undefined,
             limit: 6,
         });
 
@@ -389,8 +389,8 @@ const Rogue = class extends Fighter {
             msg: `${str} ${this.str}`,
             x: 31,
             y: j,
-            color: this.str < this.strMax ? YELLOW :
-                this.strSus ? LIME :
+            color: this.str < this.strMax ? colorList.yellow :
+                this.strSus ? colorList.lime :
                 undefined,
             limit: 3,
         });
@@ -399,8 +399,8 @@ const Rogue = class extends Fighter {
             msg: `${dex} ${this.dex}`,
             x: 34.5,
             y: j,
-            color: this.dex < this.dexMax ? YELLOW :
-                this.dexSus ? LIME :
+            color: this.dex < this.dexMax ? colorList.yellow :
+                this.dexSus ? colorList.lime :
                 undefined,
             limit: 3,
         });
@@ -409,8 +409,8 @@ const Rogue = class extends Fighter {
             msg: `${con} ${this.con}`,
             x: 38,
             y: j,
-            color: this.con < this.conMax ? YELLOW :
-                this.conSus ? LIME :
+            color: this.con < this.conMax ? colorList.yellow :
+                this.conSus ? colorList.lime :
                 undefined,
             limit: 3,
         });
@@ -419,8 +419,8 @@ const Rogue = class extends Fighter {
             msg: `${int} ${this.int}`,
             x: 41.5,
             y: j,
-            color: this.int < this.intMax ? YELLOW :
-                this.intSus ? LIME :
+            color: this.int < this.intMax ? colorList.yellow :
+                this.intSus ? colorList.lime :
                 undefined,
             limit: 3,
         });
@@ -429,8 +429,8 @@ const Rogue = class extends Fighter {
             msg: `${spd} ${this.spd}`,
             x: 45,
             y: j,
-            color: this.slowed ? RED : undefined,
-            shadow: this.speeded ? C_BUFF : undefined,
+            color: this.slowed ? colorList.red : undefined,
+            shadow: this.speeded ? colorList.buff : undefined,
             limit: 2.5,
         });
 
@@ -465,8 +465,8 @@ const Rogue = class extends Fighter {
             let item = this.boxes[i];
             ctxStats.save();
             ctxStats.textAlign = 'center';
-            ctxStats.fillStyle = GRAY;
-            ctxStats.strokeStyle = GRAY;
+            ctxStats.fillStyle = colorList.gray;
+            ctxStats.strokeStyle = colorList.gray;
             ctxStats.lineWidth = 0.5;
             display.rect({
                 ctx: ctxStats,
@@ -499,8 +499,8 @@ const Rogue = class extends Fighter {
                 });
 
                 ctxStats.font = display.fs / 2 + 'px ' + FONT_STYLE[option.getLanguage()];
-                ctxStats.fillStyle = WHITE;
-                ctxStats.shadowColor = CLEAR;
+                ctxStats.fillStyle = colorList.white;
+                ctxStats.shadowColor = colorList.clear;
                 display.text({
                     ctx: ctxStats,
                     msg: item.quantity,
@@ -1721,7 +1721,7 @@ const Rogue = class extends Fighter {
     examinePlot(aim) {
         if (aim) cursol.init();
         let [x, y] = [cursol.x, cursol.y];
-        let color = WHITE;
+        let color = colorList.white;
         let skill;
         display.clearOne(display.ctxes.cur);
         if (flag.zap) {
@@ -1832,7 +1832,7 @@ const Rogue = class extends Fighter {
             y: j++,
         });
 
-        ctxInv.shadowColor = SHADOW;
+        ctxInv.shadowColor = colorList.shadow;
         j++;
         let lvl = 0;
         let a = this.searchSkill(skill.id);
