@@ -117,4 +117,8 @@ const Thing = class {
             `${name} dissapeared` :
             `${name}は消え去った`);
     }
+
+    getName() {
+        return this.name[option.getLanguage()];
+    }
 }

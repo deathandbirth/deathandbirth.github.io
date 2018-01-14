@@ -25,7 +25,6 @@ const Rogue = class extends Fighter {
         this.lethe = 0;
         this.turn = 1;
         this.done = false;
-        this.portal = new Position;
         this.numBoxes = 1;
         this.boxes = {};
         for (let i = 1; i <= this.numBoxes; i++) {
@@ -575,43 +574,43 @@ const Rogue = class extends Fighter {
             game.clearLevel()
             creation.town();
             this.cdl = 0;
-            let portal = new Portal(enter[PORTAL]);
+            let portal = new Portal();
             portal.init(LOCATION, this.x, this.y);
 		}
 		
         audio.playSound('tplevel');
     }
 
-    enterBuild(build) {
+    enterBuild(enter) {
         flag.regular = false;
         map.draw(rogue.x, rogue.y);
-        if (build.stash) {
+        if (enter.stash) {
             flag.stash = true;
-            build.page = 1;
+            enter.page = 1;
             this.showInventory(P_PACK);
             this.showInventory(P_STASH);
             message.draw(message.get(M_STASH), true);
             return;
-        } else if (build.shop) {
+        } else if (enter.shop) {
             flag.shop = true;
             this.cn = 1;
-            flag.gamble = !!build.gamble;
+            flag.gamble = enter.gamble;
             this.showInventory(P_PACK);
-            if (!build.list['a']) createShopItem(build);
+            if (!enter.list['a']) enter.createShopItem();
             this.showInventory(P_SHOP);
             message.draw(message.get(M_SHOP), true);
-        } else if (build.cure) {
+        } else if (enter.cure) {
             flag.cure = true;
-            inventory.show(build.list, RIGHT);
+            inventory.show(enter.list, RIGHT, false, false, enter);
             message.draw(message.get(M_CURE), true);
-        } else if (build.blacksmith) {
+        } else if (enter.blacksmith) {
             flag.blacksmith = true;
             this.equipmentList();
             this.showInventory(P_PACK);
             message.draw(message.get(M_BLACKSMITH), true);
 		}
 		
-        let nameEnter = build.name[option.getLanguage()];
+        let nameEnter = enter.getName();
         message.draw(option.isEnglish() ?
             `You entered The ${nameEnter}` :
             `${nameEnter}に入った`);
@@ -2315,7 +2314,7 @@ const Rogue = class extends Fighter {
 			}
 			
             this.drawStats();
-            flag.shop = shop.gamble ? GAMBLE : true;
+            flag.shop = true;
             flag.number = false;
             inventory.clear();
             this.cn = 1;

@@ -1,25 +1,25 @@
 const Portal = class extends Thing {
-    constructor(obj, hidden) {
-        super(obj);
+    constructor() {
+        super();
+        this.name = { a: 'Portal', b: 'ポータル' };
+        this.symbol = '＊';
+        this.color = WHITE;
+        this.stroke = SKY_BLUE;
+        this.portal = true;
     }
 
     putDown(x, y) {
-        if (rogue.portal.x || rogue.portal.y) {
-            let loc = map.coords[rogue.portal.x][rogue.portal.y];
+        if (map.portal) {
+            let loc = map.coords[map.portal.x][map.portal.y];
             loc.enter = null;
             loc.draw();
-            rogue.portal.x = rogue.portal.y = 0;
+            map.portal = null;
 		}
 
         this.spiralSearch(x, y, ENTER);
         if (this.abort) return;
-        [rogue.portal.x, rogue.portal.y] = [this.x, this.y];
         let loc = map.coords[this.x][this.y];
-        loc.enter = this;
+        loc.enter = map.portal = this;
         loc.draw();
-    }
-
-    getName() {
-        return this.name[option.getLanguage()];
     }
 }

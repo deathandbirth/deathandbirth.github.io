@@ -3496,7 +3496,8 @@ const Fighter = class extends Material {
                 break;
             case P_SHOP:
             case P_STASH:
-                inventory.show(map.coords[this.x][this.y].enter.list, LEFT, a, place);
+                let enter = map.coords[this.x][this.y].enter;
+                inventory.show(enter.list, LEFT, a, place, enter);
                 break;
             case P_CUBE:
                 inventory.show(this.cube, LEFT, a, place);
@@ -4545,7 +4546,7 @@ const Fighter = class extends Material {
                 if (f.hunger > MAX_HUNGER) f.hunger = MAX_HUNGER;
                 break;
             case TOWN_PORTAL:
-                let portal = new Portal(enter[PORTAL]);
+                let portal = new Portal();
                 portal.init(LOCATION, this.x, this.y);
                 message.draw(option.isEnglish() ?
                     `Created a Town Portal` :

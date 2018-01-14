@@ -20,34 +20,35 @@ const Build = class extends Room {
     }
 
     createEntrance() {
-        let x, y;
+        let x, y, name;
         if (this.id === 0 || this.id === 1) {
             if (this.id === 1) {
 				[x, y] = [this.x + BUILD_WIDTH - 1, this.y];
-                let loc = map.coords[x][y];
-                loc.enter = enter[CURE];
-                loc.deleteWall();
+                let entrance = new Entrance('cure');
+                entrance.init(LOCATION, x, y);
 			}
 			
-			[x, y] = [this.x + BUILD_WIDTH - 1, this.y + BUILD_HEIGHT - 1];
+            [x, y] = [this.x + BUILD_WIDTH - 1, this.y + BUILD_HEIGHT - 1];
+            name = this.id === 0 ? 'book' : 'general';
         } else if (this.id === 2 || this.id === 3) {
             if (this.id === 2) {
 				[x, y] = [this.x, this.y];
-                let loc = map.coords[x][y];
-                loc.enter = enter[BLACKSMITH];
-                loc.deleteWall();
+                let entrance = new Entrance('blacksmith');
+                entrance.init(LOCATION, x, y);
 			}
 			
 			[x, y] = [this.x, this.y + BUILD_HEIGHT - 1];
+            name = this.id === 2 ? 'potion' : 'scroll';
         } else if (this.id === 4 || this.id === 5) {
             [x, y] = [this.x + BUILD_WIDTH - 1, this.y];
+            name = this.id === 4 ? 'wand' : 'weapon';
 		} else if (this.id === 6 || this.id === 7) {
 			[x, y] = [this.x, this.y];
+            name = this.id === 6 ? 'armor' : 'gamble';
 		}
 
-        let loc = map.coords[x][y];
-        loc.enter = enter[this.id + 2];
-        loc.deleteWall();
+        let entrance = new Entrance(name);
+        entrance.init(LOCATION, x, y);
     }
 }
 
@@ -62,7 +63,8 @@ const town = {
             this.createOne(x, y, i, BUILD_WIDTH, BUILD_HEIGHT);
 		}
 		
-        map.coords[POSITION.stash.x][POSITION.stash.y].enter = enter[STASH];
+        let entrance = new Entrance('stash');
+        entrance.init(LOCATION, POSITION.stash.x, POSITION.stash.y);
         map.fill(true);
         map.lighten(true);
 	},

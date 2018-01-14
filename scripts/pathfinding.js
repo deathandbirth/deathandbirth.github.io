@@ -86,11 +86,7 @@ const circleSearch = {
                 loc.hidden = false;
                 loc.door = false;
                 loc.trap = null;
-                if (loc.enter && loc.enter.portal) {
-                    rogue.portal.x = rogue.portal.y = 0;
-                    loc.enter = null;
-                }
-
+                if (loc.enter && loc.enter.portal) loc.enter = map.portal = null;
                 let found;
                 if (loc.item) {
                     let items = {};

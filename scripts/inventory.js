@@ -36,12 +36,12 @@ const inventory = {
         display.clearOne(display.ctxes.inv);
 	},
 	
-    show(list, direction, a, place) {
+    show(list, direction, a, place, enter) {
         if (flag.shop) {
             var quantity2 = !rogue.cn ? 1 : Number(rogue.cn);
             if (a && quantity2 > list[a].quantity) quantity2 = list[a].quantity;
         } else if (place === P_STASH) {
-			var l = (enter[STASH].page - 1) * MAX_PACK_COUNT;
+			var l = (enter.page - 1) * MAX_PACK_COUNT;
 		}
 
         this.shadow(direction);
@@ -106,7 +106,7 @@ const inventory = {
 
                     ctxInv.textAlign = 'right';
                     if (flag.cure) {
-                        let cost = enter[CURE].list[key].cost;
+                        let cost = enter.list[key].cost;
                         display.text({
                             ctx: ctxInv,
                             msg: `$${cost}`,
@@ -224,7 +224,7 @@ const inventory = {
             let weight = option.isEnglish() ? 'Weight' : '重量';
             msg = `${weight} x${quantity2}`;
         } else if (place === P_STASH) {
-            msg = ` [${enter[STASH].page}/${MAX_STASH_PAGE}]`;
+            msg = ` [${enter.page}/${MAX_STASH_PAGE}]`;
 		} else {
             if (flag.gain) {
                 let skillPoints = option.isEnglish() ? 'Skill Points' : 'スキルポイント';

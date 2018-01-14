@@ -132,7 +132,7 @@ const game = {
         audio.init();
         rogue = new Rogue();
         rogue.init();
-        enter[STASH].list = [];
+        map.stashList = [];
         message.list = [];
         message.clear(true);
         this.clearLevel();
@@ -144,7 +144,6 @@ const game = {
         rogue.checkUnique();
         rogue.numSteps = 0;
         rogue.ce = null;
-        rogue.portal.x = rogue.portal.y = 0;
         rogue.litMapIds = {};
 	},
 };

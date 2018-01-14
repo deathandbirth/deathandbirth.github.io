@@ -103,7 +103,6 @@ const creation = {
         map.draw(rogue.x, rogue.y);
         audio.stop(audio.curTrack);
         audio.playMusic(!rogue.inferno ? 'town' : 'town2');
-        initShopItem();
     },
 
     enemy({

@@ -5,7 +5,7 @@ const Data = class {
         this.coords = map.coords;
         this.option = option;
         this.messageList = message.list;
-        if (rogue.cdl) this.stashList = enter[STASH].list;
+        if (rogue.cdl) this.stashList = map.stashList;
         this.track = audio.curTrack;
         this.date = new Date();
         this.ver = VERSION;
@@ -24,7 +24,7 @@ const Data = class {
 
         if (rogue.cdl) {
             this.loadItem(this.stashList);
-            enter[STASH].list = this.stashList;
+            map.stashList = this.stashList;
         }
 
         this.convertCe();
@@ -93,13 +93,12 @@ const Data = class {
                 }
 
                 if (loc.item['a']) this.loadItem(loc.item, true);
+                if (loc.enter) this.loadEntrance(loc.enter);
                 if (loc.trap) loc.trap.__proto__ = Trap.prototype;
                 if (loc.stairs) {
                     loc.stairs.__proto__ = Staircase.prototype;
                     map.staircaseList[loc.x + ',' + loc.y] = loc.stairs;
                 }
-
-                if (loc.enter) this.loadEntrance(loc);
             }
         }
     }
@@ -112,14 +111,15 @@ const Data = class {
         }
     }
 
-    loadEntrance(loc) {
-        let entLoaded = loc.enter;
-        if (entLoaded.shop || entLoaded.stash) {
-            this.loadItem(entLoaded.list)
-            enter[entLoaded.id].list = entLoaded.list;
+    loadEntrance(enter) {
+        if (enter.shop || enter.stash) this.loadItem(enter.list);
+        if (enter.stash) map.stashList = enter.list;
+        if (enter.portal) {
+            map.portal = enter;
+            enter.__proto__ = Portal.prototype;
+        } else {
+            enter.__proto__ = Entrance.prototype;
         }
-
-        if (!entLoaded.portal) loc.enter = enter[entLoaded.id];
     }
 
     loadOption() {

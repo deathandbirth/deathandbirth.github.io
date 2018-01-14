@@ -160,7 +160,7 @@ const Location = class extends Position {
 			}
 			
             if (msgAdd) {
-                let nameEnter = this.enter.name[option.getLanguage()];
+                let nameEnter = this.enter.getName();
                 msg = !msg ? nameEnter : nameEnter + (option.isEnglish() ? ', ' : 'と') + msg;
             }
         } else if (this.trap) {

@@ -93,6 +93,7 @@ const map = {
         this.enemyList = {};
         this.itemList = {};
         this.staircaseList = {};
+        this.portal = null;
         if (load) return;
         let width = town ? IN_WIDTH : WIDTH;
         let height = town ? IN_HEIGHT : HEIGHT;
