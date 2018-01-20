@@ -867,7 +867,6 @@ const itemTab = {
             nameReal: { a: 'Short Teleportation', b: 'ショート・テレポート' },
             nameSkill: SHORT_TELEPORTATION,
             skillLvl: 10,
-            color: colorList.white,
             priceRate: 1,
             shop: true,
             lvl: 1,
@@ -878,7 +877,6 @@ const itemTab = {
             nameReal: { a: 'Teleportation', b: 'テレポート' },
             nameSkill: TELEPORTATION,
             skillLvl: 10,
-            color: colorList.white,
             priceRate: 1.5,
             shop: true,
             lvl: 1,
@@ -889,7 +887,6 @@ const itemTab = {
             nameReal: { a: 'Remove Curse', b: '解呪' },
             nameSkill: REMOVE_CURSE,
             skillLvl: 10,
-            color: colorList.white,
             priceRate: 2,
             shop: true,
             lvl: 1,
@@ -900,7 +897,6 @@ const itemTab = {
             nameReal: { a: 'Identify', b: '識別' },
             nameSkill: IDENTIFY,
             skillLvl: 10,
-            color: colorList.white,
             priceRate: 1,
             shop: true,
             lvl: 1,
@@ -911,7 +907,6 @@ const itemTab = {
             nameReal: { a: 'Monster Detection', b: 'モンスター感知' },
             nameSkill: MONSTER_DETECTION,
             skillLvl: 10,
-            color: colorList.white,
             priceRate: 1,
             shop: true,
             lvl: 5,
@@ -922,7 +917,6 @@ const itemTab = {
             nameReal: { a: 'Item Detection', b: 'アイテム感知' },
             nameSkill: ITEM_DETECTION,
             skillLvl: 10,
-            color: colorList.white,
             priceRate: 2,
             shop: true,
             lvl: 10,
@@ -933,7 +927,6 @@ const itemTab = {
             nameReal: { a: 'Magic Mapping', b: '魔法地図' },
             nameSkill: MAGIC_MAPPING,
             skillLvl: 10,
-            color: colorList.white,
             priceRate: 3,
             shop: true,
             lvl: 15,
@@ -944,7 +937,6 @@ const itemTab = {
             nameReal: { a: 'Town Portal', b: 'タウン・ポータル' },
             nameSkill: TOWN_PORTAL,
             skillLvl: 10,
-            color: colorList.white,
             priceRate: 1,
             shop: true,
             lvl: 5,
@@ -955,7 +947,6 @@ const itemTab = {
             nameReal: { a: 'Touch of Confusion', b: '混乱の手' },
             nameSkill: TOUCH_OF_CONFUSION,
             skillLvl: 10,
-            color: colorList.white,
             priceRate: 4,
             shop: true,
             lvl: 10,
@@ -966,7 +957,6 @@ const itemTab = {
             nameReal: { a: 'Hold Monster', b: 'モンスター束縛' },
             nameSkill: HOLD_MONSTER,
             skillLvl: 10,
-            color: colorList.white,
             priceRate: 10,
             lvl: 10,
             rarity: 20
@@ -976,7 +966,6 @@ const itemTab = {
             nameReal: { a: 'Aggravate Monster', b: '反感' },
             nameSkill: SCREAM,
             skillLvl: 10,
-            color: colorList.white,
             priceRate: 0.1,
             lvl: 1,
             rarity: 0
@@ -986,7 +975,6 @@ const itemTab = {
             nameReal: { a: 'Create Monster', b: 'モンスター生成' },
             nameSkill: CREATE_MONSTER,
             skillLvl: 10,
-            color: colorList.white,
             priceRate: 0.1,
             lvl: 5,
             rarity: 0
@@ -996,7 +984,6 @@ const itemTab = {
             nameReal: { a: 'Create Magic Monster', b: 'マジック・モンスター生成' },
             nameSkill: CREATE_MAGIC_MONSTER,
             skillLvl: 10,
-            color: colorList.white,
             priceRate: 0.1,
             lvl: 20,
             rarity: 50
@@ -1006,7 +993,6 @@ const itemTab = {
             nameReal: { a: 'Create Trap', b: 'トラップ生成' },
             nameSkill: CREATE_TRAP,
             skillLvl: 10,
-            color: colorList.white,
             priceRate: 0.1,
             lvl: 3,
             rarity: 0
@@ -1016,7 +1002,6 @@ const itemTab = {
             nameReal: { a: 'Restore Durability', b: '耐久度復活' },
             nameSkill: RESTORE_DURABILITY,
             skillLvl: 10,
-            color: colorList.white,
             priceRate: 1,
             shop: true,
             lvl: 10,
@@ -1027,7 +1012,6 @@ const itemTab = {
             nameReal: { a: 'Repair All', b: '全修復' },
             nameSkill: REPAIR_ALL,
             skillLvl: 10,
-            color: colorList.white,
             priceRate: 20,
             lvl: 20,
             rarity: 50
@@ -1037,7 +1021,6 @@ const itemTab = {
             nameReal: { a: 'Disintegration', b: '分解' },
             nameSkill: DISINTEGRATION,
             skillLvl: 10,
-            color: colorList.white,
             priceRate: 100,
             lvl: 30,
             rarity: 80
@@ -1047,7 +1030,6 @@ const itemTab = {
             nameReal: { a: 'Magic Circle of Protection', b: '守護魔法円' },
             nameSkill: MAGIC_CIRCLE_OF_PROTECTION,
             skillLvl: 10,
-            color: colorList.white,
             priceRate: 30,
             lvl: 30,
             rarity: 50
@@ -1057,7 +1039,6 @@ const itemTab = {
             nameReal: { a: 'Light', b: '光' },
             nameSkill: LIGHT,
             skillLvl: 10,
-            color: colorList.white,
             priceRate: 1,
             shop: true,
             lvl: 1,
@@ -1068,7 +1049,6 @@ const itemTab = {
             nameReal: { a: 'Spiderweb', b: 'スパイダー・ウェブ' },
             nameSkill: GRAVITATIONAL_FIELD,
             skillLvl: 10,
-            color: colorList.white,
             priceRate: 50,
             lvl: 20,
             rarity: 30
@@ -1078,7 +1058,6 @@ const itemTab = {
             nameReal: { a: 'Earthquake', b: '地震' },
             nameSkill: EARTHQUAKE,
             skillLvl: 20,
-            color: colorList.white,
             priceRate: 25,
             lvl: 20,
             rarity: 30
@@ -2349,6 +2328,8 @@ const Item = class extends Material {
 						
                         if (!found) break;
                     }
+                } else if (key === 'scroll') {
+                    item.color = colorList.white;
                 }
             }
         }

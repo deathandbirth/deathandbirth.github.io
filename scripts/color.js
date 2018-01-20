@@ -108,6 +108,7 @@ const colorList = {
     magma: 'firebrick',
     radiation: 'darkorange',
     atom: '#333333',
+    physical: 'gray',
 
     buff: '#0099FF',
 };
