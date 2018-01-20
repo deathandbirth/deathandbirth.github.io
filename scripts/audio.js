@@ -48,6 +48,7 @@ const audio = {
         slow: new Audio('sound/slow.wav'),
         staircase: new Audio('sound/staircase.wav'),
         broken: new Audio('sound/broken.wav'),
+        quaff: new Audio('sound/quaff.wav'),
     },
 
     init() {

@@ -903,6 +903,7 @@ const Rogue = class extends Fighter {
         message.draw(option.isEnglish() ?
             `Quaffed ${name}` :
             `${name}を飲んだ`);
+        audio.playSound('quaff');
         this.haveCast(item.nameSkill, item.skillLvl, this);
         this.hunger += HUNGER_POTION;
         if (this.hunger > MAX_HUNGER) this.hunger = MAX_HUNGER;
