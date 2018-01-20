@@ -2779,13 +2779,12 @@ const Fighter = class extends Material {
 
     calcCondition(calc, draw) {
         var j = -4;
-        let name;
-        name = this.getName(true);
+        let name = this.getName(true);
         if (draw) {
             statistics.clearCondition();
             var len = display.fs;
             if (this.hunger >= 800) {
-                let condition = option.isEnglish() ? 'full' : textLen.list['full'];
+                let condition = option.isEnglish() ? 'full' : textLenList.names['full'];
                 statistics.draw({
                     msg: condition,
                     xPx: len,
@@ -2793,9 +2792,9 @@ const Fighter = class extends Material {
                     color: colorList.lime,
 				});
 				
-                len += textLen['full'][option.getLanguage()];
+                len += textLenList['full'][option.getLanguage()];
             } else if (this.hunger > 0 && this.hunger <= 200) {
-                let condition = option.isEnglish() ? 'hungry' : textLen.list['hungry'];
+                let condition = option.isEnglish() ? 'hungry' : textLenList.names['hungry'];
                 statistics.draw({
                     msg: condition,
                     xPx: len,
@@ -2803,9 +2802,9 @@ const Fighter = class extends Material {
                     color: colorList.yellow,
 				});
 				
-                len += textLen['hungry'][option.getLanguage()];
+                len += textLenList['hungry'][option.getLanguage()];
             } else if (this.hunger === 0) {
-                let condition = option.isEnglish() ? 'starved' : textLen.list['starved'];
+                let condition = option.isEnglish() ? 'starved' : textLenList.names['starved'];
                 statistics.draw({
                     msg: condition,
                     xPx: len,
@@ -2813,7 +2812,7 @@ const Fighter = class extends Material {
                     color: colorList.red,
 				});
 				
-                len += textLen['starved'][option.getLanguage()];
+                len += textLenList['starved'][option.getLanguage()];
             }
 		}
 		
@@ -2838,7 +2837,7 @@ const Fighter = class extends Material {
 			}
 			
             if (draw) {
-                let condition = option.isEnglish() ? 'poisoned' : textLen.list['poisoned'];
+                let condition = option.isEnglish() ? 'poisoned' : textLenList.names['poisoned'];
                 statistics.draw({
                     msg: condition,
                     xPx: len,
@@ -2846,7 +2845,7 @@ const Fighter = class extends Material {
                     color: colorList.poison,
 				});
 				
-                len += textLen['poisoned'][option.getLanguage()];
+                len += textLenList['poisoned'][option.getLanguage()];
             }
 		}
 		
@@ -2859,7 +2858,7 @@ const Fighter = class extends Material {
 			}
 			
             if (draw) {
-                let condition = option.isEnglish() ? 'confused' : textLen.list['confused'];
+                let condition = option.isEnglish() ? 'confused' : textLenList.names['confused'];
                 statistics.draw({
                     msg: condition,
                     xPx: len,
@@ -2867,7 +2866,7 @@ const Fighter = class extends Material {
                     color: colorList.yellow,
 				});
 				
-                len += textLen['confused'][option.getLanguage()];
+                len += textLenList['confused'][option.getLanguage()];
             }
 		}
 		
@@ -2879,7 +2878,7 @@ const Fighter = class extends Material {
 			}
 			
             if (draw) {
-                let condition = option.isEnglish() ? 'paralyzed' : textLen.list['paralyzed'];
+                let condition = option.isEnglish() ? 'paralyzed' : textLenList.names['paralyzed'];
                 statistics.draw({
                     msg: condition,
                     xPx: len,
@@ -2887,14 +2886,14 @@ const Fighter = class extends Material {
                     color: colorList.orange,
 				});
 				
-                len += textLen['paralyzed'][option.getLanguage()];
+                len += textLenList['paralyzed'][option.getLanguage()];
             }
 		}
 		
         if (this.sleeping > 0) {
             if (calc && --this.sleeping === 0) this.wakeUp();
             if (draw) {
-                let condition = option.isEnglish() ? 'sleeping' : textLen.list['sleeping'];
+                let condition = option.isEnglish() ? 'sleeping' : textLenList.names['sleeping'];
                 statistics.draw({
                     msg: condition,
                     xPx: len,
@@ -2902,7 +2901,7 @@ const Fighter = class extends Material {
                     color: colorList.royalblue,
 				});
 				
-                len += textLen['sleeping'][option.getLanguage()];
+                len += textLenList['sleeping'][option.getLanguage()];
             }
 		}
 		
@@ -2920,7 +2919,7 @@ const Fighter = class extends Material {
 			}
 			
             if (draw) {
-                let condition = option.isEnglish() ? 'blinded' : textLen.list['blinded'];
+                let condition = option.isEnglish() ? 'blinded' : textLenList.names['blinded'];
                 statistics.draw({
                     msg: condition,
                     xPx: len,
@@ -2928,7 +2927,7 @@ const Fighter = class extends Material {
                     color: colorList.gray,
 				});
 				
-                len += textLen['blinded'][option.getLanguage()];
+                len += textLenList['blinded'][option.getLanguage()];
             }
 		}
 		
@@ -2941,7 +2940,7 @@ const Fighter = class extends Material {
 			}
 			
             if (draw) {
-                let condition = option.isEnglish() ? 'infected' : textLen.list['infected'];
+                let condition = option.isEnglish() ? 'infected' : textLenList.names['infected'];
                 statistics.draw({
                     msg: condition,
                     xPx: len,
@@ -2949,7 +2948,7 @@ const Fighter = class extends Material {
                     color: colorList.infection,
 				});
 				
-                len += textLen['infected'][option.getLanguage()];
+                len += textLenList['infected'][option.getLanguage()];
             }
 		}
 		
@@ -2967,7 +2966,7 @@ const Fighter = class extends Material {
 			}
 			
             if (draw) {
-                let condition = option.isEnglish() ? 'hallucinated' : textLen.list['hallucinated'];
+                let condition = option.isEnglish() ? 'hallucinated' : textLenList.names['hallucinated'];
                 statistics.draw({
                     msg: condition,
                     xPx: len,
@@ -2975,7 +2974,7 @@ const Fighter = class extends Material {
                     color: colorList.purple,
 				});
 				
-                len += textLen['hallucinated'][option.getLanguage()];
+                len += textLenList['hallucinated'][option.getLanguage()];
             }
 		}
 		
@@ -2987,7 +2986,7 @@ const Fighter = class extends Material {
 			}
 			
             if (draw) {
-                let condition = option.isEnglish() ? 'canceled' : textLen.list['canceled'];
+                let condition = option.isEnglish() ? 'canceled' : textLenList.names['canceled'];
                 statistics.draw({
                     msg: condition,
                     xPx: len,
@@ -2995,7 +2994,7 @@ const Fighter = class extends Material {
                     color: colorList.white,
 				});
 				
-                len += textLen['canceled'][option.getLanguage()];
+                len += textLenList['canceled'][option.getLanguage()];
             }
 		}
 		
@@ -3008,7 +3007,7 @@ const Fighter = class extends Material {
 			}
 			
             if (draw) {
-                let condition = option.isEnglish() ? 'see invisible' : textLen.list['see invisible'];
+                let condition = option.isEnglish() ? 'see invisible' : textLenList.names['see invisible'];
                 statistics.draw({
                     msg: condition,
                     xPx: len,
@@ -3017,7 +3016,7 @@ const Fighter = class extends Material {
                     shadow: colorList.light,
 				});
 				
-                len += textLen['see invisible'][option.getLanguage()];
+                len += textLenList['see invisible'][option.getLanguage()];
             }
 		}
 		
@@ -3029,7 +3028,7 @@ const Fighter = class extends Material {
 			}
 			
             if (draw) {
-                let condition = option.isEnglish() ? 'invisible' : textLen.list['invisible'];
+                let condition = option.isEnglish() ? 'invisible' : textLenList.names['invisible'];
                 statistics.draw({
                     msg: condition,
                     xPx: len,
@@ -3038,7 +3037,7 @@ const Fighter = class extends Material {
                     shadow: colorList.light,
 				});
 				
-                len += textLen['invisible'][option.getLanguage()];
+                len += textLenList['invisible'][option.getLanguage()];
             }
 		}
 		
@@ -3050,7 +3049,7 @@ const Fighter = class extends Material {
 			}
 			
             if (draw) {
-                let condition = option.isEnglish() ? 'ecco' : textLen.list['ecco'];
+                let condition = option.isEnglish() ? 'ecco' : textLenList.names['ecco'];
                 statistics.draw({
                     msg: condition,
                     xPx: len,
@@ -3058,7 +3057,7 @@ const Fighter = class extends Material {
                     color: colorList.air,
 				});
 				
-                len += textLen['ecco'][option.getLanguage()];
+                len += textLenList['ecco'][option.getLanguage()];
             }
 		}
 		
@@ -3076,7 +3075,7 @@ const Fighter = class extends Material {
 			}
 			
             if (draw) {
-                let condition = option.isEnglish() ? 'enchant self' : textLen.list['enchant self'];
+                let condition = option.isEnglish() ? 'enchant self' : textLenList.names['enchant self'];
                 statistics.draw({
                     msg: condition,
                     xPx: len,
@@ -3084,7 +3083,7 @@ const Fighter = class extends Material {
                     color: colorList.earth,
 				});
 				
-                len += textLen['enchant self'][option.getLanguage()];
+                len += textLenList['enchant self'][option.getLanguage()];
             }
 		}
 		
@@ -3098,7 +3097,7 @@ const Fighter = class extends Material {
 			}
 			
             if (draw) {
-                let condition = option.isEnglish() ? 'venom hands' : textLen.list['venom hands'];
+                let condition = option.isEnglish() ? 'venom hands' : textLenList.names['venom hands'];
                 statistics.draw({
                     msg: condition,
                     xPx: len,
@@ -3106,7 +3105,7 @@ const Fighter = class extends Material {
                     color: colorList.poison,
 				});
 				
-                len += textLen['venom hands'][option.getLanguage()];
+                len += textLenList['venom hands'][option.getLanguage()];
             }
 		}
 		
@@ -3120,7 +3119,7 @@ const Fighter = class extends Material {
 			}
 			
             if (draw) {
-                let condition = option.isEnglish() ? 'confusing hands' : textLen.list['confusing hands'];
+                let condition = option.isEnglish() ? 'confusing hands' : textLenList.names['confusing hands'];
                 statistics.draw({
                     msg: condition,
                     xPx: len,
@@ -3128,7 +3127,7 @@ const Fighter = class extends Material {
                     color: colorList.poison,
 				});
 				
-                len += textLen['confusing hands'][option.getLanguage()];
+                len += textLenList['confusing hands'][option.getLanguage()];
             }
 		}
 		

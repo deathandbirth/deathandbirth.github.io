@@ -1,3 +1,25 @@
+const textLenList = {
+    names: {
+        full: '満腹',
+        hungry: '空腹',
+        starved: '飢餓',
+        poisoned: '毒',
+        confused: '混乱',
+        paralyzed: '麻痺',
+        sleeping: '睡眠',
+        blinded: '盲目',
+        infected: '感染',
+        hallucinated: '幻覚',
+        canceled: '封印',
+        'see invisible': '透視',
+        invisible: '透明',
+        ecco: 'エコー',
+        'enchant self': '自己強化',
+        'venom hands': '猛毒の手',
+        'confusing hands': '混乱の手',
+    },
+};
+
 const display = {
     list: {
         a: { width: 640, height: 360, fs: 13 },
@@ -46,7 +68,7 @@ const display = {
             ctx.textAlign = key === 'stats' || key === 'inv' || key === 'msg' ? 'left' : 'center';
         }
 
-        textLen.init();
+        this.textLenInit();
         if (draw) {
             map.redraw(rogue.x, rogue.y);
             map.draw(rogue.x, rogue.y);
@@ -137,7 +159,17 @@ const display = {
         for (let i in this.ctxes) {
             this.clearOne(this.ctxes[i], i === 'buf');
         };
-    }
+    },
+
+    textLenInit() {
+        let ctxStats = this.ctxes.stats;
+        let names = textLenList.names;
+        for (let key in names) {
+            textLenList[key] = {};
+            textLenList[key].a = ctxStats.measureText(key).width + this.fs;
+            textLenList[key].b = ctxStats.measureText(names[key]).width + this.fs;
+        }
+    },
 };
 
 {

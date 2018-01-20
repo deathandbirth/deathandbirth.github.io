@@ -319,37 +319,6 @@ const POSITION = {
     hell: { x: 40, y: 11 },
 };
 
-const textLen = {
-    list: {
-        full: '満腹',
-        hungry: '空腹',
-        starved: '飢餓',
-        poisoned: '毒',
-        confused: '混乱',
-        paralyzed: '麻痺',
-        sleeping: '睡眠',
-        blinded: '盲目',
-        infected: '感染',
-        hallucinated: '幻覚',
-        canceled: '封印',
-        'see invisible': '透視',
-        invisible: '透明',
-        ecco: 'エコー',
-        'enchant self': '自己強化',
-        'venom hands': '猛毒の手',
-        'confusing hands': '混乱の手',
-    },
-
-    init() {
-        let ctxStats = display.ctxes.stats;
-        for (let key in this.list) {
-            this[key] = {};
-            this[key].a = ctxStats.measureText(key).width + display.fs;
-            this[key].b = ctxStats.measureText(this.list[key]).width + display.fs;
-        }
-    },
-};
-
 const flag = {
     died: true,
     wait: false,
