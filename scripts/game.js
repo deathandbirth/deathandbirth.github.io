@@ -1,46 +1,4 @@
 const game = {
-    help: {
-        main() {
-            this.i = 1;
-            this.j = MS + 1;
-            inventory.shadow(MIDDLE);
-            this.loop(CL);
-            if (rogue.isWizard) this.loop(CLW);
-		},
-		
-        loop(list) {
-            let i = this.i;
-            let j = this.j;
-            let ctxInv = display.ctxes.inv;
-            for (let key in list) {
-                ctxInv.save();
-                display.text({
-                    ctx: ctxInv,
-                    msg: key,
-                    x: i - 0.5,
-                    y: j,
-                });
-
-                ctxInv.textAlign = 'left';
-                display.text({
-                    ctx: ctxInv,
-                    msg: list[key][option.getLanguage()],
-                    x: i + 4,
-                    y: j++,
-                });
-
-                ctxInv.restore();
-                if (j === IN_HEIGHT) {
-                    j = MS + 1;
-                    i += 14;
-                }
-			}
-			
-            this.i = i;
-            this.j = j;
-        }
-	},
-	
     title() {
         display.clearAll();
         let ctxInv = display.ctxes.inv;

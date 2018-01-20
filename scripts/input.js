@@ -521,7 +521,7 @@ const input = {
                 if (this.isCtrl) break;
                 if (this.isShift) {
                     flag.help = true;
-                    game.help.main();
+                    help.main();
                     flag.regular = false;
                 }
 
