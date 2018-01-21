@@ -2120,7 +2120,7 @@ const Item = class extends Material {
         let halluc = !!this.typeHalluc;
         let name;
         if (gamble) {
-            name = a === ENG ? getUpperCase(type) : ITJ[type];
+            name = a === ENG ? getUpperCase(type) : translation.item[type];
             if (quantity > 1) name += ` x${quantity}`;
             return name;
 		}
@@ -2141,7 +2141,7 @@ const Item = class extends Material {
 					name = `${type} of ${name}`;
 				}
             } else {
-                type = ITJ[type];
+                type = translation.item[type];
                 if (!this.identified && type === 'scroll' && !halluc) {
                     name += `と名付けられた${type}`;
 				} else {

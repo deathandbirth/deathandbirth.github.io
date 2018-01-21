@@ -3530,7 +3530,7 @@ const Fighter = class extends Material {
             });
 
             ctxInv.textAlign = 'left';
-            let parts = option.isEnglish() ? key : BPJ[key];
+            let parts = option.isEnglish() ? key : translation.bodyParts[key];
             if (key === 'main' || key === 'off') parts += this.swapped ? 2 : 1;
             display.text({
                 ctx: ctxInv,

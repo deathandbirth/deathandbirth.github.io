@@ -1825,7 +1825,7 @@ const Rogue = class extends Fighter {
         let ctxInv = display.ctxes.inv;
         ctxInv.save();
         ctxInv.shadowColor = skill.color;
-        let nameEle = option.isEnglish() ? getUpperCase(skill.element) : ENJ[skill.element];
+        let nameEle = option.isEnglish() ? getUpperCase(skill.element) : translation.element[skill.element];
         display.text({
             ctx: ctxInv,
             msg: skill.name[option.getLanguage()] + ` [${nameEle}]`,
