@@ -100,11 +100,6 @@ const [
 ] = enums(0, 1);
 
 const [
-    CLOSE,
-    OPEN,
-] = enums(1, 2);
-
-const [
     STR,
     DEX,
     CON,

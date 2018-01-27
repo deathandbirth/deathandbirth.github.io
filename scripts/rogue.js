@@ -56,7 +56,7 @@ const Rogue = class extends Fighter {
 		}
 
         let loc = map.coords[this.x + dr.x][this.y + dr.y];
-        if (loc.door === CLOSE && !loc.hidden) {
+        if (loc.isClosedDoor() && !loc.hidden) {
             loc.openOrCloseDoor();
             rogue.done = true;
         } else if (loc.fighter) {
@@ -113,7 +113,7 @@ const Rogue = class extends Fighter {
         if (this.confused) return;
         let dr = getDirection(keyCodeDr);
         let loc = map.coords[this.x + dr.x][this.y + dr.y];
-        if (loc.door === CLOSE && !loc.hidden) {
+        if (loc.isClosedDoor() && !loc.hidden) {
             loc.openOrCloseDoor();
             rogue.done = true;
             return;
@@ -135,8 +135,7 @@ const Rogue = class extends Fighter {
 
     dashLoop(dr, drLUp, drRUp, wallLUp, wallRUp, count) {
         let loc = map.coords[this.x + dr.x][this.y + dr.y];
-        if (!loc.wall && loc.door !== CLOSE &&
-            !flag.died) {
+        if (!loc.isObstacle() && !flag.died) {
             if (this.move(null, dr) === null) flag.dash = false;
             this.decreaseEnergy();
             map.queue.moveAll();
@@ -221,7 +220,7 @@ const Rogue = class extends Fighter {
         for (let key in DR) {
             let [x, y] = [this.x + DR[key].x, this.y + DR[key].y]
             let loc = map.coords[x][y];
-            if (loc.door === (flag.openDoor ? CLOSE : OPEN) &&
+            if (loc.door && loc.isClosedDoor() === flag.openDoor &&
                 !loc.fighter && !loc.item['a'] && !loc.hidden) {
                 if (!count)[tempX, tempY] = [x, y];
                 count++;
@@ -240,7 +239,7 @@ const Rogue = class extends Fighter {
         let dr = getDirection(keyCode);
         if (!dr) return;
         let loc = map.coords[this.x + dr.x][this.y + dr.y];
-        if (loc.door === (flag.openDoor ? CLOSE : OPEN) &&
+        if (loc.door && loc.isClosedDoor() === flag.openDoor &&
             !loc.item['a'] && !loc.fighter) {
             loc.openOrCloseDoor();
             this.done = true;
@@ -1194,7 +1193,7 @@ const Rogue = class extends Fighter {
         let lvl = this.cs.lvl + this.getSkillBoost(skill);
         let radiusSq = this.calcSkillValue(skill, lvl) ** 2;
         let loc = map.coords[x][y];
-        if (!loc.found || loc.wall || loc.door === CLOSE ||
+        if (!loc.found || loc.isObstacle() ||
             distanceSq(x, y, this.x, this.y) > radiusSq) {
             message.draw(message.get(M_CANT_TELE));
             return;

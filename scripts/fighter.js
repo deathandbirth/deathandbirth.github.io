@@ -4824,7 +4824,7 @@ const Fighter = class extends Material {
                 this.cost -= 3;
                 break;
             case STONE_TO_MUD:
-                if (map.coords[x][y].wall || map.coords[x][y].door === CLOSE) {
+                if (map.coords[x][y].isObstacle()) {
                     let loc = map.coords[x][y];
                     if (loc.wall) {
                         loc.deleteWall(true);
@@ -4947,7 +4947,7 @@ const Fighter = class extends Material {
 					}
                     
                     if (!thrown && skill.each) {
-                        if (!(loc.wall || loc.door === CLOSE))
+                        if (!loc.isObstacle())
                             shadowcasting.main({
                                 x0: xS,
                                 y0: yS,
@@ -4990,7 +4990,7 @@ const Fighter = class extends Material {
                         if (!skill.penetrate) break;
 					}
 					
-                    if (loc.wall || loc.door === CLOSE) {
+                    if (loc.isObstacle()) {
                         los = false;
                         break;
 					}
@@ -5001,7 +5001,7 @@ const Fighter = class extends Material {
                 if (!los) {
                     if (!thrown && skill.wall &&
                       		(loc.wall && !loc.indestructible ||
-                            loc.door === CLOSE)) {
+                            loc.isClosedDoor())) {
                         this.haveCast(nameSkill, lvl, undefined, xS, yS);
                         if (flag.zap && !w.identified) found = true;
                     } else {

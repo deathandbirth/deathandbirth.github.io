@@ -94,7 +94,7 @@ const Thing = class {
 
     spiralSearchCheck(x, y, x0, y0, type, count) {
         let loc = map.coords[x][y];
-        if (!loc.wall && loc.door !== CLOSE && !loc.enter) {
+        if (!loc.isObstacle() && !loc.enter) {
             if ((type === FIGHTER && !loc.fighter ||
                     type === ITEM && !loc.trap && !loc.door &&
                     !loc.item[EA[count]] ||

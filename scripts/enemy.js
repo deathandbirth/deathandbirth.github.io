@@ -154,7 +154,7 @@ const Enemy = class extends Fighter {
             return;
 		}
 		
-        if (loc.door === CLOSE && (!loc.hidden || this.searching)) {
+        if (loc.isClosedDoor() && (!loc.hidden || this.searching)) {
             if (loc.hidden) {
                 if (!evalPercentage(this.searching)) return;
                 loc.hidden = false;

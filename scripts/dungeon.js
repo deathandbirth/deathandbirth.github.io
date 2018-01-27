@@ -91,7 +91,7 @@ const Cave = class extends Room {
 		}
         
         let loc = map.coords[x][y]; 
-        loc.door = CLOSE;
+        loc.getDoor(true);
         if (evalPercentage(10)) {
             loc.hidden = true;
 		} else {

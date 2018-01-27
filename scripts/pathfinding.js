@@ -158,7 +158,7 @@ const lineOfSight = (x0, y0, x1, y1, color, skill) => {
 
             cursol.plot(xS, yS, color);
             if (radius && (skill.each || loc.fighter && skill.penetrate)) {
-                if (!(loc.wall || loc.door === CLOSE)) {
+                if (!loc.isObstacle()) {
                     shadowcasting.main({
                         x0: xS,
                         y0: yS,
@@ -170,7 +170,7 @@ const lineOfSight = (x0, y0, x1, y1, color, skill) => {
                 break;
             }
         }
-        if (loc.wall || loc.door === CLOSE) {
+        if (loc.isObstacle()) {
             los = false;
             break;
         }
@@ -256,7 +256,7 @@ const shadowcasting = {
             this.do(x, y, l);
             let loc = map.coords[x][y];
             if (search && j === 1) loc.findHiddenObject();
-            if (loc.wall || loc.door === CLOSE) break;
+            if (loc.isObstacle()) break;
         }
     },
 
@@ -281,13 +281,13 @@ const shadowcasting = {
 
                 let loc = map.coords[x][y];
                 if (blocked) {
-                    if (loc.wall || loc.door === CLOSE) {
+                    if (loc.isObstacle()) {
                         this.rightSlopeSaved = rightBlockSlope;
                     } else {
                         blocked = false;
                         leftSlope = this.rightSlopeSaved;
                     }
-                } else if (loc.wall || loc.door === CLOSE) {
+                } else if (loc.isObstacle()) {
                     blocked = true;
                     this.rightSlopeSaved = rightBlockSlope;
                     if (leftBlockSlope <= leftSlope) this.around(tr, x0, y0, radius, xc + 1, leftSlope, leftBlockSlope);
@@ -511,7 +511,7 @@ const pathfinding = {
             let x = node.x + DR[key].x;
             let y = node.y + DR[key].y;
             let loc = map.coords[x][y];
-            if (!loc.wall && (!this.pas || loc.door !== CLOSE)) {
+            if (!loc.wall && (!this.pas || !loc.isClosedDoor())) {
                 let id = x + ',' + y;
                 if (!this.idList[id]) {
                     newNode = this.createNode(x, y, gScore, node);

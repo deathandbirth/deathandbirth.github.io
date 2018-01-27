@@ -1,3 +1,8 @@
+const doorIds = {
+    close: 1,
+    open: 2,
+};
+
 const Location = class extends Position {
     constructor(x, y) {
         super(x, y);
@@ -26,7 +31,7 @@ const Location = class extends Position {
             this.shadow = 0;
             this.stroke = 0;
         } else if (this.door && !this.hidden) {
-            this.symbol = this.door === CLOSE ? '+' : '\'';
+            this.symbol = this.isClosedDoor() ? '+' : '\'';
             this.color = colorList.brown;
             this.shadow = 0;
             this.stroke = 0;
@@ -192,11 +197,11 @@ const Location = class extends Position {
 
     openOrCloseDoor() {
         let l = distanceSq(this.x, this.y, rogue.x, rogue.y);
-        if (this.door === OPEN) {
-            this.door = CLOSE;
+        if (!this.isClosedDoor()) {
+            this.getDoor(true);
             audio.playSound('shutdoor', l);
         } else {
-            this.door = OPEN;
+            this.getDoor();
             audio.playSound('opendoor', l);
 		}
 		
@@ -245,7 +250,7 @@ const Location = class extends Position {
         let name;
         if (this.trap) {
             name = this.trap.getName();
-		} else if (this.door === CLOSE) {
+		} else if (this.isClosedDoor()) {
             name = option.isEnglish() ? 'door' : 'ドア';
             this.wall = false;
         } else if (this.stairs) {
@@ -257,5 +262,17 @@ const Location = class extends Position {
             `隠された${name}を発見した`);
         this.draw();
         if (flag.dash) flag.dash = false;
+    }
+
+    isClosedDoor() {
+        return this.door === doorIds['close'];
+    }
+
+    isObstacle() {
+        return this.wall || this.isClosedDoor();
+    }
+
+    getDoor(close) {
+        this.door = doorIds[close ? 'close' : 'open'];;
     }
 }
