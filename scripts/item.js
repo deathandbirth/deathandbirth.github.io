@@ -1800,7 +1800,7 @@ const itemUniqueMap = {
     melee: new Map([]),
     missile: new Map([
         [M_BOW, [{
-            name: { a: 'Pandarus', b: 'パンダロス', pos: PREFIX },
+            name: { a: 'Pandarus', b: 'パンダロス', pre: true },
             lvl: 10,
             rarity: 20,
             matBase: M_BONE,

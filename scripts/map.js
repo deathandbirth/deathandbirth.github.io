@@ -278,15 +278,15 @@ const hallucinate = {
             obj.stroke = 0;
             let bias = rndIntBet(1, MAX_BIAS_NUMS);
             if (coinToss()) {
-                let affixes = modTab[PREFIX].get(bias).affix;
+                let affixes = modTab.prefix.get(bias).affix;
                 let aff = affixes[rndInt(affixes.length - 1)];
                 obj.name['a'] = `${obj.name['a']} ${aff.name['a']}`;
                 obj.name['b'] = `${aff.name['b']}${obj.name['b']}`;
                 obj.shadow = colorList.yellow;
             } else {
-                let sufId = rndInt(modTab[SUFFIX].length - 1);
-                let pre = modTab[PREFIX].get(bias);
-                let suf = modTab[SUFFIX][sufId];
+                let sufId = rndInt(modTab.suffix.length - 1);
+                let pre = modTab.prefix.get(bias);
+                let suf = modTab.suffix[sufId];
                 obj.name['a'] = `${pre.name['a']} ${obj.name['a']} ${suf.name['a']}`;
                 obj.name['b'] = `${pre.name['b']}${obj.name['b']} "${suf.name['b']}"`;
                 obj.shadow = colorList.aqua;

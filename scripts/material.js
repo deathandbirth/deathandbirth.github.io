@@ -303,8 +303,8 @@ const mineralTab = [
 	}
 }
 
-const modTab = [
-    new Map([ //prefix
+const modTab = {
+    prefix: new Map([
         [BIAS_FIRE, {
             name: { a: 'Fire', b: '火炎の' },
             color: colorList.fire,
@@ -832,7 +832,7 @@ const modTab = [
         }],
 	]),
 
-	[ //suffix
+	suffix: [
         {
             name: { a: 'of Digging', b: '採掘' },
             lvl: 1,
@@ -1347,17 +1347,17 @@ const modTab = [
             light: { durabBonus: '2d10' }
         },
     ]
-];
+};
 
 {
-    if (MAX_BIAS_NUMS < modTab[PREFIX].size) throw new Error('Incorrect bias numbers');
+    if (MAX_BIAS_NUMS < modTab.prefix.size) throw new Error('Incorrect bias numbers');
 }
 
 const modBiasNums = enums(1, MAX_BIAS_NUMS);
-const modSufNums = enums(0, modTab[SUFFIX].length - 1);
+const modSufNums = enums(0, modTab.suffix.length - 1);
 const modAffNumsMap = (() => {
     let nums = new Map();
-    for (let [bias, pre] of modTab[PREFIX].entries()) {
+    for (let [bias, pre] of modTab.prefix.entries()) {
 		nums.set(bias, enums(0, pre.affix.length - 1));
 	}
 
@@ -1713,13 +1713,13 @@ const Material = class extends Thing {
         let char = this.type === 'enemy';
         let pre, suf;
         if (bias !== RANDOM) {
-            pre = modTab[PREFIX].get(bias);
+            pre = modTab.prefix.get(bias);
 		} else if (coinToss()) {
             let i = 0;
             modBiasNums.shuffle();
             do {
                 bias = modBiasNums[i++];
-                pre = modTab[PREFIX].get(bias);
+                pre = modTab.prefix.get(bias);
             } while (!pre[this.type] || pre.lvl > lvl ||
 				evalPercentage(pre.rarity)
 			);
@@ -1729,7 +1729,7 @@ const Material = class extends Thing {
             let i = 0;
             modSufNums.shuffle();
             do {
-                suf = modTab[SUFFIX][modSufNums[i++]];
+                suf = modTab.suffix[modSufNums[i++]];
             } while (!suf[this.type] || suf.lvl > lvl ||
                 evalPercentage(suf.rarity) ||
 				suf.indestructible && char && evalPercentage(99)
@@ -1799,12 +1799,12 @@ const Material = class extends Thing {
             modBiasNums.shuffle();
             do {
                 bias = modBiasNums[i++];
-                pre = modTab[PREFIX].get(bias);
+                pre = modTab.prefix.get(bias);
             } while (!pre[this.type] || pre.lvl > lvl ||
 				evalPercentage(pre.rarity)
 			);
         } else {
-			pre = modTab[PREFIX].get(bias);
+			pre = modTab.prefix.get(bias);
 		}
 
         let affix;
@@ -1833,7 +1833,7 @@ const Material = class extends Thing {
         let perc2 = perc;
         modSufNums.shuffle();
         do {
-            suf = modTab[SUFFIX][modSufNums[i++]];
+            suf = modTab.suffix[modSufNums[i++]];
             if (suf[this.type] && suf.lvl <= lvl &&
                 !evalPercentage(suf.rarity) &&
                 !(suf.indestructible && char && evalPercentage(99))) {
@@ -1900,12 +1900,12 @@ const Material = class extends Thing {
     }
 
     getUniqueName(names, save) {
-        let [nameA, nameB, pos] = [names['a'], names['b'], names.pos];
-        let [namePreB, nameSufB] = pos === PREFIX ? [nameB, ''] : ['', nameB];
+        let [nameA, nameB] = [names['a'], names['b']];
+        if (save) this.nameUnique = { a: nameA, b: nameB, pre: names.pre };
+        let [namePreB, nameSufB] = names.pre ? [nameB, ''] : ['', nameB];
         if (namePreB) namePreB += 'の'
         nameA = `${this.nameReal['a']} of ${nameA}`;
         nameB = `${namePreB}${this.nameReal['b']}${nameSufB}`;
-        if (save) this.nameUnique = { a: nameA, b: nameB, pos: pos };
         return [nameA, nameB];
     }
 }

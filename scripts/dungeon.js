@@ -113,7 +113,7 @@ const Cave = class extends Room {
             modBiasNums.shuffle();
             do {
                 bias = modBiasNums[i++]
-                pre = modTab[PREFIX].get(bias);
+                pre = modTab.prefix.get(bias);
             } while (pre.lvl > rogue.cdl + boost ||
                 evalPercentage(pre.rarity));
 		}

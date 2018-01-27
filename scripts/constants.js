@@ -95,11 +95,6 @@ const [
 ] = enums(1, 5);
 
 const [
-    PREFIX,
-    SUFFIX,
-] = enums(0, 1);
-
-const [
     STR,
     DEX,
     CON,
