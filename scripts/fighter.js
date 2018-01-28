@@ -5,6 +5,8 @@ const fighterTab = {
 			symbol: 'a',
 			color: colorList.acid,
 			race: ANIMAL,
+			mod: NORMAL,
+			grade: NORMAL,
 			lvl: 8,
 			rarity: 0,
 			hpRate: -2,
@@ -36,6 +38,8 @@ const fighterTab = {
 			symbol: 'b',
 			color: colorList.gray,
 			race: ANIMAL,
+			mod: NORMAL,
+			grade: NORMAL,
 			lvl: 4,
 			rarity: 0,
 			hpRate: -3,
@@ -67,6 +71,8 @@ const fighterTab = {
             symbol: 'c',
             color: colorList.brown,
             race: ANIMAL,
+            mod: NORMAL,
+            grade: NORMAL,
             lvl: 1,
             rarity: 0,
             hpRate: -2,
@@ -96,7 +102,8 @@ const fighterTab = {
             symbol: 'c',
             color: colorList.brown,
             race: ANIMAL,
-            mod: 'unique',
+            mod: UNIQUE,
+            grade: NORMAL,
             lvl: 20,
             rarity: 30,
             hpRate: -2,
@@ -126,6 +133,8 @@ const fighterTab = {
             symbol: 'f',
             color: colorList.yellow,
             race: ANIMAL,
+            mod: NORMAL,
+            grade: NORMAL,
             lvl: 10,
             rarity: 0,
             hpRate: 0,
@@ -154,7 +163,8 @@ const fighterTab = {
             symbol: 'f',
             color: colorList.yellow,
             race: ANIMAL,
-            mod: 'unique',
+            mod: UNIQUE,
+            grade: NORMAL,
             lvl: 20,
             rarity: 30,
             hpRate: 0,
@@ -184,6 +194,8 @@ const fighterTab = {
             symbol: 'g',
             color: null,
             race: GIANT,
+            mod: NORMAL,
+            grade: NORMAL,
             lvl: 10,
             rarity: 0,
             hpRate: 2,
@@ -213,6 +225,8 @@ const fighterTab = {
             symbol: 'g',
             color: null,
             race: GIANT,
+            mod: NORMAL,
+            grade: NORMAL,
             lvl: 20,
             rarity: 10,
             hpRate: 2,
@@ -242,6 +256,8 @@ const fighterTab = {
             symbol: 'g',
             color: null,
             race: GIANT,
+            mod: NORMAL,
+            grade: NORMAL,
             lvl: 30,
             rarity: 20,
             hpRate: 2,
@@ -272,6 +288,8 @@ const fighterTab = {
             name: { a: 'Snake Woman', b: '蛇女' },
             symbol: 'h',
             color: colorList.green,
+            mod: NORMAL,
+            grade: NORMAL,
             lvl: 8,
             rarity: 0,
             hpRate: 0,
@@ -298,7 +316,8 @@ const fighterTab = {
             name: { a: 'Calypso, the Sea Goddess', b: '海の女神カリュプソ' },
             symbol: 'h',
             color: colorList.blue,
-            mod: 'unique',
+            mod: UNIQUE,
+            grade: NORMAL,
             lvl: 30,
             rarity: 30,
             hpRate: 0,
@@ -337,6 +356,8 @@ const fighterTab = {
 			symbol: 'i',
 			color: colorList.gray,
 			race: DEMON,
+			mod: NORMAL,
+			grade: NORMAL,
 			lvl: 25,
 			rarity: 0,
 			hpRate: 0,
@@ -368,6 +389,8 @@ const fighterTab = {
 			name: { a: 'Mimic', b: 'ミミック' },
 			symbol: 'm',
 			color: colorList.brown,
+			mod: NORMAL,
+			grade: NORMAL,
 			lvl: 10,
 			rarity: 0,
 			hpRate: 0,
@@ -399,6 +422,8 @@ const fighterTab = {
             symbol: 'p',
             color: colorList.brown,
             race: HUMAN,
+            mod: NORMAL,
+            grade: NORMAL,
             lvl: 6,
             rarity: 0,
             hpRate: 1,
@@ -431,6 +456,8 @@ const fighterTab = {
             symbol: 'p',
             color: colorList.red,
             race: HUMAN,
+            mod: NORMAL,
+            grade: NORMAL,
             lvl: 10,
             rarity: 0,
             hpRate: 0,
@@ -465,6 +492,8 @@ const fighterTab = {
             symbol: 'p',
             color: colorList.purple,
             race: HUMAN,
+            mod: NORMAL,
+            grade: NORMAL,
             lvl: 15,
             rarity: 0,
             hpRate: -2,
@@ -503,6 +532,8 @@ const fighterTab = {
             symbol: 'p',
             color: colorList.gray,
             race: HUMAN,
+            mod: NORMAL,
+            grade: NORMAL,
             lvl: 20,
             rarity: 0,
             hpRate: 0,
@@ -538,7 +569,8 @@ const fighterTab = {
             symbol: 'p',
             color: colorList.brown,
             race: HUMAN,
-            mod: 'unique',
+            mod: UNIQUE,
+            grade: NORMAL,
             lvl: 5,
             rarity: 30,
             hpRate: -2,
@@ -568,7 +600,8 @@ const fighterTab = {
             symbol: 'p',
             color: colorList.bronze,
             race: HUMAN,
-            mod: 'unique',
+            mod: UNIQUE,
+            grade: NORMAL,
             lvl: 10,
             rarity: 30,
             hpRate: -1,
@@ -601,7 +634,8 @@ const fighterTab = {
             symbol: 'p',
             color: colorList.bronze,
             race: HUMAN,
-            mod: 'unique',
+            mod: UNIQUE,
+            grade: NORMAL,
             lvl: 20,
             rarity: 30,
             hpRate: 0,
@@ -641,7 +675,8 @@ const fighterTab = {
             symbol: 'p',
             color: colorList.bronze,
             race: HUMAN,
-            mod: 'unique',
+            mod: UNIQUE,
+            grade: NORMAL,
             lvl: 30,
             rarity: 30,
             hpRate: 1,
@@ -677,7 +712,8 @@ const fighterTab = {
             symbol: 'p',
             color: colorList.orange,
             race: HUMAN,
-            mod: 'unique',
+            mod: UNIQUE,
+            grade: NORMAL,
             lvl: 32,
             rarity: 30,
             hpRate: 3,
@@ -713,6 +749,8 @@ const fighterTab = {
             symbol: 'q',
             color: colorList.orange,
             race: ANIMAL,
+            mod: NORMAL,
+            grade: NORMAL,
             lvl: 3,
             rarity: 0,
             hpRate: 0,
@@ -742,7 +780,8 @@ const fighterTab = {
             symbol: 'q',
             color: colorList.brown,
             race: ANIMAL,
-            mod: 'unique',
+            mod: UNIQUE,
+            grade: NORMAL,
             lvl: 10,
             rarity: 30,
             hpRate: 0,
@@ -771,6 +810,8 @@ const fighterTab = {
             symbol: 'q',
             color: colorList.brown,
             race: ANIMAL,
+            mod: NORMAL,
+            grade: NORMAL,
             lvl: 2,
             rarity: 0,
             hpRate: 1,
@@ -799,6 +840,8 @@ const fighterTab = {
             symbol: 'q',
             color: colorList.brown,
             race: ANIMAL,
+            mod: UNIQUE,
+            grade: NORMAL,
             lvl: 20,
             rarity: 30,
             hpRate: 1,
@@ -828,6 +871,8 @@ const fighterTab = {
 			symbol: 's',
 			color: null,
 			race: UNDEAD,
+			mod: NORMAL,
+			grade: NORMAL,
 			lvl: 3,
 			rarity: 0,
 			hpRate: -2,
@@ -858,6 +903,8 @@ const fighterTab = {
 			symbol: 'w',
 			color: colorList.white,
 			race: ANIMAL,
+			mod: NORMAL,
+			grade: NORMAL,
 			lvl: 1,
 			rarity: 0,
 			hpRate: -2,
@@ -890,6 +937,8 @@ const fighterTab = {
 			symbol: 'z',
 			color: colorList.gray,
 			race: UNDEAD,
+			mod: NORMAL,
+			grade: NORMAL,
 			lvl: 5,
 			rarity: 0,
 			hpRate: -4,
@@ -922,6 +971,8 @@ const fighterTab = {
 			symbol: 'A',
 			color: colorList.shadow,
 			race: DEMON,
+			mod: NORMAL,
+			grade: NORMAL,
 			lvl: 25,
 			rarity: 0,
 			hpRate: 1,
@@ -958,6 +1009,8 @@ const fighterTab = {
             symbol: 'B',
             color: colorList.shadow,
             race: ANIMAL,
+            mod: NORMAL,
+            grade: NORMAL,
             lvl: 1,
             rarity: 0,
             hpRate: -3,
@@ -987,7 +1040,8 @@ const fighterTab = {
             symbol: 'B',
             color: colorList.shadow,
             race: ANIMAL,
-            mod: 'unique',
+            mod: UNIQUE,
+            grade: NORMAL,
             lvl: 15,
             rarity: 30,
             hpRate: -3,
@@ -1022,7 +1076,8 @@ const fighterTab = {
             symbol: 'B',
             color: colorList.shadow,
             race: ANIMAL,
-            mod: 'unique',
+            mod: UNIQUE,
+            grade: NORMAL,
             lvl: 25,
             rarity: 30,
             hpRate: -3,
@@ -1055,6 +1110,8 @@ const fighterTab = {
             symbol: 'C',
             color: null,
             race: ANIMAL,
+            mod: NORMAL,
+            grade: NORMAL,
             lvl: 10,
             rarity: 0,
             hpRate: -1,
@@ -1083,6 +1140,8 @@ const fighterTab = {
             symbol: 'C',
             color: null,
             race: ANIMAL,
+            mod: NORMAL,
+            grade: NORMAL,
             lvl: 20,
             rarity: 10,
             hpRate: -1,
@@ -1111,6 +1170,8 @@ const fighterTab = {
             symbol: 'C',
             color: null,
             race: ANIMAL,
+            mod: NORMAL,
+            grade: NORMAL,
             lvl: 30,
             rarity: 20,
             hpRate: -1,
@@ -1142,7 +1203,8 @@ const fighterTab = {
             symbol: 'D',
             color: colorList.green,
             race: DRAGON,
-            mod: 'magic',
+            mod: MAGIC,
+            grade: NORMAL,
             lvl: 20,
             rarity: 0,
             hpRate: 2,
@@ -1171,7 +1233,8 @@ const fighterTab = {
             symbol: 'D',
             color: colorList.green,
             race: DRAGON,
-            mod: 'unique',
+            mod: UNIQUE,
+            grade: NORMAL,
             lvl: 30,
             rarity: 30,
             hpRate: 2,
@@ -1207,7 +1270,8 @@ const fighterTab = {
 			symbol: 'E',
 			color: colorList.white,
 			race: SPIRIT,
-			mod: 'magic',
+			mod: MAGIC,
+			grade: NORMAL,
 			lvl: 5,
 			rarity: 0,
 			hpRate: -4,
@@ -1237,6 +1301,8 @@ const fighterTab = {
 			symbol: 'F',
 			color: colorList.lime,
 			race: SPIRIT,
+			mod: NORMAL,
+			grade: NORMAL,
 			lvl: 6,
 			rarity: 0,
 			hpRate: -3,
@@ -1270,6 +1336,8 @@ const fighterTab = {
 			symbol: 'G',
 			color: colorList.skyblue,
 			race: UNDEAD,
+			mod: NORMAL,
+			grade: NORMAL,
 			lvl: 15,
 			rarity: 0,
 			hpRate: -3,
@@ -1301,6 +1369,8 @@ const fighterTab = {
             symbol: 'H',
             color: colorList.skyblue,
             race: HUMAN | ANIMAL,
+            mod: NORMAL,
+            grade: NORMAL,
             lvl: 9,
             rarity: 0,
             hpRate: -1,
@@ -1334,6 +1404,8 @@ const fighterTab = {
             symbol: 'H',
             color: colorList.yellow,
             race: HUMAN | ANIMAL,
+            mod: NORMAL,
+            grade: NORMAL,
             lvl: 20,
             rarity: 0,
             hpRate: 1,
@@ -1367,6 +1439,8 @@ const fighterTab = {
             symbol: 'H',
             color: colorList.orange,
             race: HUMAN | ANIMAL,
+            mod: NORMAL,
+            grade: NORMAL,
             lvl: 25,
             rarity: 0,
             hpRate: 2,
@@ -1399,6 +1473,8 @@ const fighterTab = {
 			symbol: 'N',
 			color: colorList.olive,
 			race: SPIRIT,
+			mod: NORMAL,
+			grade: NORMAL,
 			lvl: 15,
 			rarity: 0,
 			hpRate: -2,
@@ -1429,6 +1505,8 @@ const fighterTab = {
             symbol: 'J',
             color: colorList.purple,
             race: ANIMAL,
+            mod: NORMAL,
+            grade: NORMAL,
             lvl: 3,
             rarity: 0,
             hpRate: -2,
@@ -1457,7 +1535,8 @@ const fighterTab = {
             symbol: 'J',
             color: colorList.purple,
             race: ANIMAL,
-            mod: 'unique',
+            mod: UNIQUE,
+            grade: NORMAL,
             lvl: 20,
             rarity: 30,
             hpRate: -2,
@@ -1491,6 +1570,8 @@ const fighterTab = {
             name: { a: 'Hydra', b: 'ヒュドラ' },
             symbol: 'M',
             color: colorList.green,
+            mod: NORMAL,
+            grade: NORMAL,
             lvl: 28,
             rarity: 0,
             hpRate: 2,
@@ -1525,7 +1606,8 @@ const fighterTab = {
             name: { a: 'Scylla, the Sea-monster', b: '海の怪物スキュラ' },
             symbol: 'M',
             olor: colorList.green,
-            mod: 'unique',
+            mod: UNIQUE,
+            grade: NORMAL,
             lvl: 30,
             rarity: 80,
             hpRate: 5,
@@ -1561,6 +1643,8 @@ const fighterTab = {
             symbol: 'P',
             color: colorList.yellow,
             race: GIANT,
+            mod: NORMAL,
+            grade: NORMAL,
             lvl: 15,
             rarity: 0,
             hpRate: 3,
@@ -1589,6 +1673,8 @@ const fighterTab = {
             symbol: 'P',
             color: colorList.orange,
             race: GIANT,
+            mod: NORMAL,
+            grade: NORMAL,
             lvl: 20,
             rarity: 0,
             hpRate: 3,
@@ -1621,7 +1707,8 @@ const fighterTab = {
             symbol: 'P',
             color: colorList.orange,
             race: GIANT,
-            mod: 'unique',
+            mod: UNIQUE,
+            grade: NORMAL,
             lvl: 25,
             rarity: 30,
             hpRate: 3,
@@ -1656,6 +1743,8 @@ const fighterTab = {
             symbol: 'S',
             color: colorList.gray,
             race: ANIMAL,
+            mod: NORMAL,
+            grade: NORMAL,
             lvl: 10,
             rarity: 0,
             hpRate: -3,
@@ -1684,6 +1773,8 @@ const fighterTab = {
             symbol: 'S',
             color: colorList.brown,
             race: ANIMAL,
+            mod: NORMAL,
+            grade: NORMAL,
             lvl: 15,
             rarity: 0,
             hpRate: -3,
@@ -1714,6 +1805,8 @@ const fighterTab = {
 			symbol: 'U',
 			color: colorList.gray,
 			race: DEMON,
+			mod: NORMAL,
+			grade: NORMAL,
 			lvl: 20,
 			rarity: 0,
 			hpRate: 2,
@@ -1748,6 +1841,8 @@ const fighterTab = {
 			symbol: 'V',
 			color: colorList.gray,
 			race: UNDEAD,
+			mod: NORMAL,
+			grade: NORMAL,
 			lvl: 15,
 			rarity: 0,
 			hpRate: 1,
@@ -1778,6 +1873,8 @@ const fighterTab = {
 			symbol: 'W',
 			color: colorList.gray,
 			race: UNDEAD,
+			mod: NORMAL,
+			grade: NORMAL,
 			lvl: 25,
 			rarity: 0,
 			hpRate: -1,
@@ -1806,6 +1903,8 @@ const fighterTab = {
             name: { a: 'Statue of Trap', b: '罠の像' },
             symbol: '%',
             color: null,
+            mod: NORMAL,
+            grade: NORMAL,
             lvl: 10,
             rarity: 0,
             hpRate: 0,
@@ -1839,6 +1938,8 @@ const fighterTab = {
             name: { a: 'Statue of Summon', b: '召喚の像' },
             symbol: '%',
             color: null,
+            mod: NORMAL,
+            grade: NORMAL,
             lvl: 20,
             rarity: 0,
             hpRate: 0,
@@ -1873,7 +1974,8 @@ const fighterTab = {
             symbol: '%',
             color: null,
             race: DEMON,
-            mod: 'magic',
+            mod: MAGIC,
+            grade: NORMAL,
             lvl: 30,
             rarity: 30,
             hpRate: 2,
@@ -1906,6 +2008,8 @@ const fighterTab = {
             symbol: '@',
             color: colorList.white,
             race: HUMAN,
+            mod: NORMAL,
+            grade: NORMAL,
             lvl: 1,
             rarity: 0,
             hpRate: 0,
@@ -1941,6 +2045,8 @@ const fighterTab = {
             name: { a: 'Yeti', b: 'イエティ' },
             symbol: 'Y',
             color: colorList.white,
+            mod: NORMAL,
+            grade: NORMAL,
             lvl: 1,
             rarity: 0,
             hpRate: 0,
@@ -1967,7 +2073,8 @@ const fighterTab = {
             symbol: 'U',
             color: colorList.gray,
             race: DEMON,
-            mod: 'unique',
+            mod: UNIQUE,
+            grade: NORMAL,
             boss: true,
             lvl: 33,
             rarity: 0,
@@ -2005,15 +2112,6 @@ const fighterTab = {
         },
     ],
 };
-
-{
-    for (let key in fighterTab) {
-        for (let fighter of fighterTab[key]) {
-            if (!fighter.mod) fighter.mod = 'normal';
-            if (!fighter.grade) fighter.grade = 'normal';
-        }
-    }
-}
 
 const fighterNumsMap = (() => {
     let nums = new Map();
@@ -2192,7 +2290,7 @@ const Fighter = class extends Material {
 
     getExp() {
         let exp = calcLevel(this.lvl + 1) - calcLevel(this.lvl);
-        if (this.mod === 'unique') {
+        if (this.mod === UNIQUE) {
             exp /= this.boss ? 1 : 2;
 		} else {
 			exp /= 50;
@@ -2205,9 +2303,9 @@ const Fighter = class extends Material {
 			exp *= 2;
 		}
 
-        if (this.mod === 'rare') {
+        if (this.mod === RARE) {
             exp *= 4;
-		} else if (this.mod === 'magic') {
+		} else if (this.mod === MAGIC) {
 			exp *= 2;
 		}
 
@@ -3340,7 +3438,7 @@ const Fighter = class extends Material {
             loc.detected = false;
 		}
 		
-        if (!draw && this.mod !== 'normal' && option.shadow.user) {
+        if (!draw && this.mod !== NORMAL && option.shadow.user) {
             map.coords[this.x][this.y + 1].draw();
             map.coords[this.x + 1][this.y].draw();
 		}
@@ -4597,7 +4695,7 @@ const Fighter = class extends Material {
                     `${name}幻覚状態になった`);
                 break;
             case POLYMORPH:
-                if (f.id === ROGUE || f.mod === 'unique' || evalPercentage(f.poison)) return;
+                if (f.id === ROGUE || f.mod === UNIQUE || evalPercentage(f.poison)) return;
                 let [tempX, tempY] = [f.x, f.y];
                 f.died();
                 creation.enemy({
@@ -4613,7 +4711,7 @@ const Fighter = class extends Material {
                 break;
             case CANCELLATION:
                 if (evalPercentage(f.poison)) return;
-                f.canceled = duration * (f.mod !== 'unique' ? 1 : 2);
+                f.canceled = duration * (f.mod !== UNIQUE ? 1 : 2);
                 if (f.invisible) {
                     if (f.invisible !== DEFAULT) f.invisibility = 0;
                     f.invisible = false;
@@ -4714,7 +4812,7 @@ const Fighter = class extends Material {
                 f.calcAc();
                 break;
             case RESPEC:
-                if (f.mod === 'unique') return;
+                if (f.mod === UNIQUE) return;
                 f.respec();
                 break;
             case COLD:

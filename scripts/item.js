@@ -1690,7 +1690,7 @@ const itemTab = {
         [A_AMULET, {
             nameReal: { a: 'Amulet', b: '首飾り' },
             color: colorList.orange,
-            mod: 'magic',
+            mod: MAGIC,
             lvl: 1,
             rarity: 0,
             volumeRate: 1,
@@ -1702,7 +1702,7 @@ const itemTab = {
         [R_RING, {
             nameReal: { a: 'Ring', b: '指輪' },
             color: colorList.red,
-            mod: 'magic',
+            mod: MAGIC,
             lvl: 1,
             rarity: 0,
             volumeRate: 1,
@@ -1841,7 +1841,7 @@ const Item = class extends Material {
             this.embeddedMax = 1;
             this.embeddedList = [];
             if (!magic) {
-				magic = !starter && (this.mod === 'magic' ||
+				magic = !starter && (this.mod === MAGIC ||
 				evalPercentage(5 + (flag.shop ? 0 : rogue.mf)));
 			}
 
@@ -1866,19 +1866,19 @@ const Item = class extends Material {
                     }
 				}
 				
-                if (magic) this.mod = 'rare';
+                if (magic) this.mod = RARE;
             }
             this.getMaterial(lvl, false, matBase, matId);
             this.getBaseandWeight();
             if (magic || this.material === M_GEM) {
                 let bias = this.bias ? this.bias : RANDOM;
-                if (this.mod === 'rare' || evalPercentage((10 + rogue.mf) / 4)) {
+                if (this.mod === RARE || evalPercentage((10 + rogue.mf) / 4)) {
                     this.getRare(bias, this.lvl);
 				} else {
 					this.getMagic(bias, this.lvl);
 				}
             } else if (!this.mod) {
-                this.mod = 'normal';
+                this.mod = NORMAL;
                 this.cursed = !starter && !flag.shop && evalPercentage(CURSE_PERC);
 			}
 			
@@ -1890,26 +1890,26 @@ const Item = class extends Material {
                 this.dmgBare = this.dmgBase;
                 if (!this.dmgBonus) this.dmgBonus = 0;
                 if (!this.rateBonus) this.rateBonus = 0;
-                if (!starter && !flag.shop && (this.mod !== 'normal' || this.cursed || rogue.cdl)) {
+                if (!starter && !flag.shop && (this.mod !== NORMAL || this.cursed || rogue.cdl)) {
                     let found;
-                    if (this.cursed || this.mod !== 'normal' || evalPercentage(25)) {
+                    if (this.cursed || this.mod !== NORMAL || evalPercentage(25)) {
                         this.dmgBonus += (this.cursed ? -1 : 1) * rndIntBet(1, 50);
                         found = true;
                     }
-                    if (this.cursed || this.mod !== 'normal' || evalPercentage(25)) {
+                    if (this.cursed || this.mod !== NORMAL || evalPercentage(25)) {
                         this.rateBonus += (this.cursed ? -1 : 1) * rndIntBet(1, 50);
                         found = true;
                     }
-                    if (!this.cursed && found && this.mod === 'normal') this.getSuperior();
+                    if (!this.cursed && found && this.mod === NORMAL) this.getSuperior();
 				}
 				
                 this.calcDmgOne();
             } else if (this.armor) {
                 if (!this.acBonus) this.acBonus = 0;
-                if (!starter && !flag.shop && (this.mod !== 'normal' || this.cursed ||
+                if (!starter && !flag.shop && (this.mod !== NORMAL || this.cursed ||
                         rogue.cdl && evalPercentage(25))) {
                     this.acBonus += (this.cursed ? -1 : 1) * rndIntBet(1, 50);
-                    if (!this.cursed && this.mod === 'normal') this.getSuperior();
+                    if (!this.cursed && this.mod === NORMAL) this.getSuperior();
 				}
 				
                 this.calcAcOne();
@@ -1927,7 +1927,7 @@ const Item = class extends Material {
                 this.getMaterial(lvl, true);
                 this.getMagic(this.bias, this.lvl);
             } else {
-				this.mod = 'normal';
+				this.mod = NORMAL;
 			}
 
             if (this.type === 'ammo') {
@@ -2064,16 +2064,16 @@ const Item = class extends Material {
         if (this.equipable || this.type === 'gem' || this.type === 'material') {
             let times;
             switch (this.mod) {
-                case 'normal':
+                case NORMAL:
                     times = 1;
                     break;
-                case 'magic':
+                case MAGIC:
                     times = 2;
                     break;
-                case 'rare':
+                case RARE:
                     times = 5;
                     break;
-                case 'unique':
+                case UNIQUE:
                     times = 10;
                     this.priceReal += 1000;
                     break;
@@ -2298,7 +2298,7 @@ const Item = class extends Material {
                   		key === 'cloak' || key === 'belt' || key === 'helm' || key === 'gloves' || key === 'boots' ||
                 	    key === 'light' || key === 'ring' || key === 'amulet') {
                     item.equipable = true;
-                    item.grade = 'normal';
+                    item.grade = NORMAL;
                     if (key === 'melee' || key === 'missile' || key === 'staff') {
                         item.weapon = true;
 					} else if (key === 'light' || key === 'ring' || key === 'amulet') {

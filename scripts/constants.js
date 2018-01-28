@@ -75,6 +75,17 @@ const [
     INIT,
 ] = enums(1, 5);
 
+const [NORMAL,
+    MAGIC,
+    RARE,
+    UNIQUE,
+] = enums(0, 3);
+
+const [
+    UPPER,
+    ELITE,
+] = enums(1, 2);
+
 const [
     HUMAN,
     ANIMAL,
@@ -269,6 +280,12 @@ const flag = {
     floor: false,
     throw: false,
 };
+
+const modBonusMap = new Map([
+    [MAGIC, { fire: 10, water: 10, air: 10, earth: 10, poison: 10, }],
+    [RARE, { fire: 30, water: 30, air: 30, earth: 30, poison: 30, }],
+    [UNIQUE, { fire: 50, water: 50, air: 50, earth: 50, poison: 75, }],
+]);
 
 const FONT_STYLE = {
     a: 'sans serif',
