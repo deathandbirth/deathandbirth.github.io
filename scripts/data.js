@@ -83,6 +83,7 @@ const Data = class {
                     } else {
                         loc.fighter.__proto__ = Enemy.prototype;
                         map.enemyList[loc.fighter.id] = loc.fighter;
+                        if (this.ver < 0.003) this.fixStats(loc.fighter);
                     }
 
                     map.queue.push(loc.fighter);
@@ -156,6 +157,24 @@ const Data = class {
         a = this.option['SE'].user;
         audio.volSE = option['SE'].choise[a].a / 10;
         audio.playMusic(audio.curTrack);
+    }
+
+    fixStats(enemy) {
+        if (enemy.grow === undefined ) return;
+        switch (enemy.grow) {
+            case 0:
+                enemy.grow = 'str';
+                break; 
+            case 1:
+                enemy.grow = 'dex';
+                break; 
+            case 2:
+                enemy.grow = 'con';
+                break; 
+            case 3:
+                enemy.grow = 'int';
+                break; 
+        }
     }
 }
 
