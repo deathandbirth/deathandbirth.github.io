@@ -267,7 +267,7 @@ const Trap = class extends Thing {
 	}
 
 	putDown(x, y) {
-		this.spiralSearch(x, y, TRAP);
+		this.spiralSearch(x, y, 'trap');
 		if (this.abort) return;
 		let loc = map.coords[this.x][this.y];
 		loc.trap = this;

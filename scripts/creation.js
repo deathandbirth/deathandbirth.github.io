@@ -22,7 +22,7 @@ const creation = {
         this.stringSave = this.string;
         let [type, num, num2, num3] = this.string.split(' ').map((element) =>
 			isNaN(Number(element)) ? element : Number(element));
-        if (flag.create === ITEM) {
+        if (flag.create === 'item') {
             if (type === 'coin') {
                 if (num > 0) {
                     rogue.purse += num;
@@ -40,7 +40,7 @@ const creation = {
             } else {
 				message.draw('Incorrect syntax');
 			}
-        } else if (flag.create === FIGHTER) {
+        } else if (flag.create === 'fighter') {
             if (fighterTab[type] && fighterTab[type][num]) {
                 this.enemy({
                     type: type,

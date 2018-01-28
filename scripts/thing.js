@@ -63,7 +63,7 @@ const Thing = class {
         let width = map.coords.length;
         let height = map.coords[0].length;
         let loop = 0;
-        let limit = type === ITEM && count < MAX_SEARCH_RANGE ? count : MAX_SEARCH_RANGE;
+        let limit = type === 'item' && count < MAX_SEARCH_RANGE ? count : MAX_SEARCH_RANGE;
         if (this.spiralSearchCheck(x, y, x0, y0, type, count)) return;
         do {
             y--;
@@ -85,7 +85,7 @@ const Thing = class {
             }
 		} while (loop++ <= limit);
 		
-        if (type === ITEM && ++count < MAX_PACK_COUNT) {
+        if (type === 'item' && ++count < MAX_PACK_COUNT) {
             this.spiralSearch(x0, y0, type, count);
 		} else if (this.id !== ROGUE) {
 			this.dissapear();
@@ -95,14 +95,14 @@ const Thing = class {
     spiralSearchCheck(x, y, x0, y0, type, count) {
         let loc = map.coords[x][y];
         if (!loc.isObstacle() && !loc.enter) {
-            if ((type === FIGHTER && !loc.fighter ||
-                    type === ITEM && !loc.trap && !loc.door &&
+            if ((type === 'fighter' && !loc.fighter ||
+                    type === 'item' && !loc.trap && !loc.door &&
                     !loc.item[EA[count]] ||
-                    type === TRAP && !loc.item['a'] &&
+                    type === 'trap' && !loc.item['a'] &&
                     !loc.door && !loc.trap && !loc.stairs ||
-                    type === STAIRCASE && !loc.door &&
+                    type === 'staircase' && !loc.door &&
                     !loc.trap && !loc.stairs ||
-                    type === ENTER) &&
+                    type === 'portal') &&
             	    lineOfSight(x0, y0, x, y)) {
                 [this.x, this.y] = [x, y];
                 return true;

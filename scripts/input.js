@@ -209,7 +209,7 @@ const input = {
             case 65: //a add bookmark, A alchemy, ^a *create monster*
                 if (this.isCtrl) {
                     if (!rogue.isWizard) break;
-                    flag.create = FIGHTER;
+                    flag.create = 'fighter';
                     creation.input();
                     message.draw('Input type and tagId', true);
                     flag.regular = false;
@@ -327,7 +327,7 @@ const input = {
             case 73: //i inventory, I investigate, ^i *create item*
                 if (this.isCtrl) {
                     if (!rogue.isWizard) break;
-                    flag.create = ITEM;
+                    flag.create = 'item';
                     creation.input();
                     message.draw('Input type, tagId and quantity', true);
                     flag.regular = false;

@@ -5489,7 +5489,7 @@ const Fighter = class extends Material {
     teleport(short, radiusSq, x, y, mute) {
         this.drawOrErase(false);
         if (!short && !radiusSq) {
-            this.spiralSearch(x, y, FIGHTER);
+            this.spiralSearch(x, y, 'fighter');
 		} else {
             let l;
             let lSaved = short ? NaN : 0;

@@ -90,7 +90,7 @@ const Enemy = class extends Fighter {
 			 this.id = Math.random();
 		} while (map.enemyList[this.id]);
 
-        this.spiralSearch(x, y, FIGHTER);
+        this.spiralSearch(x, y, 'fighter');
         if (this.abort) return;
         map.enemyList[this.id] = this;
         map.queue.push(this);

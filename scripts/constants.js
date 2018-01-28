@@ -87,14 +87,6 @@ const [
 ] = enums(1, 2);
 
 const [
-    FIGHTER,
-    ITEM,
-    TRAP,
-    STAIRCASE,
-    ENTER,
-] = enums(1, 5);
-
-const [
     STR,
     DEX,
     CON,

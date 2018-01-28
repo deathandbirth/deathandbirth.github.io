@@ -1965,7 +1965,7 @@ const Item = class extends Material {
 			this.id = Math.random();
 		} while (map.itemList[this.id]);
 
-        this.spiralSearch(x, y, ITEM);
+        this.spiralSearch(x, y, 'item');
         if (this.abort) return;
         this.place = P_FLOOR;
         map.itemList[this.id] = this;

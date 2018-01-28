@@ -21,7 +21,7 @@ const Staircase = class extends Thing {
     }
 
     putDown(x, y) {
-        this.spiralSearch(x, y, STAIRCASE);
+        this.spiralSearch(x, y, 'staircase');
         if (this.abort) return;
         let loc = map.coords[this.x][this.y];
         loc.stairs = this;

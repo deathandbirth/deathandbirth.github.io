@@ -16,7 +16,7 @@ const Portal = class extends Thing {
             map.portal = null;
 		}
 
-        this.spiralSearch(x, y, ENTER);
+        this.spiralSearch(x, y, 'portal');
         if (this.abort) return;
         let loc = map.coords[this.x][this.y];
         loc.enter = map.portal = this;
