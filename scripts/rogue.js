@@ -836,7 +836,7 @@ const Rogue = class extends Fighter {
 		
         light.duration += item.duration;
         if (light.duration > light.durationMax) light.duration = light.durationMax;
-        if (item.mod !== NORMAL) {
+        if (item.mod !== 'normal') {
             item.duration = 0;
         } else {
 			this.deleteItem(item, 1);
@@ -1311,7 +1311,7 @@ const Rogue = class extends Fighter {
             } else if (item.nameReal[ENG] === 'Medusa\'s Head') {
                 f4a++;
 			} else if (item.type === 'shield' &&
-                item.mod === NORMAL) {
+                item.mod === 'normal') {
                 f4b++;
                 if (!a) a = EA[i];
             } else if (item.type === 'light') {
@@ -1382,7 +1382,7 @@ const Rogue = class extends Fighter {
                 if (key === a) continue;
                 let item2 = this.cube[key];
                 item.duration += item2.duration;
-                if (item2.type === 'light' && item2.mod !== NORMAL) {
+                if (item2.type === 'light' && item2.mod !== 'normal') {
                     item2.duration = 0;
                     this.packAdd(item2);
                 }
@@ -2581,7 +2581,7 @@ const Rogue = class extends Fighter {
             this.checkUniqueLoop(enemy.equipment);
             this.checkUniqueLoop(enemy.side);
             this.checkUniqueLoop(enemy.boxes);
-            if (enemy.mod === UNIQUE) delete this.cue[enemy.name[ENG]];
+            if (enemy.mod === 'unique') delete this.cue[enemy.name[ENG]];
         }
     }
 
@@ -2589,7 +2589,7 @@ const Rogue = class extends Fighter {
         for (let key in list) {
             let item = list[key];
             if (!item) continue;
-            if (item.mod === UNIQUE && !item.identified) {
+            if (item.mod === 'unique' && !item.identified) {
                 let id = item.type + ',' + item.tabId + ',' + item.uniqueId;
                 if (this.cui[id]) delete this.cui[id];
             } else if (item.lethe) {

@@ -76,23 +76,7 @@ const Data = class {
         for (let locs of map.coords) {
             for (let loc of locs) {
                 loc.__proto__ = Location.prototype;
-                if (loc.fighter) {
-                    if (loc.fighter.id === ROGUE) {
-                        loc.fighter.__proto__ = Rogue.prototype;
-                        rogue = loc.fighter;
-                    } else {
-                        loc.fighter.__proto__ = Enemy.prototype;
-                        map.enemyList[loc.fighter.id] = loc.fighter;
-                        if (this.ver < 0.003) this.fixStats(loc.fighter);
-                    }
-
-                    map.queue.push(loc.fighter);
-                    this.loadItem(loc.fighter.boxes);
-                    this.loadItem(loc.fighter.equipment);
-                    this.loadItem(loc.fighter.side);
-                    this.loadItem(loc.fighter.pack);
-                }
-
+                if (loc.fighter) this.loadFighter(loc.fighter);
                 if (loc.item['a']) this.loadItem(loc.item, true);
                 if (loc.enter) this.loadEntrance(loc.enter);
                 if (loc.trap) loc.trap.__proto__ = Trap.prototype;
@@ -104,11 +88,31 @@ const Data = class {
         }
     }
 
+    loadFighter(fighter) {
+        if (fighter.id === ROGUE) {
+            fighter.__proto__ = Rogue.prototype;
+            rogue = fighter;
+        } else {
+            fighter.__proto__ = Enemy.prototype;
+            map.enemyList[fighter.id] = fighter;
+            if (this.ver < 0.003) this.fixStats(fighter);
+        }
+
+        map.queue.push(fighter);
+        this.loadItem(fighter.boxes);
+        this.loadItem(fighter.equipment);
+        this.loadItem(fighter.side);
+        this.loadItem(fighter.pack);
+        if (this.ver < 0.003) this.fixModAndGrade(fighter);
+    }
+
     loadItem(list, floor) {
         for (let key in list) {
-            if (!list[key]) continue;
-            list[key].__proto__ = Item.prototype;
-            if (floor) map.itemList[list[key].id] = list[key];
+            let item = list[key];
+            if (!item) continue;
+            item.__proto__ = Item.prototype;
+            if (floor) map.itemList[item.id] = item;
+            if (this.ver < 0.003) this.fixModAndGrade(item);
         }
     }
 
@@ -173,6 +177,24 @@ const Data = class {
                 break; 
             case 3:
                 enemy.grow = 'int';
+                break; 
+        }
+    }
+
+    fixModAndGrade(obj) {
+        obj.grade = 'normal';
+        switch (obj.mod) {
+            case 0:
+                obj.mod = 'normal';
+                break; 
+            case 1:
+                obj.mod = 'magic';
+                break; 
+            case 2:
+                obj.mod = 'rare';
+                break; 
+            case 3:
+                obj.mod = 'unique';
                 break; 
         }
     }

@@ -259,7 +259,7 @@ const hallucinate = {
             return;
         }
 
-        if (enemy && fighter.mod === UNIQUE ||
+        if (enemy && fighter.mod === 'unique' ||
             !enemy && itemUniqueMap[item.type].has(item.tabId) && coinToss()) {
             if (!enemy) {
                 if (type === 'amulet' && evalPercentage(1)) {

@@ -135,7 +135,7 @@ const creation = {
                     tabIdT = fighterNums[j++];
                     if (tabIdT === undefined) return; //
                     fighter = fighterTab[typeT][tabIdT];
-                } while (fighter.mod === UNIQUE && rogue.cue[fighter.name[ENG]] ||
+                } while (fighter.mod === 'unique' && rogue.cue[fighter.name[ENG]] ||
                     fighter.lvl > lvl || evalPercentage(fighter.rarity));
             } else {
                 fighter = fighterTab[typeT][tabIdT];

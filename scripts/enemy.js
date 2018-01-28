@@ -1,3 +1,9 @@
+const modBonusList = {
+    magic: { fire: 10, water: 10, air: 10, earth: 10, poison: 10, },
+    rare: { fire: 30, water: 30, air: 30, earth: 30, poison: 30, },
+    unique: { fire: 50, water: 50, air: 50, earth: 50, poison: 75, },
+};
+
 const Enemy = class extends Fighter {
     constructor(obj) {
         super(obj)
@@ -12,7 +18,7 @@ const Enemy = class extends Fighter {
     }
 
     init(position, x, y, summon, magic, bias, lvl) {
-        if (this.mod !== UNIQUE && lvl > this.lvl) {
+        if (this.mod !== 'unique' && lvl > this.lvl) {
             let boost = rndInt(lvl - this.lvl);
             for (let i = 0; i < boost; i++) {
 				this.gainStats();
@@ -30,9 +36,9 @@ const Enemy = class extends Fighter {
             this.getBaseandWeight();
 		}
 		
-        if (this.mod === UNIQUE) {
+        if (this.mod === 'unique') {
             this.getUnique();
-		} else if (this.mod === MAGIC || magic || this.material === M_GEM ||
+		} else if (this.mod === 'magic' || magic || this.material === M_GEM ||
             evalPercentage(10 + rogue.mf)) {
             if (this.bias) bias = this.bias;
             if (evalPercentage((10 + rogue.mf) / 4)) {
@@ -47,14 +53,14 @@ const Enemy = class extends Fighter {
         this.calcDmgOne();
         this.gainSynerzyAll();
         if (this.starter) this.getStarterItems();
-        if (this.mod !== NORMAL) this.getOrLooseStats(modBonusMap.get(this.mod), true);
+        if (this.mod !== 'normal') this.getOrLooseStats(modBonusList[this.mod], true);
         this.calcAll();
         this.sleeping = this.awake || this.aggravating || summon ? 0 : DEFAULT;
         if (this.mimic) hallucinate.one(this, false, true);
         if (this.dropNum) {
             this.createItemIntoPack({
                 times: this.dropNum,
-                magic: this.mf || this.mod === UNIQUE,
+                magic: this.mf || this.mod === 'unique',
                 lvl: this.lvl,
             });
         }
@@ -289,14 +295,14 @@ const Enemy = class extends Fighter {
     probMaterial() {
         let perc;
         switch (this.mod) {
-            case NORMAL:
-            case UNIQUE:
+            case 'normal':
+            case 'unique':
                 perc = 0;
                 break;
-            case MAGIC:
+            case 'magic':
                 perc = 20;
                 break;
-            case RARE:
+            case 'rare':
                 perc = 10;
                 break;
 		}
@@ -504,7 +510,7 @@ const Enemy = class extends Fighter {
         let name;
         if (this.isShowing()) {
             name = this.name[option.getLanguage()];
-            if (this.cursed && this.mod !== UNIQUE)
+            if (this.cursed && this.mod !== 'unique')
                 name = (option.isEnglish() ? 'Cursed ' : '呪われた') + name;
         } else {
 			name = option.isEnglish() ? 'Something' : '何か';

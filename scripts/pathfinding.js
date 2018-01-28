@@ -67,7 +67,7 @@ const circleSearch = {
                 break;
             case DISINTEGRATION:
                 if (!loc.fighter || loc.fighter.id === ROGUE || loc.fighter.symbol !== this.symbol) return;
-                if (loc.fighter.mod !== UNIQUE &&
+                if (loc.fighter.mod !== 'unique' &&
                     !evalPercentage(loc.fighter.lvl)) {
                     if (rogue.ce && rogue.ce.id === loc.fighter.id) rogue.removeCe();
                     loc.fighter.died();
@@ -99,7 +99,7 @@ const circleSearch = {
                             continue;
                         }
 
-                        if (item.mod === UNIQUE && !item.identified) {
+                        if (item.mod === 'unique' && !item.identified) {
                             let id = item.type + ',' + item.tabId + ',' + item.uniqueId;
                             if (this.cui[id]) delete this.cui[id];
                         }
@@ -115,7 +115,7 @@ const circleSearch = {
                         if (loc.fighter.sleeping) loc.fighter.wakeUp();
                         found = true;
                     } else {
-                        if (loc.fighter.mod === UNIQUE) delete rogue.cue[loc.fighter.name[ENG]];
+                        if (loc.fighter.mod === 'unique') delete rogue.cue[loc.fighter.name[ENG]];
                         loc.fighter.died();
                     }
                 }

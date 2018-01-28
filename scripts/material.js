@@ -1696,7 +1696,7 @@ const Material = class extends Thing {
         if (gem) {
             this.name['a'] = this.nameReal['a'] = nameA;
             this.name['b'] = this.nameReal['b'] = nameB;
-        } else if (this.mod !== UNIQUE) {
+        } else if (this.mod !== 'unique') {
             if (this.type === 'enemy') {
                 this.name['a'] = nameA + ' ' + this.name['a'];
                 this.name['b'] = nameB + 'の' + this.name['b'];
@@ -1787,7 +1787,7 @@ const Material = class extends Thing {
 		}
 		
         this.modList = mods;
-        this.mod = MAGIC;
+        this.mod = 'magic';
         this.shadow = this.shadowReal = colorList.aqua;
     }
 
@@ -1855,7 +1855,7 @@ const Material = class extends Thing {
             }
 		} while (modSufNums[i] !== undefined);
 		
-        this.mod = RARE;
+        this.mod = 'rare';
         this.shadow = this.shadowReal = colorList.yellow;
         let nameAffiA = affix.name['a'];
         let nameAffiB = affix.name['b'];
@@ -1895,7 +1895,7 @@ const Material = class extends Thing {
 			});
 			
             [this.nameReal['a'], this.nameReal['b']] = this.getUniqueName(unique.name, true);
-            this.mod = UNIQUE;
+            this.mod = 'unique';
         }
     }
 
