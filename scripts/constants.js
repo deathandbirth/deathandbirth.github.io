@@ -87,6 +87,14 @@ const [
 ] = enums(1, 2);
 
 const [
+    STR,
+    DEX,
+    CON,
+    INT,
+    EXP,
+] = enums(0, 4);
+
+const [
     HUMAN,
     ANIMAL,
     DEMON,

@@ -7,8 +7,20 @@ const Enemy = class extends Fighter {
     }
 
     gainStats() {
-        let term = this.grow && coinToss() ? this.grow : statistics.getRndTerm();
-        this[term] = ++this[term + 'Max'];
+        switch (this.grow && coinToss() ? this.grow : rndInt(3)) {
+            case STR:
+                this.str = ++this.strMax;
+                break;
+            case DEX:
+                this.dex = ++this.dexMax;
+                break;
+            case CON:
+                this.con = ++this.conMax;
+                break;
+            case INT:
+                this.int = ++this.intMax;
+                break;
+        }
     }
 
     init(position, x, y, summon, magic, bias, lvl) {

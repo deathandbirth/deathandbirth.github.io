@@ -60,7 +60,7 @@ const fighterTab = {
 			poison: 0,
 			material: M_FEATHER,
 			atkType: AT_T,
-			grow: 'dex',
+			grow: DEX,
 			stealLife: 10
 		},
 	],
@@ -93,7 +93,7 @@ const fighterTab = {
             poison: 0,
             material: M_FUR,
             atkType: AT_S | AT_T,
-            grow: 'dex',
+            grow: DEX,
             frw: 20
 		},
 		
@@ -155,7 +155,7 @@ const fighterTab = {
             poison: 0,
             material: M_FUR,
             atkType: AT_S | AT_T,
-            grow: 'str'
+            grow: STR
 		},
 		
         {
@@ -216,7 +216,7 @@ const fighterTab = {
             poison: 0,
             material: M_STONE,
             atkType: AT_B,
-            grow: 'con',
+            grow: CON,
             volumeRate: 1
 		},
 		
@@ -247,7 +247,7 @@ const fighterTab = {
             poison: 0,
             material: M_METAL,
             atkType: AT_T,
-            grow: 'con',
+            grow: CON,
             volumeRate: 2
 		},
 		
@@ -278,7 +278,7 @@ const fighterTab = {
             poison: 0,
             material: M_GEM,
             atkType: AT_S,
-            grow: 'con',
+            grow: CON,
             volumeRate: 3
         },
 	],
@@ -444,7 +444,7 @@ const fighterTab = {
             poison: 0,
             material: M_BONE,
             atkType: AT_B,
-            grow: 'str',
+            grow: STR,
             starter: [
 				{ type: 'melee', tabId: M_CLUB },
 				{ type: 'armor', tabId: A_ARMOR }
@@ -478,7 +478,7 @@ const fighterTab = {
             poison: 0,
             material: M_BONE,
             atkType: AT_B,
-            grow: 'dex',
+            grow: DEX,
             starter: [
 				{ type: 'missile', tabId: M_BOW },
 				{ type: 'ammo', tabId: A_ARROW },
@@ -520,7 +520,7 @@ const fighterTab = {
 
             material: M_BONE,
             atkType: AT_B,
-            grow: 'int',
+            grow: INT,
             starter: [
 				{ type: 'staff', tabId: S_STAFF },
 				{ type: 'armor', tabId: A_ROBE }
@@ -557,7 +557,7 @@ const fighterTab = {
             atkStealItem: 20,
             atkStealGold: 20,
             stealth: 25,
-            grow: 'dex',
+            grow: DEX,
             starter: [
 				{ type: 'melee', tabId: M_DAGGER },
 				{ type: 'armor', tabId: A_VEST }
@@ -772,7 +772,7 @@ const fighterTab = {
             material: M_SKIN,
             atkType: AT_B,
             frw: 60,
-            grow: 'dex'
+            grow: DEX
 		},
 		
         {
@@ -832,7 +832,7 @@ const fighterTab = {
             poison: 0,
             material: M_FUR,
             atkType: AT_B,
-            grow: 'con'
+            grow: CON
 		},
 		
         {
@@ -1032,7 +1032,7 @@ const fighterTab = {
             material: M_FEATHER,
             atkType: AT_S | AT_T,
             levi: true,
-            grow: 'dex'
+            grow: DEX
 		},
 		
         {
@@ -1225,7 +1225,7 @@ const fighterTab = {
             poison: 20,
             material: M_SCALE | M_BONE,
             atkType: AT_S | AT_T | AT_B,
-            grow: 'con'
+            grow: CON
 		},
 		
         {
@@ -1326,7 +1326,7 @@ const fighterTab = {
 			levi: true,
 			moveRnd: true,
 			atkStealGold: 25,
-			grow: 'dex'
+			grow: DEX
 		},
 	],
 
@@ -1392,7 +1392,7 @@ const fighterTab = {
             material: M_FEATHER,
             atkType: AT_S | AT_T,
             levi: true,
-            grow: 'dex',
+            grow: DEX,
             skillProb: 1 / 10,
             skill: {
 				a: { id: SCREAM, lvl: 5 }
@@ -1427,7 +1427,7 @@ const fighterTab = {
             material: M_BONE,
             atkType: AT_B,
             dexSus: true,
-            grow: 'dex',
+            grow: DEX,
             starter: [
 				{ type: 'missile', tabId: M_BOW },
 				{ type: 'ammo', tabId: A_ARROW }
@@ -1462,7 +1462,7 @@ const fighterTab = {
             material: M_BONE,
             atkType: AT_B,
             strSus: true,
-            grow: 'str',
+            grow: STR,
             starter: [{ type: 'melee', tabId: M_TWO_HANDED_AXE }]
         },
 	],
@@ -1595,7 +1595,7 @@ const fighterTab = {
             hpReg: 100,
             ias: 25,
             dmgPoison: 25,
-            grow: 'con',
+            grow: CON,
             skillProb: 1 / 8,
             skill: {
 				a: { id: POISON_BREATH, lvl: 10 }
@@ -1665,7 +1665,7 @@ const fighterTab = {
             poison: 0,
             material: M_BONE,
             atkType: AT_B,
-            grow: 'con'
+            grow: CON
 		},
 		
         {
@@ -1695,7 +1695,7 @@ const fighterTab = {
             poison: 0,
             material: M_BONE,
             atkType: AT_B,
-            grow: 'con',
+            grow: CON,
             starter: [
 				{ type: 'missile', tabId: M_SLING },
 				{ type: 'ammo', tabId: A_ROCK }
@@ -2526,7 +2526,7 @@ const Fighter = class extends Material {
                     if (this.atkBlind && evalPercentage(this.atkBlind)) this.haveCast(BLINDNESS, 1, enemy);
                     if (this.atkRadi && evalPercentage(this.atkRadi)) this.haveCast(RADIATION, 1, enemy);
                     if (this.atkCold && evalPercentage(this.atkCold)) this.haveCast(COLD, 1, enemy);
-                    if (this.atkDrain && evalPercentage(this.atkDrain)) enemy.decayOrRestore('exp', false, this.expGain, this);
+                    if (this.atkDrain && evalPercentage(this.atkDrain)) enemy.decayOrRestore(EXP, false, this.expGain, this);
                     if (!skill && !this.confused) {
                         if (this.atkStealGold && evalPercentage(this.atkStealGold)) if (this.stealGold(enemy)) count = NaN;
                         if (count && this.atkStealItem && evalPercentage(this.atkStealItem)) if (this.stealItem(enemy)) count = NaN;
@@ -3299,10 +3299,10 @@ const Fighter = class extends Material {
         if (this.teleported && evalPercentage(this.teleported)) this.haveCast(TELEPORTATION, 10, this);
     }
 
-    decayOrRestore(term, restore, exp, enemy) {
+    decayOrRestore(stat, restore, exp, enemy) {
         let name = this.getName(true);
-        switch (term ? term : statistics.getRndTerm()) {
-            case 'str':
+        switch (stat >= 0 ? stat : rndInt(3)) {
+            case STR:
                 if (restore) {
                     if (this.str < this.strMax) {
                         message.draw(option.isEnglish() ?
@@ -3322,7 +3322,7 @@ const Fighter = class extends Material {
                 this.calcWeightLimit();
                 this.calcDmg();
                 break;
-            case 'dex':
+            case DEX:
                 if (restore) {
                     if (this.dex < this.dexMax) {
                         message.draw(option.isEnglish() ?
@@ -3342,7 +3342,7 @@ const Fighter = class extends Material {
                 this.calcAc();
                 this.calcDmg();
                 break;
-            case 'con':
+            case CON:
                 if (restore) {
                     if (this.con < this.conMax) {
                         message.draw(option.isEnglish() ?
@@ -3361,7 +3361,7 @@ const Fighter = class extends Material {
 				
                 this.calcHP();
                 break;
-            case 'int':
+            case INT:
                 if (restore) {
                     if (this.int < this.intMax) {
                         message.draw(option.isEnglish() ?
@@ -3380,7 +3380,7 @@ const Fighter = class extends Material {
 				
                 this.calcMP();
                 break;
-            case 'exp':
+            case EXP:
                 if (restore) {
                     if (this.exp < this.expMax) {
                         message.draw(option.isEnglish() ?
@@ -4344,41 +4344,41 @@ const Fighter = class extends Material {
                 break;
             case WEAKNESS:
                 if (evalPercentage(f.poison)) return;
-                f.decayOrRestore('str');
+                f.decayOrRestore(STR);
                 break;
             case CLUMSINESS:
                 if (evalPercentage(f.poison)) return;
-                f.decayOrRestore('dex');
+                f.decayOrRestore(DEX);
                 break;
             case SICKLINESS:
                 if (evalPercentage(f.poison)) return;
-                f.decayOrRestore('con');
+                f.decayOrRestore(CON);
                 break;
             case STUPIDITY:
                 if (evalPercentage(f.poison)) return;
-                f.decayOrRestore('int');
+                f.decayOrRestore(INT);
                 break;
             case RESTORE_STRENGTH:
-                f.decayOrRestore('str', true);
+                f.decayOrRestore(STR, true);
                 break;
             case RESTORE_DEXTERITY:
-                f.decayOrRestore('dex', true);
+                f.decayOrRestore(DEX, true);
                 break;
             case RESTORE_CONSTITUTION:
-                f.decayOrRestore('con', true);
+                f.decayOrRestore(CON, true);
                 break;
             case RESTORE_INTELLIGENCE:
-                f.decayOrRestore('int', true);
+                f.decayOrRestore(INT, true);
                 break;
             case RESTORE_EXPERIENCE:
-                f.decayOrRestore('exp', true);
+                f.decayOrRestore(EXP, true);
                 break;
             case RESTORE_ALL:
-                f.decayOrRestore('str', true);
-                f.decayOrRestore('dex', true);
-                f.decayOrRestore('con', true);
-                f.decayOrRestore('int', true);
-                f.decayOrRestore('exp', true);
+                f.decayOrRestore(STR, true);
+                f.decayOrRestore(DEX, true);
+                f.decayOrRestore(CON, true);
+                f.decayOrRestore(INT, true);
+                f.decayOrRestore(EXP, true);
                 break;
             case CURE_ALL:
                 f.confused = f.canceled = f.poisoned = f.infected = f.paralyzed = f.sleeping = 0;
