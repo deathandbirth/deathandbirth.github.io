@@ -1,0 +1,41 @@
+body{
+	color:white;
+	background:#3A362D;
+	font-family: "'Yu Gothic', 'Hiragino Kaku Gothic Pro', 'Hiragino Kaku Gothic ProN', 'TakaoExGothic', 'Meiryo', 'MS PGothic', sans-serif";
+	font-size: 14px;
+	letter-spacing: 1px;
+}
+
+main{
+	padding-left:5px;
+}
+
+#container{
+	background-color: black;
+	border: 2px solid #E8D296;
+	margin: 20px auto 50px;
+	position:relative;
+}
+
+h2 {
+	margin: 20px 0 5px 0;
+	font-size: 16px;
+	font-weight: 500;
+}
+
+ul {
+	margin-top: 0;
+}
+
+ul li{
+	padding-top:5px;
+	padding-bottom:5px;
+}
+
+a {
+	color: #9BC8A1;
+}
+
+footer {
+	text-align: center;
+}

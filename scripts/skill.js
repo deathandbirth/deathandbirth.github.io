@@ -1,0 +1,1897 @@
+const TOTAL_SKILL_NUM = 150;
+const [
+    FIRE_BOLT,
+    FIRE_BALL,
+    FLAME_OF_DIDO,
+    REMOVE_CURSE,
+    RESIST_FIRE,
+    LIGHT,
+    SEE_INVISIBLE,
+    INVISIBILITY,
+    MAGIC_CIRCLE_OF_PROTECTION,
+    HEAL,
+    EXTRA_HEAL,
+    MANA,
+    LIFE_REGENERATION,
+    MANA_REGENERATION,
+    RESTORE_STRENGTH,
+    RESTORE_DEXTERITY,
+    RESTORE_CONSTITUTION,
+    RESTORE_INTELLIGENCE,
+    RESTORE_ALL,
+    CURE_ALL,
+    RESIST_WATER,
+    RESIST_ALL,
+    RAISE_LEVEL,
+    RESPEC,
+    ICE_BOLT,
+    COCYTUS,
+    WIND_SPEAR,
+    TORNADO,
+    SPEED,
+    SCREAM,
+    RESIST_AIR,
+    LIGHTNING,
+    ENLIGHTENMENT,
+    MAGIC_FINDING,
+    GOLD_FINDING,
+    EXPERIENCE,
+    SKILL,
+    IDENTIFY,
+    MONSTER_DETECTION,
+    ITEM_DETECTION,
+    MAGIC_MAPPING,
+    SATISFY_HUNGER,
+    STONE_TO_MUD,
+    CREATE_MONSTER,
+    CREATE_GIANT,
+    CREATE_TRAP,
+    RESTORE_DURABILITY,
+    RESIST_EARTH,
+    TOWN_PORTAL,
+    WORMHOLE,
+    SLOW,
+    GRAVITATIONAL_FIELD,
+    POISON,
+    CONFUSION,
+    TOUCH_OF_CONFUSION,
+    PARALYSIS,
+    SLEEP,
+    BLINDNESS,
+    HALLUCINATION,
+    POLYMORPH,
+    CANCELLATION,
+    SLEEPING_GAS,
+    HOLD_MONSTER,
+    HALLUCINATING_MIST,
+    LOWER_RESIST,
+    WEAKNESS,
+    CLUMSINESS,
+    SICKLINESS,
+    STUPIDITY,
+    RESIST_POISON,
+    INFECTION,
+    PESTILENCE,
+    SANDSTORM,
+    BLIZZARD,
+    ACID_BALL,
+    LAVA_FLOW,
+    SHORT_TELEPORTATION,
+    TELEPORTATION,
+    TELEPORT_TO,
+    TELEPORT_AWAY,
+    DISINTEGRATION,
+    FIST_OF_CONFUSION,
+    RAID,
+    PIERCING_ARROW,
+    EXPLODING_ARROW,
+    PARALYZING_ARROW,
+    FREEZING_ARROW,
+    PHOTON_ARROW,
+    APOLLOS_ARROW,
+    ENCOURAGEMENT,
+    BLESSING,
+    FIRE_BREATH,
+    AQUA_BREATH,
+    WIND_BREATH,
+    POISON_BREATH,
+    LIGHT_BREATH,
+    COLD_BREATH,
+    LIGHTNING_BREATH,
+    GRAVITY_BREATH,
+    INFECTION_BREATH,
+    BLIZZARD_BREATH,
+    DUST_BREATH,
+    ACID_BREATH,
+    MAGMA_BREATH,
+    RUSH,
+    SPIRAL,
+    COLLAPSE,
+    WHIRLWIND,
+    ECCO,
+    CREATE_MAGIC_MONSTER,
+    POISON_BOLT,
+    VENOM_HANDS,
+    POISON_MIST,
+    RADIOACTIVE_BREATH,
+    CHAIN_DECAY,
+    RADIATION,
+    COLD,
+    RESTORE_EXPERIENCE,
+    REPAIR_ALL,
+    ENCHANT_SELF,
+    EARTHQUAKE,
+    CHARGE,
+] = enums(1, TOTAL_SKILL_NUM);
+
+const skillMap = new Map([
+    //spell
+    [FIRE_BOLT, {
+        reqLvl: 1,
+        base: '5d5',
+        rate: 20,
+        synerzy: 10,
+        mp: 5,
+        element: 'fire',
+        kind: 'attack',
+        type: 'spell',
+        name: { a: 'Fire Bolt', b: '火炎のボルト' },
+        desc: { a: '', b: '敵1体に、{value}の火ダメージを与える' }
+    }],
+
+    [FIRE_BALL, {
+        reqLvl: 10,
+        base: '6d6',
+        rate: 20,
+        synerzy: 10,
+        mp: 10,
+        element: 'fire',
+        kind: 'attack',
+        type: 'spell',
+        name: { a: 'Fire Ball', b: '火炎のボール' },
+        radius: 1,
+        desc: { a: '', b: '半径{radius}の範囲内の敵に、{value}の火ダメージを与える' }
+    }],
+
+    [FLAME_OF_DIDO, {
+        reqLvl: 30,
+        base: '10d10',
+        rate: 20,
+        synerzy: 10,
+        mp: 30,
+        element: 'fire',
+        kind: 'attack',
+        type: 'spell',
+        name: { a: 'Flame of Dido', b: 'ディドの焔' },
+        reqSynerzy: 20,
+        desc: { a: '', b: '敵1体に、{value}の火ダメージを与える' }
+    }],
+
+    [REMOVE_CURSE, {
+        reqLvl: 11,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 10,
+        element: 'fire',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Remove Curse', b: '解呪' },
+        reqSynerzy: 5,
+        desc: { a: '', b: '装備品の呪いを解く' }
+    }],
+
+    [RESTORE_STRENGTH, {
+        reqLvl: 15,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 5,
+        element: 'fire',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Restore Strength', b: '筋力復活' },
+        reqSynerzy: 5,
+        desc: { a: '', b: '筋力を回復する' }
+    }],
+
+    [RESIST_FIRE, {
+        reqLvl: 5,
+        base: 10,
+        rate: 5,
+        synerzy: 1,
+        mp: 10,
+        element: 'fire',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Resist Fire', b: '耐火' },
+        perc: true,
+        durBase: '10d2',
+        durRate: 10,
+        desc: { a: '', b: '{dur}ターンの間、火の耐性を{value}上昇させる' }
+    }],
+
+    [LIGHT, {
+        reqLvl: 3,
+        base: 10,
+        rate: 2,
+        synerzy: 1,
+        mp: 5,
+        element: 'light',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Light', b: '光' },
+        radiusRate: true,
+        desc: { a: '', b: '半径{radiusRate}の範囲内を照らす' }
+    }],
+
+    [SEE_INVISIBLE, {
+        reqLvl: 15,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 10,
+        element: 'light',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'See Invisible', b: '透視' },
+        reqSynerzy: 5,
+        durBase: '10d2',
+        durRate: 10,
+        desc: { a: '', b: '{dur}ターンの間、透明な敵に対する可視効果を得る' }
+    }],
+
+    [INVISIBILITY, {
+        reqLvl: 0,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 1,
+        element: 'light',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Invisibility', b: '透明' },
+        durBase: '10d2',
+        durRate: 1,
+        desc: { a: '', b: '{dur}ターンの間、透明状態にする' }
+    }],
+
+    [MAGIC_CIRCLE_OF_PROTECTION, {
+        reqLvl: 0,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 1,
+        element: 'light',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Magic Circle of Protection', b: '守護魔法円' },
+        desc: { a: '', b: '足元に敵の侵入を阻む魔法円を描く' }
+    }],
+
+    [HEAL, {
+        reqLvl: 10,
+        base: '10d2',
+        rate: 10,
+        synerzy: 5,
+        mp: 10,
+        element: 'water',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Heal', b: '回復' },
+        reqSynerzy: 5,
+        desc: { a: '', b: '体力を{value}回復する' }
+    }],
+
+    [EXTRA_HEAL, {
+        reqLvl: 30,
+        base: '30d2',
+        rate: 10,
+        synerzy: 5,
+        mp: 30,
+        element: 'water',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Extra Heal', b: '特大回復' },
+        reqSynerzy: 20,
+        desc: { a: '', b: '体力を{value}回復する' }
+    }],
+
+    [RESTORE_INTELLIGENCE, {
+        reqLvl: 15,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 5,
+        element: 'water',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Restore Intelligence', b: '知力復活' },
+        reqSynerzy: 5,
+        desc: { a: '', b: '知力を回復する' }
+    }],
+
+    [RESTORE_ALL, {
+        reqLvl: 25,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 20,
+        element: 'water',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Restore All', b: '全復活' },
+        reqSynerzy: 10,
+        desc: { a: '', b: '能力値を回復する' }
+    }],
+
+    [CURE_ALL, {
+        reqLvl: 25,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 20,
+        element: 'water',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Cure All', b: '全治療' },
+        reqSynerzy: 10,
+        desc: { a: '', b: '全状態異常を治癒する' }
+    }],
+
+    [RESIST_WATER, {
+        reqLvl: 5,
+        base: 10,
+        rate: 5,
+        synerzy: 1,
+        mp: 10,
+        element: 'water',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Resist Water', b: '耐水' },
+        perc: true,
+        durBase: '10d2',
+        durRate: 10,
+        desc: { a: '', b: '{dur}ターンの間、水の耐性を{value}上昇させる' }
+    }],
+
+    [RESIST_ALL, {
+        reqLvl: 20,
+        base: 5,
+        rate: 3,
+        synerzy: 1,
+        mp: 20,
+        element: 'water',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Resist All', b: '全耐性' },
+        perc: true,
+        reqSynerzy: 10,
+        durBase: '10d2',
+        durRate: 10,
+        desc: { a: '', b: '{dur}ターンの間、すべての耐性を{value}上昇させる' }
+    }],
+
+    [MANA, {
+        reqLvl: 0,
+        base: '5d2',
+        rate: 10,
+        synerzy: 5,
+        mp: 1,
+        element: 'water',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Mana', b: '魔力回復' },
+        desc: { a: '', b: '魔力を{value}回復する' }
+    }],
+
+    [LIFE_REGENERATION, {
+        reqLvl: 0,
+        base: 20,
+        rate: 10,
+        synerzy: false,
+        mp: 10,
+        element: 'water',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Life Regeneration', b: '再生' },
+        perc: true,
+        durBase: '10d2',
+        durRate: 10,
+        desc: { a: '', b: '{dur}ターンの間、体力再生の効果を{value}得る' }
+    }],
+
+    [MANA_REGENERATION, {
+        reqLvl: 0,
+        base: 20,
+        rate: 10,
+        synerzy: false,
+        mp: 10,
+        element: 'water',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Mana Regeneration', b: '魔力再生' },
+        perc: true,
+        durBase: '10d2',
+        durRate: 10,
+        desc: { a: '', b: '{dur}ターンの間、魔力再生の効果を{value}得る' }
+    }],
+
+    [RAISE_LEVEL, {
+        reqLvl: 0,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 1,
+        element: 'water',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Raise Level', b: 'レベル上昇' },
+        desc: { a: '', b: 'レベルを1上昇させる' }
+    }],
+
+    [RESPEC, {
+        reqLvl: 0,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 0,
+        element: 'water',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Respec', b: 'リスペック' },
+        desc: { a: '', b: 'すべての能力値を初期状態にし、スキルを忘却し、相当のポイントを再び得る' }
+    }],
+
+    [ICE_BOLT, {
+        reqLvl: 1,
+        base: '2d10',
+        rate: 20,
+        synerzy: 10,
+        mp: 5,
+        element: 'cold',
+        kind: 'attack',
+        type: 'spell',
+        name: { a: 'Ice Bolt', b: '冷気のボルト' },
+        desc: { a: '', b: '敵1体に、{value}の氷ダメージを与える' }
+    }],
+
+    [COCYTUS, {
+        reqLvl: 30,
+        base: '4d20',
+        rate: 20,
+        synerzy: 10,
+        mp: 40,
+        element: 'cold',
+        kind: 'attack',
+        type: 'spell',
+        name: { a: 'Cocytus', b: 'コキュートス' },
+        radius: 10,
+        range: 0,
+        reqSynerzy: 20,
+        desc: { a: '', b: '半径{radius}の範囲内の敵に、{value}の氷ダメージを与える' }
+    }],
+
+    [COLD, {
+        reqLvl: 0,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 1,
+        element: 'cold',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Cold', b: '冷気' },
+        desc: { a: '', b: '敵1体を凍結させる' }
+    }],
+
+    [WHIRLWIND, {
+        reqLvl: 10,
+        base: '1d20',
+        rate: 20,
+        synerzy: 10,
+        mp: 10,
+        element: 'air',
+        kind: 'attack',
+        type: 'spell',
+        name: { a: 'Whirlwind', b: '旋風' },
+        radius: 2,
+        penetrate: true,
+        desc: { a: '', b: '半径{radius}の範囲内の敵を貫通し、{value}の風ダメージを与える' }
+    }],
+
+    [TORNADO, {
+        reqLvl: 20,
+        base: '1d15',
+        rate: 20,
+        synerzy: 10,
+        mp: 20,
+        element: 'air',
+        kind: 'attack',
+        type: 'spell',
+        name: { a: 'Tornado', b: '竜巻' },
+        radius: 2,
+        penetrate: true,
+        each: true,
+        reqSynerzy: 10,
+        range: 10,
+        desc: { a: '', b: '1マス毎に、半径{radius}の範囲内の敵を貫通し、{value}の風ダメージを与える' }
+    }],
+
+    [ECCO, {
+        reqLvl: 30,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 30,
+        element: 'air',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Ecco', b: 'エコー' },
+        reqSynerzy: 20,
+        durBase: '10d2',
+        durRate: 5,
+        desc: { a: '', b: '{dur}ターンの間、スキルを2回連続で放つ' }
+    }],
+
+    [SPEED, {
+        reqLvl: 15,
+        base: 5,
+        rate: 1,
+        synerzy: false,
+        mp: 10,
+        element: 'air',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Speed', b: '速度' },
+        reqSynerzy: 10,
+        durBase: '10d2',
+        durRate: 3,
+        desc: { a: '', b: '{dur}ターンの間、速度を{value}上昇させる' }
+    }],
+
+    [RESTORE_DEXTERITY, {
+        reqLvl: 15,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 5,
+        element: 'air',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Restore Dexterity', b: '器用さ復活' },
+        reqSynerzy: 5,
+        desc: { a: '', b: '器用さを回復する' }
+    }],
+
+    [RESIST_AIR, {
+        reqLvl: 5,
+        base: 10,
+        rate: 5,
+        synerzy: 1,
+        mp: 10,
+        element: 'air',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Resist Air', b: '耐風' },
+        perc: true,
+        durBase: '10d2',
+        durRate: 10,
+        desc: { a: '', b: '{dur}ターンの間、風の耐性を{value}上昇させる' }
+    }],
+
+    [SCREAM, {
+        reqLvl: 0,
+        base: 10,
+        rate: 2,
+        synerzy: false,
+        mp: 1,
+        element: 'air',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Scream', b: '悲鳴' },
+        radiusRate: true,
+        desc: { a: '', b: '半径{radiusRate}の範囲内の敵を目覚めさせる' }
+    }],
+
+    [LIGHTNING, {
+        reqLvl: 1,
+        base: '1d10',
+        rate: 20,
+        synerzy: 10,
+        mp: 5,
+        element: 'lightning',
+        kind: 'attack',
+        type: 'spell',
+        name: { a: 'Lightning', b: '稲妻' },
+        penetrate: true,
+        desc: { a: '', b: '直線上の敵を貫通し、{value}の稲妻ダメージを与える' }
+    }],
+
+    [ENLIGHTENMENT, {
+        reqLvl: 30,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 30,
+        element: 'earth',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Enlightenment', b: '啓蒙' },
+        reqSynerzy: 20,
+        desc: { a: '', b: 'マップ全域を照らし、地形・アイテム及び隠された罠や階段を検出する' }
+    }],
+
+    [IDENTIFY, {
+        reqLvl: 15,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 10,
+        element: 'earth',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Identify', b: '識別' },
+        reqSynerzy: 10,
+        desc: { a: '', b: 'アイテムを鑑定する' }
+    }],
+
+    [MONSTER_DETECTION, {
+        reqLvl: 1,
+        base: 10,
+        rate: 2,
+        synerzy: 1,
+        mp: 5,
+        element: 'earth',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Monster Detection', b: 'モンスター感知' },
+        radiusRate: true,
+        desc: { a: '', b: '半径{radiusRate}の範囲内の敵を、検出する' }
+    }],
+
+    [ITEM_DETECTION, {
+        reqLvl: 5,
+        base: 10,
+        rate: 2,
+        synerzy: 1,
+        mp: 5,
+        element: 'earth',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Item Detection', b: 'アイテム感知' },
+        radiusRate: true,
+        desc: { a: '', b: '半径{radiusRate}の範囲内のアイテムを、検出する' }
+    }],
+
+    [MAGIC_MAPPING, {
+        reqLvl: 10,
+        base: 10,
+        rate: 2,
+        synerzy: 1,
+        mp: 10,
+        element: 'earth',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Magic Mapping', b: '魔法の地図' },
+        radiusRate: true,
+        desc: { a: '', b: '半径{radiusRate}の範囲内の地形を、検出する' }
+    }],
+
+    [SATISFY_HUNGER, {
+        reqLvl: 20,
+        base: 30,
+        rate: 1,
+        synerzy: 1,
+        mp: 10,
+        element: 'earth',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Satisfy Hunger', b: '空腹充足' },
+        perc: true,
+        limit: 100,
+        reqSynerzy: 10,
+        desc: { a: '', b: '空腹を{value}満たす' }
+    }],
+
+    [STONE_TO_MUD, {
+        reqLvl: 15,
+        base: '10d10',
+        rate: 10,
+        synerzy: 5,
+        mp: 5,
+        element: 'earth',
+        kind: 'aim',
+        type: 'spell',
+        name: { a: 'Stone to Mud', b: '岩石溶解' },
+        wall: true,
+        reqSynerzy: 10,
+        desc: { a: '', b: '壁を取り壊し、石の敵に{value}の土ダメージを与える' }
+    }],
+
+    [RESTORE_DURABILITY, {
+        reqLvl: 20,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 5,
+        element: 'earth',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Restore Durability', b: '耐久度復活' },
+        reqSynerzy: 15,
+        desc: { a: '', b: '装備品の耐久度を回復する' }
+    }],
+
+    [EARTHQUAKE, {
+        reqLvl: 20,
+        base: 30,
+        rate: 1,
+        synerzy: 1,
+        mp: 20,
+        element: 'earth',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Earthquake', b: '地震' },
+        perc: true,
+        limit: 100,
+        radius: FOV,
+        reqSynerzy: 10,
+        desc: { a: '', b: '半径{radius}の範囲内に、{value}の強度で地震を起こす' }
+    }],
+
+    [REPAIR_ALL, {
+        reqLvl: 30,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 30,
+        element: 'earth',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Repair All', b: '全修復' },
+        reqSynerzy: 20,
+        desc: { a: '', b: 'すべての装備品の耐久度を回復する' }
+    }],
+
+    [ENCHANT_SELF, {
+        reqLvl: 30,
+        base: 50,
+        rate: 5,
+        synerzy: true,
+        mp: 30,
+        element: 'earth',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Enchant Self', b: '自己強化' },
+        perc: true,
+        reqSynerzy: 20,
+        durBase: '50d2',
+        durRate: 10,
+        desc: { a: '', b: '{dur}ターンの間、物理ダメージ・命中値・守備力をそれぞれ{value}上昇させる' }
+    }],
+
+    [RESTORE_CONSTITUTION, {
+        reqLvl: 15,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 5,
+        element: 'earth',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Restore Constitution', b: '耐久力復活' },
+        reqSynerzy: 5,
+        desc: { a: '', b: '耐久力を回復する' }
+    }],
+
+    [RESIST_EARTH, {
+        reqLvl: 5,
+        base: 10,
+        rate: 5,
+        synerzy: 1,
+        mp: 10,
+        element: 'earth',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Resist Earth', b: '耐土' },
+        perc: true,
+        durBase: '10d2',
+        durRate: 10,
+        desc: { a: '', b: '{dur}ターンの間、土の耐性を{value}上昇させる' }
+    }],
+
+    [MAGIC_FINDING, {
+        reqLvl: 0,
+        base: 0,
+        rate: 5,
+        synerzy: false,
+        mp: 1,
+        element: 'earth',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Magic Finding', b: '魔法具探求' },
+        perc: true,
+        durBase: '10d2',
+        durRate: 10,
+        desc: { a: '', b: '{dur}ターンの間、魔法具探求の効果を{value}得る' }
+    }],
+
+    [GOLD_FINDING, {
+        reqLvl: 0,
+        base: 0,
+        rate: 10,
+        synerzy: false,
+        mp: 1,
+        element: 'earth',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Gold Finding', b: '財宝探求' },
+        perc: true,
+        durBase: '10d2',
+        durRate: 10,
+        desc: { a: '', b: '{dur}ターンの間、財宝探求の効果を{value}得る' }
+    }],
+
+    [EXPERIENCE, {
+        reqLvl: 0,
+        base: 0,
+        rate: 10,
+        synerzy: false,
+        mp: 1,
+        element: 'earth',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Experience', b: '経験' },
+        perc: true,
+        durBase: '10d2',
+        durRate: 10,
+        desc: { a: '', b: '{dur}ターンの間、経験値上昇の効果を{value}得る' }
+    }],
+
+    [SKILL, {
+        reqLvl: 0,
+        base: 0,
+        rate: 1,
+        synerzy: false,
+        mp: 1,
+        element: 'earth',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Skill', b: 'スキル' },
+        durBase: '10d2',
+        durRate: 100, //
+        desc: { a: '', b: '{dur}ターンの間、経験値上昇の効果を{value}得る' }
+    }],
+
+    [CREATE_MONSTER, {
+        reqLvl: 0,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 1,
+        element: 'earth',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Create Monster', b: 'モンスター生成' },
+        desc: { a: '', b: 'モンスターを複数生成する' }
+    }],
+
+    [CREATE_MAGIC_MONSTER, {
+        reqLvl: 0,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 1,
+        element: 'earth',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Create Magic Monster', b: 'マジックモンスター生成' },
+        desc: { a: '', b: 'マジックモンスターを複数生成する' }
+    }],
+
+    [CREATE_GIANT, {
+        reqLvl: 0,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 1,
+        element: 'earth',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Create Giant', b: '巨人生成' },
+        desc: { a: '', b: '巨人を複数生成する' }
+    }],
+
+    [CREATE_TRAP, {
+        reqLvl: 0,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 1,
+        element: 'earth',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Create Trap', b: 'トラップ生成' },
+        desc: { a: '', b: '罠を複数生成する' }
+    }],
+
+    [GRAVITATIONAL_FIELD, {
+        reqLvl: 20,
+        base: 10,
+        rate: 1,
+        synerzy: false,
+        mp: 20,
+        element: 'gravity',
+        kind: 'aim',
+        type: 'spell',
+        name: { a: 'Gravitational Field', b: '重力場' },
+        radius: 10,
+        range: 0,
+        reqSynerzy: 10,
+        durBase: '10d2',
+        durRate: 3,
+        desc: { a: '', b: '半径{radius}の範囲内の敵を、{dur}ターンの間、速度を{value}低下させる' }
+    }],
+
+    [TOWN_PORTAL, {
+        reqLvl: 25,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 20,
+        element: 'gravity',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Town Portal', b: 'タウン・ポータル' },
+        reqSynerzy: 10,
+        desc: { a: '', b: '街またはダンジョンに帰還するポータルを生成する' }
+    }],
+
+    [WORMHOLE, {
+        reqLvl: 30,
+        base: 10,
+        rate: 2,
+        synerzy: 1,
+        mp: 30,
+        element: 'gravity',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Wormhole', b: 'ワームホール' },
+        radiusRate: true,
+        reqSynerzy: 20,
+        desc: { a: '', b: '半径{radiusRate}の範囲内の任意の場所に移動する' }
+    }],
+
+    [SLOW, {
+        reqLvl: 0,
+        base: 0,
+        rate: 1,
+        synerzy: false,
+        mp: 1,
+        element: 'gravity',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Slow', b: '鈍足' },
+        durBase: '10d2',
+        durRate: 3,
+        desc: { a: '', b: '{dur}ターンの間、速度を{value}低下させる' }
+    }],
+
+    [POISON_BOLT, {
+        reqLvl: 1,
+        base: '2d10',
+        rate: 20,
+        synerzy: 10,
+        mp: 5,
+        element: 'poison',
+        kind: 'attack',
+        type: 'spell',
+        name: { a: 'Poison Bolt', b: '毒のボルト' },
+        desc: { a: '', b: '敵1体に、{value}の毒ダメージを与える' }
+    }],
+
+    [POISON_MIST, {
+        reqLvl: 10,
+        base: '2d15',
+        rate: 20,
+        synerzy: 10,
+        mp: 10,
+        element: 'poison',
+        kind: 'attack',
+        type: 'spell',
+        name: { a: 'Poison Mist', b: '毒の霧' },
+        radius: 2,
+        desc: { a: '', b: '半径{radius}の範囲内の敵に、{value}の毒ダメージを与える' }
+    }],
+
+    [TOUCH_OF_CONFUSION, {
+        reqLvl: 5,
+        base: 20,
+        rate: 3,
+        synerzy: 1,
+        mp: 5,
+        element: 'poison',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Touch of Confusion', b: '混乱の手' },
+        perc: true,
+        limit: 100,
+        durBase: '10d2',
+        durRate: 1,
+        desc: { a: '', b: '{dur}ターンの間、物理攻撃に混乱の効果を{value}付与する' }
+    }],
+
+    [VENOM_HANDS, {
+        reqLvl: 15,
+        base: 0,
+        rate: 10,
+        synerzy: 5,
+        mp: 10,
+        element: 'poison',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Venom Hands', b: '猛毒の手' },
+        perc: true,
+        reqSynerzy: 5,
+        durBase: '50d2',
+        durRate: 10,
+        desc: { a: '', b: '{dur}ターンの間、物理攻撃に毒ダメージを{value}付与する' }
+    }],
+
+    [SLEEPING_GAS, {
+        reqLvl: 10,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 5,
+        element: 'poison',
+        kind: 'aim',
+        type: 'spell',
+        name: { a: 'Sleeping Gas', b: '睡眠ガス' },
+        radius: 1,
+        reqSynerzy: 5,
+        durBase: '5d2',
+        durRate: 1,
+        desc: { a: '', b: '半径{radius}の範囲内の敵を、{dur}ターンの間、昏睡状態にする' }
+    }],
+
+    [HOLD_MONSTER, {
+        reqLvl: 15,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 10,
+        element: 'poison',
+        kind: 'aim',
+        type: 'spell',
+        name: { a: 'Hold Monster', b: 'モンスター束縛' },
+        radius: 1,
+        range: 0,
+        reqSynerzy: 10,
+        durBase: '2d2',
+        durRate: 0,
+        desc: { a: '', b: '半径{radius}の範囲内の敵を、{dur}ターンの間、麻痺状態にする' }
+    }],
+
+    [RESTORE_EXPERIENCE, {
+        reqLvl: 20,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 5,
+        element: 'poison',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Restore Experience', b: '経験値復活' },
+        reqSynerzy: 10,
+        desc: { a: '', b: '失った経験値を回復する' }
+    }],
+
+    [LOWER_RESIST, {
+        reqLvl: 20,
+        base: -10,
+        rate: -2,
+        synerzy: -1,
+        mp: 20,
+        element: 'poison',
+        kind: 'aim',
+        type: 'spell',
+        name: { a: 'Lower Resist', b: '耐性低下' },
+        radius: 1,
+        perc: true,
+        reqSynerzy: 10,
+        durBase: '10d2',
+        durRate: 10,
+        desc: { a: '', b: '{dur}ターンの間、全耐性を{value}低下させる' }
+    }],
+
+    [RESIST_POISON, {
+        reqLvl: 5,
+        base: 10,
+        rate: 5,
+        synerzy: 1,
+        mp: 10,
+        element: 'poison',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Resist Poison', b: '耐毒' },
+        perc: true,
+        durBase: '10d2',
+        durRate: 10,
+        desc: { a: '', b: '{dur}ターンの間、毒の耐性を{value}上昇させる' }
+    }],
+
+    [HALLUCINATING_MIST, {
+        reqLvl: 20,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 20,
+        element: 'poison',
+        kind: 'aim',
+        type: 'spell',
+        name: { a: 'Hallucinating Mist', b: '幻覚の霧' },
+        radius: 1,
+        reqSynerzy: 10,
+        durBase: '10d2',
+        durRate: 2,
+        desc: { a: '', b: '半径{radius}の範囲内の敵を、{dur}ターンの間、幻覚状態にする' }
+    }],
+
+    [CONFUSION, {
+        reqLvl: 0,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 1,
+        element: 'poison',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Confusion', b: '混乱' },
+        durBase: '2d3',
+        durRate: 1,
+        desc: { a: '', b: '{dur}ターンの間、混乱状態にする' }
+    }],
+
+    [POISON, {
+        reqLvl: 0,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 1,
+        element: 'poison',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Poison', b: '毒' },
+        durBase: '5d2',
+        durRate: 1,
+        desc: { a: '', b: '{dur}ターンの間、毒状態にする' }
+    }],
+
+    [PARALYSIS, {
+        reqLvl: 0,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 1,
+        element: 'poison',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Paralysis', b: '麻痺' },
+        durBase: '2d2',
+        durRate: 0,
+        desc: { a: '', b: '{dur}ターンの間、麻痺状態にする' }
+    }],
+
+    [SLEEP, {
+        reqLvl: 0,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 1,
+        element: 'poison',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Sleep', b: '睡眠' },
+        durBase: '5d2',
+        durRate: 1,
+        desc: { a: '', b: '{dur}ターンの間、昏睡状態にする' }
+    }],
+
+    [BLINDNESS, {
+        reqLvl: 0,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 1,
+        element: 'poison',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Blindness', b: '盲目' },
+        durBase: '10d2',
+        durRate: 1,
+        desc: { a: '', b: '{dur}ターンの間、盲目状態にする' }
+    }],
+
+    [HALLUCINATION, {
+        reqLvl: 0,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 1,
+        element: 'poison',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Hallucination', b: '幻覚' },
+        durBase: '10d2',
+        durRate: 2,
+        desc: { a: '', b: '{dur}ターンの間、幻覚状態にする' }
+    }],
+
+    [POLYMORPH, {
+        reqLvl: 0,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 1,
+        element: 'poison',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Polymorph', b: '変容' },
+        desc: { a: '', b: '敵1体を、変容させる' }
+    }],
+
+    [CANCELLATION, {
+        reqLvl: 0,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 1,
+        element: 'poison',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Cancellation', b: '封印' },
+        durBase: '2d2',
+        durRate: 1,
+        desc: { a: '', b: '{dur}ターンの間、封印状態にする' }
+    }],
+
+    [WEAKNESS, {
+        reqLvl: 0,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 1,
+        element: 'poison',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Weakness', b: '薄弱' },
+        desc: { a: '', b: '筋力を1低下させる' }
+    }],
+
+    [CLUMSINESS, {
+        reqLvl: 0,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 1,
+        element: 'poison',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Clumsiness', b: '不器用' },
+        desc: { a: '', b: '器用さを1低下させる' }
+    }],
+
+    [SICKLINESS, {
+        reqLvl: 0,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 1,
+        element: 'poison',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Sickliness', b: '病弱' },
+        desc: { a: '', b: '耐久力を1低下させる' }
+    }],
+
+    [STUPIDITY, {
+        reqLvl: 0,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 1,
+        element: 'poison',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Stupidity', b: '愚鈍' },
+        desc: { a: '', b: '知力を1低下させる' }
+    }],
+
+    [INFECTION, {
+        reqLvl: 0,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 1,
+        lement: 'infection',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Infection', b: '感染' },
+        durBase: '5d2',
+        durRate: 2,
+        desc: { a: '', b: '{dur}ターンの間、感染状態にする' }
+    }],
+
+    [PESTILENCE, {
+        reqLvl: 30,
+        base: '2d15',
+        rate: 20,
+        synerzy: 10,
+        mp: 30,
+        element: 'infection',
+        kind: 'attack',
+        type: 'spell',
+        name: { a: 'Pestilence', b: '黒死病' },
+        radius: 10,
+        range: 0,
+        reqSynerzy: 20,
+        effect: { id: POISON, prob: 100 },
+        desc: { a: '', b: '半径{radius}の範囲内の敵に、{value}の感染ダメージを与え、追加効果で、毒状態にする' }
+    }],
+
+    [SANDSTORM, {
+        reqLvl: 30,
+        base: '2d25',
+        rate: 20,
+        synerzy: 10,
+        mp: 30,
+        element: 'sand',
+        kind: 'attack',
+        type: 'spell',
+        name: { a: 'Sandstorm', b: '砂嵐' },
+        radius: 2,
+        reqSynerzy: 10,
+        desc: { a: '', b: '半径{radius}の範囲内の敵に、{value}の砂ダメージを与える' }
+    }],
+
+    [BLIZZARD, {
+        reqLvl: 20,
+        base: '2d20',
+        rate: 20,
+        synerzy: 10,
+        mp: 20,
+        element: 'blizzard',
+        kind: 'attack',
+        type: 'spell',
+        name: { a: 'Blizzard', b: '吹雪' },
+        radius: 2,
+        reqSynerzy: 10,
+        desc: { a: '', b: '半径{radius}の範囲内の敵に、{value}の吹雪ダメージを与える' }
+    }],
+
+    [ACID_BALL, {
+        reqLvl: 10,
+        base: '2d10',
+        rate: 20,
+        synerzy: 10,
+        mp: 10,
+        element: 'acid',
+        kind: 'attack',
+        type: 'spell',
+        name: { a: 'Acid Ball', b: '酸のボール' },
+        radius: 1,
+        reqSynerzy: 5,
+        desc: { a: '', b: '半径{radius}の範囲内の敵に、{value}の酸ダメージを与える' }
+    }],
+
+    [LAVA_FLOW, {
+        reqLvl: 20,
+        base: '5d7',
+        rate: 20,
+        synerzy: 10,
+        mp: 20,
+        element: 'magma',
+        kind: 'attack',
+        type: 'spell',
+        name: { a: 'Lava Flow', b: '溶岩流' },
+        penetrate: true,
+        reqSynerzy: 10,
+        desc: { a: '', b: '直線上の敵を貫通し、{value}の溶岩ダメージを与える' }
+    }],
+
+    [CHAIN_DECAY, {
+        reqLvl: 30,
+        base: '6d7',
+        rate: 20,
+        synerzy: 10,
+        mp: 30,
+        element: 'radiation',
+        kind: 'attack',
+        type: 'spell',
+        name: { a: 'Chain Decay', b: '連鎖崩壊' },
+        penetrate: true,
+        radius: 1,
+        reqSynerzy: 10,
+        desc: { a: '', b: '半径{radius}の範囲内の敵を貫通し、{value}の放射線ダメージを与える' }
+    }],
+
+    [RADIATION, {
+        reqLvl: 0,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 1,
+        element: 'radiation',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Radiation', b: '放射線' },
+        desc: { a: '', b: '敵1体のいずれかの能力値を1低下させる' }
+    }],
+
+    [SHORT_TELEPORTATION, {
+        reqLvl: 5,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 5,
+        element: 'atom',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Short Teleportation', b: 'ショート・テレポート' },
+        desc: { a: '', b: '近距離のランダムなテレポートを行う' }
+    }],
+
+    [TELEPORTATION, {
+        reqLvl: 10,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 10,
+        element: 'atom',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Teleportation', b: 'テレポート' },
+        desc: { a: '', b: '遠距離のランダムなテレポートを行う' }
+    }],
+
+    [TELEPORT_AWAY, {
+        reqLvl: 15,
+        base: 10,
+        rate: 2,
+        synerzy: false,
+        mp: 10,
+        element: 'atom',
+        kind: 'aim',
+        type: 'spell',
+        name: { a: 'Teleport Away', b: 'テレポート・アウェイ' },
+        radiusRate: true,
+        penetrate: true,
+        desc: { a: '', b: '直線上の敵を貫通し、半径{radiusRate}の範囲外へテレポートさせる' }
+    }],
+
+    [DISINTEGRATION, {
+        reqLvl: 30,
+        base: 10,
+        rate: 2,
+        synerzy: false,
+        mp: 30,
+        element: 'atom',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Disintegration', b: '分解' },
+        radiusRate: true,
+        desc: { a: '', b: '半径{radiusRate}の範囲内の敵を、分解する' }
+    }],
+
+    [TELEPORT_TO, {
+        reqLvl: 0,
+        base: 0,
+        rate: 0,
+        synerzy: false,
+        mp: 1,
+        element: 'atom',
+        kind: 'aim',
+        type: 'spell',
+        name: { a: 'Teleport To', b: '引き寄せ' },
+        desc: { a: '', b: '敵1体を隣接へテレポートさせる' }
+    }],
+
+    [ENCOURAGEMENT, {
+        reqLvl: 1,
+        base: 30,
+        rate: 3,
+        synerzy: false,
+        mp: 5,
+        element: 'fire',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Encouragement', b: '鼓舞' },
+        perc: true,
+        durBase: '10d2',
+        durRate: 10,
+        desc: { a: '', b: '{dur}ターンの間、物理ダメージと命中率を{value}上昇させる' }
+    }],
+
+    [BLESSING, {
+        reqLvl: 1,
+        base: 30,
+        rate: 3,
+        synerzy: false,
+        mp: 5,
+        element: 'air',
+        kind: 'self',
+        type: 'spell',
+        name: { a: 'Blessing', b: '加護' },
+        perc: true,
+        durBase: '10d2',
+        durRate: 10,
+        desc: { a: '', b: '{dur}ターンの間、守備力を{value}上昇させる' }
+    }],
+
+    //melee
+    [FIST_OF_CONFUSION, {
+        reqLvl: 5,
+        base: -50,
+        rate: 5,
+        synerzy: 3,
+        mp: 10,
+        element: 'physical',
+        kind: 'attack',
+        type: 'melee',
+        name: { a: 'Fist of Confusion', b: '混乱の拳' },
+        perc: true,
+        range: 1,
+        effect: { id: CONFUSION, prob: 100 },
+        desc: { a: '', b: '隣接する敵1体に、{value}の物理ダメージを与え、追加効果で、混乱状態にする' }
+    }],
+
+    [RAID, {
+        reqLvl: 10,
+        base: 0,
+        rate: 10,
+        synerzy: 5,
+        mp: 10,
+        element: 'physical',
+        kind: 'attack',
+        type: 'melee',
+        name: { a: 'Raid', b: '急襲' },
+        perc: true,
+        move: true,
+        parabora: true,
+        desc: { a: '', b: '敵1体に飛びかかり、{value}の物理ダメージを与える' }
+    }],
+
+    [COLLAPSE, {
+        reqLvl: 25,
+        base: 0,
+        rate: 10,
+        synerzy: 5,
+        mp: 20,
+        element: 'earth',
+        kind: 'attack',
+        type: 'melee',
+        name: { a: 'Collapse', b: '崩落' },
+        perc: true,
+        move: true,
+        radius: 5,
+        reqSynerzy: 10,
+        parabora: true,
+        desc: { a: '', b: '任意の場所へ飛びかかり、半径{radius}の範囲内の敵に、{value}の土ダメージを与える' }
+    }],
+
+    [RUSH, {
+        reqLvl: 15,
+        base: 0,
+        rate: 10,
+        synerzy: 5,
+        mp: 10,
+        element: 'physical',
+        kind: 'attack',
+        type: 'melee',
+        name: { a: 'Rush', b: '突進' },
+        perc: true,
+        move: true,
+        penetrate: true,
+        range: 5,
+        reqSynerzy: 5,
+        desc: { a: '', b: '直線上の敵を駆け抜け、{value}の物理ダメージを与える' }
+    }],
+
+    [SPIRAL, {
+        reqLvl: 30,
+        base: 0,
+        rate: 5,
+        synerzy: 3,
+        mp: 20,
+        element: 'physical',
+        kind: 'attack',
+        type: 'melee',
+        name: { a: 'Spiral', b: '螺旋' },
+        perc: true,
+        move: true,
+        penetrate: true,
+        range: 5,
+        each: true,
+        radius: 1,
+        reqSynerzy: 20,
+        desc: { a: '', b: '1マス毎に、直線上及び隣接する敵を駆け抜け、{value}の物理ダメージを与える' }
+    }],
+
+    //missile
+    [PIERCING_ARROW, {
+        reqLvl: 1,
+        base: 0,
+        rate: 10,
+        synerzy: 5,
+        mp: 5,
+        element: 'physical',
+        kind: 'attack',
+        type: 'missile',
+        name: { a: 'Piercing Arrow', b: '貫通の矢' },
+        perc: true,
+        penetrate: true,
+        desc: { a: '', b: '直線上の敵を貫通する矢を放ち、{value}の物理ダメージを与える' }
+    }],
+
+    [PARALYZING_ARROW, {
+        reqLvl: 5,
+        base: -50,
+        rate: 5,
+        synerzy: 3,
+        mp: 5,
+        element: 'physical',
+        kind: 'attack',
+        type: 'missile',
+        name: { a: 'Paralyzing Arrow', b: '麻痺の矢' },
+        perc: true,
+        parabora: true,
+        effect: { id: PARALYSIS, prob: 100 },
+        desc: { a: '', b: '放物線を描く矢を放ち、敵1体に、{value}の物理ダメージを与え、追加効果で、麻痺状態にする' }
+    }],
+
+    [EXPLODING_ARROW, {
+        reqLvl: 10,
+        base: 0,
+        rate: 10,
+        synerzy: 5,
+        mp: 10,
+        element: 'fire',
+        kind: 'attack',
+        type: 'missile',
+        name: { a: 'Exploding Arrow', b: '爆発の矢' },
+        perc: true,
+        radius: 1,
+        parabora: true,
+        desc: { a: '', b: '放物線を描く矢を放ち、半径{radius}の範囲内の敵に、{value}の火ダメージを与える' }
+    }],
+
+    [FREEZING_ARROW, {
+        reqLvl: 15,
+        base: 0,
+        rate: 10,
+        synerzy: 5,
+        mp: 10,
+        element: 'cold',
+        kind: 'attack',
+        type: 'missile',
+        name: { a: 'Freezing Arrow', b: '凍結の矢' },
+        perc: true,
+        effectSelf: true,
+        parabora: true,
+        desc: { a: '', b: '放物線を描く矢を放ち、敵1体に、{value}の氷ダメージを与え、凍結させる' }
+    }],
+
+    [PHOTON_ARROW, {
+        reqLvl: 20,
+        base: 0,
+        rate: 10,
+        synerzy: 5,
+        mp: 10,
+        element: 'light',
+        kind: 'attack',
+        type: 'missile',
+        name: { a: 'Photon Arrow', b: '光子の矢' },
+        perc: true,
+        penetrate: true,
+        effectSelf: true,
+        reqSynerzy: 10,
+        desc: { a: '', b: '放物線を描く矢を放ち、素早い動作で、敵1体に、{value}の光ダメージを与える' }
+    }],
+
+    [APOLLOS_ARROW, {
+        reqLvl: 30,
+        base: 100,
+        rate: 20,
+        synerzy: 10,
+        mp: 20,
+        element: 'fire',
+        kind: 'attack',
+        type: 'missile',
+        name: { a: 'Apollo\'s Arrow', b: 'アポロンの矢' },
+        perc: true,
+        radius: 5,
+        reqSynerzy: 20,
+        parabora: true,
+        effect: { id: INFECTION, prob: 20 },
+        desc: { a: '', b: '放物線を描く矢を放ち、半径{radius}の範囲内の敵に、{value}の火ダメージを与え、追加効果で、感染状態にする' }
+    }],
+
+    //enemy
+    [FIRE_BREATH, {
+        reqLvl: 0,
+        base: 0,
+        rate: 10,
+        synerzy: 5,
+        mp: 5,
+        element: 'fire',
+        kind: 'breath',
+        type: 'spell',
+        name: { a: 'Fire Breath', b: '火炎のブレス' }
+    }],
+
+    [AQUA_BREATH, {
+        reqLvl: 0,
+        base: 0,
+        rate: 10,
+        synerzy: 5,
+        mp: 5,
+        element: 'water',
+        kind: 'breath',
+        type: 'spell',
+        name: { a: 'Aqua Breath', b: '水のブレス' }
+    }],
+
+    [WIND_BREATH, {
+        reqLvl: 0,
+        base: 0,
+        rate: 10,
+        synerzy: 5,
+        mp: 5,
+        element: 'air',
+        kind: 'breath',
+        type: 'spell',
+        name: { a: 'Wind Breath', b: '風のブレス' }
+    }],
+
+    [POISON_BREATH, {
+        reqLvl: 0,
+        base: 0,
+        rate: 10,
+        synerzy: 5,
+        mp: 5,
+        element: 'poison',
+        kind: 'breath',
+        type: 'spell',
+        name: { a: 'Poison Breath', b: '毒のブレス' }
+    }],
+
+    [LIGHT_BREATH, {
+        reqLvl: 0,
+        base: 0,
+        rate: 10,
+        synerzy: 5,
+        mp: 5,
+        element: 'light',
+        kind: 'breath',
+        type: 'spell',
+        name: { a: 'Light Breath', b: '閃光のブレス' }
+    }],
+
+    [COLD_BREATH, {
+        reqLvl: 0,
+        base: 0,
+        rate: 10,
+        synerzy: 5,
+        mp: 5,
+        element: 'cold',
+        kind: 'breath',
+        type: 'spell',
+        name: { a: 'Cold Breath', b: '冷気のブレス' }
+    }],
+
+    [LIGHTNING_BREATH, {
+        reqLvl: 0,
+        base: 0,
+        rate: 10,
+        synerzy: 5,
+        mp: 5,
+        element: 'lightning',
+        kind: 'breath',
+        type: 'spell',
+        name: { a: 'Lightning Breath', b: '稲妻のブレス' }
+    }],
+
+    [GRAVITY_BREATH, {
+        reqLvl: 0,
+        base: 0,
+        rate: 10,
+        synerzy: 5,
+        mp: 5,
+        element: 'gravity',
+        kind: 'breath',
+        type: 'spell',
+        name: { a: 'Gravity Breath', b: '重力のブレス' }
+    }],
+
+    [INFECTION_BREATH, {
+        reqLvl: 0,
+        base: 0,
+        rate: 10,
+        synerzy: 5,
+        mp: 5,
+        element: 'infection',
+        kind: 'breath',
+        type: 'spell',
+        name: { a: 'Infection Breath', b: '感染のブレス' }
+    }],
+
+    [BLIZZARD_BREATH, {
+        reqLvl: 0,
+        base: 0,
+        rate: 10,
+        synerzy: 5,
+        mp: 5,
+        element: 'blizzard',
+        kind: 'breath',
+        type: 'spell',
+        name: { a: 'Blizzard Breath', b: '吹雪のブレス' }
+    }],
+
+    [DUST_BREATH, {
+        reqLvl: 0,
+        base: 0,
+        rate: 10,
+        synerzy: 5,
+        mp: 5,
+        element: 'sand',
+        kind: 'breath',
+        type: 'spell',
+        name: { a: 'Dust Breath', b: '砂塵のブレス' }
+    }],
+
+    [ACID_BREATH, {
+        reqLvl: 0,
+        base: 0,
+        rate: 10,
+        synerzy: 5,
+        mp: 5,
+        element: 'acid',
+        kind: 'breath',
+        type: 'spell',
+        name: { a: 'Acid Breath', b: '酸のブレス' }
+    }],
+
+    [MAGMA_BREATH, {
+        reqLvl: 0,
+        base: 0,
+        rate: 10,
+        synerzy: 5,
+        mp: 5,
+        element: 'magma',
+        kind: 'breath',
+        type: 'spell',
+        name: { a: 'Magma Breath', b: '溶岩のブレス' }
+    }],
+
+    [RADIOACTIVE_BREATH, {
+        reqLvl: 0,
+        base: 0,
+        rate: 10,
+        synerzy: 5,
+        mp: 5,
+        element: 'radiation',
+        kind: 'breath',
+        type: 'spell',
+        name: { a: 'Radioactive Breath', b: '放射能のブレス' }
+    }],
+]);
+
+{
+    if (TOTAL_SKILL_NUM < skillMap.size) throw new Error('Incorrect skill numbers');
+    for (let [key, value] of skillMap.entries()) {
+        value.id = key;
+        value.color = colorList[value.element];
+    }
+}
