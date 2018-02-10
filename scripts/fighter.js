@@ -4908,6 +4908,7 @@ const Fighter = class extends Material {
             message.draw(option.isEnglish() ?
                 `Threw ${name}` :
                 `${name}を投げた`);
+                audio.playSound('throw');
 		}
 		
         let thrown = flag.arrow || flag.throw;
