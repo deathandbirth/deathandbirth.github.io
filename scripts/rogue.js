@@ -766,10 +766,14 @@ const Rogue = class extends Fighter {
         flag.clearInv = true;
     }
 
-    unequip(keyCode) {
-        let a = getAlphabet(keyCode);
-        if (!a) return;
-        let item = this.equipment[BP[a]];
+    unequip(keyCode, parts) {
+        if (!parts) {
+            let a = getAlphabet(keyCode);
+            if (!a) return;
+            parts = BP[a];
+        }
+
+        let item = this.equipment[parts];
         if (!item) return;
         let msg;
         if (item.weapon) {
@@ -794,7 +798,7 @@ const Rogue = class extends Fighter {
             message.draw(`${name}を${msg}した`);
 		}
 		
-        this.equipment[BP[a]] = null;
+        this.equipment[parts] = null;
         this.gainOrloseWeight(item);
         if (flag.equip) {
             this.eqt['a'] = item;
