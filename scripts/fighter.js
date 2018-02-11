@@ -2037,7 +2037,8 @@ const fighterTab = {
                 { type: 'book', tabId: B_SPELL_1 },
                 { type: 'book', tabId: B_SKILL_1 },
                 { type: 'food', tabId: F_RATION, quantity: 5 },
-                { type: 'light', tabId: L_TORCH, quantity: 2, starter: true },
+                { type: 'light', tabId: L_TORCH, starter: true },
+                { type: 'light', tabId: L_TORCH, starter: true, pack: true},
             ]
 		},
 		
@@ -4142,7 +4143,7 @@ const Fighter = class extends Material {
         }
     }
 
-    getOrLooseStats(s, get, mod) {
+    getOrLooseStats(s, get, mod, starter) {
         let num = get ? 1 : -1;
         if (mod) { //enemy mod
             if (s.dmgDiceNum) this.dmgDiceNum += num * s.dmgDiceNum;
@@ -4227,7 +4228,7 @@ const Fighter = class extends Material {
         if (s.expBonus) this.expBonus += num * s.expBonus;
         if (s.lighten && (!mod && s.duration || mod)) {
             this.lighten += num * s.lighten;
-            if (!mod) this.lightenOrDarken('Lighten');
+            if (!mod && !starter) this.lightenOrDarken('Lighten');
 		}
 		
         if (s.numBoxes) {
@@ -4392,6 +4393,12 @@ const Fighter = class extends Material {
                     if (f.id === ROGUE) hallucinate.all(true);
 				}
 				
+                if (f.slowed) {
+                    f.slowed = 0;
+                    f.spdNerf = 0;
+                    f.calcSpeed();
+                }
+
                 break;
             case RESIST_FIRE:
                 f.fireBuff = this.calcSkillValue(skill, lvl);
@@ -4908,6 +4915,7 @@ const Fighter = class extends Material {
             message.draw(option.isEnglish() ?
                 `Threw ${name}` :
                 `${name}を投げた`);
+                audio.playSound('throw');
 		}
 		
         let thrown = flag.arrow || flag.throw;
@@ -5534,8 +5542,8 @@ const Fighter = class extends Material {
         if (flag.dash || flag.rest) flag.dash = flag.rest = false;
     }
 
-    getParts(item) {
-        let parts;
+    getParts(item, starter) {
+        let parts, partsEquipped;
         switch (item.type) {
             case 'melee':
             case 'missile':
@@ -5545,129 +5553,111 @@ const Fighter = class extends Material {
                         if (this.id === ROGUE) message.draw(message.get(M_TWO_HANDED));
                         return;
                     } else if (this.equipment.main) {
-                        if (this.unequip(65) === null) return; //a
+                        partsEquipped = 'main';
                     } else if (this.equipment.off) {
-                        if (this.unequip(66) === null) return; //b
+                        partsEquipped = 'off';
                     }
                 } else if (this.equipment.main) {
-                    if (this.unequip(65) === null) return; //a
+                    partsEquipped = 'main';
 				}
 				
                 parts = 'main';
                 break;
             case 'shield':
                 if (this.equipment.main && this.equipment.main.twoHanded) {
-                    if (this.unequip(65) === null) return; //a
+                    partsEquipped = 'main';
                 } else if (this.equipment.off) {
-                    if (this.unequip(66) === null) return; //b
+                    partsEquipped = 'off';
 				}
 				
                 parts = 'off';
                 break;
             case 'amulet':
-                if (this.equipment.neck) {
-                    if (this.unequip(67) === null) return; //c
-				}
-				
+                if (this.equipment.neck) partsEquipped = 'neck';
                 parts = 'neck';
                 break;
             case 'ring':
                 if (this.equipment['R-ring'] && this.equipment['L-ring']) {
-                    if (this.unequip(68) === null) return; //d
+                    partsEquipped = 'R-ring';
                     parts = 'R-ring';
-                } else if (this.equipment['R-ring']) {
-                    if (this.unequip(69) === null) return; //e
-                    parts = 'L-ring';
                 } else {
-                    if (this.unequip(68) === null) return; //d
-                    parts = 'R-ring';
-				}
+                    parts = this.equipment['R-ring'] ? 'L-ring' : 'R-ring';
+                }
 				
                 break;
             case 'light':
-                if (this.equipment.light) {
-                    if (this.unequip(70) === null) return; //f
-				}
-				
+                if (this.equipment.light) partsEquipped = 'light';
                 parts = 'light';
                 break;
             case 'armor':
-                if (this.equipment.body) {
-                    if (this.unequip(71) === null) return; //g
-				}
-				
+                if (this.equipment.body) partsEquipped = 'body';
                 parts = 'body';
                 break;
             case 'cloak':
-                if (this.equipment.back) {
-                    if (this.unequip(72) === null) return; //h
-				}
-				
+                if (this.equipment.back) partsEquipped = 'back';
                 parts = 'back';
                 break;
             case 'belt':
-                if (this.equipment.waist) {
-                    if (this.unequip(73) === null) return; //i
-				}
-				
+                if (this.equipment.waist) partsEquipped = 'waist';
                 parts = 'waist';
                 break;
             case 'helm':
-                if (this.equipment.head) {
-                    if (this.unequip(74) === null) return; //j
-				}
-				
+                if (this.equipment.head) partsEquipped = 'head';
                 parts = 'head';
                 break;
             case 'gloves':
-                if (this.equipment.hands) {
-                    if (this.unequip(75) === null) return; //k
-				}
-				
+                if (this.equipment.hands) partsEquipped = 'hands';
                 parts = 'hands';
                 break;
             case 'boots':
-                if (this.equipment.feet) {
-                    if (this.unequip(76) === null) return; //l
-				}
-				
+                if (this.equipment.feet) partsEquipped = 'feet';
                 parts = 'feet';
                 break;
 		}
 		
+        if (partsEquipped && (starter || this.unequip(false, partsEquipped) === null)) parts = null;
         return parts;
     }
 
     getStarterItems() {
-        for (let item of this.starter) {
-            let quantity = item.quantity ? item.quantity : 1;
+        for (let itemInfo of this.starter) {
+            let quantity = itemInfo.quantity ? itemInfo.quantity : 1;
             let itemNew = creation.item({
-                type: item.type,
-                tabId: item.tabId,
+                type: itemInfo.type,
+                tabId: itemInfo.tabId,
                 quantity: quantity,
                 position: LIST,
                 lvl: this.lvl,
-                uniqueId: item.uniqueId,
-                starter: item.starter,
-			});
-			
-            itemNew.equipable && itemNew.type !== 'light' ? this.equipStarterItem(itemNew, item.side) : this.packAdd(itemNew);
+                uniqueId: itemInfo.uniqueId,
+                starter: itemInfo.starter,
+            });
+            
+            if (!itemNew.equipable || itemInfo.pack || !this.equipStarterItem(itemNew, itemInfo.side))
+                this.packAdd(itemNew);
         }
     }
 
     equipStarterItem(item, side) {
-        if (!item || !item.equipable) return;
+        let equipped = false;
         if (side) {
-            this.side[side] = item;
-		} else {
-            let parts = this.getParts(item);
-            if (!parts) return;
-            this.equipment[parts] = item;
-		}
-		
-        item.place = P_EQUIPMENT;
-        this.gainOrloseWeight(item, item.quantity, true);
-        if (!side && item.durab) this.getOrLooseStats(item, true);
+            if (!this.side[side]) {
+                this.side[side] = item;
+                equipped = true;
+            }
+        } else {
+            let parts = this.getParts(item, true);
+            if (parts) {
+                this.equipment[parts] = item;
+                equipped = true;
+            }
+        }
+
+        if (equipped) {
+            item.place = P_EQUIPMENT;
+            this.gainOrloseWeight(item, item.quantity, true);
+            if (!side && item.durab) this.getOrLooseStats(item, true, false, true);
+            return true;
+        }
     }
 
     respec() {

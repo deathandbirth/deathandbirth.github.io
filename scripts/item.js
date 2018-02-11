@@ -1868,14 +1868,14 @@ const Item = class extends Material {
 				
                 if (magic) this.mod = RARE;
             }
-            this.getMaterial(lvl, false, matBase, matId);
+            this.getMaterial(false, matBase, matId);
             this.getBaseandWeight();
             if (magic || this.material === M_GEM) {
                 let bias = this.bias ? this.bias : RANDOM;
                 if (this.mod === RARE || evalPercentage((10 + rogue.mf) / 4)) {
-                    this.getRare(bias, this.lvl);
+                    this.getRare(bias);
 				} else {
-					this.getMagic(bias, this.lvl);
+					this.getMagic(bias);
 				}
             } else if (!this.mod) {
                 this.mod = NORMAL;
@@ -1924,8 +1924,8 @@ const Item = class extends Material {
         } else {
             if (flag.shop) this.identified = true;
             if (this.type === 'gem') {
-                this.getMaterial(lvl, true);
-                this.getMagic(this.bias, this.lvl);
+                this.getMaterial(true);
+                this.getMagic(this.bias);
             } else {
 				this.mod = NORMAL;
 			}

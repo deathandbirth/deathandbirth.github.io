@@ -532,8 +532,15 @@ const Rogue = class extends Fighter {
 		}
     }
 
-    putDown(town) {
-        town ? this.getStartPointInTown() : this.getPositionRandomly(true);
+    putDown(town, stairs, x, y) {
+        if (town) {
+            this.getStartPointInTown();
+        } else if (stairs) {
+            [this.x, this.y] = [x, y];
+        } else {
+            this.getPositionRandomly(true);
+        }
+
         map.coords[this.x][this.y].traces = ++this.numSteps;
         this.drawOrErase(true);
         this.drawStats();
@@ -543,7 +550,8 @@ const Rogue = class extends Fighter {
     downOrUpStairs(keyCode, trap) {
         let loc = map.coords[this.x][this.y];
         if (!trap && !loc.stairs || loc.hidden) return;
-        if (trap || loc.stairs.id === DOWN && keyCode === 190) {
+        let dr = trap ? null : loc.stairs.id;
+        if (trap || dr === DOWN && keyCode === 190) {
             if (!trap) audio.playSound('staircase');
             if (option.autosave.user) data.save();
             game.clearLevel();
@@ -552,13 +560,13 @@ const Rogue = class extends Fighter {
                 creation.town();
             } else {
                 if (rogue.dl < ++rogue.cdl) rogue.dl = rogue.cdl;
-                creation.dungeon();
+                creation.dungeon(!trap, dr);
             }
-        } else if (loc.stairs.id === UP && keyCode === 188) {
+        } else if (dr === UP && keyCode === 188) {
             audio.playSound('staircase');
             if (option.autosave.user) data.save();
             game.clearLevel();
-            !--rogue.cdl ? creation.town() : creation.dungeon();
+            !--rogue.cdl ? creation.town() : creation.dungeon(true, dr);
         }
     }
 
@@ -758,10 +766,14 @@ const Rogue = class extends Fighter {
         flag.clearInv = true;
     }
 
-    unequip(keyCode) {
-        let a = getAlphabet(keyCode);
-        if (!a) return;
-        let item = this.equipment[BP[a]];
+    unequip(keyCode, parts) {
+        if (!parts) {
+            let a = getAlphabet(keyCode);
+            if (!a) return;
+            parts = BP[a];
+        }
+
+        let item = this.equipment[parts];
         if (!item) return;
         let msg;
         if (item.weapon) {
@@ -786,7 +798,7 @@ const Rogue = class extends Fighter {
             message.draw(`${name}を${msg}した`);
 		}
 		
-        this.equipment[BP[a]] = null;
+        this.equipment[parts] = null;
         this.gainOrloseWeight(item);
         if (flag.equip) {
             this.eqt['a'] = item;

@@ -62,10 +62,14 @@ const creation = {
         flag.regular = true;
     },
 
-    dungeon() {
+    dungeon(stairs, dr) {
         map.init();
         dungeon.create();
         let boss = rogue.cdl === 33 && !rogue.inferno;
+        this.stairs(rndIntBet(MIN_STAIRS_NUM, MAX_STAIRS_NUM), boss ? UP : RANDOM, INIT);
+        this.trap(rndIntBet(MIN_TRAP_NUM, MAX_TRAP_NUM, RANDOM, RANDOM), RANDOM, INIT);
+        let [startX, startY] = Object.keys(map.staircaseList)[dr === DOWN ? 0 : 1].split(',');
+        rogue.putDown(false, stairs, Number(startX), Number(startY));
         if (boss) {
             this.enemy({
                 type: 'misc',
@@ -74,9 +78,6 @@ const creation = {
 			});
 		}
 
-        this.stairs(rndIntBet(MIN_STAIRS_NUM, MAX_STAIRS_NUM), boss ? UP : RANDOM, INIT);
-        this.trap(rndIntBet(MIN_TRAP_NUM, MAX_TRAP_NUM, RANDOM, RANDOM), RANDOM, INIT);
-        rogue.putDown();
         this.enemy({
             times: 10,
             position: INIT,
@@ -262,7 +263,14 @@ const creation = {
         for (let i = 0; i < times; i++) {
             let tabIdT = tabId;
             if (position === INIT) {
-                if (tabId === RANDOM) tabIdT = i % 2 ? DOWN : UP;
+                if (tabId === RANDOM) {
+                    if (i <= 1) {
+                        tabIdT = i ? DOWN : UP;
+                    } else {
+                        tabIdT = i % 2 ? DOWN : UP;
+                    }
+                }
+
                 show = i <= 1 || coinToss();
             } else if (tabId === RANDOM) {
 				tabIdT = coinToss() ? DOWN : UP;
