@@ -4393,6 +4393,12 @@ const Fighter = class extends Material {
                     if (f.id === ROGUE) hallucinate.all(true);
 				}
 				
+                if (f.slowed) {
+                    f.slowed = 0;
+                    f.spdNerf = 0;
+                    f.calcSpeed();
+                }
+
                 break;
             case RESIST_FIRE:
                 f.fireBuff = this.calcSkillValue(skill, lvl);
