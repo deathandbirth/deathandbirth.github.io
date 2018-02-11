@@ -1351,6 +1351,16 @@ const modTab = {
 
 {
     if (MAX_BIAS_NUMS < modTab.prefix.size) throw new Error('Incorrect bias numbers');
+    for (let biasList of modTab.prefix.values()) {
+        for (let key in biasList.affix) {
+            let affix = biasList.affix[key];
+            let rarity = affix.rarity;
+            let lvl = Math.floor(rarity / 2 - 20);
+            if (lvl <= 0) lvl = 1;
+            affix.lvl = lvl;
+            affix.min = rarity >= 50 ? Math.ceil((rarity - 50) / 10) + 2 : 1;
+        }
+    }
 }
 
 const modBiasNums = enums(1, MAX_BIAS_NUMS);
@@ -1663,7 +1673,8 @@ const Material = class extends Thing {
         return materialList[i];
     }
 
-    getMaterial(lvl, gem, matBase, matId) {
+    getMaterial(gem, matBase, matId) {
+        let lvl = this.lvl;
         if (!matBase) matBase = gem ? M_GEM : this.getMaterialBase();
         this.material = matBase;
         let materials = materialMap.get(matBase);
@@ -1709,7 +1720,8 @@ const Material = class extends Thing {
         this.color = this.colorReal = mat.color;
     }
 
-    getMagic(bias, lvl) {
+    getMagic(bias) {
+        let lvl = this.lvl;
         let char = this.type === 'enemy';
         let pre, suf;
         if (bias !== RANDOM) {
@@ -1736,7 +1748,7 @@ const Material = class extends Thing {
 			);
 		}
 		
-        let perc = Math.ceil(this.lvl + MAGIC_RARITY);
+        let perc = Math.ceil(lvl + MAGIC_RARITY);
         let max = Math.floor(lvl / 10) + 1;
         let color;
         let namePreA = '';
@@ -1791,7 +1803,8 @@ const Material = class extends Thing {
         this.shadow = this.shadowReal = colorList.aqua;
     }
 
-    getRare(bias, lvl) {
+    getRare(bias) {
+        let lvl = this.lvl;
         let char = this.type === 'enemy';
         let pre;
         if (bias === RANDOM) {
@@ -1813,11 +1826,11 @@ const Material = class extends Thing {
         affNums.shuffle();
         do {
             affix = pre.affix[affNums[j++]];
-		} while (evalPercentage(affix.rarity));
+		} while (affix.lvl > lvl || evalPercentage(affix.rarity));
 		
-        let perc = Math.ceil(this.lvl + affix.rarity);
+        let perc = Math.ceil(lvl + affix.rarity);
         let max = Math.floor(lvl / 10) + 1;
-        let min = affix.rarity >= 50 ? Math.floor((affix.rarity - 50) / 10) + 2 : 1;
+        let min = affix.min;
         if (min > max) min = max;
         let mods = {};
         mergeMod({

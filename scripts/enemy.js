@@ -38,7 +38,7 @@ const Enemy = class extends Fighter {
         this.expGain = this.getExp();
         this.expNext = this.calcNextLvl();
         if (this.volumeRate) {
-            this.getMaterial(lvl);
+            this.getMaterial();
             this.getBaseandWeight();
 		}
 		
@@ -48,9 +48,9 @@ const Enemy = class extends Fighter {
             evalPercentage(10 + rogue.mf)) {
             if (this.bias) bias = this.bias;
             if (evalPercentage((10 + rogue.mf) / 4)) {
-                this.getRare(bias, lvl);
+                this.getRare(bias);
 			} else {
-				this.getMagic(bias, lvl);
+				this.getMagic(bias);
 			}
 		}
 		
