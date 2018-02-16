@@ -5,7 +5,7 @@ const generateNumber = function*(i, j, bit) {
 
 const enums = (i, j) => [...generateNumber(i, j)];
 const enumsBit = (i, j) => [...generateNumber(i, j, true)];
-const VERSION = 0.004;
+const VERSION = 0.005;
 const MS = 2; //message space
 const SS = 3; //stats space
 const IN_WIDTH = 47; //canvas.width/fs-1;
