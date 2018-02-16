@@ -1,4 +1,4 @@
-const materialList = enumsBit(1, 12);
+const materialList = enumsBit(1, 13);
 const [
 	M_CLOTH,
 	M_FUR,
@@ -11,7 +11,8 @@ const [
 	M_PLATING,
 	M_GEM,
 	M_STONE,
-	M_WOOD,
+    M_WOOD,
+    M_HORN,
 ] = [...materialList];
 
 const [
@@ -102,6 +103,18 @@ const [
 	WOOD_MAHOGANY,
 	WOOD_LIFE_TREE,
 ] = enums(0, 10);
+
+const [
+    HORN_DEER,
+    HORN_SHEEP,
+    HORN_GOAT,
+    HORN_COW,
+    HORN_RHINO,
+    HORN_DRAGON,
+    HORN_DEMON,
+    HORN_MINOTAUR,
+    HORN_UNICORN,
+] = enums(0, 8);
 
 const [
 	BONE_COMMON,
@@ -323,9 +336,27 @@ const materialMap = new Map([
         ])
 	}],
 	
+    [M_HORN, {
+        name: { a: 'Horns', b: '角類' },
+        hRate: 8,
+        tRate: 3,
+        pRate: 2.1,
+        list: new Map([
+            [HORN_DEER, { name: { a: 'Deer Horn', b: '鹿角' }, color: colorList.white }],
+            [HORN_SHEEP, { name: { a: 'Sheep Horn', b: '羊角' }, color: colorList.white }],
+            [HORN_GOAT, { name: { a: 'Goat Horn', b: '山羊角' }, color: colorList.white }],
+            [HORN_COW, { name: { a: 'Cow Horn', b: '牛角' }, color: colorList.white }],
+            [HORN_RHINO, { name: { a: 'Rhino Horn', b: 'サイ角' }, color: colorList.white }],
+            [HORN_DRAGON, { name: { a: 'Dragon Horn', b: '竜角' }, color: colorList.white }],
+            [HORN_DEMON, { name: { a: 'Demon Horn', b: 'デーモン・ホーン' }, color: colorList.white }],
+            [HORN_MINOTAUR, { name: { a: 'Minotaur Horn', b: 'ミノタウロス・ホーン' }, color: colorList.white }],
+            [HORN_UNICORN, { name: { a: 'Unicorn Horn', b: 'ユニコーン・ホーン' }, color: colorList.white }],
+        ])
+	}],
+	
     [M_BONE, {
         name: { a: 'Bones', b: '骨類' },
-        hRate: 8,
+        hRate: 9,
         tRate: 2,
         pRate: 1.7,
         list: new Map([
@@ -339,7 +370,7 @@ const materialMap = new Map([
 	
     [M_SHELL, {
         name: { a: 'Shells', b: '甲殻類' },
-        hRate: 9,
+        hRate: 10,
         tRate: 4,
         pRate: 1.8,
         list: new Map([
@@ -353,7 +384,7 @@ const materialMap = new Map([
 	
     [M_METAL, {
         name: { a: 'Metals', b: '金属類' },
-        hRate: 10,
+        hRate: 11,
         tRate: 3,
         pRate: 1.9,
         list: new Map([
@@ -374,7 +405,7 @@ const materialMap = new Map([
 	
     [M_STONE, {
         name: { a: 'Stones', b: '石材' },
-        hRate: 11,
+        hRate: 12,
         tRate: 1,
         pRate: 2,
         list: new Map([
@@ -398,7 +429,7 @@ const materialMap = new Map([
 	
     [M_GEM, {
         name: { a: 'Gems', b: '宝石類' },
-        hRate: 12,
+        hRate: 13,
         tRate: 2,
         pRate: 3,
         list: new Map([

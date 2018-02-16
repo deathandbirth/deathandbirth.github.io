@@ -1223,7 +1223,7 @@ const fighterTab = {
             air: 20,
             earth: 20,
             poison: 20,
-            material: M_SCALE | M_BONE,
+            material: M_SCALE | M_BONE | M_HORN,
             atkType: AT_S | AT_T | AT_B,
             grow: CON
 		},
@@ -1459,7 +1459,7 @@ const fighterTab = {
             air: 0,
             earth: 0,
             poison: 0,
-            material: M_BONE,
+            material: M_BONE | M_HORN,
             atkType: AT_B,
             strSus: true,
             grow: STR,
@@ -1825,7 +1825,7 @@ const fighterTab = {
 			air: 0,
 			earth: 0,
 			poison: 0,
-			material: M_SKIN,
+			material: M_SKIN | M_HORN,
 			atkType: AT_S | AT_B,
 			skillProb: 1 / 8,
 			skill: {
@@ -5397,13 +5397,13 @@ const Fighter = class extends Material {
             let mat;
             switch (element) {
                 case 'acid':
-                    mat = M_METAL | M_PLATING;
+                    mat = M_METAL;
                     break;
                 case 'fire':
                     mat = M_CLOTH | M_FUR | M_FEATHER | M_SKIN | M_SCALE | M_WOOD;
                     break;
                 case 'lightning':
-                    mat = M_BONE | M_SHELL | M_GEM | M_STONE;
+                    mat = M_BONE | M_SHELL | M_GEM | M_STONE | M_HORN;
                     break;
             }
             if (!(item.material & mat)) return;

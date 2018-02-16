@@ -1345,7 +1345,7 @@ const itemTab = {
             volumeRate: 0.5,
             atkType: AT_T,
             twoHanded: true,
-            material: M_WOOD | M_BONE
+            material: M_WOOD | M_BONE | M_HORN
 		}],
 		
         [M_CROSSBOW, {
@@ -1405,7 +1405,7 @@ const itemTab = {
             lvl: 1,
             rarity: 0,
             volumeRate: 1,
-            material: M_SKIN | M_SCALE | M_METAL | M_BONE | M_WOOD | M_STONE | M_SHELL
+            material: M_SKIN | M_SCALE | M_METAL | M_BONE | M_WOOD | M_STONE | M_SHELL | M_HORN
         }],
 	]),
 	
@@ -1556,7 +1556,7 @@ const itemTab = {
             lvl: 1,
             rarity: 0,
             volumeRate: 1,
-            material: M_METAL | M_BONE | M_SHELL
+            material: M_METAL | M_BONE | M_SHELL | M_HORN
         }],
 	]),
 	
@@ -1694,7 +1694,7 @@ const itemTab = {
             lvl: 1,
             rarity: 0,
             volumeRate: 1,
-            material: M_METAL | M_BONE | M_FEATHER
+            material: M_BONE | M_FEATHER | M_HORN
         }],
 	]),
 	
@@ -1803,8 +1803,8 @@ const itemUniqueMap = {
             name: { a: 'Pandarus', b: 'パンダロス', pre: true },
             lvl: 10,
             rarity: 20,
-            matBase: M_BONE,
-            matId: 1,
+            matBase: M_HORN,
+            matId: HORN_GOAT,
             values: { hp: 30, mp: 30, dmgDiceNum: 1, dmgBonus: 50, rateBonus: 50 },
         }]],
 	]),
