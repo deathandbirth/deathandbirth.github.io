@@ -16,6 +16,7 @@ const [
 ] = [...materialList];
 
 const [
+    CLOTH_LINEN,
     CLOTH_HEMP,
     CLOTH_WOOL,
     CLOTH_COTTON,
@@ -26,7 +27,7 @@ const [
     CLOTH_ANGORA,
     CLOTH_VICUNA,
     CLOTH_SPIDERWEB,
-] = enums(0, 9);
+] = enums(0, 10);
 
 const [
     FEATHER_CHICKEN,
@@ -48,6 +49,7 @@ const [
     FUR_WOLF,
     FUR_JACKAL,
     FUR_RACCOON,
+    FUR_FERRET,
     FUR_MINK,
     FUR_RUM,
     FUR_FOX,
@@ -55,7 +57,7 @@ const [
     FUR_LION,
     FUR_MANTICORE,
     FUR_CERBERUS,
-] = enums(0, 11);
+] = enums(0, 12);
 
 const [
     SKIN_DEER,
@@ -208,7 +210,8 @@ const materialMap = new Map([
         tRate: 6,
         pRate: 1,
         list: new Map([
-            [CLOTH_HEMP, { name: { a: 'Hemp', b: '麻' }, rarity: 0,color: colorList.flax }],
+            [CLOTH_LINEN, { name: { a: 'linen', b: '亜麻' }, rarity: 0,color: colorList.linen }],
+            [CLOTH_HEMP, { name: { a: 'Hemp', b: '麻' }, rarity: 5,color: colorList.flax }],
             [CLOTH_WOOL, { name: { a: 'Wool', b: '羊毛' }, rarity: 10, color: colorList.white }], //Fleece?
             [CLOTH_COTTON, { name: { a: 'Cotton', b: '綿' }, rarity: 20, color: colorList.white }],
             [CLOTH_SILK, { name: { a: 'Silk', b: '絹' }, rarity: 30, color: colorList.white }],
@@ -254,7 +257,8 @@ const materialMap = new Map([
             [FUR_BOAR, { name: { a: 'Boar Fur', b: '猪毛皮' }, rarity: 5, color: colorList.brown }],
             [FUR_WOLF, { name: { a: 'Wolf Fur', b: '狼毛皮' }, rarity: 10, color: colorList.beigegray }],
             [FUR_JACKAL, { name: { a: 'Jackal Fur', b: 'ジャッカル毛皮' }, rarity: 15, color: colorList.goldenyellow }],
-            [FUR_RACCOON, { name: { a: 'Raccoon Fur', b: 'ラクーン毛皮' }, rarity: 20, color: colorList.beigegray }],
+            [FUR_RACCOON, { name: { a: 'Raccoon Fur', b: 'ラクーン毛皮' }, rarity: 20, color: colorList.beige }],
+            [FUR_FERRET, { name: { a: 'Ferret Fur', b: 'フェレット毛皮' }, rarity: 25, color: colorList.beigegray }],
             [FUR_MINK, { name: { a: 'Mink Fur', b: 'ミンク毛皮' }, rarity: 30, color: colorList.lightgrey }],
             [FUR_RUM, { name: { a: 'Rum Fur', b: 'ラム毛皮' }, rarity: 40, color: colorList.beige }],
             [FUR_FOX, { name: { a: 'Fox Fur', b: '狐毛皮' }, rarity: 50, color: colorList.fox }],

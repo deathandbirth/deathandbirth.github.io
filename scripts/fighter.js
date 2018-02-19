@@ -434,7 +434,7 @@ const fighterTab = {
             int: 1,
             spd: 0,
             dmgBase: '1d1',
-            acBase: 10,
+            acBase: 0,
             dropNum: 1,
             matRedTimes: 2,
             fire: 0,
@@ -468,7 +468,7 @@ const fighterTab = {
             int: 3,
             spd: 0,
             dmgBase: '1d1',
-            acBase: 3,
+            acBase: 0,
             dropNum: 1,
             matRedTimes: 2,
             fire: 0,
@@ -504,7 +504,7 @@ const fighterTab = {
             int: 10,
             spd: 0,
             dmgBase: '1d1',
-            acBase: 1,
+            acBase: 0,
             dropNum: 2,
             matRedTimes: 2,
             fire: 0,
@@ -544,7 +544,7 @@ const fighterTab = {
             int: 5,
             spd: 5,
             dmgBase: '1d1',
-            acBase: 5,
+            acBase: 0,
             dropNum: 2,
             matRedTimes: 2,
             fire: 0,
@@ -581,7 +581,7 @@ const fighterTab = {
             int: 5,
             spd: 0,
             dmgBase: '1d1',
-            acBase: 5,
+            acBase: 0,
             dropNum: 1,
             matRedTimes: 0,
             fire: 0,
@@ -592,7 +592,10 @@ const fighterTab = {
             material: M_BONE,
             atkType: AT_B,
             atkStealItem: 20,
-            starter: [{ type: 'armor', tabId: A_ROBE }]
+            starter: [
+                { type: 'staff', tabId: S_STICK, matBase: M_WOOD, matId: WOOD_CYPRESS },
+                { type: 'armor', tabId: A_ROBE, matBase: M_CLOTH, matId: CLOTH_LINEN }
+            ]
 		},
 		
         {
@@ -612,8 +615,8 @@ const fighterTab = {
             int: 5,
             spd: 10,
             dmgBase: '1d1',
-            acBase: 10,
-            dropNum: 2,
+            acBase: 0,
+            dropNum: 1,
             matRedTimes: 0,
             fire: 0,
             water: 0,
@@ -626,7 +629,15 @@ const fighterTab = {
             skill: {
 				a: { id: SHORT_TELEPORTATION, lvl: 1 },
 				b: { id: TELEPORTATION, lvl: 1 }
-			}
+            },
+
+            starter: [
+                { type: 'missile', tabId: M_BOW, matBase: M_WOOD, matId: WOOD_CYPRESS },
+                { type: 'melee', tabId: M_SPEAR, matBase: M_METAL, matId: METAL_BRONZE, side: 'a' },
+                { type: 'cloak', tabId: C_COAT, matBase: M_FUR, matId: FUR_WOLF },
+                { type: 'helm', tabId: H_CAP, matBase: M_FUR, matId: FUR_FERRET },
+                { type: 'ammo', tabId: A_ARROW },
+            ]
 		},
 		
         {
@@ -646,8 +657,8 @@ const fighterTab = {
             int: 10,
             spd: 10,
             dmgBase: '1d1',
-            acBase: 20,
-            dropNum: 4,
+            acBase: 0,
+            dropNum: 2,
             matRedTimes: 0,
             fire: 0,
             water: 0,
@@ -660,13 +671,14 @@ const fighterTab = {
             starter: [
 				{ type: 'missile', tabId: M_BOW, uniqueId: 0 },
 				{ type: 'ammo', tabId: A_ARROW },
-				{ type: 'melee', tabId: M_SPEAR, side: 'a' }
+				{ type: 'melee', tabId: M_SPEAR, matBase: M_METAL, matId: METAL_BRONZE, side: 'a' },
+				{ type: 'armor', tabId: A_ARMOR, matBase: M_METAL, matId: METAL_BRONZE },
 			],
 
             skillProb: 1 / 8,
             skill: {
 				a: { id: SHORT_TELEPORTATION, lvl: 1 },
-				b: { id: PARALYZING_ARROW, lvl: 5 }
+				b: { id: ENCOURAGEMENT, lvl: 1 }
 			}
 		},
 		
@@ -685,10 +697,10 @@ const fighterTab = {
             dex: 20,
             con: 15,
             int: 25,
-            spd: 10,
+            spd: 0,
             dmgBase: '1d1',
-            acBase: 40,
-            dropNum: 4,
+            acBase: 0,
+            dropNum: 2,
             matRedTimes: 0,
             fire: 0,
             water: 0,
@@ -700,11 +712,22 @@ const fighterTab = {
             strSus: true,
             dexSus: true,
             conSus: true,
-            skillProb: 1 / 10,
+            skillProb: 1 / 6,
             skill: {
 				a: { id: TELEPORT_TO, lvl: 1 },
 				b: { id: SPEED, lvl: 5 }
-			}
+            },
+
+            starter: [
+				{ type: 'melee', tabId: M_SWORD, matBase: M_METAL, matId: METAL_BRONZE },
+				{ type: 'melee', tabId: M_SPEAR, matBase: M_METAL, matId: METAL_BRONZE, side: 'a' },
+				{ type: 'shield', tabId: S_SHIELD, matBase: M_METAL, matId: METAL_GOLD, magic: true },
+				{ type: 'armor', tabId: A_ARMOR, matBase: M_METAL, matId: METAL_BRONZE },
+				{ type: 'cloak', tabId: C_CLOAK, matBase: M_CLOTH, matId: CLOTH_WOOL },
+				{ type: 'belt', tabId: B_SASH, matBase: M_CLOTH, matId: CLOTH_WOOL },
+				{ type: 'helm', tabId: H_HELM, matBase: M_METAL, matId: METAL_BRONZE },
+				{ type: 'boots', tabId: B_SHOES, matBase: M_CLOTH, matId: CLOTH_WOOL },
+			],
 		},
 		
         {
@@ -2237,15 +2260,22 @@ const Fighter = class extends Material {
         this.side = { a: null, b: null };
         this.swapped = false;
         this.numBoxes = 0;
-        // this.boxes = {};
+        this.initSynerzy();
         this.equipment = {};
         if (this.race & (HUMAN | GIANT)) {
             for (let key in BP) {
 				this.equipment[BP[key]] = null;
 			}
 		}
-		
-        this.initSynerzy();
+        
+        if (this.starter) {
+            this.eqt = {} //equipment temp
+            this.numBoxes = 1;
+            this.boxes = {};
+            for (let i = 1; i <= this.numBoxes; i++) {
+                this.boxes[i] = null;
+            }
+        }
     }
 
     initSynerzy() {
@@ -5630,6 +5660,9 @@ const Fighter = class extends Material {
                 lvl: this.lvl,
                 uniqueId: itemInfo.uniqueId,
                 starter: itemInfo.starter,
+                matBase: itemInfo.matBase,
+                matId: itemInfo.matId,
+                magic: itemInfo.magic,
             });
             
             if (!itemNew.equipable || itemInfo.pack || !this.equipStarterItem(itemNew, itemInfo.side))

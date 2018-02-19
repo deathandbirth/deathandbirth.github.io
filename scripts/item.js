@@ -136,9 +136,9 @@ const [ //armor
 ] = enums(1, 6);
 
 const [ //cloak
+	C_MANTLE,
 	C_COAT,
 	C_CLOAK,
-	C_MANTLE,
 ] = enums(1, 3);
 
 const [ //belt
@@ -1442,7 +1442,7 @@ const itemTab = {
             lvl: 1,
             rarity: 0,
             volumeRate: 1,
-            material: M_SCALE | M_PLATING | M_BONE || M_SHELL
+            material: M_METAL | M_SCALE | M_PLATING | M_BONE | M_SHELL
 		}],
 		
         [A_SPLINT_MAIL, {
@@ -1465,7 +1465,7 @@ const itemTab = {
 	]),
 	
     cloak: new Map([
-        [C_COAT, {
+        [C_MANTLE, {
             nameReal: { a: 'Mantle', b: 'マント' },
             shop: true,
             lvl: 1,
@@ -1474,7 +1474,7 @@ const itemTab = {
             material: M_FEATHER | M_SCALE
 		}],
 		
-        [C_CLOAK, {
+        [C_COAT, {
             nameReal: { a: 'Coat', b: 'コート' },
             shop: true,
             lvl: 1,
@@ -1483,7 +1483,7 @@ const itemTab = {
             material: M_FUR | M_SKIN
 		}],
 		
-        [C_MANTLE, {
+        [C_CLOAK, {
             nameReal: { a: 'Cloak', b: 'クローク' },
             shop: true,
             lvl: 1,
