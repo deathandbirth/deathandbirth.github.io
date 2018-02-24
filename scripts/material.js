@@ -1617,14 +1617,15 @@ const Material = class extends Thing {
             ctx: ctxInv,
             msg: name,
             x: i + 0.6,
-            y: j,
+            y: j++,
             limit: 17.5,
             stroke: this.stroke,
         });
 
-        j += 1;
+        j += 0.75;
         ctxInv.fillStyle = colorList.white;
         ctxInv.shadowColor = colorList.clear;
+        let limit = char ? 47 : 23;
         if (this.desc) {
             this.desc[option.getLanguage()].replace(/\t/g, '').split('\n').forEach((value, key) => {
                 display.text({
@@ -1632,6 +1633,7 @@ const Material = class extends Thing {
                     msg: key % 2 ? '   ' + value : value,
                     x: i - 0.5,
                     y: j++,
+                    limit: limit,
                 });
             });
         } else if (this.nameSkill) {
@@ -1641,55 +1643,33 @@ const Material = class extends Thing {
                 msg: msg,
                 x: i - 0.5,
                 y: j++,
-                limit: 23,
+                limit: limit,
             });
-        } else {
-			j++;
-		}
+        }
 
-        if (!char) { //
-            let weight = option.isEnglish() ? 'weight' : '重量';
-            display.text({
-                ctx: ctxInv,
-                msg: `${weight} ${this.weight}kg`,
-                x: i - 0.5,
-                y: j++,
-            });
-        } else {
-            let [lvl, expGain, exp, expNext, totalWeight] = option.isEnglish() ?
-                ['Level', 'Exp Gain', 'Exp', 'Exp Next', 'Total Weight'] :
-                ['レベル', '取得経験値', '経験値', '次経験値', '総重量'];
-            display.text({
-                ctx: ctxInv,
-                msg: `${lvl} ${this.lvl} (${this.lvlMax}), ${exp} ${this.exp} (${this.expMax}), ${expNext} ${this.expNext}, ${expGain} ${this.expGain}, ${totalWeight} ${this.totalWeight}kg (${this.weightLimit}kg)`,
-                x: i - 0.5,
-                y: j,
-                limit: IN_WIDTH,
-            });
-
-            j += 2;
-		}
-		
-        j++;
+        j += 0.75;
+        if (char) j++;
         ctxInv.restore();
         if (!this.equipable && !this.type == 'gem' && !char) return;
+        let mod;
         let count = 0;
         let msgLimit = 8;
         let valueLimit = 5;
-        let mod;
+        let jSaved = j;
         for (let [key, term] of investigationMap.entries()) {
             if (!term) {
                 if (key === 'mod' && !char) {
                     i += IN_WIDTH / 4;
-                    j = MS + 5;
+                    j = jSaved;
                     mod = true;
 				}
 				
                 continue;
 			}
 			
-            if (!char && (!term.item && !this[key] || this[key] === undefined) ||
-                char && !term.char) {
+            if (!char && (term.char || mod&&!this[key]) ||
+                char && term.item ||
+                this[key] === undefined) {
 				continue;
 			}
 
@@ -1705,6 +1685,7 @@ const Material = class extends Thing {
             let value = this[key];
             if (term.plus && !char && this[key] > 0) value = '+' + value;
             if (term.perc) value += '%';
+            if (term.weight) value += 'kg';
             if (key === 'atkType') {
                 value = this.getAtkTypeName();
 			} else if (char) {
@@ -1715,6 +1696,7 @@ const Material = class extends Thing {
                 if (term.max) {
                     let max = this[term.max];
                     if (term.perc) max += '%';
+                    if (term.weight) max += 'kg';
                     value += ` (${max})`;
                 }
             } else if (mod) {
@@ -1769,7 +1751,7 @@ const Material = class extends Thing {
 			
             if (char && !(++count % /*18*/ 21)) {
                 i += IN_WIDTH / 4;
-                j = MS + 4 + 2;
+                j = jSaved;
 			}
 			
             ctxInv.restore();

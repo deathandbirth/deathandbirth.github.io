@@ -136,7 +136,7 @@ const skillMap = new Map([
         kind: 'attack',
         type: 'spell',
         name: { a: 'Fire Bolt', b: '火炎のボルト' },
-        desc: { a: '', b: '敵1体に、{value}の火ダメージを与える' }
+        desc: { a: '', b: '敵1体に、{value}の火ダメージを与える。' }
     }],
 
     [FIRE_BALL, {
@@ -150,7 +150,7 @@ const skillMap = new Map([
         type: 'spell',
         name: { a: 'Fire Ball', b: '火炎のボール' },
         radius: 1,
-        desc: { a: '', b: '半径{radius}の範囲内の敵に、{value}の火ダメージを与える' }
+        desc: { a: '', b: '半径{radius}の範囲内の敵に、{value}の火ダメージを与える。' }
     }],
 
     [FLAME_OF_DIDO, {
@@ -164,7 +164,7 @@ const skillMap = new Map([
         type: 'spell',
         name: { a: 'Flame of Dido', b: 'ディドの焔' },
         reqSynerzy: 20,
-        desc: { a: '', b: '敵1体に、{value}の火ダメージを与える' }
+        desc: { a: '', b: '敵1体に、{value}の火ダメージを与える。' }
     }],
 
     [REMOVE_CURSE, {
@@ -178,7 +178,7 @@ const skillMap = new Map([
         type: 'spell',
         name: { a: 'Remove Curse', b: '解呪' },
         reqSynerzy: 5,
-        desc: { a: '', b: '装備品の呪いを解く' }
+        desc: { a: '', b: '装備品の呪いを解く。' }
     }],
 
     [RESTORE_STRENGTH, {
@@ -192,7 +192,7 @@ const skillMap = new Map([
         type: 'spell',
         name: { a: 'Restore Strength', b: '筋力復活' },
         reqSynerzy: 5,
-        desc: { a: '', b: '筋力を回復する' }
+        desc: { a: '', b: '筋力を回復する。' }
     }],
 
     [RESIST_FIRE, {
@@ -208,7 +208,7 @@ const skillMap = new Map([
         perc: true,
         durBase: '10d2',
         durRate: 10,
-        desc: { a: '', b: '{dur}ターンの間、火の耐性を{value}上昇させる' }
+        desc: { a: '', b: '{dur}ターンの間、火の耐性を{value}上昇させる。' }
     }],
 
     [LIGHT, {
@@ -222,7 +222,7 @@ const skillMap = new Map([
         type: 'spell',
         name: { a: 'Light', b: '光' },
         radiusRate: true,
-        desc: { a: '', b: '半径{radiusRate}の範囲内を照らす' }
+        desc: { a: '', b: '半径{radiusRate}の範囲内を照らす。' }
     }],
 
     [SEE_INVISIBLE, {
@@ -238,7 +238,7 @@ const skillMap = new Map([
         reqSynerzy: 5,
         durBase: '10d2',
         durRate: 10,
-        desc: { a: '', b: '{dur}ターンの間、透明な敵に対する可視効果を得る' }
+        desc: { a: '', b: '{dur}ターンの間、透明な敵に対する可視効果を得る。' }
     }],
 
     [INVISIBILITY, {
@@ -253,7 +253,7 @@ const skillMap = new Map([
         name: { a: 'Invisibility', b: '透明' },
         durBase: '10d2',
         durRate: 1,
-        desc: { a: '', b: '{dur}ターンの間、透明状態にする' }
+        desc: { a: '', b: '{dur}ターンの間、透明状態にする。' }
     }],
 
     [MAGIC_CIRCLE_OF_PROTECTION, {
@@ -266,7 +266,7 @@ const skillMap = new Map([
         kind: 'self',
         type: 'spell',
         name: { a: 'Magic Circle of Protection', b: '守護魔法円' },
-        desc: { a: '', b: '足元に敵の侵入を阻む魔法円を描く' }
+        desc: { a: '', b: '足元に敵の侵入を阻む魔法円を描く。' }
     }],
 
     [HEAL, {
@@ -280,7 +280,7 @@ const skillMap = new Map([
         type: 'spell',
         name: { a: 'Heal', b: '回復' },
         reqSynerzy: 5,
-        desc: { a: '', b: '体力を{value}回復する' }
+        desc: { a: '', b: '体力を{value}回復する。' }
     }],
 
     [EXTRA_HEAL, {
@@ -294,7 +294,7 @@ const skillMap = new Map([
         type: 'spell',
         name: { a: 'Extra Heal', b: '特大回復' },
         reqSynerzy: 20,
-        desc: { a: '', b: '体力を{value}回復する' }
+        desc: { a: '', b: '体力を{value}回復する。' }
     }],
 
     [RESTORE_INTELLIGENCE, {
@@ -308,7 +308,7 @@ const skillMap = new Map([
         type: 'spell',
         name: { a: 'Restore Intelligence', b: '知力復活' },
         reqSynerzy: 5,
-        desc: { a: '', b: '知力を回復する' }
+        desc: { a: '', b: '知力を回復する。' }
     }],
 
     [RESTORE_ALL, {
@@ -322,7 +322,7 @@ const skillMap = new Map([
         type: 'spell',
         name: { a: 'Restore All', b: '全復活' },
         reqSynerzy: 10,
-        desc: { a: '', b: '能力値を回復する' }
+        desc: { a: '', b: '能力値を回復する。' }
     }],
 
     [CURE_ALL, {
@@ -336,7 +336,7 @@ const skillMap = new Map([
         type: 'spell',
         name: { a: 'Cure All', b: '全治療' },
         reqSynerzy: 10,
-        desc: { a: '', b: '全状態異常を治癒する' }
+        desc: { a: '', b: '全状態異常を治癒する。' }
     }],
 
     [RESIST_WATER, {
@@ -352,7 +352,7 @@ const skillMap = new Map([
         perc: true,
         durBase: '10d2',
         durRate: 10,
-        desc: { a: '', b: '{dur}ターンの間、水の耐性を{value}上昇させる' }
+        desc: { a: '', b: '{dur}ターンの間、水の耐性を{value}上昇させる。' }
     }],
 
     [RESIST_ALL, {
@@ -369,7 +369,7 @@ const skillMap = new Map([
         reqSynerzy: 10,
         durBase: '10d2',
         durRate: 10,
-        desc: { a: '', b: '{dur}ターンの間、すべての耐性を{value}上昇させる' }
+        desc: { a: '', b: '{dur}ターンの間、すべての耐性を{value}上昇させる。' }
     }],
 
     [MANA, {
@@ -382,7 +382,7 @@ const skillMap = new Map([
         kind: 'self',
         type: 'spell',
         name: { a: 'Mana', b: '魔力回復' },
-        desc: { a: '', b: '魔力を{value}回復する' }
+        desc: { a: '', b: '魔力を{value}回復する。' }
     }],
 
     [LIFE_REGENERATION, {
@@ -398,7 +398,7 @@ const skillMap = new Map([
         perc: true,
         durBase: '10d2',
         durRate: 10,
-        desc: { a: '', b: '{dur}ターンの間、体力再生の効果を{value}得る' }
+        desc: { a: '', b: '{dur}ターンの間、体力再生の効果を{value}得る。' }
     }],
 
     [MANA_REGENERATION, {
@@ -414,7 +414,7 @@ const skillMap = new Map([
         perc: true,
         durBase: '10d2',
         durRate: 10,
-        desc: { a: '', b: '{dur}ターンの間、魔力再生の効果を{value}得る' }
+        desc: { a: '', b: '{dur}ターンの間、魔力再生の効果を{value}得る。' }
     }],
 
     [RAISE_LEVEL, {
@@ -427,7 +427,7 @@ const skillMap = new Map([
         kind: 'self',
         type: 'spell',
         name: { a: 'Raise Level', b: 'レベル上昇' },
-        desc: { a: '', b: 'レベルを1上昇させる' }
+        desc: { a: '', b: 'レベルを1上昇させる。' }
     }],
 
     [RESPEC, {
@@ -440,7 +440,7 @@ const skillMap = new Map([
         kind: 'self',
         type: 'spell',
         name: { a: 'Respec', b: 'リスペック' },
-        desc: { a: '', b: 'すべての能力値を初期状態にし、スキルを忘却し、相当のポイントを再び得る' }
+        desc: { a: '', b: 'すべての能力値を初期状態にし、スキルを忘却し、相当のポイントを再び得る。' }
     }],
 
     [ICE_BOLT, {
@@ -453,7 +453,7 @@ const skillMap = new Map([
         kind: 'attack',
         type: 'spell',
         name: { a: 'Ice Bolt', b: '冷気のボルト' },
-        desc: { a: '', b: '敵1体に、{value}の氷ダメージを与える' }
+        desc: { a: '', b: '敵1体に、{value}の氷ダメージを与える。' }
     }],
 
     [COCYTUS, {
@@ -469,7 +469,7 @@ const skillMap = new Map([
         radius: 10,
         range: 0,
         reqSynerzy: 20,
-        desc: { a: '', b: '半径{radius}の範囲内の敵に、{value}の氷ダメージを与える' }
+        desc: { a: '', b: '半径{radius}の範囲内の敵に、{value}の氷ダメージを与える。' }
     }],
 
     [COLD, {
@@ -482,7 +482,7 @@ const skillMap = new Map([
         kind: 'self',
         type: 'spell',
         name: { a: 'Cold', b: '冷気' },
-        desc: { a: '', b: '敵1体を凍結させる' }
+        desc: { a: '', b: '敵1体を凍結させる。' }
     }],
 
     [WHIRLWIND, {
@@ -497,7 +497,7 @@ const skillMap = new Map([
         name: { a: 'Whirlwind', b: '旋風' },
         radius: 2,
         penetrate: true,
-        desc: { a: '', b: '半径{radius}の範囲内の敵を貫通し、{value}の風ダメージを与える' }
+        desc: { a: '', b: '半径{radius}の範囲内の敵を貫通し、{value}の風ダメージを与える。' }
     }],
 
     [TORNADO, {
@@ -515,7 +515,7 @@ const skillMap = new Map([
         each: true,
         reqSynerzy: 10,
         range: 10,
-        desc: { a: '', b: '1マス毎に、半径{radius}の範囲内の敵を貫通し、{value}の風ダメージを与える' }
+        desc: { a: '', b: '1マス毎に、半径{radius}の範囲内の敵を貫通し、{value}の風ダメージを与える。' }
     }],
 
     [ECCO, {
@@ -531,7 +531,7 @@ const skillMap = new Map([
         reqSynerzy: 20,
         durBase: '10d2',
         durRate: 5,
-        desc: { a: '', b: '{dur}ターンの間、スキルを2回連続で放つ' }
+        desc: { a: '', b: '{dur}ターンの間、スキルを2回連続で放つ。' }
     }],
 
     [SPEED, {
@@ -547,7 +547,7 @@ const skillMap = new Map([
         reqSynerzy: 10,
         durBase: '10d2',
         durRate: 3,
-        desc: { a: '', b: '{dur}ターンの間、速度を{value}上昇させる' }
+        desc: { a: '', b: '{dur}ターンの間、速度を{value}上昇させる。' }
     }],
 
     [RESTORE_DEXTERITY, {
@@ -561,7 +561,7 @@ const skillMap = new Map([
         type: 'spell',
         name: { a: 'Restore Dexterity', b: '器用さ復活' },
         reqSynerzy: 5,
-        desc: { a: '', b: '器用さを回復する' }
+        desc: { a: '', b: '器用さを回復する。' }
     }],
 
     [RESIST_AIR, {
@@ -577,7 +577,7 @@ const skillMap = new Map([
         perc: true,
         durBase: '10d2',
         durRate: 10,
-        desc: { a: '', b: '{dur}ターンの間、風の耐性を{value}上昇させる' }
+        desc: { a: '', b: '{dur}ターンの間、風の耐性を{value}上昇させる。' }
     }],
 
     [SCREAM, {
@@ -591,7 +591,7 @@ const skillMap = new Map([
         type: 'spell',
         name: { a: 'Scream', b: '悲鳴' },
         radiusRate: true,
-        desc: { a: '', b: '半径{radiusRate}の範囲内の敵を目覚めさせる' }
+        desc: { a: '', b: '半径{radiusRate}の範囲内の敵を目覚めさせる。' }
     }],
 
     [LIGHTNING, {
@@ -605,7 +605,7 @@ const skillMap = new Map([
         type: 'spell',
         name: { a: 'Lightning', b: '稲妻' },
         penetrate: true,
-        desc: { a: '', b: '直線上の敵を貫通し、{value}の稲妻ダメージを与える' }
+        desc: { a: '', b: '直線上の敵を貫通し、{value}の稲妻ダメージを与える。' }
     }],
 
     [ENLIGHTENMENT, {
@@ -619,7 +619,7 @@ const skillMap = new Map([
         type: 'spell',
         name: { a: 'Enlightenment', b: '啓蒙' },
         reqSynerzy: 20,
-        desc: { a: '', b: 'マップ全域を照らし、地形・アイテム及び隠された罠や階段を検出する' }
+        desc: { a: '', b: 'マップ全域を照らし、地形・アイテム及び隠された罠や階段を検出する。' }
     }],
 
     [IDENTIFY, {
@@ -633,7 +633,7 @@ const skillMap = new Map([
         type: 'spell',
         name: { a: 'Identify', b: '識別' },
         reqSynerzy: 10,
-        desc: { a: '', b: 'アイテムを鑑定する' }
+        desc: { a: '', b: 'アイテムを鑑定する。' }
     }],
 
     [MONSTER_DETECTION, {
@@ -647,7 +647,7 @@ const skillMap = new Map([
         type: 'spell',
         name: { a: 'Monster Detection', b: 'モンスター感知' },
         radiusRate: true,
-        desc: { a: '', b: '半径{radiusRate}の範囲内の敵を、検出する' }
+        desc: { a: '', b: '半径{radiusRate}の範囲内の敵を、検出する。' }
     }],
 
     [ITEM_DETECTION, {
@@ -661,7 +661,7 @@ const skillMap = new Map([
         type: 'spell',
         name: { a: 'Item Detection', b: 'アイテム感知' },
         radiusRate: true,
-        desc: { a: '', b: '半径{radiusRate}の範囲内のアイテムを、検出する' }
+        desc: { a: '', b: '半径{radiusRate}の範囲内のアイテムを、検出する。' }
     }],
 
     [MAGIC_MAPPING, {
@@ -675,7 +675,7 @@ const skillMap = new Map([
         type: 'spell',
         name: { a: 'Magic Mapping', b: '魔法の地図' },
         radiusRate: true,
-        desc: { a: '', b: '半径{radiusRate}の範囲内の地形を、検出する' }
+        desc: { a: '', b: '半径{radiusRate}の範囲内の地形を、検出する。' }
     }],
 
     [SATISFY_HUNGER, {
@@ -691,7 +691,7 @@ const skillMap = new Map([
         perc: true,
         limit: 100,
         reqSynerzy: 10,
-        desc: { a: '', b: '空腹を{value}満たす' }
+        desc: { a: '', b: '空腹を{value}満たす。' }
     }],
 
     [STONE_TO_MUD, {
@@ -706,7 +706,7 @@ const skillMap = new Map([
         name: { a: 'Stone to Mud', b: '岩石溶解' },
         wall: true,
         reqSynerzy: 10,
-        desc: { a: '', b: '壁を取り壊し、石の敵に{value}の土ダメージを与える' }
+        desc: { a: '', b: '壁を取り壊し、石の敵に{value}の土ダメージを与える。' }
     }],
 
     [RESTORE_DURABILITY, {
@@ -720,7 +720,7 @@ const skillMap = new Map([
         type: 'spell',
         name: { a: 'Restore Durability', b: '耐久度復活' },
         reqSynerzy: 15,
-        desc: { a: '', b: '装備品の耐久度を回復する' }
+        desc: { a: '', b: '装備品の耐久度を回復する。' }
     }],
 
     [EARTHQUAKE, {
@@ -737,7 +737,7 @@ const skillMap = new Map([
         limit: 100,
         radius: FOV,
         reqSynerzy: 10,
-        desc: { a: '', b: '半径{radius}の範囲内に、{value}の強度で地震を起こす' }
+        desc: { a: '', b: '半径{radius}の範囲内に、{value}の強度で地震を起こす。' }
     }],
 
     [REPAIR_ALL, {
@@ -751,7 +751,7 @@ const skillMap = new Map([
         type: 'spell',
         name: { a: 'Repair All', b: '全修復' },
         reqSynerzy: 20,
-        desc: { a: '', b: 'すべての装備品の耐久度を回復する' }
+        desc: { a: '', b: 'すべての装備品の耐久度を回復する。' }
     }],
 
     [ENCHANT_SELF, {
@@ -768,7 +768,7 @@ const skillMap = new Map([
         reqSynerzy: 20,
         durBase: '50d2',
         durRate: 10,
-        desc: { a: '', b: '{dur}ターンの間、物理ダメージ・命中値・守備力をそれぞれ{value}上昇させる' }
+        desc: { a: '', b: '{dur}ターンの間、物理ダメージ・命中値・守備力をそれぞれ{value}上昇させる。' }
     }],
 
     [RESTORE_CONSTITUTION, {
@@ -782,7 +782,7 @@ const skillMap = new Map([
         type: 'spell',
         name: { a: 'Restore Constitution', b: '耐久力復活' },
         reqSynerzy: 5,
-        desc: { a: '', b: '耐久力を回復する' }
+        desc: { a: '', b: '耐久力を回復する。' }
     }],
 
     [RESIST_EARTH, {
@@ -798,7 +798,7 @@ const skillMap = new Map([
         perc: true,
         durBase: '10d2',
         durRate: 10,
-        desc: { a: '', b: '{dur}ターンの間、土の耐性を{value}上昇させる' }
+        desc: { a: '', b: '{dur}ターンの間、土の耐性を{value}上昇させる。' }
     }],
 
     [MAGIC_FINDING, {
@@ -814,7 +814,7 @@ const skillMap = new Map([
         perc: true,
         durBase: '10d2',
         durRate: 10,
-        desc: { a: '', b: '{dur}ターンの間、魔法具探求の効果を{value}得る' }
+        desc: { a: '', b: '{dur}ターンの間、魔法具探求の効果を{value}得る。' }
     }],
 
     [GOLD_FINDING, {
@@ -830,7 +830,7 @@ const skillMap = new Map([
         perc: true,
         durBase: '10d2',
         durRate: 10,
-        desc: { a: '', b: '{dur}ターンの間、財宝探求の効果を{value}得る' }
+        desc: { a: '', b: '{dur}ターンの間、財宝探求の効果を{value}得る。' }
     }],
 
     [EXPERIENCE, {
@@ -846,7 +846,7 @@ const skillMap = new Map([
         perc: true,
         durBase: '10d2',
         durRate: 10,
-        desc: { a: '', b: '{dur}ターンの間、経験値上昇の効果を{value}得る' }
+        desc: { a: '', b: '{dur}ターンの間、経験値上昇の効果を{value}得る。' }
     }],
 
     [SKILL, {
@@ -861,7 +861,7 @@ const skillMap = new Map([
         name: { a: 'Skill', b: 'スキル' },
         durBase: '10d2',
         durRate: 100, //
-        desc: { a: '', b: '{dur}ターンの間、経験値上昇の効果を{value}得る' }
+        desc: { a: '', b: '{dur}ターンの間、経験値上昇の効果を{value}得る。' }
     }],
 
     [CREATE_MONSTER, {
@@ -874,7 +874,7 @@ const skillMap = new Map([
         kind: 'self',
         type: 'spell',
         name: { a: 'Create Monster', b: 'モンスター生成' },
-        desc: { a: '', b: 'モンスターを複数生成する' }
+        desc: { a: '', b: 'モンスターを複数生成する。' }
     }],
 
     [CREATE_MAGIC_MONSTER, {
@@ -887,7 +887,7 @@ const skillMap = new Map([
         kind: 'self',
         type: 'spell',
         name: { a: 'Create Magic Monster', b: 'マジックモンスター生成' },
-        desc: { a: '', b: 'マジックモンスターを複数生成する' }
+        desc: { a: '', b: 'マジックモンスターを複数生成する。' }
     }],
 
     [CREATE_GIANT, {
@@ -900,7 +900,7 @@ const skillMap = new Map([
         kind: 'self',
         type: 'spell',
         name: { a: 'Create Giant', b: '巨人生成' },
-        desc: { a: '', b: '巨人を複数生成する' }
+        desc: { a: '', b: '巨人を複数生成する。' }
     }],
 
     [CREATE_TRAP, {
@@ -913,7 +913,7 @@ const skillMap = new Map([
         kind: 'self',
         type: 'spell',
         name: { a: 'Create Trap', b: 'トラップ生成' },
-        desc: { a: '', b: '罠を複数生成する' }
+        desc: { a: '', b: '罠を複数生成する。' }
     }],
 
     [GRAVITATIONAL_FIELD, {
@@ -931,7 +931,7 @@ const skillMap = new Map([
         reqSynerzy: 10,
         durBase: '10d2',
         durRate: 3,
-        desc: { a: '', b: '半径{radius}の範囲内の敵を、{dur}ターンの間、速度を{value}低下させる' }
+        desc: { a: '', b: '半径{radius}の範囲内の敵を、{dur}ターンの間、速度を{value}低下させる。' }
     }],
 
     [TOWN_PORTAL, {
@@ -945,7 +945,7 @@ const skillMap = new Map([
         type: 'spell',
         name: { a: 'Town Portal', b: 'タウン・ポータル' },
         reqSynerzy: 10,
-        desc: { a: '', b: '街またはダンジョンに帰還するポータルを生成する' }
+        desc: { a: '', b: '街またはダンジョンに帰還するポータルを生成する。' }
     }],
 
     [WORMHOLE, {
@@ -960,7 +960,7 @@ const skillMap = new Map([
         name: { a: 'Wormhole', b: 'ワームホール' },
         radiusRate: true,
         reqSynerzy: 20,
-        desc: { a: '', b: '半径{radiusRate}の範囲内の任意の場所に移動する' }
+        desc: { a: '', b: '半径{radiusRate}の範囲内の任意の場所に移動する。' }
     }],
 
     [SLOW, {
@@ -975,7 +975,7 @@ const skillMap = new Map([
         name: { a: 'Slow', b: '鈍足' },
         durBase: '10d2',
         durRate: 3,
-        desc: { a: '', b: '{dur}ターンの間、速度を{value}低下させる' }
+        desc: { a: '', b: '{dur}ターンの間、速度を{value}低下させる。' }
     }],
 
     [POISON_BOLT, {
@@ -988,7 +988,7 @@ const skillMap = new Map([
         kind: 'attack',
         type: 'spell',
         name: { a: 'Poison Bolt', b: '毒のボルト' },
-        desc: { a: '', b: '敵1体に、{value}の毒ダメージを与える' }
+        desc: { a: '', b: '敵1体に、{value}の毒ダメージを与える。' }
     }],
 
     [POISON_MIST, {
@@ -1002,7 +1002,7 @@ const skillMap = new Map([
         type: 'spell',
         name: { a: 'Poison Mist', b: '毒の霧' },
         radius: 2,
-        desc: { a: '', b: '半径{radius}の範囲内の敵に、{value}の毒ダメージを与える' }
+        desc: { a: '', b: '半径{radius}の範囲内の敵に、{value}の毒ダメージを与える。' }
     }],
 
     [TOUCH_OF_CONFUSION, {
@@ -1019,7 +1019,7 @@ const skillMap = new Map([
         limit: 100,
         durBase: '10d2',
         durRate: 1,
-        desc: { a: '', b: '{dur}ターンの間、物理攻撃に混乱の効果を{value}付与する' }
+        desc: { a: '', b: '{dur}ターンの間、物理攻撃に混乱の効果を{value}付与する。' }
     }],
 
     [VENOM_HANDS, {
@@ -1036,7 +1036,7 @@ const skillMap = new Map([
         reqSynerzy: 5,
         durBase: '50d2',
         durRate: 10,
-        desc: { a: '', b: '{dur}ターンの間、物理攻撃に毒ダメージを{value}付与する' }
+        desc: { a: '', b: '{dur}ターンの間、物理攻撃に毒ダメージを{value}付与する。' }
     }],
 
     [SLEEPING_GAS, {
@@ -1053,7 +1053,7 @@ const skillMap = new Map([
         reqSynerzy: 5,
         durBase: '5d2',
         durRate: 1,
-        desc: { a: '', b: '半径{radius}の範囲内の敵を、{dur}ターンの間、昏睡状態にする' }
+        desc: { a: '', b: '半径{radius}の範囲内の敵を、{dur}ターンの間、昏睡状態にする。' }
     }],
 
     [HOLD_MONSTER, {
@@ -1071,7 +1071,7 @@ const skillMap = new Map([
         reqSynerzy: 10,
         durBase: '2d2',
         durRate: 0,
-        desc: { a: '', b: '半径{radius}の範囲内の敵を、{dur}ターンの間、麻痺状態にする' }
+        desc: { a: '', b: '半径{radius}の範囲内の敵を、{dur}ターンの間、麻痺状態にする。' }
     }],
 
     [RESTORE_EXPERIENCE, {
@@ -1085,7 +1085,7 @@ const skillMap = new Map([
         type: 'spell',
         name: { a: 'Restore Experience', b: '経験値復活' },
         reqSynerzy: 10,
-        desc: { a: '', b: '失った経験値を回復する' }
+        desc: { a: '', b: '失った経験値を回復する。' }
     }],
 
     [LOWER_RESIST, {
@@ -1103,7 +1103,7 @@ const skillMap = new Map([
         reqSynerzy: 10,
         durBase: '10d2',
         durRate: 10,
-        desc: { a: '', b: '{dur}ターンの間、全耐性を{value}低下させる' }
+        desc: { a: '', b: '{dur}ターンの間、全耐性を{value}低下させる。' }
     }],
 
     [RESIST_POISON, {
@@ -1119,7 +1119,7 @@ const skillMap = new Map([
         perc: true,
         durBase: '10d2',
         durRate: 10,
-        desc: { a: '', b: '{dur}ターンの間、毒の耐性を{value}上昇させる' }
+        desc: { a: '', b: '{dur}ターンの間、毒の耐性を{value}上昇させる。' }
     }],
 
     [HALLUCINATING_MIST, {
@@ -1136,7 +1136,7 @@ const skillMap = new Map([
         reqSynerzy: 10,
         durBase: '10d2',
         durRate: 2,
-        desc: { a: '', b: '半径{radius}の範囲内の敵を、{dur}ターンの間、幻覚状態にする' }
+        desc: { a: '', b: '半径{radius}の範囲内の敵を、{dur}ターンの間、幻覚状態にする。' }
     }],
 
     [CONFUSION, {
@@ -1151,7 +1151,7 @@ const skillMap = new Map([
         name: { a: 'Confusion', b: '混乱' },
         durBase: '2d3',
         durRate: 1,
-        desc: { a: '', b: '{dur}ターンの間、混乱状態にする' }
+        desc: { a: '', b: '{dur}ターンの間、混乱状態にする。' }
     }],
 
     [POISON, {
@@ -1166,7 +1166,7 @@ const skillMap = new Map([
         name: { a: 'Poison', b: '毒' },
         durBase: '5d2',
         durRate: 1,
-        desc: { a: '', b: '{dur}ターンの間、毒状態にする' }
+        desc: { a: '', b: '{dur}ターンの間、毒状態にする。' }
     }],
 
     [PARALYSIS, {
@@ -1181,7 +1181,7 @@ const skillMap = new Map([
         name: { a: 'Paralysis', b: '麻痺' },
         durBase: '2d2',
         durRate: 0,
-        desc: { a: '', b: '{dur}ターンの間、麻痺状態にする' }
+        desc: { a: '', b: '{dur}ターンの間、麻痺状態にする。' }
     }],
 
     [SLEEP, {
@@ -1196,7 +1196,7 @@ const skillMap = new Map([
         name: { a: 'Sleep', b: '睡眠' },
         durBase: '5d2',
         durRate: 1,
-        desc: { a: '', b: '{dur}ターンの間、昏睡状態にする' }
+        desc: { a: '', b: '{dur}ターンの間、昏睡状態にする。' }
     }],
 
     [BLINDNESS, {
@@ -1211,7 +1211,7 @@ const skillMap = new Map([
         name: { a: 'Blindness', b: '盲目' },
         durBase: '10d2',
         durRate: 1,
-        desc: { a: '', b: '{dur}ターンの間、盲目状態にする' }
+        desc: { a: '', b: '{dur}ターンの間、盲目状態にする。' }
     }],
 
     [HALLUCINATION, {
@@ -1226,7 +1226,7 @@ const skillMap = new Map([
         name: { a: 'Hallucination', b: '幻覚' },
         durBase: '10d2',
         durRate: 2,
-        desc: { a: '', b: '{dur}ターンの間、幻覚状態にする' }
+        desc: { a: '', b: '{dur}ターンの間、幻覚状態にする。' }
     }],
 
     [POLYMORPH, {
@@ -1239,7 +1239,7 @@ const skillMap = new Map([
         kind: 'self',
         type: 'spell',
         name: { a: 'Polymorph', b: '変容' },
-        desc: { a: '', b: '敵1体を、変容させる' }
+        desc: { a: '', b: '敵1体を、変容させる。' }
     }],
 
     [CANCELLATION, {
@@ -1254,7 +1254,7 @@ const skillMap = new Map([
         name: { a: 'Cancellation', b: '封印' },
         durBase: '2d2',
         durRate: 1,
-        desc: { a: '', b: '{dur}ターンの間、封印状態にする' }
+        desc: { a: '', b: '{dur}ターンの間、封印状態にする。' }
     }],
 
     [WEAKNESS, {
@@ -1267,7 +1267,7 @@ const skillMap = new Map([
         kind: 'self',
         type: 'spell',
         name: { a: 'Weakness', b: '薄弱' },
-        desc: { a: '', b: '筋力を1低下させる' }
+        desc: { a: '', b: '筋力を1低下させる。' }
     }],
 
     [CLUMSINESS, {
@@ -1280,7 +1280,7 @@ const skillMap = new Map([
         kind: 'self',
         type: 'spell',
         name: { a: 'Clumsiness', b: '不器用' },
-        desc: { a: '', b: '器用さを1低下させる' }
+        desc: { a: '', b: '器用さを1低下させる。' }
     }],
 
     [SICKLINESS, {
@@ -1293,7 +1293,7 @@ const skillMap = new Map([
         kind: 'self',
         type: 'spell',
         name: { a: 'Sickliness', b: '病弱' },
-        desc: { a: '', b: '耐久力を1低下させる' }
+        desc: { a: '', b: '耐久力を1低下させる。' }
     }],
 
     [STUPIDITY, {
@@ -1306,7 +1306,7 @@ const skillMap = new Map([
         kind: 'self',
         type: 'spell',
         name: { a: 'Stupidity', b: '愚鈍' },
-        desc: { a: '', b: '知力を1低下させる' }
+        desc: { a: '', b: '知力を1低下させる。' }
     }],
 
     [INFECTION, {
@@ -1321,7 +1321,7 @@ const skillMap = new Map([
         name: { a: 'Infection', b: '感染' },
         durBase: '5d2',
         durRate: 2,
-        desc: { a: '', b: '{dur}ターンの間、感染状態にする' }
+        desc: { a: '', b: '{dur}ターンの間、感染状態にする。' }
     }],
 
     [PESTILENCE, {
@@ -1338,7 +1338,7 @@ const skillMap = new Map([
         range: 0,
         reqSynerzy: 20,
         effect: { id: POISON, prob: 100 },
-        desc: { a: '', b: '半径{radius}の範囲内の敵に、{value}の感染ダメージを与え、追加効果で、毒状態にする' }
+        desc: { a: '', b: '半径{radius}の範囲内の敵に、{value}の感染ダメージを与え、追加効果で、毒状態にする。' }
     }],
 
     [SANDSTORM, {
@@ -1353,7 +1353,7 @@ const skillMap = new Map([
         name: { a: 'Sandstorm', b: '砂嵐' },
         radius: 2,
         reqSynerzy: 10,
-        desc: { a: '', b: '半径{radius}の範囲内の敵に、{value}の砂ダメージを与える' }
+        desc: { a: '', b: '半径{radius}の範囲内の敵に、{value}の砂ダメージを与える。' }
     }],
 
     [BLIZZARD, {
@@ -1368,7 +1368,7 @@ const skillMap = new Map([
         name: { a: 'Blizzard', b: '吹雪' },
         radius: 2,
         reqSynerzy: 10,
-        desc: { a: '', b: '半径{radius}の範囲内の敵に、{value}の吹雪ダメージを与える' }
+        desc: { a: '', b: '半径{radius}の範囲内の敵に、{value}の吹雪ダメージを与える。' }
     }],
 
     [ACID_BALL, {
@@ -1383,7 +1383,7 @@ const skillMap = new Map([
         name: { a: 'Acid Ball', b: '酸のボール' },
         radius: 1,
         reqSynerzy: 5,
-        desc: { a: '', b: '半径{radius}の範囲内の敵に、{value}の酸ダメージを与える' }
+        desc: { a: '', b: '半径{radius}の範囲内の敵に、{value}の酸ダメージを与える。' }
     }],
 
     [LAVA_FLOW, {
@@ -1398,7 +1398,7 @@ const skillMap = new Map([
         name: { a: 'Lava Flow', b: '溶岩流' },
         penetrate: true,
         reqSynerzy: 10,
-        desc: { a: '', b: '直線上の敵を貫通し、{value}の溶岩ダメージを与える' }
+        desc: { a: '', b: '直線上の敵を貫通し、{value}の溶岩ダメージを与える。' }
     }],
 
     [CHAIN_DECAY, {
@@ -1414,7 +1414,7 @@ const skillMap = new Map([
         penetrate: true,
         radius: 1,
         reqSynerzy: 10,
-        desc: { a: '', b: '半径{radius}の範囲内の敵を貫通し、{value}の放射線ダメージを与える' }
+        desc: { a: '', b: '半径{radius}の範囲内の敵を貫通し、{value}の放射線ダメージを与える。' }
     }],
 
     [RADIATION, {
@@ -1427,7 +1427,7 @@ const skillMap = new Map([
         kind: 'self',
         type: 'spell',
         name: { a: 'Radiation', b: '放射線' },
-        desc: { a: '', b: '敵1体のいずれかの能力値を1低下させる' }
+        desc: { a: '', b: '敵1体のいずれかの能力値を1低下させる。' }
     }],
 
     [SHORT_TELEPORTATION, {
@@ -1440,7 +1440,7 @@ const skillMap = new Map([
         kind: 'self',
         type: 'spell',
         name: { a: 'Short Teleportation', b: 'ショート・テレポート' },
-        desc: { a: '', b: '近距離のランダムなテレポートを行う' }
+        desc: { a: '', b: '近距離のランダムなテレポートを行う。' }
     }],
 
     [TELEPORTATION, {
@@ -1453,7 +1453,7 @@ const skillMap = new Map([
         kind: 'self',
         type: 'spell',
         name: { a: 'Teleportation', b: 'テレポート' },
-        desc: { a: '', b: '遠距離のランダムなテレポートを行う' }
+        desc: { a: '', b: '遠距離のランダムなテレポートを行う。' }
     }],
 
     [TELEPORT_AWAY, {
@@ -1468,7 +1468,7 @@ const skillMap = new Map([
         name: { a: 'Teleport Away', b: 'テレポート・アウェイ' },
         radiusRate: true,
         penetrate: true,
-        desc: { a: '', b: '直線上の敵を貫通し、半径{radiusRate}の範囲外へテレポートさせる' }
+        desc: { a: '', b: '直線上の敵を貫通し、半径{radiusRate}の範囲外へテレポートさせる。' }
     }],
 
     [DISINTEGRATION, {
@@ -1482,7 +1482,7 @@ const skillMap = new Map([
         type: 'spell',
         name: { a: 'Disintegration', b: '分解' },
         radiusRate: true,
-        desc: { a: '', b: '半径{radiusRate}の範囲内の敵を、分解する' }
+        desc: { a: '', b: '半径{radiusRate}の範囲内の敵を、分解する。' }
     }],
 
     [TELEPORT_TO, {
@@ -1495,7 +1495,7 @@ const skillMap = new Map([
         kind: 'aim',
         type: 'spell',
         name: { a: 'Teleport To', b: '引き寄せ' },
-        desc: { a: '', b: '敵1体を隣接へテレポートさせる' }
+        desc: { a: '', b: '敵1体を隣接へテレポートさせる。' }
     }],
 
     [ENCOURAGEMENT, {
@@ -1511,7 +1511,7 @@ const skillMap = new Map([
         perc: true,
         durBase: '10d2',
         durRate: 10,
-        desc: { a: '', b: '{dur}ターンの間、物理ダメージと命中率を{value}上昇させる' }
+        desc: { a: '', b: '{dur}ターンの間、物理ダメージと命中率を{value}上昇させる。' }
     }],
 
     [BLESSING, {
@@ -1527,7 +1527,7 @@ const skillMap = new Map([
         perc: true,
         durBase: '10d2',
         durRate: 10,
-        desc: { a: '', b: '{dur}ターンの間、守備力を{value}上昇させる' }
+        desc: { a: '', b: '{dur}ターンの間、守備力を{value}上昇させる。' }
     }],
 
     //melee
@@ -1544,7 +1544,7 @@ const skillMap = new Map([
         perc: true,
         range: 1,
         effect: { id: CONFUSION, prob: 100 },
-        desc: { a: '', b: '隣接する敵1体に、{value}の物理ダメージを与え、追加効果で、混乱状態にする' }
+        desc: { a: '', b: '隣接する敵1体に、{value}の物理ダメージを与え、追加効果で、混乱状態にする。' }
     }],
 
     [RAID, {
@@ -1560,7 +1560,7 @@ const skillMap = new Map([
         perc: true,
         move: true,
         parabora: true,
-        desc: { a: '', b: '敵1体に飛びかかり、{value}の物理ダメージを与える' }
+        desc: { a: '', b: '敵1体に飛びかかり、{value}の物理ダメージを与える。' }
     }],
 
     [COLLAPSE, {
@@ -1578,7 +1578,7 @@ const skillMap = new Map([
         radius: 5,
         reqSynerzy: 10,
         parabora: true,
-        desc: { a: '', b: '任意の場所へ飛びかかり、半径{radius}の範囲内の敵に、{value}の土ダメージを与える' }
+        desc: { a: '', b: '任意の場所へ飛びかかり、半径{radius}の範囲内の敵に、{value}の土ダメージを与える。' }
     }],
 
     [RUSH, {
@@ -1596,7 +1596,7 @@ const skillMap = new Map([
         penetrate: true,
         range: 5,
         reqSynerzy: 5,
-        desc: { a: '', b: '直線上の敵を駆け抜け、{value}の物理ダメージを与える' }
+        desc: { a: '', b: '直線上の敵を駆け抜け、{value}の物理ダメージを与える。' }
     }],
 
     [SPIRAL, {
@@ -1616,7 +1616,7 @@ const skillMap = new Map([
         each: true,
         radius: 1,
         reqSynerzy: 20,
-        desc: { a: '', b: '1マス毎に、直線上及び隣接する敵を駆け抜け、{value}の物理ダメージを与える' }
+        desc: { a: '', b: '1マス毎に、直線上及び隣接する敵を駆け抜け、{value}の物理ダメージを与える。' }
     }],
 
     //missile
@@ -1632,7 +1632,7 @@ const skillMap = new Map([
         name: { a: 'Piercing Arrow', b: '貫通の矢' },
         perc: true,
         penetrate: true,
-        desc: { a: '', b: '直線上の敵を貫通する矢を放ち、{value}の物理ダメージを与える' }
+        desc: { a: '', b: '直線上の敵を貫通する矢を放ち、{value}の物理ダメージを与える。' }
     }],
 
     [PARALYZING_ARROW, {
@@ -1648,7 +1648,7 @@ const skillMap = new Map([
         perc: true,
         parabora: true,
         effect: { id: PARALYSIS, prob: 100 },
-        desc: { a: '', b: '放物線を描く矢を放ち、敵1体に、{value}の物理ダメージを与え、追加効果で、麻痺状態にする' }
+        desc: { a: '', b: '放物線を描く矢を放ち、敵1体に、{value}の物理ダメージを与え、追加効果で、麻痺状態にする。' }
     }],
 
     [EXPLODING_ARROW, {
@@ -1664,7 +1664,7 @@ const skillMap = new Map([
         perc: true,
         radius: 1,
         parabora: true,
-        desc: { a: '', b: '放物線を描く矢を放ち、半径{radius}の範囲内の敵に、{value}の火ダメージを与える' }
+        desc: { a: '', b: '放物線を描く矢を放ち、半径{radius}の範囲内の敵に、{value}の火ダメージを与える。' }
     }],
 
     [FREEZING_ARROW, {
@@ -1680,7 +1680,7 @@ const skillMap = new Map([
         perc: true,
         effectSelf: true,
         parabora: true,
-        desc: { a: '', b: '放物線を描く矢を放ち、敵1体に、{value}の氷ダメージを与え、凍結させる' }
+        desc: { a: '', b: '放物線を描く矢を放ち、敵1体に、{value}の氷ダメージを与え、凍結させる。' }
     }],
 
     [PHOTON_ARROW, {
@@ -1697,7 +1697,7 @@ const skillMap = new Map([
         penetrate: true,
         effectSelf: true,
         reqSynerzy: 10,
-        desc: { a: '', b: '放物線を描く矢を放ち、素早い動作で、敵1体に、{value}の光ダメージを与える' }
+        desc: { a: '', b: '放物線を描く矢を放ち、素早い動作で、敵1体に、{value}の光ダメージを与える。' }
     }],
 
     [APOLLOS_ARROW, {
@@ -1715,7 +1715,7 @@ const skillMap = new Map([
         reqSynerzy: 20,
         parabora: true,
         effect: { id: INFECTION, prob: 20 },
-        desc: { a: '', b: '放物線を描く矢を放ち、半径{radius}の範囲内の敵に、{value}の火ダメージを与え、追加効果で、感染状態にする' }
+        desc: { a: '', b: '放物線を描く矢を放ち、半径{radius}の範囲内の敵に、{value}の火ダメージを与え、追加効果で、感染状態にする。' }
     }],
 
     //enemy
