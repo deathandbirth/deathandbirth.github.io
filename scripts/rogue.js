@@ -21,16 +21,9 @@ const Rogue = class extends Fighter {
         this.cdl = 0; //current dungeon level
         this.cui = {}; //current unique item
         this.cue = {}; //current unique enemy
-        this.eqt = {} //equipment temp
         this.lethe = 0;
         this.turn = 1;
         this.done = false;
-        this.numBoxes = 1;
-        this.boxes = {};
-        for (let i = 1; i <= this.numBoxes; i++) {
-			this.boxes[i] = null;
-		}
-
         this.initBookmarks();
     }
 

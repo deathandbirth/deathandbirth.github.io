@@ -54,6 +54,9 @@ const colorList = {
     deepskyblue: 'deepskyblue',
     darkorange: 'darkorange',
 
+    //cloth
+    linen: '#faf0e6',
+
     //skin
     flax: '#d6c6af',
     beige: '#eedcb3',

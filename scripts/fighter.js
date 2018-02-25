@@ -123,7 +123,11 @@ const fighterTab = {
             earth: 0,
             poison: 0,
             material: M_FUR,
-            atkType: AT_S | AT_T
+            atkType: AT_S | AT_T,
+            desc: {
+                a:'',
+                b:'女神アルテミスより授与された、どんな獲物も逃がさないとされる猟犬。同じく、どんな追手にも捕まらないという狐と膠着状態となり、ゼウスにより両者は石に変えられる。',
+            }
         },
 	],
 	
@@ -184,7 +188,11 @@ const fighterTab = {
             earth: 0,
             poison: 0,
             material: M_FUR,
-            atkType: AT_S | AT_T
+            atkType: AT_S | AT_T,
+            desc: {
+                a:'',
+                b:'ネメアの谷に住む獅子。その毛皮は棍棒や矢では傷付かないが、ヘラクレスに手づかみにされ絞殺される。',
+            }
         },
 	],
 	
@@ -346,7 +354,12 @@ const fighterTab = {
 				a: { id: ICE_BOLT, lvl: 10 },
 				b: { id: HEAL, lvl: 10 },
 				c: { id: AQUA_BREATH, lvl: 10 }
-			}
+            },
+
+            desc: {
+                a:'',
+                b:'巨人アトラスの娘、仙女。海に漂流したオデュッセウスを救護し、7年間孤島で共に暮す。',
+            }
         },
 	],
 	
@@ -434,7 +447,7 @@ const fighterTab = {
             int: 1,
             spd: 0,
             dmgBase: '1d1',
-            acBase: 10,
+            acBase: 0,
             dropNum: 1,
             matRedTimes: 2,
             fire: 0,
@@ -468,7 +481,7 @@ const fighterTab = {
             int: 3,
             spd: 0,
             dmgBase: '1d1',
-            acBase: 3,
+            acBase: 0,
             dropNum: 1,
             matRedTimes: 2,
             fire: 0,
@@ -504,7 +517,7 @@ const fighterTab = {
             int: 10,
             spd: 0,
             dmgBase: '1d1',
-            acBase: 1,
+            acBase: 0,
             dropNum: 2,
             matRedTimes: 2,
             fire: 0,
@@ -544,7 +557,7 @@ const fighterTab = {
             int: 5,
             spd: 5,
             dmgBase: '1d1',
-            acBase: 5,
+            acBase: 0,
             dropNum: 2,
             matRedTimes: 2,
             fire: 0,
@@ -581,7 +594,7 @@ const fighterTab = {
             int: 5,
             spd: 0,
             dmgBase: '1d1',
-            acBase: 5,
+            acBase: 0,
             dropNum: 1,
             matRedTimes: 0,
             fire: 0,
@@ -592,7 +605,15 @@ const fighterTab = {
             material: M_BONE,
             atkType: AT_B,
             atkStealItem: 20,
-            starter: [{ type: 'armor', tabId: A_ROBE }]
+            starter: [
+                { type: 'staff', tabId: S_STICK, matBase: M_WOOD, matId: WOOD_CYPRESS },
+                { type: 'armor', tabId: A_ROBE, matBase: M_CLOTH, matId: CLOTH_LINEN }
+            ],
+
+            desc: {
+                a:'',
+                b:'イタケの町を徘徊する土着の乞食。同業に対して頭面をしていたが、乞食に扮したオデュッセウスと格闘の末打ち据えられる。',
+            }
 		},
 		
         {
@@ -612,8 +633,8 @@ const fighterTab = {
             int: 5,
             spd: 10,
             dmgBase: '1d1',
-            acBase: 10,
-            dropNum: 2,
+            acBase: 0,
+            dropNum: 1,
             matRedTimes: 0,
             fire: 0,
             water: 0,
@@ -626,7 +647,20 @@ const fighterTab = {
             skill: {
 				a: { id: SHORT_TELEPORTATION, lvl: 1 },
 				b: { id: TELEPORTATION, lvl: 1 }
-			}
+            },
+
+            starter: [
+                { type: 'missile', tabId: M_BOW, matBase: M_WOOD, matId: WOOD_CYPRESS },
+                { type: 'melee', tabId: M_SPEAR, matBase: M_METAL, matId: METAL_BRONZE, side: 'a' },
+                { type: 'cloak', tabId: C_COAT, matBase: M_FUR, matId: FUR_WOLF },
+                { type: 'helm', tabId: H_CAP, matBase: M_FUR, matId: FUR_FERRET },
+                { type: 'ammo', tabId: A_ARROW },
+            ],
+
+            desc: {
+                a:'',
+                b:'伝令使エウメデスの子、トロイア人。ギリシャ軍の偵察任務を買って出たが捕らわれる。尋問の後、懇願するもディオメデスにより殺される。',
+            }
 		},
 		
         {
@@ -646,8 +680,8 @@ const fighterTab = {
             int: 10,
             spd: 10,
             dmgBase: '1d1',
-            acBase: 20,
-            dropNum: 4,
+            acBase: 0,
+            dropNum: 2,
             matRedTimes: 0,
             fire: 0,
             water: 0,
@@ -660,14 +694,20 @@ const fighterTab = {
             starter: [
 				{ type: 'missile', tabId: M_BOW, uniqueId: 0 },
 				{ type: 'ammo', tabId: A_ARROW },
-				{ type: 'melee', tabId: M_SPEAR, side: 'a' }
+				{ type: 'melee', tabId: M_SPEAR, matBase: M_METAL, matId: METAL_BRONZE, side: 'a' },
+				{ type: 'armor', tabId: A_ARMOR, matBase: M_METAL, matId: METAL_BRONZE },
 			],
 
             skillProb: 1 / 8,
             skill: {
 				a: { id: SHORT_TELEPORTATION, lvl: 1 },
-				b: { id: PARALYZING_ARROW, lvl: 5 }
-			}
+				b: { id: ENCOURAGEMENT, lvl: 1 }
+			},
+
+            desc: {
+                a:'',
+                b:'ゼレイア王リュカオンの子。メネラウスに急所を射る矢を放つも、アテネにより防がれ、同じく庇護を受けたディオメデスの槍で息絶える。',
+            }
 		},
 		
         {
@@ -685,10 +725,10 @@ const fighterTab = {
             dex: 20,
             con: 15,
             int: 25,
-            spd: 10,
+            spd: 0,
             dmgBase: '1d1',
-            acBase: 40,
-            dropNum: 4,
+            acBase: 0,
+            dropNum: 2,
             matRedTimes: 0,
             fire: 0,
             water: 0,
@@ -700,11 +740,27 @@ const fighterTab = {
             strSus: true,
             dexSus: true,
             conSus: true,
-            skillProb: 1 / 10,
+            skillProb: 1 / 6,
             skill: {
 				a: { id: TELEPORT_TO, lvl: 1 },
 				b: { id: SPEED, lvl: 5 }
-			}
+            },
+
+            starter: [
+				{ type: 'melee', tabId: M_SWORD, matBase: M_METAL, matId: METAL_BRONZE },
+				{ type: 'melee', tabId: M_SPEAR, matBase: M_METAL, matId: METAL_BRONZE, side: 'a' },
+				{ type: 'shield', tabId: S_SHIELD, matBase: M_METAL, matId: METAL_GOLD, magic: true },
+				{ type: 'armor', tabId: A_ARMOR, matBase: M_METAL, matId: METAL_BRONZE },
+				{ type: 'cloak', tabId: C_CLOAK, matBase: M_CLOTH, matId: CLOTH_WOOL },
+				{ type: 'belt', tabId: B_SASH, matBase: M_CLOTH, matId: CLOTH_WOOL },
+				{ type: 'helm', tabId: H_HELM, matBase: M_METAL, matId: METAL_BRONZE },
+				{ type: 'boots', tabId: B_SHOES, matBase: M_CLOTH, matId: CLOTH_WOOL },
+            ],
+
+            desc: {
+                a:'',
+                b:'ネレウスの子、ピュロスの王、ギリシャ軍の武将。老齢期にトロイア戦争に参加、助言・相談役を果たす。',
+            }
 		},
 		
         {
@@ -739,7 +795,11 @@ const fighterTab = {
             conSus: true,
             awake: true,
             ias: 50,
-            frw: 50
+            frw: 50,
+            desc: {
+                a:'',
+                b:'シャルルマーニュの甥、聖騎士。思い人のアンジェリカが他妻となり発狂。その怪力で自身の鎧ごと衣服を引き裂き、分別なく暴れ狂う。',
+            }
         },
 	],
 	
@@ -778,7 +838,7 @@ const fighterTab = {
         {
             name: { a: 'Rays of the Sun, the Horse of Rhesus', b: 'トラキア王レソスの馬 `陽光の矢`' },
             symbol: 'q',
-            color: colorList.brown,
+            color: colorList.white,
             race: ANIMAL,
             mod: UNIQUE,
             grade: NORMAL,
@@ -802,7 +862,11 @@ const fighterTab = {
             poison: 0,
             material: M_SKIN,
             atkType: AT_B,
-            frw: 60
+            frw: 60,
+            desc: {
+                a:'',
+                b:'トラキア産の駿馬。大型で、雪よりも白く、走る速さは風にも劣らない。トロイア軍から奪った際、ネストルはこの馬を見て感嘆し、陽光の矢と評する。',
+            }
 		},
 		
         {
@@ -862,6 +926,10 @@ const fighterTab = {
             poison: 0,
             material: M_FUR,
             atkType: AT_B,
+            desc: {
+                a:'',
+                b:'女神アルテミスがカリュドーンの町に放った大猪。辺り一帯を荒すが、青年期のネストルを含む勇士達により討伐される。',
+            }
         },
 	],
 	
@@ -1038,7 +1106,7 @@ const fighterTab = {
         {
             name: { a: 'Aedon, the Nightingale', b: '夜鶯アエドン' },
             symbol: 'B',
-            color: colorList.shadow,
+            color: colorList.yellowgreen,
             race: ANIMAL,
             mod: UNIQUE,
             grade: NORMAL,
@@ -1068,7 +1136,12 @@ const fighterTab = {
             skill: {
 				a: { id: WIND_BREATH, lvl: 5 },
 				b: { id: SCREAM, lvl: 5 }
-			}
+            },
+
+            desc: {
+                a:'',
+                b:'パンダレオスの娘。ニオベに多くの子がいる事を妬み、子の殺害を試みるが、自身の子を誤って殺害。悲しみに泣き暮れる様をゼウスが夜鶯の姿に変化させる。',
+            }
 		},
 		
         {
@@ -1100,7 +1173,11 @@ const fighterTab = {
             atkType: AT_S | AT_T,
             levi: true,
             ias: 25,
-            frw: 50
+            frw: 50,
+            desc: {
+                a:'',
+                b:'メガラの王。娘スキュラが敵将に恋慕し、父を殺し国を差し出すも拒まれ、海に飛び込む。その後鳥の姿となるが、同じく大鷲と化した父ニソスが復讐を狙う。',
+            }
         },
 	],
 	
@@ -1223,7 +1300,7 @@ const fighterTab = {
             air: 20,
             earth: 20,
             poison: 20,
-            material: M_SCALE | M_BONE,
+            material: M_SCALE | M_BONE | M_HORN,
             atkType: AT_S | AT_T | AT_B,
             grow: CON
 		},
@@ -1260,7 +1337,12 @@ const fighterTab = {
             skillProb: 1 / 5,
             skill: {
 				a: { id: POISON_BREATH, lvl: 10 }
-			}
+            },
+
+            desc: {
+                a:'',
+                b:'神ヘルメスがもたらした金羊毛を守護する。メデイアの魔法薬により、眠らないとされるこの竜が昏睡し、その間にイアソンは金羊毛を奪取する。',
+            }
         },
 	],
 	
@@ -1459,7 +1541,7 @@ const fighterTab = {
             air: 0,
             earth: 0,
             poison: 0,
-            material: M_BONE,
+            material: M_BONE | M_HORN,
             atkType: AT_B,
             strSus: true,
             grow: STR,
@@ -1561,7 +1643,12 @@ const fighterTab = {
             skillProb: 1 / 6,
             skill: {
 				a: { id: POISON_BREATH, lvl: 5 }
-			}
+            },
+
+            desc: {
+                a:'',
+                b:'リビアの砂漠に住むという双頭の毒蛇。ペルセウスが切り落とした、メデューサの首から落ちた血液により、この蛇は生まれたという。',
+            }
         },
 	],
 	
@@ -1633,7 +1720,12 @@ const fighterTab = {
             skillProb: 1 / 10,
             skill: {
 				a: { id: AQUA_BREATH, lvl: 10 }
-			}
+            },
+
+            desc: {
+                a:'',
+                b:'12本の足、6つの頭、3列に並んだ歯を持つ。元は女性であったが、グラウコスの求愛を拒み続け、それを妬んだキルケの毒により怪物に変貌する。',
+            }
         },
 	],
 	
@@ -1733,7 +1825,12 @@ const fighterTab = {
             skillProb: 1 / 10,
             skill: {
 				a: { id: CREATE_GIANT, lvl: 1 }
-			}
+            },
+
+            desc: {
+                a:'',
+                b:'神ポセイドンの子、一つ目の巨人。洞窟内に閉じ込められたオデュッセウスは、この巨人が泥酔し寝ている間に、丸太を目に突き立て盲いにし脱出する。',
+            }
         },
 	],
 	
@@ -1825,7 +1922,7 @@ const fighterTab = {
 			air: 0,
 			earth: 0,
 			poison: 0,
-			material: M_SKIN,
+			material: M_SKIN | M_HORN,
 			atkType: AT_S | AT_B,
 			skillProb: 1 / 8,
 			skill: {
@@ -2039,7 +2136,7 @@ const fighterTab = {
                 { type: 'food', tabId: F_RATION, quantity: 5 },
                 { type: 'light', tabId: L_TORCH, starter: true },
                 { type: 'light', tabId: L_TORCH, starter: true, pack: true},
-            ]
+            ],
 		},
 		
         {
@@ -2109,7 +2206,12 @@ const fighterTab = {
 				b: { id: POISON_BREATH, lvl: 10 },
 				c: { id: INFECTION_BREATH, lvl: 10 },
 				d: { id: CREATE_MAGIC_MONSTER, lvl: 1 }
-			}
+            },
+
+            desc: {
+                a:'',
+                b:'地獄の君主、十六の悪魔の指揮官、悪魔達の皇帝。人間を誘惑し嫉妬心を生み出す。しばしばサタンと同一視される。',
+            }
         },
     ],
 };
@@ -2237,15 +2339,22 @@ const Fighter = class extends Material {
         this.side = { a: null, b: null };
         this.swapped = false;
         this.numBoxes = 0;
-        // this.boxes = {};
+        this.initSynerzy();
         this.equipment = {};
         if (this.race & (HUMAN | GIANT)) {
             for (let key in BP) {
 				this.equipment[BP[key]] = null;
 			}
 		}
-		
-        this.initSynerzy();
+        
+        if (this.starter) {
+            this.eqt = {} //equipment temp
+            this.numBoxes = 1;
+            this.boxes = {};
+            for (let i = 1; i <= this.numBoxes; i++) {
+                this.boxes[i] = null;
+            }
+        }
     }
 
     initSynerzy() {
@@ -5397,13 +5506,13 @@ const Fighter = class extends Material {
             let mat;
             switch (element) {
                 case 'acid':
-                    mat = M_METAL | M_PLATING;
+                    mat = M_METAL;
                     break;
                 case 'fire':
                     mat = M_CLOTH | M_FUR | M_FEATHER | M_SKIN | M_SCALE | M_WOOD;
                     break;
                 case 'lightning':
-                    mat = M_BONE | M_SHELL | M_GEM | M_STONE;
+                    mat = M_BONE | M_SHELL | M_GEM | M_STONE | M_HORN;
                     break;
             }
             if (!(item.material & mat)) return;
@@ -5630,6 +5739,9 @@ const Fighter = class extends Material {
                 lvl: this.lvl,
                 uniqueId: itemInfo.uniqueId,
                 starter: itemInfo.starter,
+                matBase: itemInfo.matBase,
+                matId: itemInfo.matId,
+                magic: itemInfo.magic,
             });
             
             if (!itemNew.equipable || itemInfo.pack || !this.equipStarterItem(itemNew, itemInfo.side))

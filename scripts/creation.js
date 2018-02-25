@@ -229,8 +229,8 @@ const creation = {
                 materialList.shuffle();
                 while (!(item.material & materialList[i])) i++;
                 let matBase = materialList[i];
-                let materials = materialMap.get(matBase);
-                for (let i = 0, l = materials.list.length; i < l; i++) {
+                let list = materialMap.get(matBase).list;
+                for (let i = 0, l = list.size; i < l; i++) {
                     let item = this.item({
                         type: type,
                         tabId: tabId,

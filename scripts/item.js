@@ -136,9 +136,9 @@ const [ //armor
 ] = enums(1, 6);
 
 const [ //cloak
+	C_MANTLE,
 	C_COAT,
 	C_CLOAK,
-	C_MANTLE,
 ] = enums(1, 3);
 
 const [ //belt
@@ -1345,7 +1345,7 @@ const itemTab = {
             volumeRate: 0.5,
             atkType: AT_T,
             twoHanded: true,
-            material: M_WOOD | M_BONE
+            material: M_WOOD | M_BONE | M_HORN
 		}],
 		
         [M_CROSSBOW, {
@@ -1405,7 +1405,7 @@ const itemTab = {
             lvl: 1,
             rarity: 0,
             volumeRate: 1,
-            material: M_SKIN | M_SCALE | M_METAL | M_BONE | M_WOOD | M_STONE | M_SHELL
+            material: M_SKIN | M_SCALE | M_METAL | M_BONE | M_WOOD | M_STONE | M_SHELL | M_HORN
         }],
 	]),
 	
@@ -1442,7 +1442,7 @@ const itemTab = {
             lvl: 1,
             rarity: 0,
             volumeRate: 1,
-            material: M_SCALE | M_PLATING | M_BONE || M_SHELL
+            material: M_METAL | M_SCALE | M_PLATING | M_BONE | M_SHELL
 		}],
 		
         [A_SPLINT_MAIL, {
@@ -1465,7 +1465,7 @@ const itemTab = {
 	]),
 	
     cloak: new Map([
-        [C_COAT, {
+        [C_MANTLE, {
             nameReal: { a: 'Mantle', b: 'マント' },
             shop: true,
             lvl: 1,
@@ -1474,7 +1474,7 @@ const itemTab = {
             material: M_FEATHER | M_SCALE
 		}],
 		
-        [C_CLOAK, {
+        [C_COAT, {
             nameReal: { a: 'Coat', b: 'コート' },
             shop: true,
             lvl: 1,
@@ -1483,7 +1483,7 @@ const itemTab = {
             material: M_FUR | M_SKIN
 		}],
 		
-        [C_MANTLE, {
+        [C_CLOAK, {
             nameReal: { a: 'Cloak', b: 'クローク' },
             shop: true,
             lvl: 1,
@@ -1556,7 +1556,7 @@ const itemTab = {
             lvl: 1,
             rarity: 0,
             volumeRate: 1,
-            material: M_METAL | M_BONE | M_SHELL
+            material: M_METAL | M_BONE | M_SHELL | M_HORN
         }],
 	]),
 	
@@ -1694,7 +1694,7 @@ const itemTab = {
             lvl: 1,
             rarity: 0,
             volumeRate: 1,
-            material: M_METAL | M_BONE | M_FEATHER
+            material: M_BONE | M_FEATHER | M_HORN
         }],
 	]),
 	
@@ -1803,8 +1803,8 @@ const itemUniqueMap = {
             name: { a: 'Pandarus', b: 'パンダロス', pre: true },
             lvl: 10,
             rarity: 20,
-            matBase: M_BONE,
-            matId: 1,
+            matBase: M_HORN,
+            matId: HORN_GOAT,
             values: { hp: 30, mp: 30, dmgDiceNum: 1, dmgBonus: 50, rateBonus: 50 },
         }]],
 	]),
