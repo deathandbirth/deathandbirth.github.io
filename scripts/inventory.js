@@ -208,6 +208,12 @@ const inventory = {
 		
         if (flag.option || flag.cure) return;
         let maxNum = this.getMaxNumber(place);
+        if (place === P_STASH) {
+            let lenStash = enter.list.length;
+            count += (enter.page - 1) * MAX_PACK_COUNT;
+            if (count > lenStash) count = lenStash;
+        }
+
         display.text({
             ctx: ctxInv,
             msg: `[${count}/${maxNum}]`,

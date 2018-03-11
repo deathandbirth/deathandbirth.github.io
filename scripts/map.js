@@ -126,7 +126,10 @@ const map = {
                             x: i,
                             y: j,
                         });
-                    } else if (evalPercentage(0.1)) {
+                    }
+
+                    /*
+                    else if (evalPercentage(0.1)) {
                         creation.item({
                             type: 'gem',
                             tabId: 1,
@@ -135,6 +138,7 @@ const map = {
                             y: j,
                         });
                     }
+                    */
 
                     loc.wall = WALL_HP;
                 }

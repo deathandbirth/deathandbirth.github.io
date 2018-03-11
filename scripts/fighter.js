@@ -425,6 +425,7 @@ const fighterTab = {
 			atkType: AT_B,
 			mimic: true,
 			stillness: true,
+            canAttack: true,
 			awake: true,
 		},
 	],
@@ -2094,6 +2095,7 @@ const fighterTab = {
             material: M_STONE,
             atkType: AT_S,
             stillness: true,
+            canAttack: true,
             awake: true,
             volumeRate: 1
         },

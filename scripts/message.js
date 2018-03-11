@@ -636,7 +636,7 @@ const translation = {
         amulet: '首飾り',
         ring: '指輪',
         ammo: '弾薬',
-        gem: 'ジェム',
+        gem: 'ジュエル',
         coin: 'コイン',
         misc: '雑多品',
         water: '水',

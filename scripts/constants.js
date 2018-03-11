@@ -5,7 +5,7 @@ const generateNumber = function*(i, j, bit) {
 
 const enums = (i, j) => [...generateNumber(i, j)];
 const enumsBit = (i, j) => [...generateNumber(i, j, true)];
-const VERSION = 0.005;
+const VERSION = 0.006;
 const MS = 2; //message space
 const SS = 3; //stats space
 const IN_WIDTH = 47; //canvas.width/fs-1;
@@ -29,7 +29,7 @@ const MAX_TRAP_NUM = 10;
 const MIN_STAIRS_NUM = 4;
 const MAX_STAIRS_NUM = 6;
 const MAX_PACK_COUNT = 20;
-const MAX_STASH_COUNT = MAX_PACK_COUNT * 4;
+const MAX_STASH_COUNT = MAX_PACK_COUNT * 10;
 const MAX_STASH_PAGE = MAX_STASH_COUNT / MAX_PACK_COUNT;
 const MAX_CUBE_COUNT = 4;
 const MAX_HUNGER = 1000;
@@ -43,6 +43,7 @@ const MAX_SKILL_LVL = 20;
 const MAX_SEARCH_RANGE = 10;
 const MAX_PF_LOOP = 10000;
 const MAX_BOX_NUM = 9;
+const MAX_EMBEDDED_NUM = 6;
 const RARE_MOD_NUM = 2;
 const SPAWN_FREQ = 100;
 const CURSE_PERC = 5;
@@ -210,7 +211,7 @@ const RARITY = {
     oil: 50,
     ammo: 50,
     coin: 0,
-    gem: 90,
+    gem: 80,
 };
 
 const equipmentList = ['melee', 'missile', 'staff', 'shield', 'armor', 'cloak', 'belt',

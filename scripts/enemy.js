@@ -129,7 +129,7 @@ const Enemy = class extends Fighter {
 		}
 
         if (!dr && this.drTemp) dr = this.drTemp;
-        if (dr && (!this.stillness || l <= 1)) {
+        if (dr) {
             this.dr = dr;
             this.drTemp = null;
             this.move(dr, los);
@@ -147,13 +147,16 @@ const Enemy = class extends Fighter {
         let [x, y] = [this.x + dr.x, this.y + dr.y];
         let loc = map.coords[x][y];
         if (loc.trap && loc.trap.protection) {
+            if (this.stillness && !this.canAttack) return;
             this.attackCircle(loc);
             return;
         } else if (loc.fighter && this.isOpponent(loc.fighter)) {
+            if (this.stillness && !this.canAttack) return;
             this.attack({ enemy: loc.fighter });
             return;
 		}
-		
+        
+        if (this.stillness) return;
         if (loc.isClosedDoor() && (!loc.hidden || this.searching)) {
             if (loc.hidden) {
                 if (!evalPercentage(this.searching)) return;
@@ -175,7 +178,7 @@ const Enemy = class extends Fighter {
         if (betw) {
             dr = getDirectionBetween(this.x, this.y, this.ce.x, this.ce.y);
 		} else if (rand) {
-			dr = this.blinded ? this.dr : DR[rndInt(DR.length - 1)];
+			dr = this.blinded && this.dr ? this.dr : DR[rndInt(DR.length - 1)];
 		}
 
         if (!this.canMove(dr)) dr = this.getDrAround(dr, los); ///
@@ -317,6 +320,7 @@ const Enemy = class extends Fighter {
     }
 
     makeMaterial() {
+        if (!this.modList) this.modList = {};
         for (let key in this.modList) {
             if (this.modList[key] === DEFAULT) {
                 delete this.modList[key];
@@ -329,6 +333,26 @@ const Enemy = class extends Fighter {
             !num ? delete this.modList[key] : this.modList[key] = num;
 		}
 		
+        let material = this.getMaterialBase();
+        let matBaseList = materialMap.get(material); 
+        if (matBaseList.bonus || material === M_GEM) {
+            let values;
+            if (material === M_GEM) {
+                if (this.matId === undefined) return;
+                values = matBaseList.list.get(this.matId).values;
+            } else {
+                values = matBaseList.bonus;
+            }
+
+            mergeMod({
+                obj: this.modList,
+                obj2: values,
+                perc: 0,
+                max: 1,
+                min: 1,
+            });
+        }
+
         if (!Object.keys(this.modList).length) return;
         let item = {};
         copyObj(item, this.modList);
@@ -344,7 +368,7 @@ const Enemy = class extends Fighter {
         item.lvl = this.lvl;
         item.mod = this.mod;
         item.rarity = this.rarity;
-        item.material = this.getMaterialBase();
+        item.material = material;
         item.identified = false;
         item.quantity = 1;
         item.type = 'material';
@@ -352,6 +376,11 @@ const Enemy = class extends Fighter {
         item.priceRate = materialMap.get(item.material).pRate;
         item.__proto__ = Item.prototype;
         item.symbolReal = item.symbol = Item.getSymbol(item.type);
+        item.desc = {
+            a: ``,
+            b: `埋め込み可能な${matBaseList.name['b']}の装備品に合成すると属性値が付与される。`    
+        };
+
         item.calcPrice();
         item.putDown(this.x, this.y, true);
     }

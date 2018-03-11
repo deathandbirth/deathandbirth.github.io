@@ -359,7 +359,7 @@ const materialMap = new Map([
             [HORN_MINOTAUR, { name: { a: 'Minotaur Horn', b: 'ミノタウロス・ホーン' }, rarity: 60, color: colorList.white }],
             [HORN_DRAGON, { name: { a: 'Dragon Horn', b: '竜角' }, rarity: 70, color: colorList.white }],
             [HORN_DEMON, { name: { a: 'Demon Horn', b: 'デーモン・ホーン' }, rarity: 80, color: colorList.white }],
-            [HORN_UNICORN, { name: { a: 'Unicorn Horn', b: 'ユニコーン・ホーン' }, rarity: 99, color: colorList.white }],
+            [HORN_UNICORN, { name: { a: 'Unicorn Horn', b: 'ユニコーン・ホーン' }, rarity: 90, color: colorList.white }],
         ])
 	}],
 	
@@ -479,7 +479,8 @@ const materialMap = new Map([
             mat.hardness = hRate * value;
             mat.toughness = tRate * value;
             mat.priceRate = pRate * value;
-            mat.lvl = Math.floor(rarity / 3);
+            mat.embeddedNum = Math.ceil((rarity + 1) / 100 * MAX_EMBEDDED_NUM);
+            mat.lvl = Math.ceil(rarity / 3);
             if (mat.lvl < 1) mat.lvl = 1;
             if (bonus) {
                 if (!mat.values) mat.values = {};
@@ -525,7 +526,7 @@ const modTab = {
             amulet: { fire: '1d10' },
             ring: { fire: '1d10' },
             light: { fire: '1d10', lighten: 1 },
-            gem: { fire: '1d10' },
+            gem: { fire: '1d5' },
             enemy: { fire: '2d10', str: 1, dmgFire: '1d10' },
             affix: [
                 { name: { a: 'of Heat', b: '発熱の' }, rarity: 0 },
@@ -562,7 +563,7 @@ const modTab = {
             amulet: { water: '1d10' },
             ring: { water: '1d10' },
             light: { water: '1d10' },
-            gem: { water: '1d10' },
+            gem: { water: '1d5' },
             enemy: { water: '2d10', int: 1 },
             affix: [
                 { name: { a: 'of Rain', b: '降雨の' }, rarity: 0 },
@@ -601,7 +602,7 @@ const modTab = {
             amulet: { air: '1d10' },
             ring: { air: '1d10' },
             light: { air: '1d10' },
-            gem: { air: '1d10' },
+            gem: { air: '1d5' },
             enemy: { air: '2d10', dex: 1, levi: true },
             affix: [
                 { name: { a: 'of Feather', b: '羽の' }, rarity: 0 },
@@ -643,7 +644,7 @@ const modTab = {
             amulet: { earth: '1d10' },
             ring: { earth: '1d10' },
             light: { earth: '1d10' },
-            gem: { earth: '1d10' },
+            gem: { earth: '1d5' },
             enemy: { earth: '2d10', con: 1, acBonus: 100 },
             affix: [
                 { name: { a: 'of Rock', b: '岩の' }, rarity: 0 },
@@ -680,7 +681,7 @@ const modTab = {
             amulet: { poison: '1d10' },
             ring: { poison: '1d10' },
             light: { poison: '1d10' },
-            gem: { poison: '1d10' },
+            gem: { poison: '1d5' },
             enemy: { dmgPoison: '1d10', poison: '2d10' },
             affix: [
                 { name: { a: 'of Dirtiness', b: '不潔の' }, rarity: 0 },
@@ -719,7 +720,7 @@ const modTab = {
             amulet: { skillFire: 1 },
             ring: { skillFire: 1 },
             light: { fire: '2d5', lighten: 1 },
-            gem: { fire: '1d5', str: 1 },
+            gem: { fire: '1d10'},
             enemy: { fire: '3d5', skillFire: 1, str: 1, atkBlind: '10d2', dmgFire: '2d10' },
             affix: [
                 { name: { a: 'of Glow', b: '白熱の' }, rarity: 0 },
@@ -759,7 +760,7 @@ const modTab = {
             amulet: { skillWater: 1 },
             ring: { skillWater: 1 },
             light: { water: '2d5' },
-            gem: { water: '1d5', int: 1 },
+            gem: { water: '1d10' },
             enemy: { water: '3d5', skillWater: 1, int: 1, atkCold: '10d2' },
             affix: [
                 { name: { a: 'of Chill', b: '寒気の' }, rarity: 0 },
@@ -795,7 +796,7 @@ const modTab = {
             amulet: { skillAir: 1 },
             ring: { skillAir: 1 },
             light: { air: '2d5' },
-            gem: { air: '1d5', dex: 1 },
+            gem: { air: '1d10' },
             enemy: { air: '3d5', skillAir: 1, dex: 1, dmgLightning: '1d10' },
             affix: [
                 { name: { a: 'of Sky', b: '空の' }, rarity: 0 },
@@ -833,7 +834,7 @@ const modTab = {
             amulet: { skillEarth: 1 },
             ring: { skillEarth: 1 },
             light: { earth: '2d5' },
-            gem: { earth: '1d5', con: 1 },
+            gem: { earth: '1d10' },
             enemy: { earth: '3d5', skillEarth: 1, con: 1, atkSlow: '10d2' },
             affix: [
                 { name: { a: 'of Star', b: '星の' }, rarity: 0 },
@@ -869,7 +870,7 @@ const modTab = {
             amulet: { skillPoison: 1 },
             ring: { skillPoison: 1 },
             light: { poison: '2d5' },
-            gem: { poison: '1d5' },
+            gem: { poison: '1d10' },
             enemy: { poison: '3d5', skillPoison: 1, atkInf: '10d2', dmgPoison: '2d10' },
             affix: [
                 { name: { a: 'of Disease', b: '疾患の' }, rarity: 0 },
@@ -1120,7 +1121,7 @@ const modTab = {
             amulet: { fire: '1d3', water: '1d3', air: '1d3', earth: '1d3', poison: '1d3' },
             ring: { fire: '1d3', water: '1d3', air: '1d3', earth: '1d3', poison: '1d3' },
             light: { fire: '1d3', water: '1d3', air: '1d3', earth: '1d3', poison: '1d3' },
-            gem: { fire: '1d3', water: '1d3', air: '1d3', earth: '1d3', poison: '1d3' },
+            gem: { fire: '1d2', water: '1d2', air: '1d2', earth: '1d2', poison: '1d2' },
             enemy: { fire: '2d3', water: '2d3', air: '2d3', earth: '2d3', poison: '2d3' }
 		},
 		
@@ -1179,12 +1180,13 @@ const modTab = {
         {
             name: { a: 'of Speed', b: '速度' },
             lvl: 10,
-            rarity: 50,
-            cloak: { spd: '1d5' },
-            boots: { spd: '1d5' },
-            ring: { spd: '1d5' },
-            amulet: { spd: '1d5' },
-            enemy: { spd: '1d5' }
+            rarity: 30,
+            cloak: { spd: '1d4' },
+            boots: { spd: '1d4' },
+            ring: { spd: '1d4' },
+            amulet: { spd: '1d4' },
+            gem: { spd: 1 },
+            enemy: { spd: '1d4' }
 		},
 		
         {
@@ -1214,6 +1216,7 @@ const modTab = {
             shield: { hp: '1d10' },
             armor: { hp: '2d10' },
             belt: { hp: '1d10' },
+            gem: { hp: '1d5' },
             enemy: { hp: '2d5' }
 		},
 		
@@ -1224,6 +1227,7 @@ const modTab = {
             staff: { mp: '1d10' },
             armor: { mp: '2d10' },
             helm: { mp: '1d10' },
+            gem: { mp: '1d5' },
             enemy: { mp: '2d10' }
 		},
 		
@@ -1234,6 +1238,7 @@ const modTab = {
             belt: { hpReg: '2d10' },
             amulet: { hpReg: '2d10' },
             ring: { hpReg: '1d10' },
+            gem: { hpReg: '1d5' },
             enemy: { hpReg: '2d10' }
 		},
 		
@@ -1244,6 +1249,7 @@ const modTab = {
             belt: { mpReg: '2d10' },
             amulet: { mpReg: '2d10' },
             ring: { mpReg: '1d10' },
+            gem: { mpReg: '1d5' },
             enemy: { mpReg: '2d10' }
 		},
 		
@@ -1255,6 +1261,7 @@ const modTab = {
             missile: { ias: '5d2' },
             gloves: { ias: '5d2' },
             ring: { ias: '5d2' },
+            gem: { ias: '1d5' },
             enemy: { ias: '5d2' }
 		},
 		
@@ -1265,6 +1272,7 @@ const modTab = {
             staff: { fcr: '5d2' },
             helm: { fcr: '5d2' },
             amulet: { fcr: '5d2' },
+            gem: { fcr: '1d5' },
             enemy: { fcr: '5d2' }
 		},
 		
@@ -1272,7 +1280,7 @@ const modTab = {
             name: { a: 'of Faster Run Walk', b: '早足' },
             lvl: 10,
             rarity: 20,
-            cloak: { spd: '2d4' },
+            cloak: { frw: '2d4' },
             boots: { frw: '5d4' },
             enemy: { frw: '5d4' }
 		},
@@ -1306,6 +1314,7 @@ const modTab = {
             staff: { stealLife: '1d3' },
             gloves: { stealLife: '1d3' },
             ring: { stealLife: '1d3' },
+            gem: { stealLife: 1 },
             enemy: { stealLife: '1d3' }
 		},
 		
@@ -1318,6 +1327,7 @@ const modTab = {
             staff: { stealMana: '1d3' },
             gloves: { stealMana: '1d3' },
             ring: { stealMana: '1d3' },
+            gem: { stealMana: 1 },
             enemy: { stealMana: '1d3' }
 		},
 		
@@ -1330,6 +1340,7 @@ const modTab = {
             staff: { dmgBonus: '10d3' },
             gloves: { dmgBonus: '10d3' },
             ring: { dmgBonus: '10d3' },
+            gem: { dmgBonus: '1d10' },
             enemy: { dmgBonus: '10d3' }
 		},
 		
@@ -1342,6 +1353,7 @@ const modTab = {
             staff: { rateBonus: '10d3' },
             gloves: { rateBonus: '10d3' },
             ring: { rateBonus: '10d3' },
+            gem: { rateBonus: '1d10' },
             enemy: { rateBonus: '10d3' }
 		},
 		
@@ -1357,6 +1369,7 @@ const modTab = {
             gloves: { acBonus: '10d3' },
             boots: { acBonus: '10d3' },
             amulet: { acBonus: '10d3' },
+            gem: { acBonus: '1d10' },
             enemy: { acBonus: '10d3' }
 		},
 		
@@ -1365,7 +1378,8 @@ const modTab = {
             lvl: 15,
             rarity: 50,
             amulet: { expBonus: '2d5' },
-            ring: { expBonus: '1d5' }
+            ring: { expBonus: '1d5' },
+            gem: { expBonus: 1 },
 		},
 		
         {
@@ -1375,6 +1389,7 @@ const modTab = {
             cloak: { stealth: '2d10' },
             boots: { stealth: '2d10' },
             amulet: { stealth: '2d10' },
+            gem: { stealth: '1d10' },
             enemy: { stealth: '2d10' }
 		},
 		
@@ -1386,6 +1401,7 @@ const modTab = {
             gloves: { searching: '2d10' },
             ring: { searching: '1d10' },
             light: { searching: '2d10' },
+            gem: { searching: '1d5' },
             enemy: { searching: '2d10' }
 		},
 		
@@ -1396,7 +1412,8 @@ const modTab = {
             armor: { digest: '2d10' },
             belt: { digest: '2d10' },
             amulet: { digest: '2d10' },
-            ring: { digest: '1d10' }
+            ring: { digest: '1d10' },
+            gem: { digest: '1d5' },
 		},
 		
         {
@@ -1546,7 +1563,27 @@ const modTab = {
             boots: { durabBonus: '2d10' },
             amulet: { durabBonus: '2d10' },
             ring: { durabBonus: '2d10' },
+            gem: { durabBonus: '1d5' },
             light: { durabBonus: '2d10' }
+        },
+		
+        {
+            name: { a: 'of Art', b: '技巧' },
+            lvl: 10,
+            rarity: 40,
+            melee: { embeddedBonus: 1 },
+            missile: { embeddedBonus: 1 },
+            staff: { embeddedBonus: 1 },
+            shield: { embeddedBonus: 1 },
+            armor: { embeddedBonus: 1 },
+            cloak: { embeddedBonus: 1 },
+            belt: { embeddedBonus: 1 },
+            helm: { embeddedBonus: 1 },
+            gloves: { embeddedBonus: 1 },
+            boots: { embeddedBonus: 1 },
+            amulet: { embeddedBonus: 1 },
+            ring: { embeddedBonus: 1 },
+            light: { embeddedBonus: 1 }
         },
     ]
 };
@@ -1650,7 +1687,6 @@ const Material = class extends Thing {
         j += 0.75;
         if (char) j++;
         ctxInv.restore();
-        if (!this.equipable && !this.type == 'gem' && !char) return;
         let mod;
         let count = 0;
         let msgLimit = 8;
@@ -1692,16 +1728,16 @@ const Material = class extends Thing {
 				if (this.findBuffStat(key) || this.modList && this.modList[key]) {
 					ctxInv.shadowColor = colorList.buff;
 				}
-
-                if (term.max) {
-                    let max = this[term.max];
-                    if (term.perc) max += '%';
-                    if (term.weight) max += 'kg';
-                    value += ` (${max})`;
-                }
             } else if (mod) {
 				ctxInv.shadowColor = colorList.buff;
 			}
+
+            if (term.max && this[term.max] !== undefined) {
+                let max = this[term.max];
+                if (term.perc) max += '%';
+                if (term.weight) max += 'kg';
+                value += ` (${max})`;
+            }
 
             if (term.bool) {
                 if (this[key]) {
@@ -1737,14 +1773,16 @@ const Material = class extends Thing {
 
             if (key === 'embeddedNum' && this[key]) {
                 for (let k = 0, l = this.embeddedList.length; k < l; k++) {
-                    this.embeddedList[k].__proto__ = Item.prototype;
-                    let name = this.embeddedList[k].getName();
+                    let item = this.embeddedList[k]
+                    let name = item.getName();
+                    ctxInv.shadowColor = item.shadow ? item.shadow : colorList.clear;
                     display.text({
                         ctx: ctxInv,
                         msg: name,
                         x: i + 0.5,
                         y: j++,
-                        limit: msgLimit,
+                        limit: msgLimit + 2,
+                        stroke: item.stroke,
                     });
                 }
 			}
@@ -1843,10 +1881,10 @@ const Material = class extends Thing {
             this.acTBase = Math.ceil(volume * (this.hardness + this.toughness) / 2 * this.acTRate);
             this.acBBase = Math.ceil(volume * this.toughness);
 		}
-		
+        
         if (!char) {
-            let durab = this.durabBonus + DURAB_BASE + this.weight * DURAB_RATE;
-            this.durabMax = this.durab = Math.ceil(durab * durabRate);
+            this.durabRate = durabRate;
+            this.calcDurab(true);
         }
     }
 
@@ -1857,9 +1895,9 @@ const Material = class extends Thing {
         return materialList[i];
     }
 
-    getMaterial(gem, matBase, matId) {
+    getMaterial(matBase, matId) {
         let lvl = this.lvl;
-        if (!matBase) matBase = gem ? M_GEM : this.getMaterialBase();
+        if (!matBase) matBase = this.getMaterialBase();
         this.material = matBase;
         let materials = materialMap.get(matBase);
         let list = materials.list;
@@ -1869,16 +1907,20 @@ const Material = class extends Thing {
             nums.shuffle();
             let i = 0;
             do { 
-                mat = list.get(nums[i++]);
+                matId = nums[i++];
+                mat = list.get(matId);
             } while (mat.lvl > lvl || evalPercentage(mat.rarity))
+
 		} else {
             mat = list.get(matId);
         }
-		
+        
+        this.matId = matId;
         this.density = mat.density;
         this.hardness = mat.hardness;
         this.toughness = mat.toughness;
         this.priceRate = mat.priceRate;
+        if (this.type !== 'enemy' && this.embeddedLimit > mat.embeddedNum) this.embeddedLimit = mat.embeddedNum;
         if (mat.values) {
             mergeMod({
                 obj: this,
@@ -1891,10 +1933,7 @@ const Material = class extends Thing {
 		
         let [nameA, nameB] = [mat.name['a'], mat.name['b']];
         if (matBase === M_GEM) this.bias = mat.bias;
-        if (gem) {
-            this.name['a'] = this.nameReal['a'] = nameA;
-            this.name['b'] = this.nameReal['b'] = nameB;
-        } else if (this.mod !== UNIQUE) {
+        if (this.mod !== UNIQUE) {
             if (this.type === 'enemy') {
                 this.name['a'] = nameA + ' ' + this.name['a'];
                 this.name['b'] = nameB + 'の' + this.name['b'];
@@ -1948,10 +1987,12 @@ const Material = class extends Thing {
                 perc: perc + BIAS_BONUS,
                 max: max,
 			});
-			
-            namePreA = pre.name['a'] + ' ';
-            namePreB = pre.name['b'];
+            
             color = pre.color;
+            if (!(this.material & M_GEM)) {
+                namePreA = pre.name['a'] + ' ';
+                namePreB = pre.name['b'];
+            }
 		}
 		
         let nameSufA = '';
@@ -2117,6 +2158,7 @@ const mergeMod = ({
     max,
     min,
     fixed,
+    remove,
 }) => {
     let count = 0;
     for (let key in obj2) {
@@ -2124,6 +2166,7 @@ const mergeMod = ({
         let value = 0;
         if (fixed || mod === true || mod === DEFAULT) {
             value = mod;
+            if (remove) value = -value;
 		} else {
             if (!count) {
                 count++;
