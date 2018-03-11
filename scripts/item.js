@@ -124,7 +124,8 @@ const [ //staff
 
 const [ //shield
     S_SHIELD,
-] = enums(1, 1);
+    S_SHIELD_GEM,
+] = enums(1, 2);
 
 const [ //armor
 	A_ROBE,
@@ -175,7 +176,11 @@ const [ //light
 	L_LANTHANUM,
 ] = enums(1, 3);
 
-const R_RING = 1;
+const [
+    R_RING,
+    R_RING_GEM,
+] = enums(1, 2);
+
 const A_AMULET = 1;
 const G_GEM = 1;
 const O_OLIVE_OIL = 1;
@@ -199,6 +204,8 @@ const RECIPE_1 = {
 		-> Charge book [charges sum]
 	Gem [1-4]
 		-> Coin
+	Embeddable Equipment + The Same Materials
+		<-> Equipment [Materials]
 	`,
 
     b: `松明 [2-4]
@@ -213,6 +220,8 @@ const RECIPE_1 = {
 		-> 充填書 [充填 計]
 	宝石 [1-4]
 		-> 硬貨
+	埋め込み可能な装備品 + 同素材
+		<-> 装備品 [素材]
 	`
 };
 
@@ -1188,6 +1197,7 @@ const itemTab = {
             rarity: 0,
             iasBase: -10,
             volumeRate: 0.3,
+            embeddedLimit: 2,
             atkType: AT_S | AT_T,
             edge: 1,
             material: M_WOOD | M_BONE
@@ -1200,7 +1210,8 @@ const itemTab = {
             lvl: 1,
             rarity: 0,
             iasBase: -10,
-            volumeRate: 0.3,
+            volumeRate: 0.5,
+            embeddedLimit: 3,
             atkType: AT_S | AT_T,
             edge: 2,
             material: M_STONE | M_METAL
@@ -1210,10 +1221,11 @@ const itemTab = {
             nameReal: { a: 'Sword', b: '剣' },
             symbol: '|',
             shop: true,
-            lvl: 10,
-            rarity: 10,
+            lvl: 1,
+            rarity: 0,
             iasBase: 0,
             volumeRate: 1,
+            embeddedLimit: 4,
             atkType: AT_S,
             edge: 2,
             material: M_METAL | M_STONE
@@ -1228,6 +1240,7 @@ const itemTab = {
             rarity: 0,
             iasBase: 0,
             volumeRate: 1,
+            embeddedLimit: 4,
             atkType: AT_T,
             material: M_METAL
 		}],
@@ -1241,6 +1254,7 @@ const itemTab = {
             rarity: 0,
             iasBase: 0,
             volumeRate: 0.6,
+            embeddedLimit: 3,
             atkType: AT_B,
             material: M_WOOD | M_BONE
 		}],
@@ -1249,10 +1263,11 @@ const itemTab = {
             nameReal: { a: 'Axe', b: '斧' },
             symbol: '/',
             shop: true,
-            lvl: 5,
-            rarity: 5,
+            lvl: 1,
+            rarity: 0,
             iasBase: 10,
             volumeRate: 2,
+            embeddedLimit: 4,
             atkType: AT_S,
             edge: 1,
             material: M_METAL
@@ -1262,9 +1277,10 @@ const itemTab = {
             nameReal: { a: 'Two-handed Axe', b: '両手斧' },
             symbol: '/',
             lvl: 5,
-            rarity: 5,
+            rarity: 20,
             iasBase: 15,
             volumeRate: 3,
+            embeddedLimit: 5,
             atkType: AT_S,
             twoHanded: true,
             edge: 1,
@@ -1275,10 +1291,11 @@ const itemTab = {
             nameReal: { a: 'Pick', b: 'ピック' },
             symbol: '￥',
             shop: true,
-            lvl: 20,
-            rarity: 20,
+            lvl: 1,
+            rarity: 0,
             iasBase: 5,
             volumeRate: 1,
+            embeddedLimit: 4,
             atkType: AT_T,
             digging: 1,
             material: M_METAL
@@ -1287,11 +1304,11 @@ const itemTab = {
         [M_MAUL, {
             nameReal: { a: 'Maul', b: '大木槌' },
             symbol: '￥',
-            shop: true,
-            lvl: 20,
+            lvl: 5,
             rarity: 20,
             iasBase: 20,
             volumeRate: 4,
+            embeddedLimit: 5,
             atkType: AT_B,
             twoHanded: true,
             material: M_WOOD
@@ -1300,10 +1317,11 @@ const itemTab = {
         [M_TWO_HANDED_HAMMER, {
             nameReal: { a: 'Two-handed Hammer', b: '両手槌' },
             symbol: '￥',
-            lvl: 20,
-            rarity: 20,
-            iasBase: 20,
+            lvl: 10,
+            rarity: 40,
+            iasBase: 25,
             volumeRate: 4,
+            embeddedLimit: 6,
             atkType: AT_B,
             twoHanded: true,
             material: M_METAL | M_STONE
@@ -1319,6 +1337,7 @@ const itemTab = {
             rarity: 0,
             iasBase: 0,
             volumeRate: 0.5,
+            embeddedLimit: 2,
             atkType: AT_B,
             material: M_SKIN
 		}],
@@ -1326,11 +1345,11 @@ const itemTab = {
         [M_STAFF_SLING, {
             nameReal: { a: 'Staff Sling', b: '棒スリング' },
             throwType: 'sling',
-            shop: true,
-            lvl: 1,
-            rarity: 0,
+            lvl: 5,
+            rarity: 20,
             iasBase: 5,
             volumeRate: 0.8,
+            embeddedLimit: 3,
             atkType: AT_B,
             material: M_WOOD
 		}],
@@ -1343,6 +1362,7 @@ const itemTab = {
             rarity: 0,
             iasBase: -10,
             volumeRate: 0.5,
+            embeddedLimit: 4,
             atkType: AT_T,
             twoHanded: true,
             material: M_WOOD | M_BONE | M_HORN
@@ -1356,6 +1376,7 @@ const itemTab = {
             rarity: 0,
             iasBase: 5,
             volumeRate: 1.5,
+            embeddedLimit: 4,
             atkType: AT_T,
             twoHanded: true,
             material: M_WOOD | M_METAL
@@ -1370,6 +1391,7 @@ const itemTab = {
             rarity: 0,
             fcrBase: -10,
             volumeRate: 0.5,
+            embeddedLimit: 2,
             atkType: AT_B,
             material: M_WOOD
 		}],
@@ -1380,7 +1402,8 @@ const itemTab = {
             lvl: 1,
             rarity: 0,
             fcrBase: -10,
-            volumeRate: 0.5,
+            volumeRate: 0.7,
+            embeddedLimit: 3,
             atkType: AT_B,
             material: M_METAL
 		}],
@@ -1392,6 +1415,7 @@ const itemTab = {
             rarity: 0,
             fcrBase: -15,
             volumeRate: 1,
+            embeddedLimit: 4,
             atkType: AT_B,
             twoHanded: true,
             material: M_WOOD
@@ -1405,7 +1429,17 @@ const itemTab = {
             lvl: 1,
             rarity: 0,
             volumeRate: 1,
+            embeddedLimit: 4,
             material: M_SKIN | M_SCALE | M_METAL | M_BONE | M_WOOD | M_STONE | M_SHELL | M_HORN
+        }],
+
+        [S_SHIELD_GEM, {
+            nameReal: { a: 'Shield', b: '盾' },
+            lvl: 5,
+            rarity: 80,
+            volumeRate: 1,
+            embeddedLimit: 4,
+            material: M_GEM
         }],
 	]),
 	
@@ -1416,15 +1450,17 @@ const itemTab = {
             lvl: 1,
             rarity: 0,
             volumeRate: 0.5,
+            embeddedLimit: 2,
             material: M_CLOTH | M_FEATHER
 		}],
 		
         [A_VESTMENT, {
             nameReal: { a: 'Vestment', b: '法衣' },
-            lvl: 1,
-            rarity: 0,
+            lvl: 5,
+            rarity: 60,
             volumeRate: 0.6,
-            material: M_CLOTH | M_SKIN || M_GEM
+            embeddedLimit: 4,
+            material: M_GEM
 		}],
 		
         [A_VEST, {
@@ -1433,6 +1469,7 @@ const itemTab = {
             lvl: 1,
             rarity: 0,
             volumeRate: 0.8,
+            embeddedLimit: 3,
             material: M_FUR | M_SKIN
 		}],
 		
@@ -1442,24 +1479,25 @@ const itemTab = {
             lvl: 1,
             rarity: 0,
             volumeRate: 1,
+            embeddedLimit: 4,
             material: M_METAL | M_SCALE | M_PLATING | M_BONE | M_SHELL
 		}],
 		
         [A_SPLINT_MAIL, {
             nameReal: { a: 'Splint Mail', b: '小札鎧' },
-            shop: true,
-            lvl: 1,
-            rarity: 0,
+            lvl: 5,
+            rarity: 20,
             volumeRate: 1.2,
+            embeddedLimit: 5,
             material: M_METAL | M_WOOD
 		}],
 		
         [A_PLATE_MAIL, {
             nameReal: { a: 'Plate Mail', b: '板金鎧' },
-            shop: true,
-            lvl: 1,
-            rarity: 0,
+            lvl: 10,
+            rarity: 40,
             volumeRate: 1.5,
+            embeddedLimit: 6,
             material: M_METAL | M_STONE
         }],
 	]),
@@ -1471,6 +1509,7 @@ const itemTab = {
             lvl: 1,
             rarity: 0,
             volumeRate: 0.8,
+            embeddedLimit: 2,
             material: M_FEATHER | M_SCALE
 		}],
 		
@@ -1480,6 +1519,7 @@ const itemTab = {
             lvl: 1,
             rarity: 0,
             volumeRate: 1,
+            embeddedLimit: 2,
             material: M_FUR | M_SKIN
 		}],
 		
@@ -1489,6 +1529,7 @@ const itemTab = {
             lvl: 1,
             rarity: 0,
             volumeRate: 1.2,
+            embeddedLimit: 2,
             material: M_CLOTH
         }],
 	]),
@@ -1501,6 +1542,7 @@ const itemTab = {
             rarity: 0,
             numBoxes: 1,
             volumeRate: 0.5,
+            embeddedLimit: 2,
             material: M_CLOTH | M_FEATHER | M_FUR
 		}],
 		
@@ -1511,6 +1553,7 @@ const itemTab = {
             rarity: 0,
             numBoxes: 1,
             volumeRate: 1,
+            embeddedLimit: 2,
             material: M_SKIN | M_SCALE | M_PLATING | M_BONE
         }],
 	]),
@@ -1518,10 +1561,12 @@ const itemTab = {
     helm: new Map([
         [H_CIRCLET, {
             nameReal: { a: 'Circlet', b: '冠' },
+            shop: true,
             lvl: 1,
             rarity: 0,
             volumeRate: 0.2,
-            material: M_FEATHER | M_PLATING | M_GEM
+            embeddedLimit: 2,
+            material: M_FEATHER | M_PLATING
 		}],
 		
         [H_CAP, {
@@ -1530,15 +1575,17 @@ const itemTab = {
             lvl: 1,
             rarity: 0,
             volumeRate: 0.5,
-            material: M_CLOTH | M_FUR | M_FEATHER | M_SKIN | M_SCALE
+            embeddedLimit: 2,
+            material: M_CLOTH | M_FUR | M_SKIN | M_SCALE
 		}],
 		
         [H_CROWN, {
             nameReal: { a: 'Crown', b: '王冠' },
-            lvl: 1,
-            rarity: 0,
+            lvl: 5,
+            rarity: 60,
             volumeRate: 0.7,
-            material: M_METAL | M_GEM
+            embeddedLimit: 4,
+            material: M_GEM
 		}],
 		
         [H_MASK, {
@@ -1547,7 +1594,8 @@ const itemTab = {
             lvl: 1,
             rarity: 0,
             volumeRate: 0.8,
-            material: M_PLATING | M_WOOD | M_STONE
+            embeddedLimit: 2,
+            material: M_WOOD | M_STONE
 		}],
 		
         [H_HELM, {
@@ -1556,6 +1604,7 @@ const itemTab = {
             lvl: 1,
             rarity: 0,
             volumeRate: 1,
+            embeddedLimit: 3,
             material: M_METAL | M_BONE | M_SHELL | M_HORN
         }],
 	]),
@@ -1567,25 +1616,17 @@ const itemTab = {
             lvl: 1,
             rarity: 0,
             volumeRate: 0.5,
+            embeddedLimit: 2,
             material: M_CLOTH | M_FUR | M_FEATHER
 		}],
 		
         [G_BRACER, {
             nameReal: { a: 'Bracer', b: 'ブレイサー' },
-            shop: true,
-            lvl: 1,
-            rarity: 0,
+            lvl: 5,
+            rarity: 60,
             volumeRate: 0.7,
-            material: M_STONE | M_PLATING
-		}],
-		
-        [G_GLOVES, {
-            nameReal: { a: 'Gloves', b: '手袋' },
-            shop: true,
-            lvl: 1,
-            rarity: 0,
-            volumeRate: 1,
-            material: M_SKIN | M_SCALE
+            embeddedLimit: 4,
+            material: M_GEM
 		}],
 		
         [G_VAMBRACE, {
@@ -1594,16 +1635,27 @@ const itemTab = {
             lvl: 1,
             rarity: 0,
             volumeRate: 0.8,
-            material: M_BONE | M_SHELL
+            embeddedLimit: 2,
+            material: M_BONE | M_SHELL | M_STONE 
+		}],
+	
+        [G_GLOVES, {
+            nameReal: { a: 'Gloves', b: '手袋' },
+            shop: true,
+            lvl: 1,
+            rarity: 0,
+            volumeRate: 1,
+            embeddedLimit: 3,
+            material: M_SKIN | M_SCALE | M_PLATING
 		}],
 		
         [G_GAUNTLETS, {
             nameReal: { a: 'Gauntlets', b: '小手' },
-            shop: true,
-            lvl: 1,
-            rarity: 0,
+            lvl: 5,
+            rarity: 20,
             iasBase: 10,
             volumeRate: 1.2,
+            embeddedLimit: 4,
             material: M_METAL
         }],
 	]),
@@ -1616,6 +1668,7 @@ const itemTab = {
             rarity: 0,
             frwBase: -10,
             volumeRate: 0.5,
+            embeddedLimit: 2,
             material: M_CLOTH | M_FEATHER
 		}],
 		
@@ -1626,6 +1679,7 @@ const itemTab = {
             rarity: 0,
             frwBase: -5,
             volumeRate: 0.7,
+            embeddedLimit: 2,
             material: M_FUR | M_SKIN | M_WOOD
 		}],
 		
@@ -1636,16 +1690,17 @@ const itemTab = {
             rarity: 0,
             frwBase: 0,
             volumeRate: 1,
+            embeddedLimit: 3,
             material: M_SCALE | M_PLATING | M_BONE | M_SHELL
 		}],
 		
         [B_GREAVES, {
             nameReal: { a: 'Greaves', b: '脛当て' },
-            shop: true,
-            lvl: 1,
-            rarity: 0,
+            lvl: 5,
+            rarity: 20,
             frwBase: 5,
             volumeRate: 1.2,
+            embeddedLimit: 4,
             material: M_METAL
         }],
 	]),
@@ -1659,6 +1714,7 @@ const itemTab = {
             lighten: 1,
             duration: 5000,
             volumeRate: 0.5,
+            embeddedLimit: 1,
             torch: true,
             material: M_WOOD
 		}],
@@ -1671,6 +1727,7 @@ const itemTab = {
             lighten: 2,
             duration: 10000,
             volumeRate: 1.2,
+            embeddedLimit: 1,
             material: M_STONE
 		}],
 		
@@ -1682,6 +1739,7 @@ const itemTab = {
             lighten: 3,
             duration: 7500,
             volumeRate: 1,
+            embeddedLimit: 1,
             material: M_METAL
         }],
 	]),
@@ -1694,6 +1752,7 @@ const itemTab = {
             lvl: 1,
             rarity: 0,
             volumeRate: 1,
+            embeddedLimit: 1,
             material: M_BONE | M_FEATHER | M_HORN
         }],
 	]),
@@ -1706,16 +1765,34 @@ const itemTab = {
             lvl: 1,
             rarity: 0,
             volumeRate: 1,
-            material: M_METAL | M_STONE | M_GEM
+            embeddedLimit: 1,
+            material: M_METAL | M_STONE
+        }],
+        
+        [R_RING_GEM, {
+            nameReal: { a: 'Ring', b: '指輪' },
+            color: colorList.red,
+            mod: MAGIC,
+            lvl: 5,
+            rarity: 80,
+            volumeRate: 1,
+            embeddedLimit: 1,
+            material: M_GEM
         }],
 	]),
 	
     gem: new Map([
         [G_GEM, {
-            nameReal: { a: 'Gem', b: 'ジェム' },
+            nameReal: { a: 'Jewel', b: 'ジュエル' },
+            color: colorList.white,
+            mod: MAGIC,
             priceRate: 1,
             lvl: 1,
-            rarity: 0
+            rarity: 0,
+            desc: {
+                a: '',
+                b: '埋め込み可能な装備品に合成すると属性値が付与される。'    
+            }
         }],
 	]),
 	
@@ -1820,6 +1897,7 @@ const itemUniqueMap = {
     light: new Map([]),
     ring: new Map([]),
     amulet: new Map([]),
+    gem: new Map([]),
 };
 
 const Item = class extends Material {
@@ -1835,13 +1913,19 @@ const Item = class extends Material {
 
     init(position, x, y, magic, lvl, uniqueId, starter, matBase, matId) {
         this.lvl = lvl;
-        if (this.equipable) {
-            this.durabBonus = 0;
-            this.embeddedNum = 0;
-            this.embeddedMax = 1;
-            this.embeddedList = [];
+        let gem = this.type === 'gem';
+        if (this.equipable || gem) {
+            if (!gem) {
+                this.durabBonus = 0;
+                this.embeddedNum = 0;
+                this.embeddedList = [];
+            } else {
+                this.name['a'] = this.nameReal['a'];
+                this.name['b'] = this.nameReal['b'];
+            }
+
             if (!magic) {
-				magic = !starter && (this.mod === MAGIC ||
+				magic = this.mod === MAGIC || (!starter &&
 				evalPercentage(5 + (flag.shop ? 0 : rogue.mf)));
 			}
 
@@ -1868,8 +1952,12 @@ const Item = class extends Material {
 				
                 if (magic) this.mod = RARE;
             }
-            this.getMaterial(false, matBase, matId);
-            this.getBaseandWeight();
+
+            if (!gem) {
+                this.getMaterial(matBase, matId);
+                this.getBaseandWeight();
+            }
+
             if (magic || this.material === M_GEM) {
                 let bias = this.bias ? this.bias : RANDOM;
                 if (this.mod === RARE || evalPercentage((10 + rogue.mf) / 4)) {
@@ -1880,8 +1968,16 @@ const Item = class extends Material {
             } else if (!this.mod) {
                 this.mod = NORMAL;
                 this.cursed = !starter && !flag.shop && evalPercentage(CURSE_PERC);
-			}
-			
+            }
+
+            if (!gem) {
+                if (starter) {
+                    this.embeddedMax = 0;
+                } else {
+                    this.adjustEmbeddedNum();
+                }
+            }
+
             if (this.type === 'light') {
                 this.durationMax = this.duration;
                 if (this.durationBonus) this.durationMax += this.durationBonus;
@@ -1922,14 +2018,8 @@ const Item = class extends Material {
                 this.changeNameAndPrice();
             }
         } else {
+            this.mod = NORMAL;
             if (flag.shop) this.identified = true;
-            if (this.type === 'gem') {
-                this.getMaterial(true);
-                this.getMagic(this.bias);
-            } else {
-				this.mod = NORMAL;
-			}
-
             if (this.type === 'ammo') {
                 if (this.quantity === 1) this.quantity = rndIntBet(80, 100);
             } else if (this.type === 'coin') {
@@ -1947,7 +2037,6 @@ const Item = class extends Material {
                 if (this.quantity === 1) this.quantity = rndIntBet(1, 5);
 			}
 			
-            if (!this.weight) this.weight = WEIGHT[this.type];
             if (this.type !== 'coin') this.calcPrice();
             if (flag.shop || itemTab[this.type].get(this.tabId).identified) {
                 if (this.type === 'wand' && !flag.shop && this.identified) this.identified = false;
@@ -1955,6 +2044,7 @@ const Item = class extends Material {
             }
         }
 
+        if (!this.weight) this.weight = WEIGHT[this.type];
         if (flag.shop) this.price *= flag.gamble ? 10 : 2;
         if (position === LIST) return;
         super.init(position, x, y);
@@ -2020,6 +2110,13 @@ const Item = class extends Material {
         this.acSValue = Math.floor(this.acSBase * perc);
         this.acTValue = Math.floor(this.acTBase * perc);
         this.acBValue = Math.floor(this.acBBase * perc);
+    }
+
+    calcDurab(init) {
+        if (!this.durabRate) this.durabRate = 1;
+        let durabBase = DURAB_BASE + this.weight * DURAB_RATE;
+        this.durabMax = Math.ceil(durabBase * this.durabRate + this.durabBonus);
+        if (init || this.durab > this.durabMax) this.durab = this.durabMax;
     }
 
     identifyAll() { //potion, scroll
@@ -2092,7 +2189,7 @@ const Item = class extends Material {
         this.name['a'] = this.nameReal['a'];
         this.name['b'] = this.nameReal['b'];
         this.changePrice();
-        if (this.equipable) this.color = this.colorReal = this.colorMod;
+        if (this.equipable || this.type === 'material' || this.type === 'gem') this.color = this.colorReal = this.colorMod;
     }
 
     changePrice() {
@@ -2150,44 +2247,51 @@ const Item = class extends Material {
 			}
 			
             if (this.charges >= 0 && this.identified && !halluc) name += ` [${this.charges}]`;
-        } else if ((type === 'light' || type === 'oil') && this.identified && !halluc) {
-            let duration = type === 'oil' ? this.duration :
-                Math.ceil(this.duration / this.durationMax * 100) + '%';
-            name += ` [${duration}]`;
-        } else if (type === 'material' && !halluc) {
-            type = materialMap.get(this.material).name[a]
-                .replace(a === ENG ? /s$/ : /類$|製$|材$/, '');
-            name = a === ENG ? `${type} of ${name}` : `${name}の${type}`;
         }
-        if (this.equipable && !halluc) {
-            let string = '';
-            if (this.weapon) {
-                if (this.twoHanded) string += ' (2H)';
-                string += ` (${this.dmgBase})`;
-                // if(this.identified){
-                // let dmgSign = this.dmgBonus>0? '+':'';
-                // let rateSign = this.rateBonus>0? '+':'';
-                // string += ` (${dmgSign}${this.dmgBonus}%,${rateSign}${this.rateBonus}%)`;
-                // }
-            } else if (this.armor) {
-                string += ` [${this.acSBase},${this.acTBase},${this.acBBase}]`;
-                // if(this.identified){
-                // let rateSign = this.acBonus>0? '+':'';
-                // string += ` (${rateSign}${this.acBonus}%)`;
-                // }
-			}
-			
-            name += string;
-            if (this.identified) {
-                if (this.cursed) name = (a === ENG ? 'Cursed ' : '呪われた') + name;
-                name += ` {${this.durab}}`;
-                // let durab = Math.ceil(this.durab/this.durabMax*100);
-                // name += ` {${durab}%}`;
-                if (this.embeddedMax) name += ` <${this.embeddedNum}/${this.embeddedMax}>`;
-            } else {
-				name += a === ENG ? ' (Unid)' : ' (未識別)';
-			}
-		}
+
+        if (!halluc) {
+            if ((type === 'light' || type === 'oil') && this.identified) {
+                let duration = type === 'oil' ? this.duration :
+                    Math.ceil(this.duration / this.durationMax * 100) + '%';
+                name += ` [${duration}]`;
+            } else if (type === 'material') {
+                let matBase = materialMap.get(this.material).name[a]
+                    .replace(a === ENG ? /s$/ : /類$|製$|材$/, '');
+                name = a === ENG ? `${matBase} of ${name}` : `${name}の${matBase}`;
+            }
+
+            if (this.equipable) {
+                let string = '';
+                if (this.weapon) {
+                    if (this.twoHanded) string += ' (2H)';
+                    if (this.identified) string += ` (${this.dmgBase})`;
+                    // if(this.identified){
+                    // let dmgSign = this.dmgBonus>0? '+':'';
+                    // let rateSign = this.rateBonus>0? '+':'';
+                    // string += ` (${dmgSign}${this.dmgBonus}%,${rateSign}${this.rateBonus}%)`;
+                    // }
+                } else if (this.armor) {
+                    if (this.identified) string += ` [${this.acSBase},${this.acTBase},${this.acBBase}]`;
+                    // if(this.identified){
+                    // let rateSign = this.acBonus>0? '+':'';
+                    // string += ` (${rateSign}${this.acBonus}%)`;
+                    // }
+                }
+                
+                name += string;
+                if (this.identified) {
+                    if (this.cursed) name = (a === ENG ? 'Cursed ' : '呪われた') + name;
+                    name += ` {${this.durab}}`;
+                    // let durab = Math.ceil(this.durab/this.durabMax*100);
+                    // name += ` {${durab}%}`;
+                    if (this.embeddedMax) name += ` <${this.embeddedNum}/${this.embeddedMax}>`;
+                }
+            }
+            
+            if (!this.identified && (this.equipable || type === 'material' || type === 'gem')) {
+                name += a === ENG ? ' (Unid)' : ' (未識別)';
+            }
+        }
 		
         if (quantity > 1) name += ` x${quantity}`;
         return name;
@@ -2196,6 +2300,12 @@ const Item = class extends Material {
     split(quantity, list) {
         let item = {};
         copyObj(item, this);
+        if (item.embeddedList && item.embeddedList.length) {
+            for (let itemEmbedded of item.embeddedList) {
+                itemEmbedded.__proto__ = Item.prototype;
+            }
+        }
+
         item.__proto__ = Item.prototype;
         item.quantity = quantity;
         this.quantity -= quantity;
@@ -2213,6 +2323,27 @@ const Item = class extends Material {
 		}
 		
         return item;
+    }
+
+    adjustEmbeddedNum() {
+        let limit = this.embeddedLimit;
+        if (this.mod === NORMAL) {
+            this.embeddedMax = evalPercentage(50) ? 0 : rndIntBet(1, limit);
+        } else {
+            let bonus = this.embeddedBonus;
+            if (bonus) {
+                if (this.mod === MAGIC) {
+                    if (bonus > 4) bonus  = 4;
+                } else if (this.mod === RARE) {
+                    if (bonus > 2) bonus = 2;
+                }
+
+                if (bonus > limit) bonus = limit;
+                this.embeddedMax = this.embeddedBonus = bonus;
+            } else {
+                this.embeddedMax = 0;
+            }
+        }
     }
 
     static getSymbol(type) {

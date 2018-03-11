@@ -105,9 +105,12 @@ const Data = class {
 
     loadItem(list, floor) {
         for (let key in list) {
-            if (!list[key]) continue;
-            list[key].__proto__ = Item.prototype;
-            if (floor) map.itemList[list[key].id] = list[key];
+            let item = list[key]; 
+            if (!item) continue;
+            item.__proto__ = Item.prototype;
+            if (floor) map.itemList[item.id] = item;
+            if (item.embeddedList && item.embeddedList.length) this.loadItem(item.embeddedList);
+            if (this.ver < 0.006 && item.type === 'gem') item.material = undefined;
         }
     }
 

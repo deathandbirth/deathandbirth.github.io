@@ -1289,13 +1289,16 @@ const Rogue = class extends Fighter {
     }
 
     tryToSynthesize() {
-        let [a, f1, f2, f3, f4a, f4b, f5, f5b, f5c, f6a, f6b, f7a, f7b, f8, f8b] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        let [a, f1, f2, f3, f4a, f4b, f5, f5b, f5c, f6a, f6b, f7a, f7b, f8, f8b, f9] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
         let l = Object.keys(this.cube).length;
         for (let i = 0; i < l; i++) {
             let item = this.cube[EA[i]];
-            if (item.equipable && item.embeddedNum < item.embeddedMax) {
-                a = EA[i];
-                f8++;
+            if (item.equipable) {
+                if (item.embeddedNum) f9++;
+                if (item.embeddedNum < item.embeddedMax) {
+                    a = EA[i];
+                    f8++;
+                }
 			}
 			
             if (item.type === 'potion' && item.nameSkill === HEAL) {
@@ -1341,7 +1344,7 @@ const Rogue = class extends Fighter {
             }
 		}
 		
-        let name;
+        let name, msg;
         if (f1 === 3 && l === 3) {
             this.createItemIntoPack({
                 type: 'potion',
@@ -1418,25 +1421,29 @@ const Rogue = class extends Fighter {
             this.packAdd(item);
             name = item.getName();
         } else if (l >= 2 && f8 === 1 && l === f8 + f8b &&
-            f8b === this.cube[a].embeddedMax - this.cube[a].embeddedNum) { //embed
+            f8b <= this.cube[a].embeddedMax - this.cube[a].embeddedNum) { //embed
             let item = this.cube[a];
+            let weight = 0;
             let found;
             for (let key in this.cube) {
                 if (key === a) continue;
                 let item2 = this.cube[key];
-                if (item2.type === 'material' && item2.material !== item.material) continue;
+                if (item2.type !== 'gem' && item2.material !== item.material) continue;
                 mergeMod({
                     obj: item,
                     obj2: item2.modList,
                     fixed: true,
 				});
-				
+                
+                weight += item2.weight;
                 item.embeddedNum++;
                 item.embeddedList.push(item2);
                 found = true;
 			}
 			
             if (found) {
+                item.calcDurab();
+                item.weight = Math.round((item.weight + weight) * 100) / 100;
                 if (item.weapon) {
                     item.calcDmgOne();
 				} else {
@@ -1447,14 +1454,48 @@ const Rogue = class extends Fighter {
                 this.packAdd(item);
                 name = item.getName();
             }
-		}
+		} else if (f9 && l === 1) {
+            let item = this.cube['a'];
+            let weight = 0;
+            for (let itemEmbedded of item.embeddedList) {
+                mergeMod({
+                    obj: item,
+                    obj2: itemEmbedded.modList,
+                    fixed: true,
+                    remove: true,
+				});
+				
+                weight -= itemEmbedded.weight;
+                this.packAdd(itemEmbedded);
+            }
+
+            item.embeddedNum = 0;
+            item.embeddedList = [];
+            item.weight = Math.round((item.weight + weight) * 100) / 100;
+            item.calcDurab();
+            if (item.weapon) {
+                item.calcDmgOne();
+            } else {
+                item.dmgDiceNum = item.dmgDiceSides = undefined;
+                if (item.armor) item.calcAcOne();
+            }
+            
+            this.packAdd(item);
+            msg = option.isEnglish() ?
+                'Removed materials' :
+                '素材を取り除いた';
+        }
 		
-        if (name) {
+        if (name || msg) {
             this.cube = {};
             this.cubeIndex = {};
-            message.draw(option.isEnglish() ?
-                `Synthesized ${name}` :
-                `${name}を合成した`);
+            if (!msg) {
+                msg = option.isEnglish() ?
+                    `Synthesized ${name}` :
+                    `${name}を合成した`;
+            }
+
+            message.draw(msg);
         } else {
             this.returnCubeItem()
             message.draw(message.get(M_NOTHING_HAPPENED));

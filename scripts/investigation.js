@@ -136,11 +136,7 @@ const investigationMap = new Map([
     ['durab', {
         name: { a: 'Durability', b: '耐久度' },
         item: true,
-    }],
-
-    ['durabMax', {
-        name: { a: 'Max Durability', b: '最大耐久度' },
-        item: true,
+        max: 'durabMax'
     }],
 
     ['iasBase', {
@@ -166,11 +162,7 @@ const investigationMap = new Map([
     ['embeddedNum', {
         name: { a: 'Embedded Number', b: '埋め込み数' },
         item: true,
-    }],
-    
-    ['embeddedMax', {
-        name: { a: 'Max Embedded Number', b: '埋め込み最大数' },
-        item: true,
+        max: 'embeddedMax'
     }],
     
     ['mod', null],
@@ -443,6 +435,12 @@ const investigationMap = new Map([
     
     ['durabBonus', {
         name: { a: 'Durability Bonus', b: '耐久度加算値' },
+        item: true,
+        plus: true,
+    }],
+    
+    ['embeddedBonus', {
+        name: { a: 'Embedded Bonus', b: '埋め込み加算値' },
         item: true,
         plus: true,
     }],
