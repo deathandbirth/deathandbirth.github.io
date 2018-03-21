@@ -721,7 +721,7 @@ const Rogue = class extends Fighter {
     equip(keyCode) {
         if (this.switchInventory(keyCode, M_EQUIP)) return;
         let a = getAlphabetOrNumber(keyCode);
-        if (!a) return;
+        if (!a || input.isShift) return;
         let item = this.getItem(a, flag.floor);
         if (!item || !item.equipable) return;
         flag.floor = false;
@@ -826,7 +826,7 @@ const Rogue = class extends Fighter {
             item = boxItem;
 		} else {
             let a = getAlphabetOrNumber(keyCode);
-            if (!a) return;
+            if (!a || input.isShift) return;
             item = this.getItem(a, flag.floor);
             if (!item || item.type !== 'light' && item.type !== 'oil') return;
 		}
@@ -1037,7 +1037,7 @@ const Rogue = class extends Fighter {
         if (!item || item.identified) return;
         flag.floor = false
         if (item.type === 'wand' && !itemTab[item.type].get(item.tabId).identified ||
-            item.type === 'potion' || item.type === 'scroll') {
+            item.type === 'potion' || item.type === 'scroll' || item.type === 'orb') {
             item.identifyAll();
 		} else {
             item.identified = true;
@@ -1216,16 +1216,27 @@ const Rogue = class extends Fighter {
         display.clearOne(display.ctxes.cur);
     }
 
-    investigateOne(keyCode) {
-        if (this.switchInventory(keyCode, M_INVESTIGATE, true)) return;
-        let a = getAlphabetOrNumber(keyCode);
-        if (!a) return;
-        let item = this.getItem(a, flag.floor);
-        if (!item || !item.identified) return;
+    investigateOne(keyCode, item, place, direction, msg) {
+        if (!item) {
+            if (this.switchInventory(keyCode, M_INVESTIGATE, true)) return;
+            let a = getAlphabetOrNumber(keyCode);
+            if (!a) return;
+            item = this.getItem(a, flag.floor);
+            if (!item) return;
+        }
+
+        if (!item.identified){
+            message.draw(message.get(M_NO_CLUE));
+            return;
+        }
+
         inventory.clear();
-        this.showInventory(item.place);
-        item.investigate(item.place === P_EQUIPMENT || item.place === P_BOX ? RIGHT : LEFT);
-        message.draw(message.get(M_INVESTIGATE) + message.get(flag.floor ? M_PACK : M_FLOOR), true);
+        if (place === undefined) place = item.place;
+        this.showInventory(place);
+        if (direction === undefined) direction = item.place === P_EQUIPMENT || item.place === P_BOX ? RIGHT : LEFT;
+        item.investigate(direction);
+        if (msg === undefined) msg = message.get(M_INVESTIGATE) + message.get(flag.floor ? M_PACK : M_FLOOR);
+        message.draw(msg, true);
     }
 
     getSkillInfo(skill, lvl, item) {
@@ -1293,6 +1304,7 @@ const Rogue = class extends Fighter {
         let l = Object.keys(this.cube).length;
         for (let i = 0; i < l; i++) {
             let item = this.cube[EA[i]];
+            if (!item.identified) continue;
             if (item.equipable) {
                 if (item.embeddedNum) f9++;
                 if (item.embeddedNum < item.embeddedMax) {
@@ -1306,15 +1318,13 @@ const Rogue = class extends Fighter {
 			} else if (item.type === 'wand') {
                 for (let j = i + 1; j < l; j++) {
                     let item2 = this.cube[EA[j]];
-                    if (item2.type === 'wand' && item2.tabId === item.tabId) {
+                    if (item2.type === 'wand' && item2.identified && item2.tabId === item.tabId) {
                         f2++;
                         break;
                     }
                 }
-            } else if (item.type === 'gem') {
-                f3++;
-                f8b++;
-            } else if (item.type === 'material') {
+            } else if (item.type === 'gem' || item.type === 'material' || item.type === 'orb') {
+                if (item.type === 'gem') f3++;
                 f8b++;
             } else if (item.nameReal[ENG] === 'Medusa\'s Head') {
                 f4a++;
@@ -1355,14 +1365,9 @@ const Rogue = class extends Fighter {
         } else if (f2 >= 1 && l === f2 + 1) { //wand
             let item = this.cube['a'];
             for (let key in this.cube) {
+                let item2 = this.cube[key];
                 if (key === 'a') continue;
-                item.charges += this.cube[key].charges;
-			}
-			
-            if (item.identified) {
-                item.identified = false;
-                item.name['a'] = item.nameReal['a'];
-                item.name['b'] = item.nameReal['b'];
+                item.charges += item2.charges;
 			}
 			
             this.packAdd(item);
@@ -1384,13 +1389,13 @@ const Rogue = class extends Fighter {
             item.weight += 1;
             this.packAdd(item);
             name = item.getName();
-        } else if (f5 === l || f5b && f5b + f5c === l) { //light
+        } else if (l !== 1 && (f5 === l || f5b && (f5b + f5c) === l)) { //light
             let item = this.cube[a];
             for (let key in this.cube) {
                 if (key === a) continue;
                 let item2 = this.cube[key];
                 item.duration += item2.duration;
-                if (item2.type === 'light' && item2.mod !== NORMAL) {
+                if (item2.type === 'light' && (item2.mod !== NORMAL || item2.embeddedList.length)) {
                     item2.duration = 0;
                     this.packAdd(item2);
                 }
@@ -1428,10 +1433,12 @@ const Rogue = class extends Fighter {
             for (let key in this.cube) {
                 if (key === a) continue;
                 let item2 = this.cube[key];
-                if (item2.type !== 'gem' && item2.material !== item.material) continue;
+                if (item2.type === 'material' && item2.material !== item.material ||
+                item2.type === 'orb' && !item2.modParts[item.type]) continue;
+                let objMod = item2.type === 'orb' ? item2.modParts[item.type] : item2.modList;
                 mergeMod({
                     obj: item,
-                    obj2: item2.modList,
+                    obj2: objMod,
                     fixed: true,
 				});
                 
@@ -1458,9 +1465,10 @@ const Rogue = class extends Fighter {
             let item = this.cube['a'];
             let weight = 0;
             for (let itemEmbedded of item.embeddedList) {
+                let objMod = itemEmbedded.type === 'orb' ? itemEmbedded.modParts[item.type] : itemEmbedded.modList;
                 mergeMod({
                     obj: item,
-                    obj2: itemEmbedded.modList,
+                    obj2: objMod,
                     fixed: true,
                     remove: true,
 				});
@@ -2299,13 +2307,22 @@ const Rogue = class extends Fighter {
         }
     }
 
-    shop(keyCode) {
+    shop(keyCode, isAlt) {
         let shop = map.coords[this.x][this.y].enter;
         if (!flag.number) {
             let a = getAlphabet(keyCode);
             if (!a) return;
             let item = input.isShift ? shop.list[a] : this.pack[a];
             if (!item) return;
+            if (isAlt) {
+                if (flag.gamble && input.isShift) return;
+                let place = input.isShift ? P_SHOP : P_PACK;
+                let direction = input.isShift ? RIGHT : LEFT;
+                let msg = message.get(M_SHOP);
+                this.investigateOne(null, item, place, direction, msg);
+                return;
+            }
+
             if (!input.isShift && Object.keys(shop.list).length === MAX_PACK_COUNT) {
                 message.draw(message.get(M_CANT_SELL));
                 return;
@@ -2370,7 +2387,7 @@ const Rogue = class extends Fighter {
         }
     }
 
-    stash(keyCode) {
+    stash(keyCode, isAlt) {
         let stash = map.coords[this.x][this.y].enter;
         if (!flag.number) {
             if (keyCode === 188 || keyCode === 190) { //, .
@@ -2399,6 +2416,14 @@ const Rogue = class extends Fighter {
 			}
 			
             if (!item) return;
+            if (isAlt) {
+                let place = input.isShift ? P_STASH : P_PACK;
+                let direction = input.isShift ? RIGHT : LEFT;
+                let msg = message.get(M_STASH);
+                this.investigateOne(null, item, place, direction, msg);
+                return;
+            }
+
             if (!input.isShift && Object.keys(stash.list).length === MAX_STASH_COUNT &&
                 !this.canCarryItem(stash.list, item)) {
                 message.draw(message.get(M_CANT_ADD));

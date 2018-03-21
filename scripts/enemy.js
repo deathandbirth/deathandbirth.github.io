@@ -372,6 +372,7 @@ const Enemy = class extends Fighter {
         item.identified = false;
         item.quantity = 1;
         item.type = 'material';
+        item.tabId = materialList.indexOf(material);
         item.weight = WEIGHT[item.type];
         item.priceRate = materialMap.get(item.material).pRate;
         item.__proto__ = Item.prototype;

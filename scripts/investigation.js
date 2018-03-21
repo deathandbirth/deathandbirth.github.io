@@ -209,6 +209,13 @@ const investigationMap = new Map([
         max: 'spdMax',
     }],
     
+    ['resistAll', {
+        name: { a: 'Resist All', b: '全耐性' },
+        plus: true,
+        perc: true,
+        item: true,
+    }],
+    
     ['fire', {
         name: { a: 'Fire Resist', b: '耐火' },
         plus: true,

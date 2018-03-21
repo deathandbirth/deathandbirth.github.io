@@ -183,6 +183,19 @@ const [
 
 const A_AMULET = 1;
 const G_GEM = 1;
+const [
+    O_MALCHUT,
+    O_YESOD,
+    O_HOD,
+    O_NETZACH,
+    O_TIPHERETH,
+    O_GEVURAH,
+    O_CHESED,
+    O_BINAH,
+    O_CHOKHMAH,
+    O_KETER,
+] = enums(1,10);
+
 const O_OLIVE_OIL = 1;
 const [ //ammo
 	A_ROCK,
@@ -226,6 +239,15 @@ const RECIPE_1 = {
 };
 
 const itemTab = {
+    coin: new Map([
+        [C_COIN, {
+            nameReal: { a: 'Coin', b: '硬貨' },
+            color: colorList.yellow,
+            lvl: 1,
+            rarity: 0
+        }],
+    ]),
+	
     book: new Map([
         [B_BLANK_PAPER, {
             nameReal: { a: 'Blank Paper', b: '白紙' },
@@ -541,8 +563,21 @@ const itemTab = {
             lvl: 1,
             rarity: 0
         }],
-	]),
+    ]),
 	
+    oil: new Map([
+        [O_OLIVE_OIL, {
+            nameReal: { a: 'Olive Oil', b: 'オリーブ油' },
+            color: colorList.yellow,
+            duration: 2500,
+            weight: 0.3,
+            priceRate: 1,
+            shop: true,
+            lvl: 1,
+            rarity: 0
+        }],
+    ]),
+
     potion: new Map([
         [P_POISON, {
             nameReal: { a: 'Poison', b: '毒' },
@@ -1422,6 +1457,47 @@ const itemTab = {
         }],
 	]),
 	
+    ammo: new Map([
+        [A_ROCK, {
+            nameReal: { a: 'Rock', b: '石' },
+            color: colorList.gray,
+            throwType: 'sling',
+            weight: 0.1,
+            priceRate: 1,
+            shop: true,
+            dmgBase: '2d1',
+            atkType: AT_B,
+            lvl: 1,
+            rarity: 0
+		}],
+		
+        [A_ARROW, {
+            nameReal: { a: 'Arrow', b: '矢' },
+            color: colorList.brown,
+            throwType: 'bow',
+            weight: 0.02,
+            priceRate: 2,
+            shop: true,
+            dmgBase: '1d2',
+            atkType: AT_T,
+            lvl: 1,
+            rarity: 0
+		}],
+		
+        [A_BOLT, {
+            nameReal: { a: 'Bolt', b: 'ボルト' },
+            color: colorList.brown,
+            throwType: 'crossbow',
+            weight: 0.04,
+            priceRate: 3,
+            shop: true,
+            dmgBase: '1d3',
+            atkType: AT_T,
+            lvl: 1,
+            rarity: 0
+        }],
+	]),
+	
     shield: new Map([
         [S_SHIELD, {
             nameReal: { a: 'Shield', b: '盾' },
@@ -1780,7 +1856,7 @@ const itemTab = {
             material: M_GEM
         }],
 	]),
-	
+
     gem: new Map([
         [G_GEM, {
             nameReal: { a: 'Jewel', b: 'ジュエル' },
@@ -1794,68 +1870,237 @@ const itemTab = {
                 b: '埋め込み可能な装備品に合成すると属性値が付与される。'    
             }
         }],
-	]),
-	
-    oil: new Map([
-        [O_OLIVE_OIL, {
-            nameReal: { a: 'Olive Oil', b: 'オリーブ油' },
-            color: colorList.yellow,
-            duration: 2500,
-            weight: 0.3,
-            priceRate: 1,
-            shop: true,
+    ]),
+
+    orb: new Map([
+        [O_MALCHUT, {
+            name: { a: '<10>', b: '<10>' },
+            nameReal: { a: '<Kingship>', b: '<王国>' },
+            color: colorList.olive,
             lvl: 1,
-            rarity: 0
+            rarity: 0,
+            modParts: {
+                melee: { digging: 2 },
+                missile: { stealth: 20 },
+                staff: { searching: 20 },
+                shield: { digest: 20 },
+                amulet: { stealth: 20 },
+                ring: { searching: 20 },
+                light: { searching: 20 },
+                armor: { digest: 20 },
+                cloak: { stealth: 20 },
+                belt: { digest: 20 },
+                helm: { searching: 20 },
+                gloves: { searching: 20 },
+                boots: { stealth: 20 },
+            }
         }],
-	]),
-	
-    ammo: new Map([
-        [A_ROCK, {
-            nameReal: { a: 'Rock', b: '石' },
+
+        [O_YESOD, {
+            name: { a: '<9>', b: '<9>' },
+            nameReal: { a: '<Foundation>', b: '<基礎>' },
+            color: colorList.purple,
+            lvl: 4,
+            rarity: 5,
+            modParts: {
+                melee: { dmgBonus: 25 },
+                missile: { rateBonus: 25 },
+                staff: { acBonus: 10 },
+                shield: { acBonus: 25 },
+                amulet: { acBonus: 10 },
+                ring: { dmgBonus: 25 },
+                light: { rateBonus: 25 },
+                armor: { acBonus: 25 },
+                cloak: { acBonus: 25 },
+                belt: { acBonus: 25 },
+                helm: { acBonus: 25 },
+                gloves: { acBonus: 25 },
+                boots: { acBonus: 25 },
+            }
+        }],
+
+        [O_HOD, {
+            name: { a: '<8>', b: '<8>' },
+            nameReal: { a: '<Splendour>', b: '<栄光>' },
+            color: colorList.orange,
+            lvl: 7,
+            rarity: 10,
+            modParts: {
+                melee: { stealLife: 5 },
+                missile: { stealLife: 5 },
+                staff: { stealLife: 5 },
+                shield: { hp: 15 },
+                amulet: { gf: 40 },
+                ring: { gf: 40 },
+                light: { hpReg: 20 },
+                armor: { hp: 20 },
+                cloak: { gf: 40 },
+                belt: { hpReg: 20 },
+                helm: { gf: 40 },
+                gloves: { stealLife: 5 },
+                boots: { gf: 40 },
+            }
+        }],
+
+        [O_NETZACH, {
+            name: { a: '<7>', b: '<7>' },
+            nameReal: { a: '<Eternity>', b: '<勝利>' },
+            color: colorList.green,
+            lvl: 10,
+            rarity: 15,
+            modParts: {
+                melee: { dmgPoison: 20 },
+                missile: { dmgPoison: 20 },
+                staff: { skillPoison: 1 },
+                shield: { poison: 30 },
+                amulet: { skillPoison: 1 },
+                ring: { skillPoison: 1 },
+                light: { poison: 20 },
+                armor: { poison: 20 },
+                cloak: { poison: 20 },
+                belt: { poison: 20 },
+                helm: { poison: 20 },
+                gloves: { dmgPoison: 20 },
+                boots: { poison: 20 },
+            }
+        }],
+
+        [O_TIPHERETH, {
+            name: { a: '<6>', b: '<6>' },
+            nameReal: { a: '<Beauty>', b: '<美>' },
+            color: colorList.yellow,
+            lvl: 13,
+            rarity: 20,
+            modParts: {
+                melee: { stealMana: 5 },
+                missile: { stealMana: 5 },
+                staff: { stealMana: 5 },
+                shield: { mp: 15 },
+                amulet: { mf: 20 },
+                ring: { mf: 20 },
+                light: { mpReg: 20 },
+                armor: { mp: 20 },
+                cloak: { mf: 20 },
+                belt: { mpReg: 20 },
+                helm: { mf: 20 },
+                gloves: { stealMana: 5 },
+                boots: { mf: 20 },
+            }
+        }],
+
+        [O_GEVURAH, {
+            name: { a: '<5>', b: '<5>' },
+            nameReal: { a: '<Severity>', b: '<峻厳>' },
+            color: colorList.red,
+            lvl: 16,
+            rarity: 25,
+            modParts: {
+                melee: { dmgFire: 20 },
+                missile: { dmgFire: 20 },
+                staff: { skillFire: 1 },
+                shield: { fire: 30 },
+                amulet: { skillFire: 1 },
+                ring: { skillFire: 1 },
+                light: { lighten: 1 },
+                armor: { fire: 20 },
+                cloak: { fire: 20 },
+                belt: { fire: 20 },
+                helm: { fire: 20 },
+                gloves: { str: 1 },
+                boots: { fire: 20 },
+            }
+        }],
+
+        [O_CHESED, {
+            name: { a: '<4>', b: '<4>' },
+            nameReal: { a: '<Kindness>', b: '<慈悲>' },
+            color: colorList.blue,
+            lvl: 19,
+            rarity: 30,
+            modParts: {
+                melee: { atkCold: 20 },
+                missile: { atkCold: 20 },
+                staff: { skillWater: 1 },
+                shield: { water: 30 },
+                amulet: { skillWater: 1 },
+                ring: { skillWater: 1 },
+                light: { water: 20 },
+                armor: { water: 20 },
+                cloak: { water: 20 },
+                belt: { water: 20 },
+                helm: { int: 1 },
+                gloves: { atkCold: 20 },
+                boots: { water: 20 },
+            }
+        }],
+
+        [O_BINAH, {
+            name: { a: '<3>', b: '<3>' },
+            nameReal: { a: '<Understanding>', b: '<理解>' },
+            color: colorList.shadow,
+            lvl: 22,
+            rarity: 35,
+            modParts: {
+                melee: { atkSlow: 20 },
+                missile: { atkSlow: 20 },
+                staff: { skillEarth: 1 },
+                shield: { earth: 30 },
+                amulet: { skillEarth: 1 },
+                ring: { skillEarth: 1 },
+                light: { earth: 20 },
+                armor: { earth: 20 },
+                cloak: { earth: 20 },
+                belt: { con: 1 },
+                helm: { earth: 20 },
+                gloves: { atkSlow: 20 },
+                boots: { earth: 20 },
+            }
+        }],
+
+        [O_CHOKHMAH, {
+            name: { a: '<2>', b: '<2>' },
+            nameReal: { a: '<Wisdom>', b: '<知恵>' },
             color: colorList.gray,
-            throwType: 'sling',
-            weight: 0.1,
-            priceRate: 1,
-            shop: true,
-            dmgBase: '2d1',
-            atkType: AT_B,
-            lvl: 1,
-            rarity: 0
-		}],
-		
-        [A_ARROW, {
-            nameReal: { a: 'Arrow', b: '矢' },
-            color: colorList.brown,
-            throwType: 'bow',
-            weight: 0.02,
-            priceRate: 2,
-            shop: true,
-            dmgBase: '1d2',
-            atkType: AT_T,
-            lvl: 1,
-            rarity: 0
-		}],
-		
-        [A_BOLT, {
-            nameReal: { a: 'Bolt', b: 'ボルト' },
-            color: colorList.brown,
-            throwType: 'crossbow',
-            weight: 0.04,
-            priceRate: 3,
-            shop: true,
-            dmgBase: '1d3',
-            atkType: AT_T,
-            lvl: 1,
-            rarity: 0
+            lvl: 25,
+            rarity: 40,
+            modParts: {
+                melee: { dmgLightning: 20 },
+                missile: { dmgLightning: 20 },
+                staff: { skillAir: 1 },
+                shield: { air: 30 },
+                amulet: { skillAir: 1 },
+                ring: { skillAir: 1 },
+                light: { air: 20 },
+                armor: { air: 20 },
+                cloak: { spd: 5 },
+                belt: { air: 20 },
+                helm: { air: 20 },
+                gloves: { dmgLightning: 20 },
+                boots: { dex: 1 },
+            }
         }],
-	]),
-	
-    coin: new Map([
-        [C_COIN, {
-            nameReal: { a: 'Coin', b: '硬貨' },
-            color: colorList.yellow,
-            lvl: 1,
-            rarity: 0
+
+        [O_KETER, {
+            name: { a: '<1>', b: '<1>' },
+            nameReal: { a: '<Crown>', b: '<王冠>' },
+            color: colorList.white,
+            lvl: 30,
+            rarity: 50,
+            modParts: {
+                melee: { ias: 20 },
+                missile: { ias: 20 },
+                staff: { fcr: 20 },
+                shield: { resistAll: 15 },
+                amulet: { fcr: 20 },
+                ring: { ias: 20 },
+                light: { resistAll: 10 },
+                armor: { resistAll: 10 },
+                cloak: { frw: 20 },
+                belt: { resistAll: 10 },
+                helm: { fcr: 20 },
+                gloves: { ias: 20 },
+                boots: { frw: 20 },
+            }
         }],
     ]),
 };
@@ -1971,6 +2216,7 @@ const Item = class extends Material {
             }
 
             if (!gem) {
+                this.calcDurab(true);
                 if (starter) {
                     this.embeddedMax = 0;
                 } else {
@@ -2189,7 +2435,11 @@ const Item = class extends Material {
         this.name['a'] = this.nameReal['a'];
         this.name['b'] = this.nameReal['b'];
         this.changePrice();
-        if (this.equipable || this.type === 'material' || this.type === 'gem') this.color = this.colorReal = this.colorMod;
+        if (this.equipable || this.type === 'material' || this.type === 'gem') {
+            this.color = this.colorReal = this.colorMod;
+        } else if (this.type === 'orb') {
+            this.color = this.colorReal;
+        }
     }
 
     changePrice() {
@@ -2224,32 +2474,35 @@ const Item = class extends Material {
 		
         name = real ? this.nameReal[a] : this.name[a];
         if (type === 'book' || type === 'potion' ||
-      	      type === 'scroll' || type === 'wand') {
+      	      type === 'scroll' || type === 'wand' || type === 'orb') {
             if (this.type2) type = this.type2;
+            let typeName;
             if (a === ENG) {
-                type = getUpperCase(type);
+                typeName = getUpperCase(type);
                 if (!this.identified && !halluc) {
                     if (type === 'potion' || type === 'wand') {
-                        name += ` ${type}`;
+                        name += ` ${typeName}`;
 					} else if (type === 'scroll') {
-						name = `${type} titled ${name}`;
-					}
+						name = `${typeName} titled ${name}`;
+					} else if (type === 'orb') {
+						name = `${typeName} engraved ${name}`;
+                    }
                 } else {
-					name = `${type} of ${name}`;
+					name = `${typeName} of ${name}`;
 				}
             } else {
-                type = translation.item[type];
+                typeName = translation.item[type];
                 if (!this.identified && type === 'scroll' && !halluc) {
-                    name += `と名付けられた${type}`;
-				} else {
-					name += `の${type}`;
+                    name += `と名付けられた${typeName}`;
+                } else if (!this.identified && type === 'orb' && !halluc) {
+                    name += `と刻まれた${typeName}`;
+                } else {
+					name += `の${typeName}`;
 				}
 			}
 			
             if (this.charges >= 0 && this.identified && !halluc) name += ` [${this.charges}]`;
-        }
-
-        if (!halluc) {
+        } else if (!halluc) {
             if ((type === 'light' || type === 'oil') && this.identified) {
                 let duration = type === 'oil' ? this.duration :
                     Math.ceil(this.duration / this.durationMax * 100) + '%';
@@ -2401,6 +2654,9 @@ const Item = class extends Material {
             case 'gem':
                 symbol = '*';
                 break;
+            case 'orb':
+                symbol = '・';
+                break;
             case 'ammo':
                 symbol = '{';
                 break;
@@ -2462,6 +2718,16 @@ const Item = class extends Material {
                 } else if (key === 'scroll') {
                     item.color = colorList.white;
                 }
+
+                if (key === 'orb') {
+                    item.mod = NORMAL;
+                    item.shadow = colorList.orange;
+                    item.priceRate = (10 + tabId) / 10;
+                    item.desc = {
+                        a: '',
+                        b: '埋め込み可能な装備品に合成すると種類に応じて属性値が付与される。'
+                    }
+                }
             }
         }
     }
@@ -2471,11 +2737,8 @@ Item.initTab();
 
 const searchItemToIdentifiy = {
     main(nameReal, type) {
-        if (type === 'wand') {
-            this.loop(rogue.pack, nameReal, type);
-            this.loop(rogue.boxes, nameReal, type);
-		}
-		
+        this.loop(rogue.pack, nameReal, type);
+        this.loop(rogue.boxes, nameReal, type);
         this.loop(map.itemList, nameReal, type);
         for (let key in map.enemyList) {
 			this.loop(map.enemyList[key].pack, nameReal, type);

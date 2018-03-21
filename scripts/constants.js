@@ -5,7 +5,7 @@ const generateNumber = function*(i, j, bit) {
 
 const enums = (i, j) => [...generateNumber(i, j)];
 const enumsBit = (i, j) => [...generateNumber(i, j, true)];
-const VERSION = 0.006;
+const VERSION = 0.007;
 const MS = 2; //message space
 const SS = 3; //stats space
 const IN_WIDTH = 47; //canvas.width/fs-1;
@@ -159,6 +159,7 @@ const WEIGHT = {
     scroll: 0.1,
     wand: 0.5,
     gem: 0.1,
+    orb: 0.1,
     coin: 0.1,
     food: 0.3,
     material: 0.2,
@@ -184,6 +185,7 @@ const PRICE = {
     amulet: 150,
     light: 50,
     gem: 400,
+    orb: 350,
     oil: 30,
     ammo: 1,
     material: 200,
@@ -212,6 +214,7 @@ const RARITY = {
     ammo: 50,
     coin: 0,
     gem: 80,
+    orb: 80,
 };
 
 const equipmentList = ['melee', 'missile', 'staff', 'shield', 'armor', 'cloak', 'belt',
@@ -224,7 +227,7 @@ const COST_REGULAR = 10;
 const COLD_DELAY = 10;
 const WAIT_TIME = 0;
 const MSG_SPEED = 3000;
-const BREATH_RATE = 1 / 10;
+const BREATH_RATE = 1 / 15;
 const NEST_BOOST = 5;
 const MAGIC_RARITY = 50;
 const BIAS_BONUS = 50;

@@ -1111,18 +1111,18 @@ const modTab = {
             name: { a: 'of Multi Color', b: '万色' },
             lvl: 25,
             rarity: 50,
-            shield: { fire: '2d3', water: '2d3', air: '2d3', earth: '2d3', poison: '2d3' },
-            armor: { fire: '1d3', water: '1d3', air: '1d3', earth: '1d3', poison: '1d3' },
-            cloak: { fire: '1d3', water: '1d3', air: '1d3', earth: '1d3', poison: '1d3' },
-            belt: { fire: '1d3', water: '1d3', air: '1d3', earth: '1d3', poison: '1d3' },
-            helm: { fire: '1d3', water: '1d3', air: '1d3', earth: '1d3', poison: '1d3' },
-            gloves: { fire: '1d3', water: '1d3', air: '1d3', earth: '1d3', poison: '1d3' },
-            boots: { fire: '1d3', water: '1d3', air: '1d3', earth: '1d3', poison: '1d3' },
-            amulet: { fire: '1d3', water: '1d3', air: '1d3', earth: '1d3', poison: '1d3' },
-            ring: { fire: '1d3', water: '1d3', air: '1d3', earth: '1d3', poison: '1d3' },
-            light: { fire: '1d3', water: '1d3', air: '1d3', earth: '1d3', poison: '1d3' },
-            gem: { fire: '1d2', water: '1d2', air: '1d2', earth: '1d2', poison: '1d2' },
-            enemy: { fire: '2d3', water: '2d3', air: '2d3', earth: '2d3', poison: '2d3' }
+            shield: { resistAll: '1d10' },
+            armor: { resistAll: '1d5' },
+            cloak: { resistAll: '1d5' },
+            belt: { resistAll: '1d5' },
+            helm: { resistAll: '1d5' },
+            gloves: { resistAll: '1d5' },
+            boots: { resistAll: '1d5' },
+            amulet: { resistAll: '1d5' },
+            ring: { resistAll: '1d5' },
+            light: { resistAll: '1d5' },
+            gem: { resistAll: '1d3' },
+            enemy: { resistAll: '1d10' }
 		},
 		
         {
@@ -1233,8 +1233,9 @@ const modTab = {
 		
         {
             name: { a: 'of Life Regeneration', b: '回復力' },
-            lvl: 10,
+            lvl: 5,
             rarity: 50,
+            light: { hpReg: '1d10' },
             belt: { hpReg: '2d10' },
             amulet: { hpReg: '2d10' },
             ring: { hpReg: '1d10' },
@@ -1244,8 +1245,9 @@ const modTab = {
 		
         {
             name: { a: 'of Mana Regeneration', b: '魔力回復' },
-            lvl: 10,
+            lvl: 5,
             rarity: 50,
+            light: { mpReg: '1d10' },
             belt: { mpReg: '2d10' },
             amulet: { mpReg: '2d10' },
             ring: { mpReg: '1d10' },
@@ -1307,7 +1309,7 @@ const modTab = {
 		
         {
             name: { a: 'of Life Steal', b: '生命力吸収' },
-            lvl: 10,
+            lvl: 5,
             rarity: 20,
             melee: { stealLife: '1d3' },
             missile: { stealLife: '1d3' },
@@ -1320,7 +1322,7 @@ const modTab = {
 		
         {
             name: { a: 'of Mana Steal', b: '魔力吸収' },
-            lvl: 10,
+            lvl: 5,
             rarity: 20,
             melee: { stealMana: '1d3' },
             missile: { stealMana: '1d3' },
@@ -1353,6 +1355,7 @@ const modTab = {
             staff: { rateBonus: '10d3' },
             gloves: { rateBonus: '10d3' },
             ring: { rateBonus: '10d3' },
+            light: { rateBonus: '10d3' },
             gem: { rateBonus: '1d10' },
             enemy: { rateBonus: '10d3' }
 		},
@@ -1386,6 +1389,7 @@ const modTab = {
             name: { a: 'of Stealth', b: '隠密' },
             lvl: 1,
             rarity: 0,
+            missile: { stealth: '2d10' },
             cloak: { stealth: '2d10' },
             boots: { stealth: '2d10' },
             amulet: { stealth: '2d10' },
@@ -1397,6 +1401,7 @@ const modTab = {
             name: { a: 'of Detection', b: '探知' },
             lvl: 1,
             rarity: 0,
+            staff: { searching: '2d10' },
             helm: { searching: '2d10' },
             gloves: { searching: '2d10' },
             ring: { searching: '1d10' },
@@ -1409,6 +1414,7 @@ const modTab = {
             name: { a: 'of Slow Digestion', b: '遅消化' },
             lvl: 1,
             rarity: 0,
+            shield: { digest: '2d10' },
             armor: { digest: '2d10' },
             belt: { digest: '2d10' },
             amulet: { digest: '2d10' },
@@ -1617,9 +1623,9 @@ const Material = class extends Thing {
     constructor(obj) {
         super(obj);
         this.symbolReal = this.symbol;
-        if (this.color) this.colorReal = this.color;
-        this.shadow = 0;
-        this.shadowReal = 0;
+        if (!this.colorReal) this.colorReal = this.color;
+        if (!this.shadow) this.shadow = 0;
+        if (!this.shadowReal) this.shadowReal = this.shadow;
         this.stroke = 0;
         this.strokeReal = 0;
     }
@@ -1627,7 +1633,7 @@ const Material = class extends Thing {
     investigate(direction, char) {
         if (char && this.mimic && !this.identified) return;
         inventory.shadow(direction);
-        let i = 1;
+        let i = char ? 1 : 2;
         if (direction === RIGHT) i += (IN_WIDTH / 2);
         let j = MS + 1;
         let ctxInv = display.ctxes.inv;
@@ -1646,8 +1652,14 @@ const Material = class extends Thing {
             stroke: this.stroke,
         });
 
-        if (this.cursed) ctxInv.fillStyle = colorList.red;
-        ctxInv.fillStyle = this.equipable && !this.durab ? colorList.gray : colorList.white;
+        if (this.cursed) {
+            ctxInv.fillStyle = colorList.red;
+        } else if (this.equipable && !this.durab) {
+            ctxInv.fillStyle = colorList.gray;
+        } else {
+            ctxInv.fillStyle = colorList.white;
+        }
+
         ctxInv.textAlign = 'left';
         let name = char ? this.getName(false, true) : this.getName(false, 1);
         display.text({
@@ -1689,15 +1701,14 @@ const Material = class extends Thing {
         ctxInv.restore();
         let mod;
         let count = 0;
-        let msgLimit = 8;
-        let valueLimit = 5;
         let jSaved = j;
         for (let [key, term] of investigationMap.entries()) {
             if (!term) {
                 if (key === 'mod' && !char) {
+                    mod = true;
+                    if (this.type === 'orb') break;
                     i += IN_WIDTH / 4;
                     j = jSaved;
-                    mod = true;
 				}
 				
                 continue;
@@ -1707,83 +1718,27 @@ const Material = class extends Thing {
                 char && term.item ||
                 this[key] === undefined) {
 				continue;
-			}
-
-            ctxInv.save();
-            let fsChar;
-            if (char) {
-                fsChar = display.fs - 3;
-                let fontStyle = FONT_STYLE[option.getLanguage()];
-                ctxInv.font = fsChar - 1 + 'px ' + fontStyle;
             }
-        
-            let msg = term.name[option.getLanguage()];
-            let value = this[key];
-            if (term.plus && !char && this[key] > 0) value = '+' + value;
-            if (term.perc) value += '%';
-            if (term.weight) value += 'kg';
-            if (key === 'atkType') {
-                value = this.getAtkTypeName();
-			} else if (char) {
-				if (this.findBuffStat(key) || this.modList && this.modList[key]) {
-					ctxInv.shadowColor = colorList.buff;
-				}
-            } else if (mod) {
-				ctxInv.shadowColor = colorList.buff;
-			}
-
-            if (term.max && this[term.max] !== undefined) {
-                let max = this[term.max];
-                if (term.perc) max += '%';
-                if (term.weight) max += 'kg';
-                value += ` (${max})`;
-            }
-
-            if (term.bool) {
-                if (this[key]) {
-                    value = option.isEnglish() ? 'yes' : '有り';
-				} else {
-					value = option.isEnglish() ? 'no' : '無し';
-				}
-			}
-			
-            if (key === 'material') {
-				value = materialMap.get(this[key]).name[option.getLanguage()];
-			}
-
-            ctxInv.textAlign = 'right';
-            display.text({
-                ctx: ctxInv,
-                msg: value,
-                x: i - 1 + IN_WIDTH / 4,
-                y: j,
-                limit: valueLimit,
-                fs: fsChar,
-            });
-
-            ctxInv.textAlign = 'left';
-            display.text({
-                ctx: ctxInv,
-                msg: msg,
-                x: i - 0.5,
-                y: j++,
-                limit: msgLimit,
-                fs: fsChar,
-            });
-
+            
+            this.investigateLoop(char, ctxInv, key, term, this[key], mod, i, j);
+            j += 1.05;
             if (key === 'embeddedNum' && this[key]) {
                 for (let k = 0, l = this.embeddedList.length; k < l; k++) {
+                    ctxInv.save();
                     let item = this.embeddedList[k]
                     let name = item.getName();
-                    ctxInv.shadowColor = item.shadow ? item.shadow : colorList.clear;
+                    if (item.shadow) ctxInv.shadowColor = item.shadow;
                     display.text({
                         ctx: ctxInv,
                         msg: name,
                         x: i + 0.5,
-                        y: j++,
-                        limit: msgLimit + 2,
+                        y: j,
+                        limit: 10,
                         stroke: item.stroke,
                     });
+
+                    j += 1.05;
+                    ctxInv.restore();
                 }
 			}
 			
@@ -1791,9 +1746,96 @@ const Material = class extends Thing {
                 i += IN_WIDTH / 4;
                 j = jSaved;
 			}
-			
-            ctxInv.restore();
-		}
+        }
+        
+        if (this.type === 'orb') {
+            j++;
+            for (let key in this.modParts) {
+                ctxInv.textAlign = 'right';
+                display.text({
+                    ctx: ctxInv,
+                    msg: option.isEnglish() ? key : translation.item[key],
+                    x: i - 4.5 + IN_WIDTH / 4,
+                    y: j,
+                    limit: 10,
+                });
+
+                ctxInv.textAlign = 'left';
+                let objMod = this.modParts[key];
+                for (let key2 in objMod) {
+                    let term = investigationMap.get(key2);
+                    this.investigateLoop(false, ctxInv, key2, term, objMod[key2], true, i - 3 + IN_WIDTH / 4, j);
+                    j += 1.1;
+                }
+            }
+        }
+    }
+
+    investigateLoop(char, ctxInv, key, term, value, mod, i, j) {
+        ctxInv.save();
+        let fsChar;
+        if (char) {
+            fsChar = display.fs - 3;
+            let fontStyle = FONT_STYLE[option.getLanguage()];
+            ctxInv.font = fsChar - 1 + 'px ' + fontStyle;
+        }
+    
+        let msg = term.name[option.getLanguage()];
+        if (term.plus && !char && value > 0) value = '+' + value;
+        if (term.perc) value += '%';
+        if (term.weight) value += 'kg';
+        if (key === 'atkType') {
+            value = this.getAtkTypeName();
+        } else if (char) {
+            if (this.findBuffStat(key) || this.modList &&
+            (this.modList[key] || this.modList['resistAll'] &&
+            (key === 'fire' || key === 'water' || key === 'air' || key === 'earth' || key === 'poison'))) {
+                ctxInv.shadowColor = colorList.buff;
+            }
+        } else if (mod) {
+            ctxInv.shadowColor = colorList.buff;
+        }
+
+        if (term.max && this[term.max] !== undefined) {
+            let max = this[term.max];
+            if (term.perc) max += '%';
+            if (term.weight) max += 'kg';
+            value += ` (${max})`;
+        }
+
+        if (term.bool) {
+            if (value) {
+                value = option.isEnglish() ? 'yes' : '有り';
+            } else {
+                value = option.isEnglish() ? 'no' : '無し';
+            }
+        }
+        
+        if (key === 'material') {
+            value = materialMap.get(value).name[option.getLanguage()];
+        }
+
+        ctxInv.textAlign = 'right';
+        display.text({
+            ctx: ctxInv,
+            msg: value,
+            x: i - 1 + IN_WIDTH / 4,
+            y: j,
+            limit: 5,
+            fs: fsChar,
+        });
+
+        ctxInv.textAlign = 'left';
+        display.text({
+            ctx: ctxInv,
+            msg: msg,
+            x: i - 0.5,
+            y: j,
+            limit: 8,
+            fs: fsChar,
+        });
+
+        ctxInv.restore();
     }
 
     getAtkTypeName() {
@@ -1882,10 +1924,7 @@ const Material = class extends Thing {
             this.acBBase = Math.ceil(volume * this.toughness);
 		}
         
-        if (!char) {
-            this.durabRate = durabRate;
-            this.calcDurab(true);
-        }
+        if (!char) this.durabRate = durabRate;
     }
 
     getMaterialBase() {

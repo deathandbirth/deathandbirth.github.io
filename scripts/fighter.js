@@ -2430,13 +2430,13 @@ const Fighter = class extends Material {
     }
 
     calcHP() {
-        this.hpMax = (this.lvl + this.con + 1) * this.hpRate + this.hpSum;
+        this.hpMax = (this.lvl + this.con * 2 + 1) * this.hpRate + this.hpSum;
         if (this.hpMax < 1) this.hpMax = 1;
         if (this.hp > this.hpMax) this.hp = this.hpMax;
     }
 
     calcMP() {
-        this.mpMax = (this.lvl + this.int + 1) * this.mpRate + this.mpSum;
+        this.mpMax = (this.lvl + this.int * 4 + 1) * this.mpRate + this.mpSum;
         if (this.mpMax < 1) this.mpMax = 1;
         if (this.mp > this.mpMax) this.mp = this.mpMax;
     }
@@ -2479,15 +2479,15 @@ const Fighter = class extends Material {
         let percBonus = 1 + this.acBonus / 100;
         let percBuff = 1 + this.acBuff / 100;
         this.acSValue = this.acSBase * percBonus + this.dex / 2; //bare
-        this.acSBonusValue = this.acSBaseSum / 2 * this.acBonus / 100; //weapon, ornament
+        this.acSBonusValue = this.acSBaseSum * this.acBonus / 100; //weapon, ornament
         this.acSValueTotal = Math.floor((this.acSValue + this.acSBonusValue + this.acSValueSum) * percBuff);
         if (this.acSValueTotal < 0) this.acSValueTotal = 0;
         this.acTValue = this.acTBase * percBonus + this.dex / 2;
-        this.acTBonusValue = this.acTBaseSum / 2 * this.acBonus / 100;
+        this.acTBonusValue = this.acTBaseSum * this.acBonus / 100;
         this.acTValueTotal = Math.floor((this.acTValue + this.acTBonusValue + this.acTValueSum) * percBuff);
         if (this.acTValueTotal < 0) this.acTValueTotal = 0;
         this.acBValue = this.acBBase * percBonus + this.dex / 2;
-        this.acBBonusValue = this.acBBaseSum / 2 * this.acBonus / 100;
+        this.acBBonusValue = this.acBBaseSum * this.acBonus / 100;
         this.acBValueTotal = Math.floor((this.acBValue + this.acBBonusValue + this.acBValueSum) * percBuff);
         if (this.acBValueTotal < 0) this.acBValueTotal = 0;
     }
@@ -4263,7 +4263,7 @@ const Fighter = class extends Material {
             if (s.invisible) this.invisible = s.invisible;
 		}
 		
-        if (s.acBonus && (mod || !this.armor)) this.acBonus += num * s.acBonus;
+        if (s.acBonus && (mod || !s.armor)) this.acBonus += num * s.acBonus;
         if (s.atkType) this.atkType = get ? s.atkType : this.atBare;
         if (s.dmgBase) this.dmgBase = get ? s.dmgBase : this.dmgBare;
         if (s.acSBase) this.acSBaseSum += num * s.acSBase;
@@ -4288,6 +4288,14 @@ const Fighter = class extends Material {
         if (s.air) this.airMax += num * s.air;
         if (s.earth) this.earthMax += num * s.earth;
         if (s.poison) this.poisonMax += num * s.poison;
+        if (s.resistAll) {
+            this.fireMax += num * s.resistAll;
+            this.waterMax += num * s.resistAll;
+            this.airMax += num * s.resistAll;
+            this.earthMax += num * s.resistAll;
+            this.poisonMax += num * s.resistAll;
+        }
+
         if (s.skillFire) this.skillFire += num * s.skillFire;
         if (s.skillWater) this.skillWater += num * s.skillWater;
         if (s.skillAir) this.skillAir += num * s.skillAir;
@@ -4406,6 +4414,7 @@ const Fighter = class extends Material {
 		}
 		
         let name = f.getName(true);
+        let boss = f.boss;
         if (skill.durBase) var duration = this.calcSkillDur(skill, lvl);
         switch (skillId) {
             case HEAL:
@@ -4455,19 +4464,19 @@ const Fighter = class extends Material {
                     `${name}魔力再生の効果を得た`);
                 break;
             case WEAKNESS:
-                if (evalPercentage(f.poison)) return;
+                if (boss || evalPercentage(f.poison)) return;
                 f.decayOrRestore(STR);
                 break;
             case CLUMSINESS:
-                if (evalPercentage(f.poison)) return;
+                if (boss || evalPercentage(f.poison)) return;
                 f.decayOrRestore(DEX);
                 break;
             case SICKLINESS:
-                if (evalPercentage(f.poison)) return;
+                if (boss || evalPercentage(f.poison)) return;
                 f.decayOrRestore(CON);
                 break;
             case STUPIDITY:
-                if (evalPercentage(f.poison)) return;
+                if (boss || evalPercentage(f.poison)) return;
                 f.decayOrRestore(INT);
                 break;
             case RESTORE_STRENGTH:
@@ -4574,7 +4583,7 @@ const Fighter = class extends Material {
                 break;
             case WORMHOLE:
                 inventory.clear();
-                rogue.eventFlag(88); //examine
+                input.eventFlag(88); //examine
                 flag.wormhole = true;
                 return null;
             case SHORT_TELEPORTATION:
@@ -4693,12 +4702,12 @@ const Fighter = class extends Material {
                     `${name}毒を受けた`);
                 break;
             case RADIATION:
-                if (evalPercentage(f.radiation)) return;
+                if (boss || evalPercentage(f.radiation)) return;
                 f.decayOrRestore();
                 break;
             case SLOW:
             case GRAVITATIONAL_FIELD:
-                if (evalPercentage(f.gravity)) return;
+                if (boss || evalPercentage(f.gravity)) return;
                 f.spdNerf = this.calcSkillValue(skill, lvl);
                 f.slowed = duration;
                 f.calcSpeed();
@@ -4708,7 +4717,7 @@ const Fighter = class extends Material {
                 audio.playSound('slow');
                 break;
             case CONFUSION:
-                if (evalPercentage(f.poison)) return;
+                if (boss || evalPercentage(f.poison)) return;
                 f.confused = duration;
                 message.draw(option.isEnglish() ?
                     `${name} got confused` :
@@ -4751,7 +4760,7 @@ const Fighter = class extends Material {
                 break;
             case PARALYSIS:
             case HOLD_MONSTER:
-                if (evalPercentage(f.poison)) return;
+                if (boss || evalPercentage(f.poison)) return;
                 f.paralyzed = duration;
                 message.draw(option.isEnglish() ?
                     `${name} got paralyzed` :
@@ -4760,14 +4769,14 @@ const Fighter = class extends Material {
                 break;
             case SLEEP:
             case SLEEPING_GAS:
-                if (evalPercentage(f.poison)) return;
+                if (boss || evalPercentage(f.poison)) return;
                 f.sleeping = duration;
                 message.draw(option.isEnglish() ?
                     `${name} fell asleep` :
                     `${name}昏睡した`);
                 break;
             case BLINDNESS:
-                if (evalPercentage(f.poison)) return;
+                if (boss || evalPercentage(f.poison)) return;
                 f.blinded = duration;
                 if (f.id === ROGUE) f.goBlind();
                 message.draw(option.isEnglish() ?
@@ -4776,7 +4785,7 @@ const Fighter = class extends Material {
                 audio.playSound('blind');
                 break;
             case INVISIBILITY:
-                if (f.invisible) return;
+                if (boss || f.invisible) return;
                 f.invisibility = duration;
                 f.invisible = true;
                 map.coords[f.x][f.y].draw();
@@ -4794,7 +4803,7 @@ const Fighter = class extends Material {
 				
                 break;
             case INFECTION:
-                if (evalPercentage(f.infection)) return;
+                if (boss || evalPercentage(f.infection)) return;
                 f.infected = duration;
                 message.draw(option.isEnglish() ?
                     `${name} got infected` :
@@ -4802,7 +4811,7 @@ const Fighter = class extends Material {
                 break;
             case HALLUCINATION:
             case HALLUCINATING_MIST:
-                if (evalPercentage(f.poison)) return;
+                if (boss || evalPercentage(f.poison)) return;
                 let found2;
                 if (!f.hallucinated && f.id === ROGUE) found2 = true;
                 f.hallucinated = duration;
@@ -4828,7 +4837,7 @@ const Fighter = class extends Material {
                     `${name}変容した`);
                 break;
             case CANCELLATION:
-                if (evalPercentage(f.poison)) return;
+                if (boss || evalPercentage(f.poison)) return;
                 f.canceled = duration * (f.mod !== UNIQUE ? 1 : 2);
                 if (f.invisible) {
                     if (f.invisible !== DEFAULT) f.invisibility = 0;
