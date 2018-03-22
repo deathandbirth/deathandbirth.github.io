@@ -37,7 +37,7 @@ const Data = class {
     saveItemTab() {
         this.itemTab = {};
         for (let key in itemTab) {
-            if (key !== 'potion' && key !== 'wand' && key !== 'scroll') continue;
+            if (key !== 'potion' && key !== 'wand' && key !== 'scroll' && key !== 'orb') continue;
             this.itemTab[key] = [];
             for (let [tabId, item] of itemTab[key].entries()) {
                 let thisItem = {};
@@ -53,7 +53,8 @@ const Data = class {
 
     loadItemTab() {
         for (let key in itemTab) {
-            if (key !== 'potion' && key !== 'wand' && key !== 'scroll') continue;
+            if (key !== 'potion' && key !== 'wand' && key !== 'scroll' && key !== 'orb') continue;
+            if (this.ver < 0.007 && key === 'orb') continue;
             for (let [tabId, item] of itemTab[key].entries()) {
                 let thisItem = this.itemTab[key][tabId];
                 if (!thisItem) {
@@ -76,22 +77,7 @@ const Data = class {
         for (let locs of map.coords) {
             for (let loc of locs) {
                 loc.__proto__ = Location.prototype;
-                if (loc.fighter) {
-                    if (loc.fighter.id === ROGUE) {
-                        loc.fighter.__proto__ = Rogue.prototype;
-                        rogue = loc.fighter;
-                    } else {
-                        loc.fighter.__proto__ = Enemy.prototype;
-                        map.enemyList[loc.fighter.id] = loc.fighter;
-                    }
-
-                    map.queue.push(loc.fighter);
-                    this.loadItem(loc.fighter.boxes);
-                    this.loadItem(loc.fighter.equipment);
-                    this.loadItem(loc.fighter.side);
-                    this.loadItem(loc.fighter.pack);
-                }
-
+                if (loc.fighter) this.loadFighter(loc.fighter);
                 if (loc.item['a']) this.loadItem(loc.item, true);
                 if (loc.enter) this.loadEntrance(loc.enter);
                 if (loc.trap) loc.trap.__proto__ = Trap.prototype;
@@ -103,6 +89,26 @@ const Data = class {
         }
     }
 
+    loadFighter(fighter) {
+        if (fighter.id === ROGUE) {
+            fighter.__proto__ = Rogue.prototype;
+            rogue = fighter;
+        } else {
+            fighter.__proto__ = Enemy.prototype;
+            map.enemyList[fighter.id] = fighter;
+        }
+
+        map.queue.push(fighter);
+        this.loadItem(fighter.boxes);
+        this.loadItem(fighter.equipment);
+        this.loadItem(fighter.side);
+        this.loadItem(fighter.pack);
+        if (this.ver < 0.007) {
+            fighter.calcHP();
+            fighter.calcMP();
+        }
+    }
+
     loadItem(list, floor) {
         for (let key in list) {
             let item = list[key]; 
@@ -111,6 +117,7 @@ const Data = class {
             if (floor) map.itemList[item.id] = item;
             if (item.embeddedList && item.embeddedList.length) this.loadItem(item.embeddedList);
             if (this.ver < 0.006 && item.type === 'gem') item.material = undefined;
+            if (this.ver < 0.007 && item.type === 'material') item.tabId = materialList.indexOf(item.material);
         }
     }
 

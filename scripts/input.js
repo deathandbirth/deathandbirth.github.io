@@ -94,11 +94,11 @@ const input = {
         } else if (flag.fuel) {
             rogue.fuel(keyCode);
         } else if (flag.shop) {
-            rogue.shop(keyCode);
+            rogue.shop(keyCode, e.altKey);
         } else if (flag.cure) {
             rogue.cureShop(keyCode);
         } else if (flag.stash) {
-            rogue.stash(keyCode);
+            rogue.stash(keyCode, e.altKey);
         } else if (flag.help && keyCode === 191 && this.isShift) { //?
             inventory.clear();
             flag.help = false;

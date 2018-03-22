@@ -74,6 +74,7 @@ const [
     M_INTERRUPTED,
     M_THROW,
     M_THROW_DIR,
+    M_NO_CLUE,
 ] = enums(1, 80);
 
 const msgMap = new Map([
@@ -257,6 +258,11 @@ const msgMap = new Map([
         b: '何も起こらなかった'
     }],
 
+    [M_NO_CLUE, {
+        a: 'You have no clue',
+        b: '詳細が掴めない'
+    }],
+
     [M_DESTROY, {
         a: '[a-Z] [1-9] to destroy',
         b: '[a-Z] [1-9] 破壊'
@@ -343,13 +349,13 @@ const msgMap = new Map([
     }],
 
     [M_SHOP, {
-        a: '[A-Z] to buy [a-z] to sell',
-        b: '[A-Z] 購入 [a-z] 売却'
+        a: '[A-Z] to buy [a-z] to sell [alt + a-Z] details',
+        b: '[A-Z] 購入 [a-z] 売却 [alt + a-Z] 詳細'
     }],
 
     [M_STASH, {
-        a: '[a-z] to store [A-Z] to take out [,] to previous [.] to next page',
-        b: '[a-z] 保管 [A-Z] 持参 [,] 前項 [.] 次項'
+        a: '[a-z] to store [A-Z] to take out [,] to previous [.] to next page [alt + a-Z] details',
+        b: '[a-z] 保管 [A-Z] 持参 [,] 前項 [.] 次項 [alt + a-Z] 詳細'
     }],
 
     [M_EXAMINE, {
@@ -637,6 +643,7 @@ const translation = {
         ring: '指輪',
         ammo: '弾薬',
         gem: 'ジュエル',
+        orb: 'オーブ',
         coin: 'コイン',
         misc: '雑多品',
         water: '水',

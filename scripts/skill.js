@@ -758,7 +758,7 @@ const skillMap = new Map([
         reqLvl: 30,
         base: 50,
         rate: 5,
-        synerzy: true,
+        synerzy: 1,
         mp: 30,
         element: 'earth',
         kind: 'self',

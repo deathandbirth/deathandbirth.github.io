@@ -67,7 +67,6 @@ const inventory = {
                 flag.gain && (item.type != 'book' || !item.skill) ||
                 flag.destroy && flag.number && key !== a ||
                 (flag.shop || flag.option) && a && key !== a ||
-                flag.investigate && !item.identified ||
                 flag.fuel && (item.type !== 'light' && item.type !== 'oil' ||
                     rogue.equipment['light'].torch & !item.torch ||
                     !rogue.equipment['light'].torch && item.torch)

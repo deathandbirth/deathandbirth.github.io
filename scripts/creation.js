@@ -188,7 +188,11 @@ const creation = {
             if (type === undefined || type === RANDOM) {
                 do {
                     if (magic) {
-                        typeT = evalPercentage(20) ? 'gem' : equipmentList[rndInt(equipmentList.length - 1)];
+                        if (evalPercentage(20)) {
+                            typeT = coinToss() ? 'gem' : 'orb';
+                        } else {
+                            typeT = equipmentList[rndInt(equipmentList.length - 1)];
+                        }
 					} else {
 						typeT = IT[rndInt(IT.length - 2)];
 					}
