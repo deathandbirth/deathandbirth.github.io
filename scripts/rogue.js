@@ -512,8 +512,10 @@ const Rogue = class extends Fighter {
                     });
                 }
 			}
-			
+            
+            x += 0.1;
             ctxStats.restore();
+            if (i === MAX_BOX_NUM) break;
         }
     }
 
@@ -1300,198 +1302,302 @@ const Rogue = class extends Fighter {
     }
 
     tryToSynthesize() {
-        let [a, f1, f2, f3, f4a, f4b, f5, f5b, f5c, f6a, f6b, f7a, f7b, f8, f8b, f9] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-        let l = Object.keys(this.cube).length;
+        let potion = 0,
+            wand = 0,
+            light = 0,
+            touch = 0,
+            lamp = 0,
+            oil = 0,
+            book = 0,
+            scroll = 0,
+            gem = 0,
+            orb = 0,
+            material = 0,
+            embeddable = 0,
+            unembeddable = 0,
+            removable = 0,
+            embedded = 0,
+            l = Object.keys(this.cube).length;
         for (let i = 0; i < l; i++) {
             let item = this.cube[EA[i]];
             if (!item.identified) continue;
             if (item.equipable) {
-                if (item.embeddedNum) f9++;
-                if (item.embeddedNum < item.embeddedMax) {
-                    a = EA[i];
-                    f8++;
-                }
+                if (!item.embeddedMax) unembeddable++;
+                if (item.embeddedNum) removable++;
+                if (item.embeddedNum < item.embeddedMax) embeddable++;
 			}
 			
-            if (item.type === 'potion' && item.nameSkill === HEAL) {
-                f1++;
+            if (item.type === 'potion') {
+                potion++; 
 			} else if (item.type === 'wand') {
-                for (let j = i + 1; j < l; j++) {
-                    let item2 = this.cube[EA[j]];
-                    if (item2.type === 'wand' && item2.identified && item2.tabId === item.tabId) {
-                        f2++;
-                        break;
-                    }
-                }
-            } else if (item.type === 'gem' || item.type === 'material' || item.type === 'orb') {
-                if (item.type === 'gem') f3++;
-                f8b++;
-            } else if (item.nameReal[ENG] === 'Medusa\'s Head') {
-                f4a++;
-			} else if (item.type === 'shield' &&
-                item.mod === NORMAL) {
-                f4b++;
-                if (!a) a = EA[i];
+                wand++;
+            } else if (item.type === 'gem') {
+                gem++;
+                embedded++;
+            } else if (item.type === 'orb') {
+                orb++;
+                embedded++;
+            } else if (item.type === 'material') {
+                material++;
+                embedded++;
             } else if (item.type === 'light') {
-                item.torch ? f5++ : f5b++;
-                if (!a) a = EA[i];
+                item.torch ? touch++ : lamp++;
             } else if (item.type === 'oil') {
-                f5c++;
+                oil++;
 			} else if (item.type === 'book') {
-                if (item.nameReal[ENG] === 'Blank Paper') {
-                    f6a = item;
-				} else if (item.chargeBook && (!f7a || f7a === item.nameSkill)) {
-                    f7a = item.nameSkill;
-                    f7b++;
-                    if (!a) a = EA[i];
-                }
+                book++;
             } else if (item.type === 'scroll') {
-                f6b = item;
-                if (!f7a || f7a === item.nameSkill) {
-                    f7a = item.nameSkill;
-                    f7b++;
-                }
+                scroll++;
             }
 		}
 		
         let name, msg;
-        if (f1 === 3 && l === 3) {
-            this.createItemIntoPack({
-                type: 'potion',
-                tabId: P_EXTRA_HEALING,
-			});
-			
-            name = option.isEnglish() ? 'Potion of Extra Healing' : '特大回復の薬';
-        } else if (f2 >= 1 && l === f2 + 1) { //wand
-            let item = this.cube['a'];
-            for (let key in this.cube) {
-                let item2 = this.cube[key];
-                if (key === 'a') continue;
-                item.charges += item2.charges;
-			}
-			
-            this.packAdd(item);
-            name = item.getName();
-        } else if (f3 >= 1 && l === f3) { //coin
+        if (l === potion) {
+            if (l === 3) {
+                let found = true;
+                for (let key in this.cube) {
+                    let item = this.cube[key];
+                    if (item.nameSkill !== HEAL) {
+                        found = false;
+                        break;
+                    }
+                }
+
+                if (found) {
+                    name = option.isEnglish() ? 'Potion of Extra Healing' : '特大回復の薬';
+                    this.createItemIntoPack({
+                        type: 'potion',
+                        tabId: P_EXTRA_HEALING,
+                    });
+                }
+            }
+        } else if (l === wand) {
+            if (l > 1) {
+                let tabId;
+                let found = true;
+                for (let key in this.cube) {
+                    let item = this.cube[key];
+                    if (tabId === undefined) {
+                        tabId = item.tabId;
+                    } else if (tabId !== item.tabId) {
+                        found = false;
+                        break;
+                    }
+                }
+
+                if (found) {
+                    let item = this.cube['a'];
+                    for (let key in this.cube) {
+                        let item2 = this.cube[key];
+                        if (key === 'a') continue;
+                        item.charges += item2.charges;
+                    }
+                    
+                    this.packAdd(item);
+                    name = item.getName();
+                }
+            }
+        } else if (l === gem) {
             let amount = 0;
             for (let key in this.cube) {
-                rogue.purse += this.cube[key].price;
-                amount += this.cube[key].price;
+                let item = this.cube[key];
+                this.purse += item.price;
+                amount += item.price;
 			}
 			
             name = '$' + amount;
-        } else if (f4a === 1 && f4b === 1 && l === 2) { //aegis
-            let item = this.cube[a];
-            item.getUnique(itemUniqueMap['shield'].get(AEGIS));
-            item.identified = true;
-            item.calcAcOne();
-            item.changeNameAndPrice();
-            item.weight += 1;
-            this.packAdd(item);
-            name = item.getName();
-        } else if (l !== 1 && (f5 === l || f5b && (f5b + f5c) === l)) { //light
-            let item = this.cube[a];
-            for (let key in this.cube) {
-                if (key === a) continue;
-                let item2 = this.cube[key];
-                item.duration += item2.duration;
-                if (item2.type === 'light' && (item2.mod !== NORMAL || item2.embeddedList.length)) {
-                    item2.duration = 0;
-                    this.packAdd(item2);
+        } else if (l > 1 && l === touch + lamp + oil) {
+            if (l === touch || lamp && l === lamp + oil) {
+                let item;
+                let duration = 0;
+                for (let key in this.cube) {
+                    let item2 = this.cube[key];
+                    if (item2.type !== 'oil' && !item) {
+                        item = item2;
+                        continue;
+                    }
+
+                    duration += item2.duration;
+                    if (item2.type === 'light' && (item2.mod !== NORMAL || item2.embeddedList.length)) {
+                        item2.duration = 0;
+                        this.packAdd(item2);
+                    }
                 }
-			}
-			
-            if (item.duration > item.durationMax) item.duration = item.durationMax;
-            this.packAdd(item);
-            name = item.getName()
-        } else if (f6a && f6b && l === 2) { //make charge book
-            let [book, scroll] = [f6a, f6b];
-            book.chargeBook = true;
-            book.name['a'] = book.nameReal['a'] = scroll.nameReal['a'];
-            book.name['b'] = book.nameReal['b'] = scroll.nameReal['b'];
-            book.nameSkill = scroll.nameSkill;
-            book.skillLvl = scroll.skillLvl;
-            book.charges = scroll.quantity;
-            book.tabId = 100 + scroll.tabId;
-            this.packAdd(book);
-            name = book.getName()
-        } else if (l >= 2 && l === f7b && a) { //charge book
-            let item = this.cube[a];
-            for (let key in this.cube) {
-                if (key === a) continue;
-                let item2 = this.cube[key];
-                item.charges += item2.quantity * (item2.chargeBook ? item2.charges : 1);
-			}
-			
-            this.packAdd(item);
-            name = item.getName();
-        } else if (l >= 2 && f8 === 1 && l === f8 + f8b &&
-            f8b <= this.cube[a].embeddedMax - this.cube[a].embeddedNum) { //embed
-            let item = this.cube[a];
-            let weight = 0;
-            let found;
-            for (let key in this.cube) {
-                if (key === a) continue;
-                let item2 = this.cube[key];
-                if (item2.type === 'material' && item2.material !== item.material ||
-                item2.type === 'orb' && !item2.modParts[item.type]) continue;
-                let objMod = item2.type === 'orb' ? item2.modParts[item.type] : item2.modList;
-                mergeMod({
-                    obj: item,
-                    obj2: objMod,
-                    fixed: true,
-				});
                 
-                weight += item2.weight;
-                item.embeddedNum++;
-                item.embeddedList.push(item2);
-                found = true;
-			}
-			
-            if (found) {
-                item.calcDurab();
+                item.duration += duration;
+                if (item.duration > item.durationMax) item.duration = item.durationMax;
+                this.packAdd(item);
+                name = item.getName()
+            }
+        } else if (l === book + scroll) {
+            if (l > 1 && book) {
+                let book, scroll, blankBook, nameSkill;
+                let count = 0;
+                for (let key in this.cube) {
+                    let item = this.cube[key];
+                    if (item.type === 'book') {
+                        book = item;
+                        if (item.nameReal[ENG] === 'Blank Paper') blankBook = true;
+                    } else {
+                        scroll = item;
+                    }
+
+                    if (item.chargeBook || item.type === 'scroll') {
+                        if (!nameSkill) {
+                            nameSkill = item.nameSkill;
+                            count++;
+                        } else if (nameSkill === item.nameSkill) {
+                            count++;
+                        }
+                    }
+                }
+
+                if (l === 2 && blankBook && scroll) {
+                    book.chargeBook = true;
+                    book.name['a'] = book.nameReal['a'] = scroll.nameReal['a'];
+                    book.name['b'] = book.nameReal['b'] = scroll.nameReal['b'];
+                    book.nameSkill = scroll.nameSkill;
+                    book.skillLvl = scroll.skillLvl;
+                    book.charges = scroll.quantity;
+                    book.tabId = 100 + scroll.tabId;
+                    this.packAdd(book);
+                    name = book.getName()
+                } else if (l > 1 && book && l === count) {
+                    let item;
+                    let charges = 0;
+                    for (let key in this.cube) {
+                        let item2 = this.cube[key];
+                        if (item2.chargeBook && !item) {
+                            item = item2;
+                            continue;
+                        }
+
+                        charges += item2.quantity * (item2.chargeBook ? item2.charges : 1);
+                    }
+                    
+                    item.charges += charges;
+                    this.packAdd(item);
+                    name = item.getName();
+                }
+            }
+        } else if (embeddable === 1 && embedded && l === embeddable + embedded) {
+            let item;
+            for (let key in this.cube) {
+                let item2 = this.cube[key];
+                if (item2.equipable) {
+                    item = item2;
+                    break;
+                }
+            }
+
+            if (embedded <= item.embeddedMax - item.embeddedNum) {
+                let found = true;
+                for (let key in this.cube) {
+                    let item2 = this.cube[key];
+                    if (item2.equipable) continue;
+                    if (item2.type === 'material' && item2.material !== item.material ||
+                    item2.modParts && !item2.modParts[item.type]) {
+                        found = false;
+                        break;
+                    }
+                }
+                
+                if (found) {
+                    let weight = 0;
+                    for (let key in this.cube) {
+                        let item2 = this.cube[key];
+                        if (item2.equipable) continue;
+                        let objMod = item2.modParts ? item2.modParts[item.type] : item2.modList;
+                        mergeMod({
+                            obj: item,
+                            obj2: objMod,
+                            fixed: true,
+                        });
+                        
+                        weight += item2.weight;
+                        item.embeddedNum++;
+                        item.embeddedList.push(item2);
+                    }
+
+                    item.calcDurab();
+                    item.weight = Math.round((item.weight + weight) * 100) / 100;
+                    if (item.weapon) {
+                        item.calcDmgOne();
+                    } else {
+                        item.dmgDiceNum = item.dmgDiceSides = undefined;
+                        if (item.armor) item.calcAcOne();
+                    }
+                    
+                    this.packAdd(item);
+                    name = item.getName();
+                }
+            }
+		} else if (removable && l === 1) {
+            let item = this.cube['a'];
+            if (!item.cursed) {
+                let weight = 0;
+                for (let itemEmbedded of item.embeddedList) {
+                    let objMod = itemEmbedded.modParts ? itemEmbedded.modParts[item.type] : itemEmbedded.modList;
+                    mergeMod({
+                        obj: item,
+                        obj2: objMod,
+                        fixed: true,
+                        remove: true,
+                    });
+                    
+                    weight -= itemEmbedded.weight;
+                    this.packAdd(itemEmbedded);
+                }
+
+                item.embeddedNum = 0;
+                item.embeddedList = [];
                 item.weight = Math.round((item.weight + weight) * 100) / 100;
+                item.calcDurab();
                 if (item.weapon) {
                     item.calcDmgOne();
-				} else {
+                } else {
                     item.dmgDiceNum = item.dmgDiceSides = undefined;
                     if (item.armor) item.calcAcOne();
-				}
-				
+                }
+                
+                this.packAdd(item);
+                msg = option.isEnglish() ?
+                    'Removed materials' :
+                    '素材を取り除いた';
+            }
+        } else if (l === 3 && unembeddable && gem && orb ) {
+            let item;
+            for (let key in this.cube) {
+                let item2 = this.cube[key];
+                if (item2.equipable) {
+                    item = item2;
+                    break;
+                }
+            }
+
+            if (item.mod === NORMAL) {
+                item.embeddedMax = rndIntBet(1, item.embeddedLimit);
                 this.packAdd(item);
                 name = item.getName();
             }
-		} else if (f9 && l === 1) {
-            let item = this.cube['a'];
-            let weight = 0;
-            for (let itemEmbedded of item.embeddedList) {
-                let objMod = itemEmbedded.type === 'orb' ? itemEmbedded.modParts[item.type] : itemEmbedded.modList;
-                mergeMod({
-                    obj: item,
-                    obj2: objMod,
-                    fixed: true,
-                    remove: true,
-				});
-				
-                weight -= itemEmbedded.weight;
-                this.packAdd(itemEmbedded);
+        } else if (l === 4 && unembeddable && gem && orb && material) {
+            let item, mat;
+            for (let key in this.cube) {
+                let item2 = this.cube[key];
+                if (item2.equipable) {
+                    item = item2;
+                } else if (item2.type === 'material') {
+                    mat = item2;
+                }
+
+                if (item && mat) break;
             }
 
-            item.embeddedNum = 0;
-            item.embeddedList = [];
-            item.weight = Math.round((item.weight + weight) * 100) / 100;
-            item.calcDurab();
-            if (item.weapon) {
-                item.calcDmgOne();
-            } else {
-                item.dmgDiceNum = item.dmgDiceSides = undefined;
-                if (item.armor) item.calcAcOne();
+            if ((item.mod === MAGIC || item.mod === RARE) && item.material === mat.material) {
+                item = item.makeMaterial();
+                this.packAdd(item);
+                name = item.getName();
             }
-            
-            this.packAdd(item);
-            msg = option.isEnglish() ?
-                'Removed materials' :
-                '素材を取り除いた';
         }
 		
         if (name || msg) {
@@ -2585,6 +2691,7 @@ const Rogue = class extends Fighter {
 		}
 		
         if (!this.hunger && (flag.dash || flag.rest)) flag.dash = flag.rest = false;
+        this.checkCe();
         this.calcCondition(true);
         this.drawStats();
     }
@@ -2693,6 +2800,14 @@ const Rogue = class extends Fighter {
 		}
 		
         return false;
+    }
+
+    checkCe() {
+        if (!this.ce) return;
+        if (!this.ce.isShowing()) {
+            statistics.clearEnemyBar();
+            this.ce = null;
+        }
     }
 
     getCe(fighter, melee) {

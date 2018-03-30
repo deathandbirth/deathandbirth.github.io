@@ -117,7 +117,7 @@ const Data = class {
             if (floor) map.itemList[item.id] = item;
             if (item.embeddedList && item.embeddedList.length) this.loadItem(item.embeddedList);
             if (this.ver < 0.006 && item.type === 'gem') item.material = undefined;
-            if (this.ver < 0.007 && item.type === 'material') item.tabId = materialList.indexOf(item.material);
+            if (this.ver < 0.008 && item.type === 'material') item.tabId = materialList.indexOf(item.material);
         }
     }
 

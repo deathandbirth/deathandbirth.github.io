@@ -78,7 +78,8 @@ const circleSearch = {
 
                 break;
             case EARTHQUAKE:
-                if (!evalPercentage(this.perc) || loc.indestructible || loc.enter && !loc.enter.portal) return;
+                if (!evalPercentage(this.perc) || loc.indestructible || loc.enter && !loc.enter.portal ||
+                loc.fighter && loc.fighter.id === ROGUE) return;
                 loc.found = false;
                 loc.lighten = false;
                 loc.wall = WALL_HP * coinToss();
@@ -110,8 +111,7 @@ const circleSearch = {
                 }
 
                 if (loc.fighter) {
-                    if (loc.fighter.id === ROGUE || loc.fighter.boss ||
-                        loc.fighter.indestructible || evalPercentage(loc.fighter.earth)) {
+                    if (loc.fighter.boss || loc.fighter.indestructible || evalPercentage(loc.fighter.earth)) {
                         if (loc.fighter.sleeping) loc.fighter.wakeUp();
                         found = true;
                     } else {
