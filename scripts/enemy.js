@@ -278,7 +278,7 @@ const Enemy = class extends Fighter {
             `${nameE}${name}を倒した`);
         f.gainExp(this.expGain);
         if (f.id !== ROGUE) return;
-        if (this.material && this.probMaterial()) this.makeMaterial();
+        if (this.material && this.probMaterial()) this.makeMaterial(true);
         this.dropEquipment(this.equipment);
         this.dropEquipment(this.side);
         for (let key in this.pack) {
@@ -316,74 +316,7 @@ const Enemy = class extends Fighter {
                 break;
 		}
 		
-        return evalPercentage(perc);
-    }
-
-    makeMaterial() {
-        if (!this.modList) this.modList = {};
-        for (let key in this.modList) {
-            if (this.modList[key] === DEFAULT) {
-                delete this.modList[key];
-                continue;
-			}
-			
-            let num = this.modList[key];
-            let times = this.matRedTimes;
-            while (times-- && num) num = rndInt(num);
-            !num ? delete this.modList[key] : this.modList[key] = num;
-		}
-		
-        let material = this.getMaterialBase();
-        let matBaseList = materialMap.get(material); 
-        if (matBaseList.bonus || material === M_GEM) {
-            let values;
-            if (material === M_GEM) {
-                if (this.matId === undefined) return;
-                values = matBaseList.list.get(this.matId).values;
-            } else {
-                values = matBaseList.bonus;
-            }
-
-            mergeMod({
-                obj: this.modList,
-                obj2: values,
-                perc: 0,
-                max: 1,
-                min: 1,
-            });
-        }
-
-        if (!Object.keys(this.modList).length) return;
-        let item = {};
-        copyObj(item, this.modList);
-        item.modList = {};
-        copyObj(item.modList, this.modList);
-        item.name = {};
-        item.nameReal = {};
-        copyObj(item.name, this.name);
-        copyObj(item.nameReal, this.name);
-        item.color = item.colorReal = this.colorReal;
-        item.shadow = item.shadowReal = this.shadowReal;
-        item.stroke = item.strokeReal = this.strokeReal;
-        item.lvl = this.lvl;
-        item.mod = this.mod;
-        item.rarity = this.rarity;
-        item.material = material;
-        item.identified = false;
-        item.quantity = 1;
-        item.type = 'material';
-        item.tabId = materialList.indexOf(material);
-        item.weight = WEIGHT[item.type];
-        item.priceRate = materialMap.get(item.material).pRate;
-        item.__proto__ = Item.prototype;
-        item.symbolReal = item.symbol = Item.getSymbol(item.type);
-        item.desc = {
-            a: ``,
-            b: `埋め込み可能な${matBaseList.name['b']}の装備品に合成すると属性値が付与される。`    
-        };
-
-        item.calcPrice();
-        item.putDown(this.x, this.y, true);
+        return perc && this.matRedTimes ? evalPercentage(perc / this.matRedTimes) : false;
     }
 
     dropEquipment(list) {

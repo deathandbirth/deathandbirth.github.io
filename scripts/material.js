@@ -1591,7 +1591,25 @@ const modTab = {
             ring: { embeddedBonus: 1 },
             light: { embeddedBonus: 1 }
         },
-    ]
+    ],
+
+    restrict: {
+        str: 20,
+        dex: 20,
+        con: 20,
+        int: 20,
+        spd: 20,
+        skillFire: 20,
+        skillWater: 20,
+        skillAir: 20,
+        skillEarth: 20,
+        skillPoison: 20,
+        skillAll: 20,
+        dmgDiceNum: 50,
+        dmgDiceSides: 20,
+        numBoxes: 50,
+        lighten: 50,
+    }
 };
 
 {
@@ -1679,11 +1697,13 @@ const Material = class extends Thing {
             this.desc[option.getLanguage()].replace(/\t/g, '').split('\n').forEach((value, key) => {
                 display.text({
                     ctx: ctxInv,
-                    msg: key % 2 ? '   ' + value : value,
+                    msg: value,
                     x: i - 0.5,
-                    y: j++,
+                    y: j,
                     limit: limit,
                 });
+
+                j += 1.1
             });
         } else if (this.nameSkill) {
             let msg = rogue.getSkillInfo(skillMap.get(this.nameSkill), this.skillLvl, true);
@@ -1702,11 +1722,13 @@ const Material = class extends Thing {
         let mod;
         let count = 0;
         let jSaved = j;
+        let fs;
+        if (char) fs = display.fs - 3;
         for (let [key, term] of investigationMap.entries()) {
             if (!term) {
                 if (key === 'mod' && !char) {
                     mod = true;
-                    if (this.type === 'orb') break;
+                    if (this.modParts) break;
                     i += IN_WIDTH / 4;
                     j = jSaved;
 				}
@@ -1720,7 +1742,7 @@ const Material = class extends Thing {
 				continue;
             }
             
-            this.investigateLoop(char, ctxInv, key, term, this[key], mod, i, j);
+            this.investigateLoop(char, ctxInv, key, term, this[key], mod, i, j, fs);
             j += 1.05;
             if (key === 'embeddedNum' && this[key]) {
                 for (let k = 0, l = this.embeddedList.length; k < l; k++) {
@@ -1728,6 +1750,7 @@ const Material = class extends Thing {
                     let item = this.embeddedList[k]
                     let name = item.getName();
                     if (item.shadow) ctxInv.shadowColor = item.shadow;
+                    if (item.cursed) ctxInv.fillStyle = colorList.red;
                     display.text({
                         ctx: ctxInv,
                         msg: name,
@@ -1745,10 +1768,12 @@ const Material = class extends Thing {
             if (char && !(++count % /*18*/ 21)) {
                 i += IN_WIDTH / 4;
                 j = jSaved;
-			}
+			} else if (mod) {
+                if (j * display.fs > display.height - SS * display.fs) break;
+            }
         }
         
-        if (this.type === 'orb') {
+        if (this.modParts) {
             j++;
             for (let key in this.modParts) {
                 ctxInv.textAlign = 'right';
@@ -1762,22 +1787,34 @@ const Material = class extends Thing {
 
                 ctxInv.textAlign = 'left';
                 let objMod = this.modParts[key];
-                for (let key2 in objMod) {
-                    let term = investigationMap.get(key2);
-                    this.investigateLoop(false, ctxInv, key2, term, objMod[key2], true, i - 3 + IN_WIDTH / 4, j);
-                    j += 1.1;
+                if (this.type === 'orb') {
+                    for (let key2 in objMod) {
+                        let term = investigationMap.get(key2);
+                        this.investigateLoop(false, ctxInv, key2, term, objMod[key2], true, i - 3 + IN_WIDTH / 4, j);
+                        j += 1.1;
+                    }
+                } else {
+                    let mod;
+                    for (let [key2, term] of investigationMap.entries()) {
+                         if (!mod || !term || term.char || !objMod[key2]) {
+                            if (key2 === 'mod') mod = true;
+                            continue;
+                        }
+
+                        this.investigateLoop(false, ctxInv, key2, term, objMod[key2], true, i - 3 + IN_WIDTH / 4, j);
+                        j += 1.1;
+                        if (j * display.fs > display.height - SS * display.fs) break;
+                    }
                 }
             }
         }
     }
 
-    investigateLoop(char, ctxInv, key, term, value, mod, i, j) {
+    investigateLoop(char, ctxInv, key, term, value, mod, i, j, fs) {
         ctxInv.save();
-        let fsChar;
-        if (char) {
-            fsChar = display.fs - 3;
+        if (fs) {
             let fontStyle = FONT_STYLE[option.getLanguage()];
-            ctxInv.font = fsChar - 1 + 'px ' + fontStyle;
+            ctxInv.font = fs - 1 + 'px ' + fontStyle;
         }
     
         let msg = term.name[option.getLanguage()];
@@ -1822,7 +1859,7 @@ const Material = class extends Thing {
             x: i - 1 + IN_WIDTH / 4,
             y: j,
             limit: 5,
-            fs: fsChar,
+            fs: fs,
         });
 
         ctxInv.textAlign = 'left';
@@ -1832,7 +1869,7 @@ const Material = class extends Thing {
             x: i - 0.5,
             y: j,
             limit: 8,
-            fs: fsChar,
+            fs: fs,
         });
 
         ctxInv.restore();
@@ -1929,9 +1966,10 @@ const Material = class extends Thing {
 
     getMaterialBase() {
         let i = 0;
-        materialList.shuffle();
-        while (!(this.material & materialList[i])) i++;
-        return materialList[i];
+        let list = [...materialList];
+        list.shuffle();
+        while (!(this.material & list[i])) i++;
+        return list[i];
     }
 
     getMaterial(matBase, matId) {
@@ -2176,6 +2214,8 @@ const Material = class extends Thing {
 			
             [this.nameReal['a'], this.nameReal['b']] = this.getUniqueName(unique.name, true);
             this.mod = UNIQUE;
+            this.modList = {};
+            copyObj(this.modList, unique.values);
         }
     }
 
@@ -2188,6 +2228,87 @@ const Material = class extends Thing {
         nameB = `${namePreB}${this.nameReal['b']}${nameSufB}`;
         return [nameA, nameB];
     }
+
+    makeMaterial(char) {
+        if (!this.modList) this.modList = {};
+        for (let key in this.modList) {
+            if (this.modList[key] === DEFAULT) {
+                delete this.modList[key];
+                continue;
+			}
+			
+            let num = this.modList[key];
+            this.modList[key] = rndIntBet(1, num);
+		}
+		
+        let material = this.getMaterialBase();
+        let matBaseList = materialMap.get(material); 
+        if (matBaseList.bonus || material === M_GEM) {
+            let values;
+            if (material === M_GEM) {
+                if (this.matId === undefined) return;
+                values = matBaseList.list.get(this.matId).values;
+            } else {
+                values = matBaseList.bonus;
+            }
+
+            mergeMod({
+                obj: this.modList,
+                obj2: values,
+                perc: 0,
+                max: 1,
+                min: 1,
+            });
+        }
+
+        if (!Object.keys(this.modList).length) return;
+        let item = {};
+        copyObj(item, this.modList);
+        if (char) {
+            item.modList = {};
+            copyObj(item.modList, this.modList);
+            item.desc = {
+                a: ``,
+                b: `埋め込み可能な${matBaseList.name['b']}の装備品に合成すると属性値が付与される。`    
+            };
+        } else {
+            item.modParts = {};
+            item.modParts[this.type] = {};
+            copyObj(item.modParts[this.type], this.modList);
+            let type = translation.item[this.type];
+            item.desc = {
+                a: ``,
+                b: `埋め込み可能な${matBaseList.name['b']}の${type}に合成すると属性値が付与される。`    
+            };
+        }
+
+        item.name = {};
+        item.nameReal = {};
+        copyObj(item.name, this.name);
+        copyObj(item.nameReal, this.name);
+        item.color = item.colorReal = this.colorReal;
+        item.shadow = item.shadowReal = this.shadowReal;
+        item.stroke = item.strokeReal = this.strokeReal;
+        item.lvl = this.lvl;
+        item.mod = this.mod;
+        item.rarity = this.rarity;
+        item.material = material;
+        item.identified = false;
+        item.quantity = 1;
+        item.type = 'material';
+        item.tabId = materialList.indexOf(material);
+        item.weight = WEIGHT[item.type];
+        item.priceRate = materialMap.get(material).pRate;
+        item.__proto__ = Item.prototype;
+        item.symbolReal = item.symbol = char ? '\'' : '`';
+        item.calcPrice();
+        if (char) {
+            item.putDown(this.x, this.y, true);
+        } else {
+            return item;
+        }
+    }
+
 }
 
 const mergeMod = ({
@@ -2209,7 +2330,8 @@ const mergeMod = ({
 		} else {
             if (!count) {
                 count++;
-                while (count < min || count < max && evalPercentage(perc)) {
+                let restrict = modTab.restrict[key] ? (1 - modTab.restrict[key] / 100) : 1;
+                while (count < min || count < max && evalPercentage(perc * restrict)) {
                     count++;
                     perc /= 2;
                 }
@@ -2222,6 +2344,4 @@ const mergeMod = ({
 		
         obj[key] ? obj[key] += value : obj[key] = value;
 	}
-	
-    if (obj.numBoxes && obj.numBoxes >= MAX_BOX_NUM) obj.numBoxes = MAX_BOX_NUM - 1;
 }

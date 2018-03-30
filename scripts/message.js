@@ -650,6 +650,7 @@ const translation = {
         recipe: 'レシピ',
         'Charge Book': '充填書',
         corpse: '死体',
+        material: '素材',
     },
 
     element: {

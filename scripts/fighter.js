@@ -2021,7 +2021,7 @@ const fighterTab = {
             air: 50,
             earth: 50,
             poison: 50,
-            material: M_STONE,
+            material: M_STONE | M_PLATING,
             atkType: AT_B,
             stillness: true,
             awake: true,
@@ -2056,7 +2056,7 @@ const fighterTab = {
             air: 50,
             earth: 50,
             poison: 50,
-            material: M_STONE,
+            material: M_STONE | M_PLATING,
             atkType: AT_B,
             stillness: true,
             awake: true,
@@ -2092,7 +2092,7 @@ const fighterTab = {
             air: 50,
             earth: 50,
             poison: 50,
-            material: M_STONE,
+            material: M_STONE | M_PLATING,
             atkType: AT_S,
             stillness: true,
             canAttack: true,
@@ -4357,7 +4357,9 @@ const Fighter = class extends Material {
     }
 
     getBoxes(numBoxes) {
-        for (let i = this.numBoxes + 1; i <= this.numBoxes + numBoxes; i++) {
+        let num = this.numBoxes + 1;
+        if (num > MAX_BOX_NUM) return;
+        for (let i = num; i <= this.numBoxes + numBoxes && i <= MAX_BOX_NUM; i++) {
             let item = this.eqt[i];
             if (item) {
                 this.boxAdd(item, i);
@@ -4366,6 +4368,7 @@ const Fighter = class extends Material {
 				this.boxes[i] = null;
 			}
         }
+
         if (Object.keys(this.eqt).length) {
             for (let key in this.eqt) {
                 let item = this.eqt[key];
@@ -4377,7 +4380,9 @@ const Fighter = class extends Material {
     }
 
     looseBoxes(numBoxes) {
-        for (let i = this.numBoxes - numBoxes + 1; i <= this.numBoxes; i++) {
+        let num = this.numBoxes - numBoxes + 1;
+        if (num > MAX_BOX_NUM) return;
+        for (let i = num; i <= this.numBoxes && i <= MAX_BOX_NUM; i++) {
             let item = this.boxes[i];
             delete this.boxes[i];
             if (!item) continue;

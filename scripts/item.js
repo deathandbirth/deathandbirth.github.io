@@ -205,37 +205,28 @@ const [ //ammo
 
 const C_COIN = 1;
 const RECIPE_1 = {
-    a: `Torches [2-4]
-		-> Torch [duration sum]
-	Lamps or Lanthanums + oil [2-4]
-		-> Light Source [duration sum]
-	Potion of Healing [3]
-		-> Potion of Extra Healing
-	Wands [2-4]
-		-> Wand [charges sum]
-	Charge Book + Scroll
-		-> Charge book [charges sum]
-	Gem [1-4]
-		-> Coin
-	Embeddable Equipment + The Same Materials
-		<-> Equipment [Materials]
-	`,
+a: 
+`Jewel [1-4] -> Coin
+Potion of Healing [3] -> Potion of Extra Healing
+Wands [2-4] -> Wand [charges sum]
+Charge Book + Scroll -> Charge book [charges sum]
+Torches [2-4] -> Torch [duration sum]
+Lamps or Lanthanums + oil [2-4] -> Light Source [duration sum]
+Embeddable Equipment + The Same Materials・Jewel・Orb <-> Equipment [Materials・Jewel・Orb]
+Unembeddable Normal Equipment + Jewel + Orb -> Embeddable Equipment
+Unembeddable Magic or Rare Equipment + Jewel + Orb + The Same Materials -> Materials`
+,
 
-    b: `松明 [2-4]
-		-> 松明 [期間 計]
-	ランプまたはランタン + オイル [2-4]
-		-> ランプまたはランタン [期間　計]
-	回復の薬 [3]
-		-> 特大回復の薬
-	魔法棒 [2-4]
-		-> 魔法棒 [充填 計]
-	充填書 + 巻物
-		-> 充填書 [充填 計]
-	宝石 [1-4]
-		-> 硬貨
-	埋め込み可能な装備品 + 同素材
-		<-> 装備品 [素材]
-	`
+b: 
+`ジュエル [1-4] -> 硬貨
+回復の薬 [3] -> 特大回復の薬
+魔法棒 [2-4] -> 魔法棒 [充填 計]
+充填書 + 巻物 -> 充填書 [充填 計]
+松明 [2-4] -> 松明 [期間 計]
+ランプまたはランタン + オイル [2-4] -> ランプまたはランタン [期間 計]
+埋め込み可能な装備品 + 同素材・ジュエル・オーブ <-> 装備品 [素材・ジュエル・オーブ]
+ノーマルの埋め込み不可な装備品 + ジュエル + オーブ -> 埋め込み可能な装備品
+マジックまたはレアの埋め込み不可な装備品 + ジュエル + オーブ + 同素材 -> 素材`
 };
 
 const itemTab = {
@@ -2232,26 +2223,28 @@ const Item = class extends Material {
                 this.dmgBare = this.dmgBase;
                 if (!this.dmgBonus) this.dmgBonus = 0;
                 if (!this.rateBonus) this.rateBonus = 0;
-                if (!starter && !flag.shop && (this.mod !== NORMAL || this.cursed || rogue.cdl)) {
+                if (!starter && !flag.shop && (this.cursed || this.mod === NORMAL && rogue.cdl)) {
                     let found;
-                    if (this.cursed || this.mod !== NORMAL || evalPercentage(25)) {
+                    if (this.cursed || evalPercentage(25)) {
                         this.dmgBonus += (this.cursed ? -1 : 1) * rndIntBet(1, 50);
                         found = true;
                     }
-                    if (this.cursed || this.mod !== NORMAL || evalPercentage(25)) {
+
+                    if (this.cursed || evalPercentage(25)) {
                         this.rateBonus += (this.cursed ? -1 : 1) * rndIntBet(1, 50);
                         found = true;
                     }
-                    if (!this.cursed && found && this.mod === NORMAL) this.getSuperior();
+
+                    if (!this.cursed && found) this.getSuperior();
 				}
 				
                 this.calcDmgOne();
             } else if (this.armor) {
                 if (!this.acBonus) this.acBonus = 0;
-                if (!starter && !flag.shop && (this.mod !== NORMAL || this.cursed ||
-                        rogue.cdl && evalPercentage(25))) {
+                if (!starter && !flag.shop && (this.cursed ||
+                        this.mod === NORMAL && rogue.cdl && evalPercentage(25))) {
                     this.acBonus += (this.cursed ? -1 : 1) * rndIntBet(1, 50);
-                    if (!this.cursed && this.mod === NORMAL) this.getSuperior();
+                    if (!this.cursed) this.getSuperior();
 				}
 				
                 this.calcAcOne();
@@ -2345,10 +2338,9 @@ const Item = class extends Material {
     }
 
     calcDmgOne() {
-        if (this.dmgDiceNum || this.dmgDiceSides) {
-            let { num, sides } = dice.get(this.dmgBare, this.dmgDiceNum, this.dmgDiceSides);
-            this.dmgBase = num + 'd' + sides;
-        }
+        if (!this.dmgBare) return;
+        let { num, sides } = dice.get(this.dmgBare, this.dmgDiceNum, this.dmgDiceSides);
+        this.dmgBase = num + 'd' + sides;
     }
 
     calcAcOne() {
@@ -2399,6 +2391,15 @@ const Item = class extends Material {
     uncurse() {
         this.cursed = false;
         audio.playSound('uncurse');
+        if (this.embeddedList && this.embeddedList.length) {
+            for (let embedded of this.embeddedList) {
+                if (embedded.cursed) {
+                    embedded.cursed = false;
+                    let list = embedded.modParts ? embedded.modParts[this.type] : embedded.modList;
+                    list.cursed = false;
+                }
+            }
+        }
     }
 
     calcPrice() {
@@ -2533,7 +2534,6 @@ const Item = class extends Material {
                 
                 name += string;
                 if (this.identified) {
-                    if (this.cursed) name = (a === ENG ? 'Cursed ' : '呪われた') + name;
                     name += ` {${this.durab}}`;
                     // let durab = Math.ceil(this.durab/this.durabMax*100);
                     // name += ` {${durab}%}`;
@@ -2541,8 +2541,12 @@ const Item = class extends Material {
                 }
             }
             
-            if (!this.identified && (this.equipable || type === 'material' || type === 'gem')) {
-                name += a === ENG ? ' (Unid)' : ' (未識別)';
+            if (this.equipable || type === 'material' || type === 'gem') {
+                if (!this.identified) {
+                    name += a === ENG ? ' (Unid)' : ' (未識別)';
+                } else if (this.cursed) {
+                    name = (a === ENG ? 'Cursed ' : '呪われた') + name;
+                }
             }
         }
 		
@@ -2662,9 +2666,6 @@ const Item = class extends Material {
                 break;
             case 'coin':
                 symbol = '$';
-                break;
-            case 'material':
-                symbol = '\'';
                 break;
 		}
 		

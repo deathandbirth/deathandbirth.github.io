@@ -230,9 +230,10 @@ const creation = {
             this.items[type] = [];
             for (let [tabId, item] of itemTab[type]) {
                 let i = 0;
-                materialList.shuffle();
-                while (!(item.material & materialList[i])) i++;
-                let matBase = materialList[i];
+                let list = [...materialList];
+                list.shuffle();
+                while (!(item.material & list[i])) i++;
+                let matBase = list[i];
                 let list = materialMap.get(matBase).list;
                 for (let i = 0, l = list.size; i < l; i++) {
                     let item = this.item({

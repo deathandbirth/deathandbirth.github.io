@@ -272,7 +272,7 @@ const inventory = {
                 maxNum = MAX_PACK_COUNT;
                 break;
             case P_BOX:
-                maxNum = rogue.numBoxes;
+                maxNum = rogue.numBoxes < MAX_BOX_NUM ? rogue.numBoxes : MAX_BOX_NUM;
                 break;
             case P_CUBE:
                 maxNum = MAX_CUBE_COUNT;
@@ -298,9 +298,8 @@ const inventory = {
             if (!item.identified) {
                 if (index2 === index) continue;
             } else {
-                if ((item2.identified && item2.tabId <= item.tabId) &&
-                    index2 === index) {
-                    if (!(item2.charges >= 0) || item2.charges > item.charges) continue;
+                if (item2.identified && item2.tabId <= item.tabId && index2 === index) {
+                    if (!(item2.charges >= 0) || item2.tabId !== item.tabId || item2.charges > item.charges) continue;
                 }
 			}
 			
