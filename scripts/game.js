@@ -1,5 +1,5 @@
 const game = {
-    title() {
+    title(init) {
         display.clearAll();
         let ctxInv = display.ctxes.inv;
         ctxInv.save();
@@ -37,7 +37,7 @@ const game = {
         ctxInv.restore();
         flag.retry = true;
         audio.stop(audio.curTrack);
-        audio.playMusic('title');
+        if (!init) audio.playMusic('title');
 	},
 	
     over() {

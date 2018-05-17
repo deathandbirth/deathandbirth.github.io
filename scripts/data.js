@@ -134,7 +134,7 @@ const Data = class {
 
     loadOption() {
         for (let key in option.list) {
-            let key2 = option.list[key]['a'];
+            let key2 = option.list[key]['key'];
             if (!this.option[key2]) {
                 this.option[key2] = {};
                 this.option[key2].user = option[key2].default;

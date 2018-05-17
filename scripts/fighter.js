@@ -4934,6 +4934,7 @@ const Fighter = class extends Material {
                     `${name} got an effect of Combat` :
                     `${name}戦闘の効果を得た`);
                 f.calcDmg();
+                audio.playSound('encourage');
                 break;
             case BLESSING:
                 f.acBuff = this.calcSkillValue(skill, lvl);
@@ -5025,6 +5026,7 @@ const Fighter = class extends Material {
             lvl = this.cs.lvl + this.getSkillBoost(skill);
             let name = skill.name[option.getLanguage()];
             let nameChar = this.getName(true);
+            this.consumeMana(skill);
             message.draw(option.isEnglish() ?
                 `${nameChar} cast ${name}` :
                 skill.type === 'spell' ?
@@ -5159,7 +5161,6 @@ const Fighter = class extends Material {
                 if (!hit) this.deleteAmmo(this.ci, true, xS, yS);
                 flag.arrow = flag.throw = false;
             } else if (flag.skill) {
-                this.consumeMana(skill);
                 if (!ecco && this.ecco && this.mp >= skill.mp) {
                     if (steep)[x1, y1] = [y1, x1];
                     this.aim({

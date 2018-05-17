@@ -115,7 +115,7 @@ const inventory = {
                         });
                     } else if (!flag.option2) {
                         let msg = '';
-                        let opt = option[item['a']];
+                        let opt = option[item['key']];
                         if (opt.choise) {
                             msg = opt.choise[opt.user][option.getLanguage()];
 						} else if (option.isEnglish()) {
