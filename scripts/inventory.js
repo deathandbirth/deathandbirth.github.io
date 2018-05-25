@@ -61,7 +61,6 @@ const inventory = {
                 flag.read && item.type != 'scroll' && !item.chargeBook ||
                 flag.identify && item.identified && key !== a ||
                 (flag.repair || flag.blacksmith) && (!item.equipable || item.durab === item.durabMax) ||
-                flag.synthesize && item.alchemy ||
                 flag.zap && item.type != 'wand' ||
                 flag.eat && item.type != 'food' ||
                 flag.gain && (item.type != 'book' || !item.skill) ||

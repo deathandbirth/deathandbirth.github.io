@@ -229,6 +229,152 @@ b:
 マジックまたはレアの埋め込み不可な装備品 + ジュエル + オーブ + 同素材 -> 素材`
 };
 
+const [
+    RECIPE_WROUGHT_GOLD,
+    RECIPE_EXTRA_HEALING,
+    RECIPE_WAND,
+    RECIPE_CHARGE_BOOK,
+    RECIPE_TORCH,
+    RECIPE_LAMP,
+    RECIPE_EMBED,
+    RECIPE_REMOVE,
+    RECIPE_EXTEND,
+    RECIPE_MATERIALIZE,
+] = enums(1, 10);
+
+const recipes = new Map([
+    [RECIPE_WROUGHT_GOLD, {
+        cost: 10,
+        name: {
+            a: 'Wrought Gold',
+            b: '錬金'
+        },
+
+        recipe:{
+            a: 'Jewel [1-4] -> Coin',
+            b: 'ジュエル [1-4] -> 硬貨'
+        }
+    }],
+
+    [RECIPE_EXTRA_HEALING, {
+        cost: 10,
+        name: {
+            a: 'Extra Healing',
+            b: '特大回復'
+        },
+
+        recipe:{
+            a: 'Potion of Healing [3] -> Potion of Extra Healing',
+            b: '回復の薬 [3] -> 特大回復の薬'
+        }
+    }],
+
+    [RECIPE_WAND, {
+        cost: 1,
+        name: {
+            a: 'Wand',
+            b: '魔法棒'
+        },
+
+        recipe:{
+            a: 'Wands [2-4] -> Wand [charges sum]',
+            b: '魔法棒 [2-4] -> 魔法棒 [充填 計]'
+        }
+    }],
+
+    [RECIPE_CHARGE_BOOK, {
+        cost: 1,
+        name: {
+            a: 'Charge Book',
+            b: '充填書'
+        },
+
+        recipe:{
+            a: 'Charge Book + Scroll -> Charge book [charges sum]',
+            b: '充填書 + 巻物 -> 充填書 [充填 計]'
+        }
+    }],
+
+    [RECIPE_TORCH, {
+        cost: 1,
+        name: {
+            a: 'Torch',
+            b: '松明'
+        },
+
+        recipe:{
+            a: 'Torches [2-4] -> Torch [duration sum]',
+            b: '松明 [2-4] -> 松明 [期間 計]'
+        }
+    }],
+
+    [RECIPE_LAMP, {
+        cost: 1,
+        name: {
+            a: 'Lamp',
+            b: 'ランプ'
+        },
+
+        recipe:{
+            a: 'Lamps or Lanthanums + oil [2-4] -> Light Source [duration sum]',
+            b: 'ランプまたはランタン + オイル [2-4] -> ランプまたはランタン [期間 計]'
+        }
+    }],
+
+    [RECIPE_EMBED, {
+        cost: 5,
+        name: {
+            a: 'Embed',
+            b: '埋め込み'
+        },
+
+        recipe:{
+            a: 'Embeddable Equipment + The Same Materials・Jewel・Orb -> Equipment [Materials・Jewel・Orb]',
+            b: '埋め込み可能な装備品 + 同素材・ジュエル・オーブ -> 装備品 [素材・ジュエル・オーブ]'
+        }
+    }],
+
+    [RECIPE_REMOVE, {
+        cost: 1,
+        name: {
+            a: 'Remove',
+            b: '取り外し'
+        },
+
+        recipe:{
+            a: 'Equipment [Materials・Jewel・Orb] -> Embeddable Equipment + The Same Materials・Jewel・Orb',
+            b: '装備品 [素材・ジュエル・オーブ] -> 埋め込み可能な装備品 + 同素材・ジュエル・オーブ'
+        }
+    }],
+
+
+    [RECIPE_EXTEND, {
+        cost: 30,
+        name: {
+            a: 'Extend',
+            b: '拡張'
+        },
+
+        recipe:{
+            a: 'Unembeddable Normal Equipment + Jewel + Orb -> Embeddable Equipment',
+            b: 'ノーマルの埋め込み不可な装備品 + ジュエル + オーブ -> 埋め込み可能な装備品'
+        }
+    }],
+
+    [RECIPE_MATERIALIZE, {
+        cost: 50,
+        name: {
+            a: 'Materialize',
+            b: '素材化'
+        },
+
+        recipe:{
+            a: 'Unembeddable Magic or Rare Equipment + Jewel + Orb + The Same Materials -> Materials',
+            b: 'マジックまたはレアの埋め込み不可な装備品 + ジュエル + オーブ + 同素材 -> 素材'
+        }
+    }],
+]);
+
 const itemTab = {
     coin: new Map([
         [C_COIN, {
@@ -2153,13 +2299,12 @@ const Item = class extends Material {
         if (this.equipable || gem) {
             if (!gem) {
                 this.durabBonus = 0;
-                this.embeddedNum = 0;
-                this.embeddedList = [];
-            } else {
-                this.name['a'] = this.nameReal['a'];
-                this.name['b'] = this.nameReal['b'];
+                if (this.equipable) {
+                    this.embeddedNum = 0;
+                    this.embeddedList = [];
+                }
             }
-
+            
             if (!magic) {
 				magic = this.mod === MAGIC || (!starter &&
 				evalPercentage(5 + (flag.shop ? 0 : rogue.mf)));
@@ -2206,7 +2351,7 @@ const Item = class extends Material {
                 this.cursed = !starter && !flag.shop && evalPercentage(CURSE_PERC);
             }
 
-            if (!gem) {
+            if (this.equipable) {
                 this.calcDurab(true);
                 if (starter) {
                     this.embeddedMax = 0;
@@ -2273,7 +2418,7 @@ const Item = class extends Material {
             } else if (this.type === 'wand') {
                 this.charges = rndIntBet(3, 6);
 			} else if (this.type === 'potion' && !this.lethe || this.type === 'scroll') {
-                if (this.quantity === 1) this.quantity = rndIntBet(1, 5);
+                if (this.quantity === 1 && !flag.synthesize) this.quantity = rndIntBet(1, 5);
 			}
 			
             if (this.type !== 'coin') this.calcPrice();
@@ -2501,9 +2646,9 @@ const Item = class extends Material {
 					name += `の${typeName}`;
 				}
 			}
-			
-            if (this.charges >= 0 && this.identified && !halluc) name += ` [${this.charges}]`;
-        } else if (!halluc) {
+        }
+        
+        if (!halluc) {
             if ((type === 'light' || type === 'oil') && this.identified) {
                 let duration = type === 'oil' ? this.duration :
                     Math.ceil(this.duration / this.durationMax * 100) + '%';
@@ -2519,28 +2664,19 @@ const Item = class extends Material {
                 if (this.weapon) {
                     if (this.twoHanded) string += ' (2H)';
                     if (this.identified) string += ` (${this.dmgBase})`;
-                    // if(this.identified){
-                    // let dmgSign = this.dmgBonus>0? '+':'';
-                    // let rateSign = this.rateBonus>0? '+':'';
-                    // string += ` (${dmgSign}${this.dmgBonus}%,${rateSign}${this.rateBonus}%)`;
-                    // }
                 } else if (this.armor) {
                     if (this.identified) string += ` [${this.acSBase},${this.acTBase},${this.acBBase}]`;
-                    // if(this.identified){
-                    // let rateSign = this.acBonus>0? '+':'';
-                    // string += ` (${rateSign}${this.acBonus}%)`;
-                    // }
                 }
                 
                 name += string;
-                if (this.identified) {
-                    name += ` {${this.durab}}`;
-                    // let durab = Math.ceil(this.durab/this.durabMax*100);
-                    // name += ` {${durab}%}`;
-                    if (this.embeddedMax) name += ` <${this.embeddedNum}/${this.embeddedMax}>`;
-                }
             }
             
+            if (this.identified) {
+                if (this.durabMax) name += ` {${this.durab}}`;
+                if (this.charges >= 0) name += ` [${this.charges}]`;
+                if (this.embeddedMax) name += ` <${this.embeddedNum}/${this.embeddedMax}>`;
+            }
+
             if (this.equipable || type === 'material' || type === 'gem') {
                 if (!this.identified) {
                     name += a === ENG ? ' (Unid)' : ' (未識別)';
@@ -2694,12 +2830,12 @@ const Item = class extends Material {
 					} else {
 						item.armor = true;
 					}
-
-                    if (!this.name['a']) {
-                        item.name['a'] = item.nameReal['a'];
-                        item.name['b'] = item.nameReal['b'];
-                    }
-				}
+                }
+                
+                if (item.equipable || key === 'gem') {
+                    item.name['a'] = item.nameReal['a'];
+                    item.name['b'] = item.nameReal['b'];
+                }
 				
                 if (key === 'book') { //sort list
                     if (!item.skill) continue;

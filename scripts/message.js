@@ -30,7 +30,6 @@ const [
     M_INVESTIGATE,
     M_CANT_ADD,
     M_SYNTHESIZE,
-    M_DONT_HAVE_RECIPES,
     M_PACK_OR_UNPACK,
     M_PACK_INTO,
     M_CANT_SELL,
@@ -75,6 +74,7 @@ const [
     M_THROW,
     M_THROW_DIR,
     M_NO_CLUE,
+    M_RECIPE,
 ] = enums(1, 80);
 
 const msgMap = new Map([
@@ -171,11 +171,6 @@ const msgMap = new Map([
     [M_DONT_EQUIP_LIGHT, {
         a: 'You don\'t equip any light sources',
         b: '光源を身に付けていない'
-    }],
-
-    [M_DONT_HAVE_RECIPES, {
-        a: 'You don\'t have any recipes to synthesize',
-        b: '合成するためのレシピを持っていない'
     }],
 
     [M_DONT_HAVE_MONEY, {
@@ -334,8 +329,13 @@ const msgMap = new Map([
     }],
 
     [M_SYNTHESIZE, {
-        a: '[a-z] [1-9] to choose [A-Z] to remove [Enter] to synthesize',
-        b: '[a-z] [1-9] 選択 [A-Z] 除外 [Enter] 合成'
+        a: '[a-z] [1-9] to choose [A-Z] to remove [Enter] to synthesize [Ctrl + R] to show recipes',
+        b: '[a-z] [1-9] 選択 [A-Z] 除外 [Enter] 合成 [Ctrl + R] レシピを表示'
+    }],
+
+    [M_RECIPE, {
+        a: '[Enter] to go back',
+        b: '[Enter] 戻る'
     }],
 
     [M_PACK_OR_UNPACK, {

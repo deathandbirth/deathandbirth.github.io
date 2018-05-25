@@ -2132,7 +2132,6 @@ const fighterTab = {
             starter: [
                 { type: 'melee', tabId: M_DAGGER, starter: true },
                 { type: 'armor', tabId: A_VEST, starter: true },
-                { type: 'book', tabId: B_ALCHEMY_1 },
                 { type: 'book', tabId: B_SPELL_1 },
                 { type: 'book', tabId: B_SKILL_1 },
                 { type: 'food', tabId: F_RATION, quantity: 5 },
@@ -2351,7 +2350,7 @@ const Fighter = class extends Material {
         
         if (this.starter) {
             this.eqt = {} //equipment temp
-            this.numBoxes = 1;
+            this.numBoxes = INIT_BOX_NUM;
             this.boxes = {};
             for (let i = 1; i <= this.numBoxes; i++) {
                 this.boxes[i] = null;
@@ -5252,19 +5251,17 @@ const Fighter = class extends Material {
         return found;
     }
 
-    haveBook(nameSkill, alchemy) {
-        let found = this.haveBookLoop(this.pack, nameSkill, alchemy);
-        if (!found) found = this.haveBookLoop(this.boxes, nameSkill, alchemy);
+    haveBook(nameSkill) {
+        let found = this.haveBookLoop(this.pack, nameSkill);
+        if (!found) found = this.haveBookLoop(this.boxes, nameSkill);
         return found;
     }
 
-    haveBookLoop(list, nameSkill, alchemy) {
+    haveBookLoop(list, nameSkill) {
         for (let key in list) {
             let item = list[key];
             if (item && item.type === 'book') {
-                if (alchemy && item.alchemy) {
-                    return true
-				} else if (nameSkill && item.skill) {
+				if (nameSkill && item.skill) {
                     for (let key2 in item.list) {
                         if (item.list[key2] === nameSkill) return true
                     }

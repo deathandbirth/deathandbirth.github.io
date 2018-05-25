@@ -215,11 +215,6 @@ const input = {
                     message.draw('Input type and tagId', true);
                     flag.regular = false;
                 } else if (this.isShift) {
-                    if (!rogue.haveBook(undefined, true)) {
-                        message.draw(message.get(M_DONT_HAVE_RECIPES));
-                        break;
-					}
-					
                     flag.synthesize = true;
                     rogue.showInventory(P_PACK);
                     rogue.showInventory(P_CUBE);
