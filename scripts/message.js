@@ -75,6 +75,7 @@ const [
     M_THROW_DIR,
     M_NO_CLUE,
     M_RECIPE,
+    M_DONT_KNOW_RECIPE,
 ] = enums(1, 80);
 
 const msgMap = new Map([
@@ -166,6 +167,11 @@ const msgMap = new Map([
     [M_DONT_HAVE_AMMO, {
         a: 'You have no ammunition to fire',
         b: '弾薬を持っていない'
+    }],
+
+    [M_DONT_KNOW_RECIPE, {
+        a: 'You don\'t know any recipes',
+        b: 'レシピを習得していない'
     }],
 
     [M_DONT_EQUIP_LIGHT, {
@@ -329,8 +335,8 @@ const msgMap = new Map([
     }],
 
     [M_SYNTHESIZE, {
-        a: '[a-z] [1-9] to choose [A-Z] to remove [Enter] to synthesize [Ctrl + R] to show recipes',
-        b: '[a-z] [1-9] 選択 [A-Z] 除外 [Enter] 合成 [Ctrl + R] レシピを表示'
+        a: '[a-z] [1-9] to choose [A-Z] to remove [Enter] to synthesize [Ctrl + r] to show recipes',
+        b: '[a-z] [1-9] 選択 [A-Z] 除外 [Enter] 合成 [Ctrl + r] レシピを表示'
     }],
 
     [M_RECIPE, {

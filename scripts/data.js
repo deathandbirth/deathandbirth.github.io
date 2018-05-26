@@ -37,7 +37,7 @@ const Data = class {
     saveItemTab() {
         this.itemTab = {};
         for (let key in itemTab) {
-            if (key !== 'potion' && key !== 'wand' && key !== 'scroll' && key !== 'orb') continue;
+            if (key !== 'potion' && key !== 'wand' && key !== 'scroll' && key !== 'recipe' && key !== 'orb') continue;
             this.itemTab[key] = [];
             for (let [tabId, item] of itemTab[key].entries()) {
                 let thisItem = {};
@@ -53,8 +53,17 @@ const Data = class {
 
     loadItemTab() {
         for (let key in itemTab) {
-            if (key !== 'potion' && key !== 'wand' && key !== 'scroll' && key !== 'orb') continue;
+            if (key !== 'potion' && key !== 'wand' && key !== 'scroll' && key !== 'recipe' && key !== 'orb') continue;
             if (this.ver < 0.007 && key === 'orb') continue;
+            if (this.ver < 0.009 && key === 'recipe') {
+                for (let item of itemTab[key].values()) {
+                    item.identified = false;
+                    getRndName[key](item);
+                }
+
+                continue;
+            }
+
             for (let [tabId, item] of itemTab[key].entries()) {
                 let thisItem = this.itemTab[key][tabId];
                 if (!thisItem) {
@@ -93,6 +102,12 @@ const Data = class {
         if (fighter.id === ROGUE) {
             fighter.__proto__ = Rogue.prototype;
             rogue = fighter;
+            if (this.ver < 0.009) {
+                rogue.recipes = {};
+                for (let key of itemTab['recipe'].keys()) {
+                    rogue.recipes[key] = true;
+                }
+            }
         } else {
             fighter.__proto__ = Enemy.prototype;
             map.enemyList[fighter.id] = fighter;

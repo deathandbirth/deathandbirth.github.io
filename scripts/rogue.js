@@ -21,6 +21,7 @@ const Rogue = class extends Fighter {
         this.cdl = 0; //current dungeon level
         this.cui = {}; //current unique item
         this.cue = {}; //current unique enemy
+        this.recipes = {};
         this.lethe = 0;
         this.turn = 1;
         this.done = false;
@@ -997,7 +998,7 @@ const Rogue = class extends Fighter {
             var a = getAlphabetOrNumber(keyCode);
             if (!a) return;
             item = this.getItem(a, flag.floor);
-            if (!item || item.type !== 'scroll' && !item.chargeBook) return;
+            if (!item || item.type !== 'scroll' && item.type !== 'recipe' && !item.chargeBook) return;
 		}
 		
         if (item.chargeBook && !item.charges) return;
@@ -1011,26 +1012,35 @@ const Rogue = class extends Fighter {
         message.draw(option.isEnglish() ?
             `Read ${name}` :
             `${name}を読んだ`);
+        if (item.type === 'recipe' && !this.recipes[item.tabId]) {
+            this.recipes[item.tabId] = true;
+            message.draw(option.isEnglish() ?
+                `Learned a new recipe` :
+                `新たなレシピを習得した`);
+        }
+
         flag.read = false;
-        flag.scroll = true;
-        if (skillMap.get(item.nameSkill).range === 0) {
-            this.ci = item;
-            if (!boxItem) {
-                inventory.clear();
-                flag.aim = true;
-                this.aim({ keyCode: 88 }); //examine
+        if (item.type !== 'recipe') {
+            flag.scroll = true;
+            if (skillMap.get(item.nameSkill).range === 0) {
+                this.ci = item;
+                if (!boxItem) {
+                    inventory.clear();
+                    flag.aim = true;
+                    this.aim({ keyCode: 88 }); //examine
+                    return;
+                } else {
+                    this.aim({
+                        x1: this.x,
+                        y1: this.y,
+                    });
+                }
+            } else if (this.haveCast(item.nameSkill, item.skillLvl, this) === null) {
+                this.ci = item;
                 return;
-            } else {
-                this.aim({
-                    x1: this.x,
-                    y1: this.y,
-                });
             }
-        } else if (this.haveCast(item.nameSkill, item.skillLvl, this) === null) {
-            this.ci = item;
-            return;
-		}
-		
+        }
+
         this.deleteItem(item, 1);
         inventory.clear();
         flag.regular = true;
@@ -1048,7 +1058,7 @@ const Rogue = class extends Fighter {
         if (!item || item.identified) return;
         flag.floor = false
         if (item.type === 'wand' && !itemTab[item.type].get(item.tabId).identified ||
-            item.type === 'potion' || item.type === 'scroll' || item.type === 'orb') {
+            item.type === 'potion' || item.type === 'scroll' || item.type === 'recipe' || item.type === 'orb') {
             item.identifyAll();
 		} else {
             item.identified = true;
@@ -1357,8 +1367,10 @@ const Rogue = class extends Fighter {
         });
 
         j += 2; 
+        let recipes = itemTab['recipe'];
         for (let [key, value] of recipes.entries()) {
-            let name = value.name[a];
+            if (!this.recipes[key]) continue;
+            let name = value.nameReal[a];
             let cost = value.cost;
             let recipe = value.recipe[a];
             display.text({
@@ -1444,10 +1456,12 @@ const Rogue = class extends Fighter {
 		}
 		
         let name, msg;
+        let recipes = itemTab['recipe'];
         if (l === potion) {
-            cost = recipes.get(RECIPE_EXTRA_HEALING).cost;
+            let tabId = RECIPE_EXTRA_HEALING;
+            cost = recipes.get(tabId).cost;
             num = 1;
-            if (l === 3 && mp >= cost) {
+            if (l === 3 && this.checkRecipe(tabId, cost)) {
                 let found = true;
                 for (let key in this.cube) {
                     let item = this.cube[key];
@@ -1467,8 +1481,9 @@ const Rogue = class extends Fighter {
                 }
             }
         } else if (l === wand) {
-            cost = recipes.get(RECIPE_WAND).cost;
-            if (l > 1 && mp >= cost) {
+            let tabId = RECIPE_WAND;
+            cost = recipes.get(tabId).cost;
+            if (l > 1 && this.checkRecipe(tabId, cost)) {
                 let found = true;
                 let a = 'a';
                 let wand = this.cube[a];
@@ -1499,8 +1514,9 @@ const Rogue = class extends Fighter {
                 }
             }
         } else if (l === gem) {
-            cost = recipes.get(RECIPE_WROUGHT_GOLD).cost;
-            if (mp >= cost) {
+            let tabId = RECIPE_WROUGHT_GOLD;
+            cost = recipes.get(tabId).cost;
+            if (this.checkRecipe(tabId, cost)) {
                 let amount = 0;
                 for (let key in this.cube) {
                     let item = this.cube[key];
@@ -1516,8 +1532,9 @@ const Rogue = class extends Fighter {
                 name = '$' + amount;
             }
         } else if (l > 1 && l === touch + lamp + oil) {
-            cost = recipes.get(RECIPE_LAMP).cost;
-            if ((l === touch || lamp && l === lamp + oil) && mp >= cost) {
+            let tabId = l === touch ? RECIPE_TORCH : RECIPE_LAMP;
+            cost = recipes.get(tabId).cost;
+            if ((l === touch || lamp && l === lamp + oil) && this.checkRecipe(tabId, cost)) {
                 let item, a;
                 for (let key in this.cube) {
                     let item2 = this.cube[key];
@@ -1551,8 +1568,9 @@ const Rogue = class extends Fighter {
                 name = item.getName()
             }
         } else if (l === book + scroll) {
-            cost = recipes.get(RECIPE_CHARGE_BOOK).cost;
-            if (l > 1 && book && mp >= cost) {
+            let tabId = RECIPE_CHARGE_BOOK;
+            cost = recipes.get(tabId).cost;
+            if (l > 1 && book && this.checkRecipe(tabId, cost)) {
                 let book, scroll, blankBook, nameSkill, bookKey, scrollKey;
                 let count = 0;
                 for (let key in this.cube) {
@@ -1605,6 +1623,8 @@ const Rogue = class extends Fighter {
                 }
             }
         } else if (embeddable === 1 && embedded && l === embeddable + embedded) {
+            let tabId = RECIPE_EMBED;
+            cost = recipes.get(tabId).cost;
             let item;
             for (let key in this.cube) {
                 let item2 = this.cube[key];
@@ -1614,8 +1634,7 @@ const Rogue = class extends Fighter {
                 }
             }
 
-            cost = recipes.get(RECIPE_EMBED).cost;
-            if (embedded <= item.embeddedMax - item.embeddedNum && mp >= cost) {
+            if (embedded <= item.embeddedMax - item.embeddedNum && this.checkRecipe(tabId, cost)) {
                 let found = true;
                 for (let key in this.cube) {
                     let item2 = this.cube[key];
@@ -1664,10 +1683,11 @@ const Rogue = class extends Fighter {
                 }
             }
 		} else if (removable && l === 1) {
-            cost = recipes.get(RECIPE_REMOVE).cost;
+            let tabId = RECIPE_REMOVE;
+            cost = recipes.get(tabId).cost;
             num = 1;
             let item = this.cube['a'];
-            if (!item.cursed && mp >= cost) {
+            if (!item.cursed && this.checkRecipe(tabId, cost)) {
                 let weight = 0;
                 for (let itemEmbedded of item.embeddedList) {
                     let objMod = itemEmbedded.modParts ? itemEmbedded.modParts[item.type] : itemEmbedded.modList;
@@ -1699,6 +1719,9 @@ const Rogue = class extends Fighter {
                     '素材を取り除いた';
             }
         } else if (l === 3 && unembeddable && gem && orb ) {
+            let tabId = RECIPE_EXTEND;
+            cost = recipes.get(tabId).cost;
+            num = 1;
             let item;
             for (let key in this.cube) {
                 let item2 = this.cube[key];
@@ -1708,14 +1731,15 @@ const Rogue = class extends Fighter {
                 }
             }
 
-            cost = recipes.get(RECIPE_EXTEND).cost;
-            num = 1;
-            if (item.mod === NORMAL && mp >= cost) {
+            if (item.mod === NORMAL && this.checkRecipe(tabId, cost)) {
                 item.embeddedMax = rndIntBet(1, item.embeddedLimit);
                 this.packAdd(item);
                 name = item.getName();
             }
         } else if (l === 4 && unembeddable && gem && orb && material) {
+            let tabId = RECIPE_MATERIALIZE;
+            cost = recipes.get(tabId).cost;
+            num = 1;
             let item, mat;
             for (let key in this.cube) {
                 let item2 = this.cube[key];
@@ -1728,9 +1752,7 @@ const Rogue = class extends Fighter {
                 if (item && mat) break;
             }
 
-            cost = recipes.get(RECIPE_MATERIALIZE).cost;
-            num = 1;
-            if ((item.mod === MAGIC || item.mod === RARE) && item.material === mat.material && mp >= cost) {
+            if ((item.mod === MAGIC || item.mod === RARE) && item.material === mat.material && this.checkRecipe(tabId, cost)) {
                 item = item.makeMaterial();
                 this.packAdd(item);
                 name = item.getName();
@@ -1757,6 +1779,10 @@ const Rogue = class extends Fighter {
         flag.synthesize = false;
         flag.regular = true;
         rogue.done = true;
+    }
+
+    checkRecipe(tabId, cost) {
+        return this.recipes[tabId] && this.mp >= cost;
     }
 
     chargeItem(item, item2, cost, num) {
@@ -2960,7 +2986,7 @@ const Rogue = class extends Fighter {
                 }
 
                 let obj2 = {};
-                let cost = recipes.get(item2.chargeBook ? RECIPE_CHARGE_BOOK : RECIPE_WAND).cost;
+                let cost = itemTab['recipe'].get(item2.chargeBook ? RECIPE_CHARGE_BOOK : RECIPE_WAND).cost;
                 let obj = this.chargeItem(item2, item, cost, 0);
                 obj2.delete = !obj.return;
                 if (obj.charges) this.mp -= obj.charges;

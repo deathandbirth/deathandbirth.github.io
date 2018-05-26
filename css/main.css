@@ -39,3 +39,41 @@ a {
 footer {
 	text-align: center;
 }
+
+#recipe-btn {
+	width: 100px;
+}
+
+#recipe-btn:hover {
+	cursor: pointer;
+}
+
+#recipe-container {
+	background-color: rgb(41, 38, 30);
+	margin-top: 20px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+#recipe-container li:first-child {
+	list-style: none;
+}
+
+#recipe-container li:first-child .cost {
+	margin-left: 75px;
+}
+
+#recipe-container .name {
+	position: absolute;
+}
+
+#recipe-container .cost {
+	display: block;
+	float: left;
+	margin-left: 90px;
+}
+
+#recipe-container .recipe {
+	display: block;
+	margin-left: 140px;
+}

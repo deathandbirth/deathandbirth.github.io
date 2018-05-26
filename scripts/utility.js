@@ -28,7 +28,7 @@ const calcLevel = x => (x - 1) ** 4 + 10 * (x - 1);
 const initTab = () => {
     getRndName.init();
     for (let key in itemTab) {
-        if (key !== 'potion' && key !== 'wand' && key !== 'scroll') continue;
+        if (key !== 'potion' && key !== 'wand' && key !== 'scroll' && key !== 'recipe') continue;
         for (let item of itemTab[key].values()) {
             item.identified = false;
             getRndName[key](item);
@@ -63,7 +63,15 @@ const getRndName = {
         item.name['b'] = name['b'];
     },
 
+    recipe(item) {
+        this.word(item);
+    },
+
     scroll(item) {
+        this.word(item);
+    },
+
+    word(item) {
         let msg = '';
         let l = EA.length;
         for (let i = 0; i < 3; i++) {

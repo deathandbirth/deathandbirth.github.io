@@ -1998,7 +1998,7 @@ const fighterTab = {
 
     statues: [
 		{
-            name: { a: 'Statue of Trap', b: '罠の像' },
+            name: { a: 'Trap Statue ', b: '罠像' },
             symbol: '%',
             color: null,
             mod: NORMAL,
@@ -2033,7 +2033,7 @@ const fighterTab = {
 		},
 		
         {
-            name: { a: 'Statue of Summon', b: '召喚の像' },
+            name: { a: 'Summon Statue', b: '召喚像' },
             symbol: '%',
             color: null,
             mod: NORMAL,
@@ -2068,7 +2068,7 @@ const fighterTab = {
 		},
 		
         {
-            name: { a: 'Statue of Gargoyle', b: 'ガーゴイルの像' },
+            name: { a: 'Gargoyle Statue', b: 'ガーゴイル像' },
             symbol: '%',
             color: null,
             race: DEMON,

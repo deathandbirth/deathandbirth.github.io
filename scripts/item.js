@@ -204,31 +204,6 @@ const [ //ammo
 ] = enums(1, 3);
 
 const C_COIN = 1;
-const RECIPE_1 = {
-a: 
-`Jewel [1-4] -> Coin
-Potion of Healing [3] -> Potion of Extra Healing
-Wands [2-4] -> Wand [charges sum]
-Charge Book + Scroll -> Charge book [charges sum]
-Torches [2-4] -> Torch [duration sum]
-Lamps or Lanthanums + oil [2-4] -> Light Source [duration sum]
-Embeddable Equipment + The Same Materials・Jewel・Orb <-> Equipment [Materials・Jewel・Orb]
-Unembeddable Normal Equipment + Jewel + Orb -> Embeddable Equipment
-Unembeddable Magic or Rare Equipment + Jewel + Orb + The Same Materials -> Materials`
-,
-
-b: 
-`ジュエル [1-4] -> 硬貨
-回復の薬 [3] -> 特大回復の薬
-魔法棒 [2-4] -> 魔法棒 [充填 計]
-充填書 + 巻物 -> 充填書 [充填 計]
-松明 [2-4] -> 松明 [期間 計]
-ランプまたはランタン + オイル [2-4] -> ランプまたはランタン [期間 計]
-埋め込み可能な装備品 + 同素材・ジュエル・オーブ <-> 装備品 [素材・ジュエル・オーブ]
-ノーマルの埋め込み不可な装備品 + ジュエル + オーブ -> 埋め込み可能な装備品
-マジックまたはレアの埋め込み不可な装備品 + ジュエル + オーブ + 同素材 -> 素材`
-};
-
 const [
     RECIPE_WROUGHT_GOLD,
     RECIPE_EXTRA_HEALING,
@@ -242,139 +217,6 @@ const [
     RECIPE_MATERIALIZE,
 ] = enums(1, 10);
 
-const recipes = new Map([
-    [RECIPE_WROUGHT_GOLD, {
-        cost: 10,
-        name: {
-            a: 'Wrought Gold',
-            b: '錬金'
-        },
-
-        recipe:{
-            a: 'Jewel [1-4] -> Coin',
-            b: 'ジュエル [1-4] -> 硬貨'
-        }
-    }],
-
-    [RECIPE_EXTRA_HEALING, {
-        cost: 10,
-        name: {
-            a: 'Extra Healing',
-            b: '特大回復'
-        },
-
-        recipe:{
-            a: 'Potion of Healing [3] -> Potion of Extra Healing',
-            b: '回復の薬 [3] -> 特大回復の薬'
-        }
-    }],
-
-    [RECIPE_WAND, {
-        cost: 1,
-        name: {
-            a: 'Wand',
-            b: '魔法棒'
-        },
-
-        recipe:{
-            a: 'Wands [2-4] -> Wand [charges sum]',
-            b: '魔法棒 [2-4] -> 魔法棒 [充填 計]'
-        }
-    }],
-
-    [RECIPE_CHARGE_BOOK, {
-        cost: 1,
-        name: {
-            a: 'Charge Book',
-            b: '充填書'
-        },
-
-        recipe:{
-            a: 'Charge Book + Scroll -> Charge book [charges sum]',
-            b: '充填書 + 巻物 -> 充填書 [充填 計]'
-        }
-    }],
-
-    [RECIPE_TORCH, {
-        cost: 1,
-        name: {
-            a: 'Torch',
-            b: '松明'
-        },
-
-        recipe:{
-            a: 'Torches [2-4] -> Torch [duration sum]',
-            b: '松明 [2-4] -> 松明 [期間 計]'
-        }
-    }],
-
-    [RECIPE_LAMP, {
-        cost: 1,
-        name: {
-            a: 'Lamp',
-            b: 'ランプ'
-        },
-
-        recipe:{
-            a: 'Lamps or Lanthanums + oil [2-4] -> Light Source [duration sum]',
-            b: 'ランプまたはランタン + オイル [2-4] -> ランプまたはランタン [期間 計]'
-        }
-    }],
-
-    [RECIPE_EMBED, {
-        cost: 5,
-        name: {
-            a: 'Embed',
-            b: '埋め込み'
-        },
-
-        recipe:{
-            a: 'Embeddable Equipment + The Same Materials・Jewel・Orb -> Equipment [Materials・Jewel・Orb]',
-            b: '埋め込み可能な装備品 + 同素材・ジュエル・オーブ -> 装備品 [素材・ジュエル・オーブ]'
-        }
-    }],
-
-    [RECIPE_REMOVE, {
-        cost: 1,
-        name: {
-            a: 'Remove',
-            b: '取り外し'
-        },
-
-        recipe:{
-            a: 'Equipment [Materials・Jewel・Orb] -> Embeddable Equipment + The Same Materials・Jewel・Orb',
-            b: '装備品 [素材・ジュエル・オーブ] -> 埋め込み可能な装備品 + 同素材・ジュエル・オーブ'
-        }
-    }],
-
-
-    [RECIPE_EXTEND, {
-        cost: 30,
-        name: {
-            a: 'Extend',
-            b: '拡張'
-        },
-
-        recipe:{
-            a: 'Unembeddable Normal Equipment + Jewel + Orb -> Embeddable Equipment',
-            b: 'ノーマルの埋め込み不可な装備品 + ジュエル + オーブ -> 埋め込み可能な装備品'
-        }
-    }],
-
-    [RECIPE_MATERIALIZE, {
-        cost: 50,
-        name: {
-            a: 'Materialize',
-            b: '素材化'
-        },
-
-        recipe:{
-            a: 'Unembeddable Magic or Rare Equipment + Jewel + Orb + The Same Materials -> Materials',
-            b: 'マジックまたはレアの埋め込み不可な装備品 + ジュエル + オーブ + 同素材 -> 素材'
-        }
-    }],
-]);
-
 const itemTab = {
     coin: new Map([
         [C_COIN, {
@@ -384,6 +226,128 @@ const itemTab = {
             rarity: 0
         }],
     ]),
+
+    recipe: new Map([
+        [RECIPE_WROUGHT_GOLD, {
+            nameReal: { a: 'Wrought Gold', b: '錬金' },
+            priceRate: 1,
+            lvl: 1,
+            rarity: 0,
+            cost: 5,
+            recipe: {
+                a: 'Jewel [1-4] -> Coin',
+                b: 'ジュエル [1-4] -> 硬貨'
+            }
+		}],
+
+        [RECIPE_TORCH, {
+            nameReal: { a: 'Torch', b: '松明' },
+            priceRate: 1,
+            lvl: 1,
+            rarity: 0,
+            cost: 1,
+            recipe:{
+                a: 'Torches [2-4] -> Torch [duration sum]',
+                b: '松明 [2-4] -> 松明 [期間 計]'
+            }
+		}],
+
+        [RECIPE_LAMP, {
+            nameReal: { a: 'Lamp', b: 'ランプ' },
+            priceRate: 1,
+            lvl: 1,
+            rarity: 0,
+            cost: 1,
+            recipe:{
+                a: 'Lamps or Lanthanums + oil [2-4] -> Light Source [duration sum]',
+                b: 'ランプまたはランタン + オイル [2-4] -> ランプまたはランタン [期間 計]'
+            }
+		}],
+
+        [RECIPE_EMBED, {
+            nameReal: { a: 'Embed', b: '埋め込み' },
+            priceRate: 1,
+            lvl: 5,
+            rarity: 5,
+            cost: 5,
+            recipe:{
+                a: 'Embeddable Equipment + The Same Materials・Jewel・Orb -> Equipment [Materials・Jewel・Orb]',
+                b: '埋め込み可能な装備品 + 同素材・ジュエル・オーブ -> 装備品 [素材・ジュエル・オーブ]'
+            }
+		}],
+
+        [RECIPE_REMOVE, {
+            nameReal: { a: 'Remove', b: '取り外し' },
+            priceRate: 1,
+            lvl: 10,
+            rarity: 10,
+            cost: 1,
+            recipe:{
+                a: 'Equipment [Materials・Jewel・Orb] -> Embeddable Equipment + The Same Materials・Jewel・Orb',
+                b: '装備品 [素材・ジュエル・オーブ] -> 埋め込み可能な装備品 + 同素材・ジュエル・オーブ'
+            }
+		}],
+
+        [RECIPE_WAND, {
+            nameReal: { a: 'Wand', b: '魔法棒' },
+            priceRate: 1,
+            lvl: 10,
+            rarity: 10,
+            cost: 1,
+            recipe:{
+                a: 'Wands [2-4] -> Wand [charges sum]',
+                b: '魔法棒 [2-4] -> 魔法棒 [充填 計]'
+            }
+		}],
+
+        [RECIPE_CHARGE_BOOK, {
+            nameReal: { a: 'Charge Book', b: '充填書' },
+            priceRate: 1,
+            lvl: 15,
+            rarity: 20,
+            cost: 1,
+            recipe:{
+                a: 'Charge Book + Scroll -> Charge book [charges sum]',
+                b: '充填書 + 巻物 -> 充填書 [充填 計]'
+            }
+		}],
+
+        [RECIPE_EXTRA_HEALING, {
+            nameReal: { a: 'Extra Healing', b: '特大回復' },
+            priceRate: 1,
+            lvl: 20,
+            rarity: 30,
+            cost: 10,
+            recipe:{
+                a: 'Potion of Healing [3] -> Potion of Extra Healing',
+                b: '回復の薬 [3] -> 特大回復の薬'
+            }
+		}],
+
+        [RECIPE_EXTEND, {
+            nameReal: { a: 'Extend', b: '拡張' },
+            priceRate: 1,
+            lvl: 25,
+            rarity: 40,
+            cost: 30,
+            recipe:{
+                a: 'Unembeddable Normal Equipment + Jewel + Orb -> Embeddable Equipment',
+                b: 'ノーマルの埋め込み不可な装備品 + ジュエル + オーブ -> 埋め込み可能な装備品'
+            }
+		}],
+
+        [RECIPE_MATERIALIZE, {
+            nameReal: { a: 'Materialize', b: '素材化' },
+            priceRate: 1,
+            lvl: 30,
+            rarity: 50,
+            cost: 50,
+            recipe:{
+                a: 'Unembeddable Magic or Rare Equipment + Jewel + Orb + The Same Materials -> Materials',
+                b: 'マジックまたはレアの埋め込み不可な装備品 + ジュエル + オーブ + 同素材 -> 素材'
+            }
+		}],
+    ]),
 	
     book: new Map([
         [B_BLANK_PAPER, {
@@ -391,9 +355,8 @@ const itemTab = {
             color: colorList.gray,
             type2: 'Charge Book',
             priceRate: 5,
-            shop: true,
             lvl: 10,
-            rarity: 50
+            rarity: 10
 		}],
 		
         [B_ALCHEMY_1, {
@@ -401,11 +364,9 @@ const itemTab = {
             color: colorList.red,
             type2: 'recipe',
             priceRate: 1,
-            shop: true,
             lvl: 1,
             rarity: 0,
-            alchemy: true,
-            desc: RECIPE_1
+            abort: true
 		}],
 		
         [B_SPELL_1, {
@@ -695,7 +656,7 @@ const itemTab = {
             nameSkill: SATISFY_HUNGER,
             skillLvl: 20,
             color: colorList.brown,
-            priceRate: 1,
+            priceRate: 0.5,
             shop: true,
             lvl: 1,
             rarity: 0
@@ -2620,7 +2581,7 @@ const Item = class extends Material {
 		
         name = real ? this.nameReal[a] : this.name[a];
         if (type === 'book' || type === 'potion' ||
-      	      type === 'scroll' || type === 'wand' || type === 'orb') {
+      	      type === 'scroll' || type === 'recipe' || type === 'wand' || type === 'orb') {
             if (this.type2) type = this.type2;
             let typeName;
             if (a === ENG) {
@@ -2628,7 +2589,7 @@ const Item = class extends Material {
                 if (!this.identified && !halluc) {
                     if (type === 'potion' || type === 'wand') {
                         name += ` ${typeName}`;
-					} else if (type === 'scroll') {
+					} else if (type === 'scroll' || type === 'recipe') {
 						name = `${typeName} titled ${name}`;
 					} else if (type === 'orb') {
 						name = `${typeName} engraved ${name}`;
@@ -2638,7 +2599,7 @@ const Item = class extends Material {
 				}
             } else {
                 typeName = translation.item[type];
-                if (!this.identified && type === 'scroll' && !halluc) {
+                if (!this.identified && (type === 'scroll' || type === 'recipe') && !halluc) {
                     name += `と名付けられた${typeName}`;
                 } else if (!this.identified && type === 'orb' && !halluc) {
                     name += `と刻まれた${typeName}`;
@@ -2739,11 +2700,50 @@ const Item = class extends Material {
         }
     }
 
+    static getType(magic) {
+        let type;
+        do {
+            if (magic) {
+                if (evalPercentage(20)) {
+                    type = coinToss() ? 'gem' : 'orb';
+                } else {
+                    type = equipmentList[rndInt(equipmentList.length - 1)];
+                }
+            } else {
+                type = IT[rndInt(IT.length - 2)];
+            }
+        } while (evalPercentage(RARITY[type]) ||
+        flag.shop && (type === 'coin' || type === 'recipe' || type === 'orb' || type === 'gem'));
+        return type;
+    }
+            
+    static getTabId(type, lvl, magic) {
+        let tabId, item;
+        let j = 0;
+        let itemNums = itemNumsMap.get(type);
+        itemNums.shuffle();
+        do {
+            tabId = itemNums[j++];
+            item = itemTab[type].get(tabId);
+            if (!item) {
+                j = 0;
+                type = Item.getType(magic);
+                itemNums = itemNumsMap.get(type);
+                itemNums.shuffle();
+            }
+        } while (!item || item.abort ||
+            rogue.lethe && item.lethe ||
+            item.type === 'recipe' && rogue.recipes[tabId] ||
+            item.lvl > lvl || evalPercentage(item.rarity));
+        return [type, tabId];
+    }
+
     static getSymbol(type) {
         let symbol;
         switch (type) {
             case 'book':
             case 'scroll':
+            case 'recipe':
                 symbol = '?';
                 break;
             case 'food':
@@ -2854,6 +2854,12 @@ const Item = class extends Material {
                     }
                 } else if (key === 'scroll') {
                     item.color = colorList.white;
+                } else if (key === 'recipe') {
+                    item.color = colorList.red;
+                    item.desc = {
+                        a: '',
+                        b: '錬金術で使用されるレシピ。読み上げる事で習得する。'
+                    }
                 }
 
                 if (key === 'orb') {

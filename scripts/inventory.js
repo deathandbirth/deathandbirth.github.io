@@ -58,7 +58,7 @@ const inventory = {
                 flag.stash && a !== undefined && key != a ||
                 flag.equip && !item.equipable ||
                 flag.quaff && item.type != 'potion' ||
-                flag.read && item.type != 'scroll' && !item.chargeBook ||
+                flag.read && item.type != 'scroll' && item.type != 'recipe' && !item.chargeBook ||
                 flag.identify && item.identified && key !== a ||
                 (flag.repair || flag.blacksmith) && (!item.equipable || item.durab === item.durabMax) ||
                 flag.zap && item.type != 'wand' ||
