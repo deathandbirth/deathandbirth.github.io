@@ -58,10 +58,9 @@ const inventory = {
                 flag.stash && a !== undefined && key != a ||
                 flag.equip && !item.equipable ||
                 flag.quaff && item.type != 'potion' ||
-                flag.read && item.type != 'scroll' && !item.chargeBook ||
+                flag.read && item.type != 'scroll' && item.type != 'recipe' && !item.chargeBook ||
                 flag.identify && item.identified && key !== a ||
                 (flag.repair || flag.blacksmith) && (!item.equipable || item.durab === item.durabMax) ||
-                flag.synthesize && item.alchemy ||
                 flag.zap && item.type != 'wand' ||
                 flag.eat && item.type != 'food' ||
                 flag.gain && (item.type != 'book' || !item.skill) ||
@@ -115,7 +114,7 @@ const inventory = {
                         });
                     } else if (!flag.option2) {
                         let msg = '';
-                        let opt = option[item['a']];
+                        let opt = option[item['key']];
                         if (opt.choise) {
                             msg = opt.choise[opt.user][option.getLanguage()];
 						} else if (option.isEnglish()) {

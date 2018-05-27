@@ -50,6 +50,9 @@ const audio = {
         broken: new Audio('sound/broken.wav'),
         quaff: new Audio('sound/quaff.wav'),
         throw: new Audio('sound/throw.wav'),
+        lightning: new Audio('sound/lightning.wav'),
+        disintegrate: new Audio('sound/annihilate.wav'),
+        encourage: new Audio('sound/enchant.wav'),
     },
 
     init() {

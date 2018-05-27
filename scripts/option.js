@@ -1,21 +1,28 @@
 const option = {
     list: {
-        a: { a: 'language', b: '言語' },
-        b: { a: 'display', b: '解像度' },
-        c: { a: 'shadow', b: '影' },
-        d: { a: 'mute', b: '消音' },
-        e: { a: 'BGM', b: 'BGM' },
-        f: { a: 'SE', b: '効果音' },
-        g: { a: 'autosave', b: '自動記録' },
-        h: { a: 'auto-destroy', b: '自動破壊' },
-        i: { a: 'auto-charge', b: '自動充填' },
-        j: { a: 'auto-identify', b: '自動識別' }
+        a: { a: 'Language', b: '言語' , key:'language'},
+        b: { a: 'Display', b: '解像度', key:'display'},
+        c: { a: 'Shadow', b: '影', key:'shadow'},
+        d: { a: 'Mute', b: '消音', key:'mute'},
+        e: { a: 'BGM', b: 'BGM', key:'BGM'},
+        f: { a: 'SE', b: '効果音', key:'SE'},
+        g: { a: 'Autosave', b: '自動記録', key:'autosave'},
+        h: { a: 'Auto-destroy', b: '自動破壊', key:'auto-destroy'},
+        i: { a: 'Auto-charge', b: '自動充填', key:'auto-charge'},
+        j: { a: 'Auto-identify', b: '自動識別', key:'auto-identify'},
+        k: { a: 'Rogue Style Movement', b: 'ローグ型移動', key:'rogueStyleMove'}
     },
 
     display: { defaults: 'c', choise: {} },
     shadow: { defaults: false },
     mute: { defaults: false },
     autosave: { defaults: true },
+    'auto-destroy': { defaults: false },
+    'auto-charge': { defaults: true },
+    'auto-identify': { defaults: true },
+    BGM: { defaults: 'k', choise: {} },
+    SE: { defaults: 'k', choise: {} },
+    rogueStyleMove: { defaults: true },
     language: { 
         defaults: 'b',
         choise: { 
@@ -24,16 +31,11 @@ const option = {
         }
     },
 
-    'auto-destroy': { defaults: false },
-    'auto-charge': { defaults: true },
-    'auto-identify': { defaults: true },
-    BGM: { defaults: 'k', choise: {} },
-    SE: { defaults: 'k', choise: {} },
     main(keyCode) {
         let list = !flag.option2 ? this.list : this[this.name].choise;
         if (keyCode < 65 || keyCode >= Object.keys(list).length + 65) return;
         let a = getAlphabet(keyCode);
-        if (!flag.option2) this.name = this.list[a]['a'];
+        if (!flag.option2) this.name = this.list[a]['key'];
         if (this.name === 'display' || this.name === 'language' ||
             this.name === 'BGM' || this.name === 'SE') {
             if (!flag.option2) {
@@ -66,7 +68,8 @@ const option = {
         } else if (this.name === 'mute') {
             audio.mute();
         } else if (this.name === 'autosave' || this.name === 'auto-identify' ||
-            this.name === 'auto-destroy' || this.name === 'auto-charge') {
+            this.name === 'auto-destroy' || this.name === 'auto-charge' ||
+            this.name === 'rogueStyleMove') {
             this[this.name].user = !this[this.name].user;
         }
 
@@ -94,7 +97,7 @@ const option = {
 
 {
     for (let key in option.list) {
-        let key2 = option.list[key]['a'];
+        let key2 = option.list[key]['key'];
         option[key2].user = option[key2].defaults;
         if (key2 === 'BGM' || key2 === 'SE') {
             for (let i = 0; i <= 10; i++) {

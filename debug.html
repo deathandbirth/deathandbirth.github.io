@@ -3,6 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="description" content="ダンテの神曲やギリシャ神話を題材にした、開発中のローグライク・ブラウザゲーム">
+	<meta name="robots" content="noindex, nofollow">
 	<title>Death and Birth | デスアンドバース</title>
 	<link href="css/main.css" rel="stylesheet">
 </head>
@@ -13,6 +14,20 @@
 		</div>
 		<article>
 			<p>'?'を押すとコマンド一覧が表示されます。</p>
+			<button id="recipe-btn">レシピ一覧</button>
+			<ul id="recipe-container" style="display: none">
+				<li><span class="name">名称</span><span class="cost">MP(毎)</span><span class="recipe">レシピ</span></li>
+				<li><span class="name">錬金</span><span class="cost">5</span><span class="recipe">ジュエル [1-4] -> 硬貨</span></li>
+				<li><span class="name">松明</span><span class="cost">1</span><span class="recipe">松明 [2-4] -> 松明 [期間 計]</span></li>
+				<li><span class="name">ランプ</span><span class="cost">1</span><span class="recipe">ランプまたはランタン + オイル [2-4] -> ランプまたはランタン [期間 計]</span></li>
+				<li><span class="name">埋め込み</span><span class="cost">5</span><span class="recipe">埋め込み可能な装備品 + 同素材・ジュエル・オーブ -> 装備品 [素材・ジュエル・オーブ]</span></li>
+				<li><span class="name">取り外し</span><span class="cost">1</span><span class="recipe">装備品 [素材・ジュエル・オーブ] -> 埋め込み可能な装備品 + 同素材・ジュエル・オーブ</span></li>
+				<li><span class="name">魔法棒</span><span class="cost">1</span><span class="recipe">魔法棒 [2-4] -> 魔法棒 [充填 計]</span></li>
+				<li><span class="name">充填書</span><span class="cost">1</span><span class="recipe">充填書 + 巻物 -> 充填書 [充填 計]</span></li>
+				<li><span class="name">特大回復</span><span class="cost">10</span><span class="recipe">回復の薬 [3] -> 特大回復の薬</span></li>
+				<li><span class="name">拡張</span><span class="cost">30</span><span class="recipe">ノーマルの埋め込み不可な装備品 + ジュエル + オーブ -> 埋め込み可能な装備品</span></li>
+				<li><span class="name">素材化</span><span class="cost">50</span><span class="recipe">マジックまたはレアの埋め込み不可な装備品 + ジュエル + オーブ + 同素材 -> 素材</span></li>
+			</ul>
 			<h2>攻撃</h2>
 			<ul>
 				<li>敵に対して方向キーを押すとそれが攻撃動作となります。</li>
@@ -21,7 +36,7 @@
 			</ul>
 			<h2>ダイス</h2>
 			<ul>
-				<li>武器やスキルに'2d6'などの表示がありますが、これは1から6まで書かれた6面のダイスを2個振るという操作の略記です。</>
+				<li>武器やスキルに'2d6'などの表示がありますが、これは1から6まで書かれた6面のダイスを2個振るという操作の略記です。</li>
 				<li>攻撃する毎にこの操作を行い、その出目の合計値を、与えるダメージの基礎値として決定しています。</li>
 				<li>Avg(average)の表記はこの操作の期待値です。</li>
 			</ul>
@@ -43,8 +58,11 @@
 			</ul>
 			<h2>錬金術</h2>
 			<ul>
-				<li>レシピを所持していることでアイテム合成ができます。</li>
-				<li>合成の種類は'I'コマンドからレシピを選択することで一覧が確認できます。</li>
+				<li><s>レシピを所持していることでアイテム合成ができます。</s></li>
+				<li><s>合成の種類は'I'コマンドからレシピを選択することで一覧が確認できます。</s></li>
+				<li>v0.009より各レシピを個別のアイテムとし、入手した際にそれを読み上げる事で、アイテム合成が可能となります。</li>
+				<li>また、合成時にはレシピに対応したMPを消費します。</li>
+				<li>取得したレシピの一覧は、'A'による合成選択中に'Ctrl + r'と押すことで確認出来ます。</li>
 			</ul>
 			<h2>充填書</h2>
 			<ul>
@@ -70,9 +88,11 @@
 			<p><span>ソースコード</span>&ensp;<a href="https://github.com/deathandbirth/deathandbirth.github.io" target="_blank">Github</a></p>
 			<p><span>BGM・SE</span>&ensp;<a href="https://ringil-music.com" target="_blank">Ringil</a></p>
 			<p>更新内容の詳細は<a href="http://ringil-blog.info/" target="_blank">ブログ</a>に書いています。</p>
+			<small>※ブラウザ読み込み時にタイトル曲を再生しないようにしました。（v0.009）</small>
 		</article>
 	</main>
 	<footer><p>(c) Death and Birth 2018</p></footer>
+	<script src="site.js"></script>
 	<script src="scripts/constants.js"></script>
 	<script src="scripts/color.js"></script>
 	<script src="scripts/display.js"></script>

@@ -34,6 +34,11 @@ const investigationMap = new Map([
         weight: true,
     }],
 
+    ['charges', {
+        name: { a: 'Charges', b:'充填数' },
+        item: true,
+    }],
+
     ['atkType', {
         name: { a: 'Attack Type', b: '攻撃種類' },
     }],

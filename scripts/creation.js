@@ -185,34 +185,9 @@ const creation = {
         if (uniqueId >= 0) magic = true;
         for (let i = 0; i < times; i++) {
             let [typeT, tabIdT] = [type, tabId];
-            if (type === undefined || type === RANDOM) {
-                do {
-                    if (magic) {
-                        if (evalPercentage(20)) {
-                            typeT = coinToss() ? 'gem' : 'orb';
-                        } else {
-                            typeT = equipmentList[rndInt(equipmentList.length - 1)];
-                        }
-					} else {
-						typeT = IT[rndInt(IT.length - 2)];
-					}
-                } while (evalPercentage(RARITY[typeT]) || flag.shop && typeT === 'coin');
-			}
-			
-            let item;
-            if (tabId === undefined || tabId === RANDOM) {
-                let j = 0;
-                let itemNums = itemNumsMap.get(typeT);
-                itemNums.shuffle();
-                do {
-                    tabIdT = itemNums[j++];
-                    item = itemTab[typeT].get(tabIdT);
-                } while (item.lvl > lvl || evalPercentage(item.rarity) ||
-                    rogue.lethe && item.lethe);
-            } else {
-				item = itemTab[typeT].get(tabIdT);
-			}
-
+            if (type === undefined || type === RANDOM) typeT = Item.getType(magic);
+            if (tabId === undefined || tabId === RANDOM) [typeT, tabIdT] = Item.getTabId(typeT, lvl, magic);
+            let item = itemTab[typeT].get(tabIdT);
             if (item.lethe) rogue.lethe++;
             let itemNew = new Item(item, quantity);
             itemNew.init(position, x, y, magic, lvl, uniqueId, starter, matBase, matId);

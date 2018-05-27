@@ -38,6 +38,7 @@ const circleSearch = {
                 message.draw(option.isEnglish() ?
                     `Disintegrated ${this.count} enemies` :
                     `${this.count}体の敵を塵にした`);
+                audio.playSound('disintegrate');
             }
         }
     },

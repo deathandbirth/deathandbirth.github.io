@@ -1998,7 +1998,7 @@ const fighterTab = {
 
     statues: [
 		{
-            name: { a: 'Statue of Trap', b: '罠の像' },
+            name: { a: 'Trap Statue ', b: '罠像' },
             symbol: '%',
             color: null,
             mod: NORMAL,
@@ -2033,7 +2033,7 @@ const fighterTab = {
 		},
 		
         {
-            name: { a: 'Statue of Summon', b: '召喚の像' },
+            name: { a: 'Summon Statue', b: '召喚像' },
             symbol: '%',
             color: null,
             mod: NORMAL,
@@ -2068,7 +2068,7 @@ const fighterTab = {
 		},
 		
         {
-            name: { a: 'Statue of Gargoyle', b: 'ガーゴイルの像' },
+            name: { a: 'Gargoyle Statue', b: 'ガーゴイル像' },
             symbol: '%',
             color: null,
             race: DEMON,
@@ -2132,7 +2132,6 @@ const fighterTab = {
             starter: [
                 { type: 'melee', tabId: M_DAGGER, starter: true },
                 { type: 'armor', tabId: A_VEST, starter: true },
-                { type: 'book', tabId: B_ALCHEMY_1 },
                 { type: 'book', tabId: B_SPELL_1 },
                 { type: 'book', tabId: B_SKILL_1 },
                 { type: 'food', tabId: F_RATION, quantity: 5 },
@@ -2351,7 +2350,7 @@ const Fighter = class extends Material {
         
         if (this.starter) {
             this.eqt = {} //equipment temp
-            this.numBoxes = 1;
+            this.numBoxes = INIT_BOX_NUM;
             this.boxes = {};
             for (let i = 1; i <= this.numBoxes; i++) {
                 this.boxes[i] = null;
@@ -4934,6 +4933,7 @@ const Fighter = class extends Material {
                     `${name} got an effect of Combat` :
                     `${name}戦闘の効果を得た`);
                 f.calcDmg();
+                audio.playSound('encourage');
                 break;
             case BLESSING:
                 f.acBuff = this.calcSkillValue(skill, lvl);
@@ -5025,6 +5025,7 @@ const Fighter = class extends Material {
             lvl = this.cs.lvl + this.getSkillBoost(skill);
             let name = skill.name[option.getLanguage()];
             let nameChar = this.getName(true);
+            this.consumeMana(skill);
             message.draw(option.isEnglish() ?
                 `${nameChar} cast ${name}` :
                 skill.type === 'spell' ?
@@ -5159,7 +5160,6 @@ const Fighter = class extends Material {
                 if (!hit) this.deleteAmmo(this.ci, true, xS, yS);
                 flag.arrow = flag.throw = false;
             } else if (flag.skill) {
-                this.consumeMana(skill);
                 if (!ecco && this.ecco && this.mp >= skill.mp) {
                     if (steep)[x1, y1] = [y1, x1];
                     this.aim({
@@ -5251,19 +5251,17 @@ const Fighter = class extends Material {
         return found;
     }
 
-    haveBook(nameSkill, alchemy) {
-        let found = this.haveBookLoop(this.pack, nameSkill, alchemy);
-        if (!found) found = this.haveBookLoop(this.boxes, nameSkill, alchemy);
+    haveBook(nameSkill) {
+        let found = this.haveBookLoop(this.pack, nameSkill);
+        if (!found) found = this.haveBookLoop(this.boxes, nameSkill);
         return found;
     }
 
-    haveBookLoop(list, nameSkill, alchemy) {
+    haveBookLoop(list, nameSkill) {
         for (let key in list) {
             let item = list[key];
             if (item && item.type === 'book') {
-                if (alchemy && item.alchemy) {
-                    return true
-				} else if (nameSkill && item.skill) {
+				if (nameSkill && item.skill) {
                     for (let key2 in item.list) {
                         if (item.list[key2] === nameSkill) return true
                     }

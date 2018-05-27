@@ -164,10 +164,6 @@ const input = {
 
     eventFlag(keyCode, isAlt) {
         switch (keyCode) {
-            case 37: //left arrow
-            case 38: //up arrow
-            case 39: //right arrow
-            case 40: //down arrow
             case 66: //b
             case 72: //h
             case 74: //j
@@ -176,6 +172,11 @@ const input = {
             case 78: //n
             case 85: //u
             case 89: //y
+                if (!option.rogueStyleMove.user) break;
+            case 37: //left arrow
+            case 38: //up arrow
+            case 39: //right arrow
+            case 40: //down arrow
             case 97: //T1
             case 98: //T2
             case 99: //T3
@@ -214,11 +215,11 @@ const input = {
                     message.draw('Input type and tagId', true);
                     flag.regular = false;
                 } else if (this.isShift) {
-                    if (!rogue.haveBook(undefined, true)) {
-                        message.draw(message.get(M_DONT_HAVE_RECIPES));
+                    if (!Object.keys(rogue.recipes).length) {
+                        message.draw(message.get(M_DONT_KNOW_RECIPE));
                         break;
-					}
-					
+                    }
+
                     flag.synthesize = true;
                     rogue.showInventory(P_PACK);
                     rogue.showInventory(P_CUBE);

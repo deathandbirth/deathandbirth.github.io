@@ -5,7 +5,7 @@ const generateNumber = function*(i, j, bit) {
 
 const enums = (i, j) => [...generateNumber(i, j)];
 const enumsBit = (i, j) => [...generateNumber(i, j, true)];
-const VERSION = 0.008;
+const VERSION = 0.009;
 const MS = 2; //message space
 const SS = 3; //stats space
 const IN_WIDTH = 47; //canvas.width/fs-1;
@@ -43,7 +43,9 @@ const MAX_SKILL_LVL = 20;
 const MAX_SEARCH_RANGE = 10;
 const MAX_PF_LOOP = 10000;
 const MAX_BOX_NUM = 9;
+const INIT_BOX_NUM = 4;
 const MAX_EMBEDDED_NUM = 6;
+const MAX_CHARGE_NUM = 100;
 const RARE_MOD_NUM = 2;
 const SPAWN_FREQ = 100;
 const CURSE_PERC = 5;
@@ -157,6 +159,7 @@ const WEIGHT = {
     book: 1.0,
     potion: 0.2,
     scroll: 0.1,
+    recipe: 0.1,
     wand: 0.5,
     gem: 0.1,
     orb: 0.1,
@@ -170,6 +173,7 @@ const PRICE = {
     food: 50,
     potion: 25,
     scroll: 25,
+    recipe: 25,
     wand: 300,
     melee: 100,
     missile: 100,
@@ -196,6 +200,7 @@ const RARITY = {
     food: 50,
     potion: 0,
     scroll: 0,
+    recipe: 30,
     wand: 50,
     melee: 0,
     missile: 20,
