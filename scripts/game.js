@@ -27,7 +27,7 @@ const game = {
         ctxInv.textAlign = 'right';
         display.text({
             ctx: ctxInv,
-            msg: `ver ${VERSION}`,
+            msg: `ver ${VERSION.toFixed(3)}`,
             x: -2,
             y: -2,
             xPx: display.width,

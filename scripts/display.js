@@ -187,7 +187,7 @@ const display = {
         child.style.position = 'absolute';
         child.style.left = 0;
         child.style.top = 0;
-        child.style['z-index'] = i;
+        child.style.zIndex = i;
         parent.appendChild(child);
     }
 }
