@@ -209,7 +209,7 @@ const creation = {
                 list.shuffle();
                 while (!(item.material & list[i])) i++;
                 let matBase = list[i];
-                let list = materialMap.get(matBase).list;
+                list = materialMap.get(matBase).list;
                 for (let i = 0, l = list.size; i < l; i++) {
                     let item = this.item({
                         type: type,

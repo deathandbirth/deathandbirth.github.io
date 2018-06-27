@@ -498,6 +498,7 @@ const input = {
                 break;
             case 187: //= option
             case 189: //JIS keyboard
+            case 173: //firefox
                 if (this.isCtrl) break;
                 flag.option = true;
                 inventory.show(option.list, RIGHT);

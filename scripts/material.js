@@ -409,7 +409,7 @@ const materialMap = new Map([
             [METAL_GOLD, { name: { a: 'Gold', b: '金' }, rarity: 50, color: colorList.gold }],
             [METAL_PLATINUM, { name: { a: 'Platinum', b: 'プラチナ' }, rarity: 60, color: colorList.platinum }],
             [METAL_TITANIUM, { name: { a: 'Titanium', b: 'チタン' }, rarity: 70, color: colorList.titanium }],
-            [METAL_ADAMANTITE, { name: { a: 'Adamantite', b: 'アダマンタイト' }, rarity: 90, color: colorList.steel }],
+            [METAL_ADAMANTITE, { name: { a: 'Adamantite', b: 'アダマンタイト' }, rarity: 80, color: colorList.steel }],
             [METAL_ORICHALCUM, { name: { a: 'Orichalcum', b: 'オリハルコン' }, rarity: 90, color: colorList.brass }],
         ])
 	}],
@@ -1651,9 +1651,9 @@ const Material = class extends Thing {
     investigate(direction, char) {
         if (char && this.mimic && !this.identified) return;
         inventory.shadow(direction);
-        let i = char ? 1 : 2;
-        if (direction === RIGHT) i += (IN_WIDTH / 2);
+        let i = 1;
         let j = MS + 1;
+        let xPx = direction === RIGHT ? display.width / 2 : 0;
         let ctxInv = display.ctxes.inv;
         ctxInv.save();
         ctxInv.textAlign = 'center';
@@ -1667,6 +1667,7 @@ const Material = class extends Thing {
             msg: this.symbol,
             x: i,
             y: j,
+            xPx: xPx,
             stroke: this.stroke,
         });
 
@@ -1685,6 +1686,7 @@ const Material = class extends Thing {
             msg: name,
             x: i + 0.6,
             y: j++,
+            xPx: xPx,
             limit: 17.5,
             stroke: this.stroke,
         });
@@ -1700,6 +1702,7 @@ const Material = class extends Thing {
                     msg: value,
                     x: i - 0.5,
                     y: j,
+                    xPx: xPx,
                     limit: limit,
                 });
 
@@ -1712,6 +1715,7 @@ const Material = class extends Thing {
                 msg: msg,
                 x: i - 0.5,
                 y: j++,
+                xPx: xPx,
                 limit: limit,
             });
         }
@@ -1729,7 +1733,7 @@ const Material = class extends Thing {
                 if (key === 'mod' && !char) {
                     mod = true;
                     if (this.modParts) break;
-                    i += IN_WIDTH / 4;
+                    xPx += display.width / 4;
                     j = jSaved;
 				}
 				
@@ -1742,7 +1746,7 @@ const Material = class extends Thing {
 				continue;
             }
             
-            this.investigateLoop(char, ctxInv, key, term, this[key], mod, i, j, fs);
+            this.investigateLoop(char, ctxInv, key, term, this[key], mod, i, j, fs, xPx);
             j += 1.05;
             if (key === 'embeddedNum' && this[key]) {
                 for (let k = 0, l = this.embeddedList.length; k < l; k++) {
@@ -1756,6 +1760,7 @@ const Material = class extends Thing {
                         msg: name,
                         x: i + 0.5,
                         y: j,
+                        xPx: xPx,
                         limit: 10,
                         stroke: item.stroke,
                     });
@@ -1766,7 +1771,7 @@ const Material = class extends Thing {
 			}
 			
             if (char && !(++count % /*18*/ 21)) {
-                i += IN_WIDTH / 4;
+                xPx += display.width / 5;
                 j = jSaved;
 			} else if (mod) {
                 if (j * display.fs > display.height - SS * display.fs) break;
@@ -1780,17 +1785,19 @@ const Material = class extends Thing {
                 display.text({
                     ctx: ctxInv,
                     msg: option.isEnglish() ? key : translation.item[key],
-                    x: i - 4.5 + IN_WIDTH / 4,
+                    x: i - 4.5,
                     y: j,
+                    xPx: xPx + display.width / 4,
                     limit: 10,
                 });
 
                 ctxInv.textAlign = 'left';
                 let objMod = this.modParts[key];
+                
                 if (this.type === 'orb') {
                     for (let key2 in objMod) {
                         let term = investigationMap.get(key2);
-                        this.investigateLoop(false, ctxInv, key2, term, objMod[key2], true, i - 3 + IN_WIDTH / 4, j);
+                        this.investigateLoop(false, ctxInv, key2, term, objMod[key2], true, i - 3, j, undefined, xPx + display.width / 4);
                         j += 1.1;
                     }
                 } else {
@@ -1801,7 +1808,7 @@ const Material = class extends Thing {
                             continue;
                         }
 
-                        this.investigateLoop(false, ctxInv, key2, term, objMod[key2], true, i - 3 + IN_WIDTH / 4, j);
+                        this.investigateLoop(false, ctxInv, key2, term, objMod[key2], true, i - 3, j, undefined, xPx + display.width / 4);
                         j += 1.1;
                         if (j * display.fs > display.height - SS * display.fs) break;
                     }
@@ -1810,7 +1817,7 @@ const Material = class extends Thing {
         }
     }
 
-    investigateLoop(char, ctxInv, key, term, value, mod, i, j, fs) {
+    investigateLoop(char, ctxInv, key, term, value, mod, i, j, fs, xPx) {
         ctxInv.save();
         if (fs) {
             let fontStyle = FONT_STYLE[option.getLanguage()];
@@ -1851,14 +1858,16 @@ const Material = class extends Thing {
         if (key === 'material') {
             value = materialMap.get(value).name[option.getLanguage()];
         }
-
+        
+        let rightPx = display.width / (char ? 5 : 4);
         ctxInv.textAlign = 'right';
         display.text({
             ctx: ctxInv,
             msg: value,
-            x: i - 1 + IN_WIDTH / 4,
+            x: i - 1.5,
             y: j,
-            limit: 5,
+            xPx: xPx + rightPx,
+            limit: 4.5,
             fs: fs,
         });
 
@@ -1868,7 +1877,8 @@ const Material = class extends Thing {
             msg: msg,
             x: i - 0.5,
             y: j,
-            limit: 8,
+            xPx: xPx,
+            limit: 6,
             fs: fs,
         });
 

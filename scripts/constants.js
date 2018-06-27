@@ -307,6 +307,7 @@ const modBonusMap = new Map([
 const FONT_STYLE = {
     a: 'sans serif',
     b: "'Yu Gothic', 'Hiragino Kaku Gothic Pro', 'Hiragino Kaku Gothic ProN', 'TakaoExGothic', 'Meiryo', 'MS PGothic', sans-serif",
+    c: 'Stardos Stencil, sans serif'
 };
 
 let rogue;

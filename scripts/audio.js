@@ -53,6 +53,7 @@ const audio = {
         lightning: new Audio('sound/lightning.wav'),
         disintegrate: new Audio('sound/annihilate.wav'),
         encourage: new Audio('sound/enchant.wav'),
+        hallucinate: new Audio('sound/hallucinate.wav'),
     },
 
     init() {

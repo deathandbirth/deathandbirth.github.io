@@ -5,25 +5,27 @@ const game = {
         ctxInv.save();
         ctxInv.textAlign = 'center'
         let fontStyle = FONT_STYLE[option.getLanguage()];
-        ctxInv.font = '40px ' + fontStyle;
+        let fs = display.fs;
+        ctxInv.font = fs + 30 + 'px ' + FONT_STYLE['c'];
         display.text({
             ctx: ctxInv,
             msg: 'Death and Birth',
-            x: IN_WIDTH / 2,
-            y: IN_HEIGHT / 2,
+            xPx: display.width / 2,
+            yPx: display.height * 3 / 7,
         });
 
-        ctxInv.font = '20px ' + fontStyle;
+        ctxInv.font = fs + 2 + 'px ' + fontStyle;
         display.text({
             ctx: ctxInv,
             msg: option.isEnglish() ?
                 '[Enter] to start' :
-                '[Enter] 開始',
-            x: IN_WIDTH / 2,
-            y: IN_HEIGHT / 2 + 2,
+                '[Enter] ゲームスタート',
+            y: 2,
+            xPx: display.width / 2,
+            yPx: display.height / 2,
         });
 
-        ctxInv.font = '15px ' + fontStyle;
+        ctxInv.font = fs - 3 + 'px ' + fontStyle;
         ctxInv.textAlign = 'right';
         display.text({
             ctx: ctxInv,
@@ -46,22 +48,24 @@ const game = {
         ctxInv.save();
         ctxInv.textAlign = 'center'
         let fontStyle = FONT_STYLE[option.getLanguage()];
-        ctxInv.font = '40px ' + fontStyle;
+        let fs = display.fs;
+        ctxInv.font = fs + 30 + 'px ' + FONT_STYLE['c'];
         display.text({
             ctx: ctxInv,
             msg: 'G A M E  O V E R',
-            x: IN_WIDTH / 2,
-            y: IN_HEIGHT / 2,
+            xPx: display.width / 2,
+            yPx: display.height * 3 / 7,
         });
 
-        ctxInv.font = '20px ' + fontStyle;
+        ctxInv.font = fs + 2 + 'px ' + fontStyle;
         display.text({
             ctx: ctxInv,
             msg: option.isEnglish() ?
                 '[Enter] to retry' :
                 '[Enter] リトライ',
-            x: IN_WIDTH / 2,
-            y: IN_HEIGHT / 2 + 2,
+            y: 2,
+            xPx: display.width / 2,
+            yPx: display.height / 2,
         });
 
         ctxInv.restore();

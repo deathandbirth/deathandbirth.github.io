@@ -3617,8 +3617,8 @@ const Fighter = class extends Material {
 
     equipmentList(bp) {
         inventory.shadow(LEFT);
-        let i = 1.5;
-        let j = MS + 1;
+        let i = 1;
+        let j = MS + 0.5;
         let k = 0;
         let weight = 0;
         let count = 0;
@@ -3636,7 +3636,7 @@ const Fighter = class extends Material {
             display.text({
                 ctx: ctxInv,
                 msg: EA[k++].toUpperCase(),
-                x: i - 0.5,
+                x: i,
                 y: j,
             });
 
@@ -3646,7 +3646,7 @@ const Fighter = class extends Material {
             display.text({
                 ctx: ctxInv,
                 msg: parts,
-                x: i,
+                x: i + 0.5,
                 y: j,
             });
 
@@ -3657,7 +3657,7 @@ const Fighter = class extends Material {
                         msg: option.isEnglish() ?
                             `(two-handed)` :
                             `(両手持ち)`,
-                        x: i + 4.5,
+                        x: i + 5,
                         y: j,
                         limit: 14,
                     });
@@ -3674,7 +3674,7 @@ const Fighter = class extends Material {
             display.text({
                 ctx: ctxInv,
                 msg: item.symbol,
-                x: i + 4,
+                x: i + 4.5,
                 y: j,
                 stroke: item.stroke,
             });
@@ -3693,7 +3693,7 @@ const Fighter = class extends Material {
             display.text({
                 ctx: ctxInv,
                 msg: name,
-                x: i + 4.5,
+                x: i + 5,
                 y: j,
                 limit: limit,
                 stroke: item.stroke,
@@ -3707,8 +3707,9 @@ const Fighter = class extends Material {
                 display.text({
                     ctx: ctxInv,
                     msg: `$${price}`,
-                    x: i + 20.3,
+                    x: -2.5,
                     y: j,
+                    xPx: display.width / 2,
                     limit: 3.5,
                 });
 
@@ -3718,8 +3719,10 @@ const Fighter = class extends Material {
             display.text({
                 ctx: ctxInv,
                 msg: (item.weight * item.quantity).toFixed(1),
-                x: i + 22,
+                x: -0.5,
                 y: j,
+                xPx: display.width / 2,
+                limit: 1.8,
             });
 
             weight += item.weight * item.quantity;
@@ -3729,10 +3732,10 @@ const Fighter = class extends Material {
 		}
 		
         if (!flag.destroy && !flag.number && !flag.repair && !flag.blacksmith) {
-            let col = i;
+            j += 0.5;
+            let xPx = 0;
             let row = j;
             let count2 = 0;
-            let valueLimit = 4.5;
             for (let [key, term] of investigationMap.entries()) {
                 if (!term || !term.equipList) {
                     if (key === 'end') break;
@@ -3749,8 +3752,10 @@ const Fighter = class extends Material {
                 display.text({
                     ctx: ctxInv,
                     msg: term.name[option.getLanguage()],
-                    x: col - 1,
+                    x: i,
                     y: j,
+                    xPx: xPx,
+                    limit: 7,
                 });
 
                 ctxInv.textAlign = 'right';
@@ -3765,14 +3770,15 @@ const Fighter = class extends Material {
                 display.text({
                     ctx: ctxInv,
                     msg: value,
-                    x: col + IN_WIDTH / 4 - 2,
+                    x: -0.5,
                     y: j++,
-                    limit: valueLimit,
+                    xPx: xPx + display.width / 4,
+                    limit: 3.5,
                 });
 
                 ctxInv.restore();
                 if (!(++count2 % 8)) {
-                    col += IN_WIDTH / 4;
+                    xPx += display.width / 4;
                     j = row;
                 }
             }
@@ -3783,7 +3789,7 @@ const Fighter = class extends Material {
             ctx: ctxInv,
             msg: `[${count}/${maxNum}]`,
             x: i,
-            y: -SS - 1,
+            y: -SS - .9,
             yPx: display.height,
         });
 
@@ -3797,8 +3803,9 @@ const Fighter = class extends Material {
         display.text({
             ctx: ctxInv,
             msg: `${total} ${weight.toFixed(1)}kg`,
-            x: i + 22,
-            y: -SS - 1,
+            x: -0.5,
+            y: -SS - .9,
+            xPx: display.width / 2,
             yPx: display.height,
         });
 
@@ -3807,8 +3814,8 @@ const Fighter = class extends Material {
 
     showSkill(list, bookmark) {
         inventory.shadow(bookmark ? LEFT : RIGHT);
-        let i = 1.5;
-        let j = MS + 2;
+        let i = 1;
+        let j = MS + 1.7;
         let right = bookmark ? 0 : display.width / 2;
         let count = 0;
         let main = option.isEnglish() ? 'Main' : 'メイン';
@@ -3823,7 +3830,7 @@ const Fighter = class extends Material {
                 display.text({
                     ctx: ctxInv,
                     msg: key === '0' ? main : `F${key}`,
-                    x: i - 1,
+                    x: i - 0.5,
                     y: j,
                     limit: 2,
                     xPx: right,
@@ -3875,9 +3882,10 @@ const Fighter = class extends Material {
             display.text({
                 ctx: ctxInv,
                 msg: `${lvl}+${boost}`,
-                x: i + 12,
+                x: -10,
                 y: j,
-                xPx: right,
+                xPx: display.width / 2 + right,
+                limit: 3,
             });
 
             if (skill.rate) {
@@ -3897,16 +3905,17 @@ const Fighter = class extends Material {
 
                     if (skill.perc) value = `${value}%`;
                 } else {
-                    let avg = Math.floor(dice.getAvg(skill.base) * (1 + bonus / 100) * 10) / 10;
+                    let avg = Math.ceil(dice.getAvg(skill.base) * (1 + bonus / 100));
                     value = `Avg ${avg}`;
 				}
 				
                 display.text({
                     ctx: ctxInv,
                     msg: value,
-                    x: i + 17,
+                    x: -5.5,
                     y: j,
-                    xPx: right,
+                    xPx: display.width / 2 + right,
+                    limit: 4,
                 });
 			}
 			
@@ -3918,9 +3927,9 @@ const Fighter = class extends Material {
             display.text({
                 ctx: ctxInv,
                 msg: skill.mp,
-                x: i + 18.5,
+                x: -3.5,
                 y: j,
-                xPx: right,
+                xPx: display.width / 2 + right,
             });
 
             if (skill.reqLvl <= this.lvl) {
@@ -3931,18 +3940,18 @@ const Fighter = class extends Material {
             display.text({
                 ctx: ctxInv,
                 msg: skill.reqLvl,
-                x: i + 20.5,
+                x: -2,
                 y: j,
-                xPx: right,
+                xPx: display.width / 2 + right,
             });
 
             if (skill.reqSynerzy){
                 display.text({
                     ctx: ctxInv,
                     msg: skill.reqSynerzy,
-                    x: i + 22.5,
+                    x: -0.5,
                     y: j,
-                    xPx: right,
+                    xPx: display.width / 2 + right,
                 });
             }
 
@@ -3952,7 +3961,7 @@ const Fighter = class extends Material {
 		}
 		
         ctxInv.save();
-        j = MS + 1;
+        j = MS + 0.5;
         let maxNum;
         if (flag.gain) {
             maxNum = Object.keys(list).length;
@@ -3976,41 +3985,43 @@ const Fighter = class extends Material {
         display.text({
             ctx: ctxInv,
             msg: lvl,
-            x: i + 12,
+            x: -10,
             y: j,
-            xPx: right,
+            xPx: display.width / 2 + right,
         });
 
         display.text({
             ctx: ctxInv,
             msg: value,
-            x: i + 16,
+            x: -5.5,
             y: j,
-            xPx: right,
+            xPx: display.width / 2 + right,
         });
 
         display.text({
             ctx: ctxInv,
             msg: mp,
-            x: i + 18.5,
+            x: -3.5,
             y: j,
-            xPx: right,
+            xPx: display.width / 2 + right,
         });
 
         display.text({
             ctx: ctxInv,
             msg: reqLv,
-            x: i + 20.5,
+            x: -2,
             y: j,
-            xPx: right,
+            xPx: display.width / 2 + right,
+            limit: 1.3,
         });
 
         display.text({
             ctx: ctxInv,
             msg: reqSy,
-            x: i + 22.5,
+            x: -0.5,
             y: j,
-            xPx: right,
+            xPx: display.width / 2 + right,
+            limit: 1.3,
         });
 
         ctxInv.restore();
@@ -4824,6 +4835,7 @@ const Fighter = class extends Material {
                 message.draw(option.isEnglish() ?
                     `${name} got hallucinated` :
                     `${name}幻覚状態になった`);
+                audio.playSound('hallucinate');
                 break;
             case POLYMORPH:
                 if (f.id === ROGUE || f.mod === UNIQUE || evalPercentage(f.poison)) return;

@@ -106,7 +106,7 @@ const dice = {
 
     getAvg() {
         let { num, sides } = this.get(...arguments);
-        return (1 + sides) / 2 * num;
+        return Math.ceil((1 + sides) / 2 * num);
     },
 
     roll() {

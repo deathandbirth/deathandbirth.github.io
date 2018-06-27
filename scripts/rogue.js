@@ -309,7 +309,7 @@ const Rogue = class extends Fighter {
     }
 
     drawStats() {
-        let j = -2.5;
+        let j = -2.4;
         statistics.drawEnemyBar(this.ce);
         this.calcCondition(false, true);
         statistics.clear();
@@ -368,20 +368,23 @@ const Rogue = class extends Fighter {
             x: 17,
             y: j,
             color: this.hp <= 0 ? colorList.red : undefined,
+            limit: 7,
         });
 
         statistics.draw({
             msg: `MP ${this.mp}/${this.mpMax}`,
-            x: 24.5,
+            x: 0.5,
             y: j,
+            xPx: display.width / 2,
             color: this.mp <= 0 ? colorList.red : undefined,
             limit: 6,
         });
 
         statistics.draw({
             msg: `${str} ${this.str}`,
-            x: 31,
+            x: 7,
             y: j,
+            xPx: display.width / 2,
             color: this.str < this.strMax ? colorList.yellow :
                 this.strSus ? colorList.lime :
                 undefined,
@@ -390,8 +393,9 @@ const Rogue = class extends Fighter {
 
         statistics.draw({
             msg: `${dex} ${this.dex}`,
-            x: 34.5,
+            x: 10.5,
             y: j,
+            xPx: display.width / 2,
             color: this.dex < this.dexMax ? colorList.yellow :
                 this.dexSus ? colorList.lime :
                 undefined,
@@ -400,8 +404,9 @@ const Rogue = class extends Fighter {
 
         statistics.draw({
             msg: `${con} ${this.con}`,
-            x: 38,
+            x: 14,
             y: j,
+            xPx: display.width / 2,
             color: this.con < this.conMax ? colorList.yellow :
                 this.conSus ? colorList.lime :
                 undefined,
@@ -410,8 +415,9 @@ const Rogue = class extends Fighter {
 
         statistics.draw({
             msg: `${int} ${this.int}`,
-            x: 41.5,
+            x: 17.5,
             y: j,
+            xPx: display.width / 2,
             color: this.int < this.intMax ? colorList.yellow :
                 this.intSus ? colorList.lime :
                 undefined,
@@ -420,8 +426,9 @@ const Rogue = class extends Fighter {
 
         statistics.draw({
             msg: `${spd} ${this.spd}`,
-            x: 45,
+            x: 21,
             y: j,
+            xPx: display.width / 2,
             color: this.slowed ? colorList.red : undefined,
             shadow: this.speeded ? colorList.buff : undefined,
             limit: 2.5,
@@ -445,14 +452,16 @@ const Rogue = class extends Fighter {
 		
         statistics.draw({
             msg: msg,
-            x: IN_WIDTH + 0.5,
-            y: j + 1,
+            x: -0.5,
+            y: j + 1.2,
+            xPx: display.width,
             right: true,
         });
     }
 
     drawBoxes() {
         let x = 1;
+        let j = 0.1;
         let ctxStats = display.ctxes.stats;
         for (let i = 1; i <= this.numBoxes; i++) {
             let item = this.boxes[i];
@@ -464,7 +473,7 @@ const Rogue = class extends Fighter {
             display.rect({
                 ctx: ctxStats,
                 x: x + i * 1.4 - 1,
-                y: -1.5,
+                y: -1.5 + j,
                 yPx: display.height,
                 width: 1,
                 height: 1,
@@ -476,7 +485,7 @@ const Rogue = class extends Fighter {
                     ctx: ctxStats,
                     msg: i,
                     x: x + i * 1.4 - 0.5,
-                    y: -1,
+                    y: -1 + j,
                     yPx: display.height,
                 });
 			} else {
@@ -486,7 +495,7 @@ const Rogue = class extends Fighter {
                     ctx: ctxStats,
                     msg: item.symbol,
                     x: x + i * 1.4 - 0.5,
-                    y: -1,
+                    y: -1 + j,
                     yPx: display.height,
                     stroke: item.stroke,
                 });
@@ -498,7 +507,7 @@ const Rogue = class extends Fighter {
                     ctx: ctxStats,
                     msg: item.quantity,
                     x: x + i * 1.4,
-                    y: -0.5,
+                    y: -0.5 + j,
                     yPx: display.height,
                     stroke: item.stroke,
                 });
@@ -508,7 +517,7 @@ const Rogue = class extends Fighter {
                         ctx: ctxStats,
                         msg: item.charges,
                         x: x + i * 1.4,
-                        y: -1,
+                        y: -1.2 + j,
                         yPx: display.height,
                     });
                 }
@@ -1352,17 +1361,19 @@ const Rogue = class extends Fighter {
             y: j,
         });
 
+        ctxInv.textAlign = 'right';
         display.text({
             ctx: ctxInv,
             msg: option.isEnglish() ? 'MP(per)' : 'MP(毎)',
-            x: i + 4.5,
+            x: i + 8,
             y: j,
         });
 
+        ctxInv.textAlign = 'left';
         display.text({
             ctx: ctxInv,
             msg: option.isEnglish() ? 'Recipe' : 'レシピ',
-            x: i + 10,
+            x: i + 9,
             y: j,
         });
 
@@ -1393,9 +1404,9 @@ const Rogue = class extends Fighter {
             display.text({
                 ctx: ctxInv,
                 msg: recipe,
-                x: i + 10,
+                x: i + 9,
                 y: j,
-                limit: 38
+                limit: 37
             });
 
             j += 1.2;
@@ -2108,8 +2119,8 @@ const Rogue = class extends Fighter {
 
     showStats(a) {
         inventory.shadow(LEFT);
-        let i = 1.5;
-        let j = MS + 1;
+        let i = 1;
+        let j = MS + 0.5;
         let count = 0;
         let ctxInv = display.ctxes.inv;
         for (let key in statistics.list) {
@@ -2136,8 +2147,9 @@ const Rogue = class extends Fighter {
             display.text({
                 ctx: ctxInv,
                 msg: this[stat.term + 'Max'],
-                x: i + 22,
+                x: -0.5,
                 y: j++,
+                xPx: display.width / 2,
             });
 
             ctxInv.restore();
@@ -2149,7 +2161,7 @@ const Rogue = class extends Fighter {
             ctx: ctxInv,
             msg: `[${count}/${maxNum}]`,
             x: i,
-            y: -SS -1,
+            y: -SS - .9,
             yPx: display.height,
         });
 
@@ -2159,8 +2171,9 @@ const Rogue = class extends Fighter {
         display.text({
             ctx: ctxInv,
             msg: `${statPoints} ${this.statPoints} ${currentValues}`,
-            x: i + 22,
-            y: -SS -1,
+            x: -0.5,
+            y: -SS - .9,
+            xPx: display.width / 2,
             yPx: display.height,
         });
 
