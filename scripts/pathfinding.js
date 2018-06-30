@@ -47,18 +47,25 @@ const circleSearch = {
         let loc = map.coords[x][y];
         switch (this.type) {
             case MAGIC_MAPPING:
-            case ITEM_DETECTION:
-                if (this.type === MAGIC_MAPPING && loc.item['a'] ||
-                    this.type === ITEM_DETECTION && (!loc.item['a'] ||
-                    loc.found)) return;
+                if (loc.found) return;
                 loc.found = true;
                 loc.draw();
-                this.count++;
+                break;
+            case ITEM_DETECTION:
+                if(!loc.item['a']) return;
+                for (let key in loc.item) {
+                    let item = loc.item[key];
+                    if (!item.detected) {
+                        item.detected = true;
+                        this.count++;
+                    }
+                } 
+
+                loc.draw();
                 break;
             case MONSTER_DETECTION:
-                if (!loc.fighter || loc.fighter.id === ROGUE || loc.detected) return;
+                if (!loc.fighter || loc.fighter.id === ROGUE || loc.fighter.detected) return;
                 loc.fighter.detected = true;
-                loc.detected = true;
                 loc.draw();
                 this.count++;
                 break;

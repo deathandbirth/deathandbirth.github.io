@@ -5,7 +5,7 @@ const generateNumber = function*(i, j, bit) {
 
 const enums = (i, j) => [...generateNumber(i, j)];
 const enumsBit = (i, j) => [...generateNumber(i, j, true)];
-const VERSION = 0.009;
+const VERSION = 0.010;
 const MS = 2; //message space
 const SS = 3; //stats space
 const IN_WIDTH = 47; //canvas.width/fs-1;
@@ -136,6 +136,18 @@ const DR = [ //direction
     { x: 1, y: 1, id: DOWNRIGHT },
 ];
 
+const [
+    SYMBOL_FIGHTER,
+    SYMBOL_ITEM,
+    SYMBOL_BLANK,
+    SYMBOL_ENTER,
+    SYMBOL_TRAP,
+    SYMBOL_DOOR,
+    SYMBOL_WALL,
+    SYMBOL_STAIRS,
+    SYMBOL_FLOOR,
+] = enums(1, 9);
+
 const EA = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
     'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']; //english alphabet 26
 const BP = { //body parts 
@@ -217,7 +229,7 @@ const RARITY = {
     amulet: 80,
     oil: 50,
     ammo: 50,
-    coin: 0,
+    coin: 70,
     gem: 80,
     orb: 80,
 };
@@ -307,6 +319,7 @@ const modBonusMap = new Map([
 const FONT_STYLE = {
     a: 'sans serif',
     b: "'Yu Gothic', 'Hiragino Kaku Gothic Pro', 'Hiragino Kaku Gothic ProN', 'TakaoExGothic', 'Meiryo', 'MS PGothic', sans-serif",
+    c: 'Stardos Stencil, sans serif'
 };
 
 let rogue;

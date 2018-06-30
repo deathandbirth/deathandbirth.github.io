@@ -505,8 +505,8 @@ const message = {
         display.text({
             ctx: ctxInv,
             msg: `[${l}/${MAX_MSG_LIST_LEN}]`,
-            x: 1.5,
-            y: - SS - 1,
+            x: 1,
+            y: - SS - .9,
             yPx: display.height,
         });
 
@@ -518,7 +518,7 @@ const message = {
                 `メッセージ項目 [${this.page}/${p}]`,
             x: -1,
             xPx: display.width,
-            y: - SS - 1,
+            y: - SS - .9,
             yPx: display.height,
         });
 

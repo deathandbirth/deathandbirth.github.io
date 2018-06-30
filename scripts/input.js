@@ -441,7 +441,7 @@ const input = {
                 break;
             case 86: //^v version
                 if (this.isShift) break;
-                if (this.isCtrl) message.draw(`Death and Birth ver ${VERSION}`);
+                if (this.isCtrl) message.draw(`Death and Birth ver ${VERSION.toFixed(3)}`);
                 break;
             case 87: //w equip
                 if (this.isShift || this.isCtrl) break;
@@ -498,6 +498,7 @@ const input = {
                 break;
             case 187: //= option
             case 189: //JIS keyboard
+            case 173: //firefox
                 if (this.isCtrl) break;
                 flag.option = true;
                 inventory.show(option.list, RIGHT);

@@ -30,6 +30,7 @@ const display = {
 
     change(a, draw) {
         let list = this.list[a];
+        let container = document.getElementById('canvas-container');
         container.style.width = list.width + 'px';
         container.style.height = list.height + 'px';
         this.width = list.width;
@@ -49,7 +50,7 @@ const display = {
             let ctx = this.ctxes[key];
             if (key === 'main') continue;
             ctx.textBaseline = 'middle';
-            ctx.lineJoin = 'round';
+            ctx.lineJoin = 'bevel';
             ctx.shadowOffsetX = 1;
             ctx.shadowOffsetY = 1;
             ctx.fillStyle = colorList.white;
@@ -60,9 +61,9 @@ const display = {
             } else if (key === 'map') {
                 ctx.font = '10px ' + fontStyle;
             } else if (key === 'buf') {
-                ctx.font = fs - 1 + 'px ' + FONT_STYLE[ENG];
+                ctx.font = fs - 2  + 'px ' + FONT_STYLE[ENG];
             } else {
-                ctx.font = fs - 1 + 'px ' + fontStyle;
+                ctx.font = fs - 2 + 'px ' + fontStyle;
             }
 
             ctx.textAlign = key === 'stats' || key === 'inv' || key === 'msg' ? 'left' : 'center';
@@ -96,6 +97,7 @@ const display = {
         }
 
         ctx.fillText(...args);
+        ctx.font = fs;
     },
 
     rect({
@@ -173,21 +175,21 @@ const display = {
 };
 
 {
-    let canvasIds = ['buf', 'main', 'cur', 'msg', 'stats', 'map', 'inv'];
-    let parent = document.getElementById('container');
-    parent.innerHTML = '';
     display.canvases = {};
     display.ctxes = {};
-    for (let i = 0, l = canvasIds.length; i < l; i++) {
-        let id = canvasIds[i];
-        let child = document.createElement('canvas');
+    let canvas = document.createElement('canvas');
+    display.canvases['buf'] = canvas;
+    display.ctxes['buf'] = canvas.getContext('2d');
+    let children = document.getElementById('canvas-container').children;
+    for (let i = 0, l = children.length; i < l; i++) {
+        let child = children[i];
+        if (child.id === "msg-err") {
+           child.style.display = 'none';
+           continue; 
+        }
+
+        let id = child.id.replace('canvas-', '');
         display.canvases[id] = child;
         display.ctxes[id] = child.getContext('2d');
-        if (id === 'buf') continue;
-        child.style.position = 'absolute';
-        child.style.left = 0;
-        child.style.top = 0;
-        child.style['z-index'] = i;
-        parent.appendChild(child);
     }
 }

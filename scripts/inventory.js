@@ -45,8 +45,8 @@ const inventory = {
 		}
 
         this.shadow(direction);
-        let i = 1.5;
-        let j = MS + 1;
+        let i = 1;
+        let j = MS + 0.5;
         let right = direction === RIGHT ? display.width / 2 : 0;
         let count = 0;
         let weight = 0.0;
@@ -108,9 +108,9 @@ const inventory = {
                         display.text({
                             ctx: ctxInv,
                             msg: `$${cost}`,
-                            x: i + 22.5,
+                            x: -0.5,
                             y: j,
-                            xPx: right,
+                            xPx: display.width / 2 + right,
                         });
                     } else if (!flag.option2) {
                         let msg = '';
@@ -126,9 +126,9 @@ const inventory = {
                         display.text({
                             ctx: ctxInv,
                             msg: msg,
-                            x: i + 22.5,
+                            x: -0.5,
                             y: j,
-                            xPx: right,
+                            xPx: display.width / 2 + right,
                         });
                     }
 				}
@@ -177,10 +177,10 @@ const inventory = {
                 display.text({
                     ctx: ctxInv,
                     msg: `$${price}`,
-                    x: i + 20.3,
+                    x: -2.5,
                     y: j,
                     limit: 3.5,
-                    xPx: right,
+                    xPx: display.width / 2 + right,
                 });
 			}
 			
@@ -195,9 +195,10 @@ const inventory = {
             display.text({
                 ctx: ctxInv,
                 msg: (item.weight * quantity).toFixed(1),
-                x: i + 22.5,
+                x: -0.5,
                 y: j++,
-                xPx: right,
+                xPx: display.width / 2 + right,
+                limit: 1.8,
             });
 
             ctxInv.restore();
@@ -216,7 +217,7 @@ const inventory = {
             ctx: ctxInv,
             msg: `[${count}/${maxNum}]`,
             x: i,
-            y: -SS - 1,
+            y: -SS - .9,
             xPx: right,
             yPx: display.height,
         });
@@ -253,9 +254,9 @@ const inventory = {
         display.text({
             ctx: ctxInv,
             msg: msg,
-            x: i + 22.5,
-            y: -SS - 1,
-            xPx: right,
+            x: -0.5,
+            y: -SS - .9,
+            xPx: display.width / 2 + right,
             yPx: display.height,
         });
 

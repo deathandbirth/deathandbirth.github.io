@@ -5,28 +5,92 @@
 	<meta name="description" content="ダンテの神曲やギリシャ神話を題材にした、開発中のローグライク・ブラウザゲーム">
 	<title>Death and Birth | デスアンドバース</title>
 	<link href="css/main.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Stardos+Stencil" rel="stylesheet">
 </head>
 <body>
 	<main>
-		<div id="container">
-			※ お使いのブラウザではこのゲームは動作しません。chromeの最新版を推奨します。
+		<div id="canvas-container">
+			<span id="msg-err">※ お使いのブラウザではこのゲームは動作しません。chromeの最新版を推奨します。</span>
+			<canvas id="canvas-main"></canvas>
+			<canvas id="canvas-cur"></canvas>
+			<canvas id="canvas-msg"></canvas>
+			<canvas id="canvas-stats"></canvas>
+			<canvas id="canvas-map"></canvas>
+			<canvas id="canvas-inv"></canvas>
 		</div>
 		<article>
-			<p>'?'を押すとコマンド一覧が表示されます。</p>
+			<button id="command-btn">コマンド一覧</button>
 			<button id="recipe-btn">レシピ一覧</button>
-			<ul id="recipe-container" style="display: none">
-				<li><span class="name">名称</span><span class="cost">MP(毎)</span><span class="recipe">レシピ</span></li>
-				<li><span class="name">錬金</span><span class="cost">5</span><span class="recipe">ジュエル [1-4] -> 硬貨</span></li>
-				<li><span class="name">松明</span><span class="cost">1</span><span class="recipe">松明 [2-4] -> 松明 [期間 計]</span></li>
-				<li><span class="name">ランプ</span><span class="cost">1</span><span class="recipe">ランプまたはランタン + オイル [2-4] -> ランプまたはランタン [期間 計]</span></li>
-				<li><span class="name">埋め込み</span><span class="cost">5</span><span class="recipe">埋め込み可能な装備品 + 同素材・ジュエル・オーブ -> 装備品 [素材・ジュエル・オーブ]</span></li>
-				<li><span class="name">取り外し</span><span class="cost">1</span><span class="recipe">装備品 [素材・ジュエル・オーブ] -> 埋め込み可能な装備品 + 同素材・ジュエル・オーブ</span></li>
-				<li><span class="name">魔法棒</span><span class="cost">1</span><span class="recipe">魔法棒 [2-4] -> 魔法棒 [充填 計]</span></li>
-				<li><span class="name">充填書</span><span class="cost">1</span><span class="recipe">充填書 + 巻物 -> 充填書 [充填 計]</span></li>
-				<li><span class="name">特大回復</span><span class="cost">10</span><span class="recipe">回復の薬 [3] -> 特大回復の薬</span></li>
-				<li><span class="name">拡張</span><span class="cost">30</span><span class="recipe">ノーマルの埋め込み不可な装備品 + ジュエル + オーブ -> 埋め込み可能な装備品</span></li>
-				<li><span class="name">素材化</span><span class="cost">50</span><span class="recipe">マジックまたはレアの埋め込み不可な装備品 + ジュエル + オーブ + 同素材 -> 素材</span></li>
-			</ul>
+			<div id="command-container" style="display: none">
+				<ul>
+					<li><span>方向キー</span><span>移動</span></li>
+					<li><span>h</span><span>左移動</span></li>
+					<li><span>j</span><span>下移動</span></li>
+					<li><span>k</span><span>上移動</span></li>
+					<li><span>l</span><span>右移動</span></li>
+					<li><span>y</span><span>左上移動</span></li>
+					<li><span>b</span><span>左下移動</span></li>
+					<li><span>u</span><span>右上移動</span></li>
+					<li><span>n</span><span>右下移動</span></li>
+					<li><span>i</span><span>持物一覧</span></li>
+					<li><span>e</span><span>装備一覧</span></li>
+					<li><span>w</span><span>装備する</span></li>
+					<li><span>T</span><span>装備を外す</span></li>
+					<li><span>g</span><span>アイテムを拾う</span></li>
+					<li><span>d</span><span>アイテムを落とす</span></li>
+					<li><span>o</span><span>ドアを開ける</span></li>
+					<li><span>c</span><span>ドアを閉める</span></li>
+					<li><span>s</span><span>捜索する</span></li>
+					<li><span>r</span><span>巻物を読む</span></li>
+					<li><span>q</span><span>薬を飲む</span></li>
+					<li><span>z</span><span>魔法棒を振る</span></li>
+					<li><span>p</span><span>アイテムを詰める</span></li>
+					<li><span>E</span><span>食事する</span></li>
+					<li><span>Q</span><span>ゲームを放棄する</span></li>
+					<li><span>Esc</span><span>取り消す</span></li>
+					<li><span>x</span><span>探査する</span></li>
+					<li><span>a</span><span>しおりを挟む</span></li>
+					<li><span>G</span><span>スキル/能力値を得る</span></li>
+					<li><span>f</span><span>射る</span></li>
+					<li><span>t</span><span>アイテムを投げる</span></li>
+					<li><span>S</span><span>装備を持ち替える</span></li>
+					<li><span>C</span><span>キャラ詳細</span></li>
+					<li><span>F</span><span>補給する</span></li>
+					<li><span>R</span><span>休む</span></li>
+					<li><span>A</span><span>錬金術</span></li>
+					<li><span>1-9</span><span>アイテムを使う</span></li>
+					<li><span>F1-F12</span><span>スキルを使う</span></li>
+					<li><span>Alt+方向</span><span>その場で攻撃する/掘る</span></li>
+					<li><span>Shift+方向</span><span>走る</span></li>
+					<li><span>.</span><span>踏む</span></li>
+					<li><span>&gt;</span><span>階段を降りる</span></li>
+					<li><span>&lt;</span><span>階段を昇る</span></li>
+					<li><span>=</span><span>オプション</span></li>
+					<li><span>?</span><span>コマンドを表示</span></li>
+					<li><span>Ctrl+p</span><span>メッセージ履歴</span></li>
+					<li><span>Ctrl+r</span><span>再描写</span></li>
+					<li><span>Ctrl+m</span><span>消音</span></li>
+					<li><span>Ctrl+s</span><span>記録する</span></li>
+					<li><span>Ctrl+d</span><span>アイテムを破壊する</span></li>
+					<li><span>Ctrl+x</span><span>記録して終了する</span></li>
+					<li><span>Ctrl+v</span><span>ゲームのバージョン</span></li>
+				</ul>
+			</div>
+			<div id="recipe-container" style="display: none">
+				<ul>
+					<li><span class="name">名称</span><span class="cost">MP(毎)</span><span class="recipe">レシピ</span></li>
+					<li><span class="name">錬金</span><span class="cost">5</span><span class="recipe">ジュエル [1-4] -> 硬貨</span></li>
+					<li><span class="name">松明</span><span class="cost">1</span><span class="recipe">松明 [2-4] -> 松明 [期間 計]</span></li>
+					<li><span class="name">ランプ</span><span class="cost">1</span><span class="recipe">ランプまたはランタン + オイル [2-4] -> ランプまたはランタン [期間 計]</span></li>
+					<li><span class="name">埋め込み</span><span class="cost">5</span><span class="recipe">埋め込み可能な装備品 + 同素材・ジュエル・オーブ -> 装備品 [素材・ジュエル・オーブ]</span></li>
+					<li><span class="name">取り外し</span><span class="cost">1</span><span class="recipe">装備品 [素材・ジュエル・オーブ] -> 埋め込み可能な装備品 + 同素材・ジュエル・オーブ</span></li>
+					<li><span class="name">魔法棒</span><span class="cost">1</span><span class="recipe">魔法棒 [2-4] -> 魔法棒 [充填 計]</span></li>
+					<li><span class="name">充填書</span><span class="cost">1</span><span class="recipe">充填書 + 巻物 -> 充填書 [充填 計]</span></li>
+					<li><span class="name">特大回復</span><span class="cost">10</span><span class="recipe">回復の薬 [3] -> 特大回復の薬</span></li>
+					<li><span class="name">拡張</span><span class="cost">30</span><span class="recipe">ノーマルの埋め込み不可な装備品 + ジュエル + オーブ -> 埋め込み可能な装備品</span></li>
+					<li><span class="name">素材化</span><span class="cost">50</span><span class="recipe">マジックまたはレアの埋め込み不可な装備品 + ジュエル + オーブ + 同素材 -> 素材</span></li>
+				</ul>
+			</div>
 			<h2>攻撃</h2>
 			<ul>
 				<li>敵に対して方向キーを押すとそれが攻撃動作となります。</li>
@@ -84,14 +148,19 @@
 				<li>ブラウザを再読み込みすると、自動記録や'ctrl+s'で記録したデータまで巻き戻ります。</li>
 				<li>このゲームのバージョン更新時に、お使いのブラウザで頻繁にエラーが発生する場合、キャッシュやクッキー等のサイトデータを消去すると、解消される場合があります。</li>
 			</ul>
-			<p><span>ソースコード</span>&ensp;<a href="https://github.com/deathandbirth/deathandbirth.github.io" target="_blank">Github</a></p>
-			<p><span>BGM・SE</span>&ensp;<a href="https://ringil-music.com" target="_blank">Ringil</a></p>
-			<p>更新内容の詳細は<a href="http://ringil-blog.info/" target="_blank">ブログ</a>に書いています。</p>
-			<small>※ブラウザ読み込み時にタイトル曲を再生しないようにしました。（v0.009）</small>
 		</article>
+		<h1>Death and Birth</h1>
+		<article>
+			<p>ジャンル:&ensp;PCブラウザゲーム・ローグライク</p>
+			<p>対応ブラウザ:&ensp;<a href="https://www.google.co.jp/chrome" target="_blank">Chrome 最新版</a></p>
+			<p>ソースコード:&ensp;<a href="https://github.com/deathandbirth/deathandbirth.github.io" target="_blank">Github</a></p>
+			<p>BGM・SE:&ensp;<a href="https://ringil-music.com" target="_blank">Ringil</a></p>
+			<p>更新内容:&ensp;<a href="https://ringil-blog.info/" target="_blank">Blog</a></p>
+		</article>
+		<small>※ブラウザ読み込み時にタイトル曲を再生しないようにしました。（v0.009）</small>
 	</main>
 	<footer><p>(c) Death and Birth 2018</p></footer>
-	<script src="site.js"></script>
-	<script src="main.js"></script>
+	<script src="site.js?0630"></script>
+	<script src="main.js?0630"></script>
 </body>
 </html>

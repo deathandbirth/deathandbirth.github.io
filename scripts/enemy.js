@@ -259,7 +259,6 @@ const Enemy = class extends Fighter {
         let loc = map.coords[this.x][this.y];
         loc.fighter = null;
         delete map.enemyList[this.id];
-        loc.detected = false;
         map.queue.delete(this);
         if (rogue.ce && rogue.ce.id === this.id) rogue.removeCe();
         for (let key in map.enemyList) {
