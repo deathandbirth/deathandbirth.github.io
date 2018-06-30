@@ -1910,7 +1910,7 @@ const Rogue = class extends Fighter {
         let x, y;
         if (this.ce) {
             [x, y] = [this.ce.x, this.ce.y];
-            if (!this.litMapIds[x + ',' + y] && (!map.coords[x][y].detected ||
+            if (!this.litMapIds[x + ',' + y] && (!this.ce.detected ||
                 distanceSq(x, y, this.x, this.y) > FOV_SQ) ||
                 !lineOfSight(this.x, this.y, x, y)) {
 				return;
@@ -2508,8 +2508,8 @@ const Rogue = class extends Fighter {
             let x, y;
             if (this.ce) {
                 [x, y] = [this.ce.x, this.ce.y];
-                if (!this.litMapIds[x + ',' + y] && (!map.coords[x][y].detected ||
-                        distanceSq(x, y, this.x, this.y) > FOV_SQ) ||
+                if (!this.litMapIds[x + ',' + y] && (!this.ce.detected ||
+                    distanceSq(x, y, this.x, this.y) > FOV_SQ) ||
                     !lineOfSight(this.x, this.y, x, y)) {
                     flag.skill = false;
                     return;

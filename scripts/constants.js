@@ -136,6 +136,18 @@ const DR = [ //direction
     { x: 1, y: 1, id: DOWNRIGHT },
 ];
 
+const [
+    SYMBOL_FIGHTER,
+    SYMBOL_ITEM,
+    SYMBOL_BLANK,
+    SYMBOL_ENTER,
+    SYMBOL_TRAP,
+    SYMBOL_DOOR,
+    SYMBOL_WALL,
+    SYMBOL_STAIRS,
+    SYMBOL_FLOOR,
+] = enums(1, 9);
+
 const EA = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
     'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']; //english alphabet 26
 const BP = { //body parts 
@@ -217,7 +229,7 @@ const RARITY = {
     amulet: 80,
     oil: 50,
     ammo: 50,
-    coin: 0,
+    coin: 70,
     gem: 80,
     orb: 80,
 };

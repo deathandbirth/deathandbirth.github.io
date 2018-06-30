@@ -9,101 +9,149 @@ const Location = class extends Position {
         this.item = {};
     }
 
-    getSymbol() {
-        if (this.fighter && this.fighter.isShowing()) {
-            this.symbol = this.fighter.symbol;
-            this.color = this.fighter.color;
-            this.shadow = this.fighter.shadow;
-            this.stroke = this.fighter.stroke;
-        } else if (!this.found) {
-            this.symbol = ' ';
-            this.color = colorList.white;
-            this.shadow = 0;
-            this.stroke = 0;
-        } else if (this.enter) {
-            this.symbol = this.enter.symbol;
-            this.color = this.enter.color;
-            this.shadow = 0;
-            this.stroke = this.enter.stroke;
-        } else if (this.trap && !this.hidden) {
-            this.symbol = this.trap.symbol;
-            this.color = this.trap.color;
-            this.shadow = 0;
-            this.stroke = 0;
-        } else if (this.door && !this.hidden) {
-            this.symbol = this.isClosedDoor() ? '+' : '\'';
-            this.color = colorList.brown;
-            this.shadow = 0;
-            this.stroke = 0;
-        } else if (this.wall) {
-            this.symbol = '#';
-            this.color = this.indestructible ? colorList.brown : colorList.gray;
-            this.shadow = 0;
-            this.stroke = 0;
-        } else if (this.item['a']) {
-            let l = Object.keys(this.item).length;
-            let item = this.item[EA[l - 1]];
-            this.symbol = item.symbol;
-            this.color = item.color;
-            if (item.identified || rogue.hallucinated) {
-                this.shadow = item.shadow;
-                this.stroke = item.stroke;
-            } else {
-                this.shadow = 0;
-                this.stroke = 0;
-            }
-        } else if (this.stairs && !this.hidden) {
-            this.symbol = this.stairs.symbol;
-            this.color = this.stairs.color;
-            this.shadow = 0;
-            this.stroke = 0;
-        } else if (this.floor) {
-            this.symbol = '.';
-            this.color = colorList.white;
-            this.shadow = 0;
-            this.stroke = 0;
-        }
+    getType() {
+        return this.fighter && this.fighter.isShowing() ? SYMBOL_FIGHTER :
+            this.item['a'] && this.item['a'].isShowing() ? SYMBOL_ITEM :
+            !this.found ? SYMBOL_BLANK :
+            this.enter ? SYMBOL_ENTER :
+            this.trap && !this.hidden ? SYMBOL_TRAP :
+            this.door && !this.hidden ? SYMBOL_DOOR :
+            this.wall ? SYMBOL_WALL :
+            this.stairs && !this.hidden ? SYMBOL_STAIRS :
+            this.floor ? SYMBOL_FLOOR :
+            -1;
     }
 
-    draw() {
-        this.getSymbol();
-        let ctxBuf = display.ctxes.buf;
-        display.rect({
-            ctx: ctxBuf,
-            x: this.x,
-            y: this.y,
-            width: 1,
-            height: 1,
-            clear: true,
-        });
-        
-        if (rogue.blinded && (!this.fighter || this.fighter.id !== ROGUE)) return;
-        ctxBuf.save();
-        ctxBuf.fillStyle = this.color;
-        if (rogue.hallucinated && !this.shadow) ctxBuf.shadowColor = colorList.purple;
-        if (this.shadow && option.shadow.user) ctxBuf.shadowColor = this.shadow;
-        display.text({
-            ctx: ctxBuf,
-            msg: this.symbol,
-            x: this.x + 0.5,
-            y: this.y + 0.5,
-            stroke: this.stroke,
-        });
+    getSymbol(minimap, type) {
+        let symbol, color, shadow, stroke;
+        if (!type) type = this.getType(); 
+        switch (type) {
+            case SYMBOL_FIGHTER:
+                let fighter = this.fighter;
+                symbol = fighter.symbol;
+                color = fighter.color;
+                shadow = fighter.shadow;
+                stroke = fighter.stroke;
+                break;
+            case SYMBOL_ITEM:
+                let l = Object.keys(this.item).length;
+                let item = this.item[EA[l - 1]];
+                let identified = item.identified || rogue.hallucinated;
+                symbol = item.symbol;
+                color = item.color;
+                shadow = identified ? item.shadow : 0;
+                stroke = identified ? item.stroke : 0;
+                break;
+            case SYMBOL_BLANK: 
+                symbol = ' ';
+                color = colorList.white;
+                shadow = 0;
+                stroke = 0;
+                break;
+            case SYMBOL_ENTER:
+                let enter = this.enter;
+                symbol = enter.symbol;
+                color = enter.color;
+                shadow = 0;
+                stroke = enter.stroke;
+                break;
+            case SYMBOL_TRAP:
+                let trap = this.trap;
+                symbol = trap.symbol;
+                color = trap.color;
+                shadow = 0;
+                stroke = 0;
+                break;
+            case SYMBOL_DOOR:
+                symbol = this.isClosedDoor() ? '+' : '\'';
+                color = colorList.brown;
+                shadow = 0;
+                stroke = 0;
+                break;
+            case SYMBOL_WALL:
+                symbol = '#';
+                color = this.indestructible ? colorList.brown : colorList.gray;
+                shadow = 0;
+                stroke = 0;
+                break;
+            case SYMBOL_STAIRS:
+                let stairs = this.stairs;
+                symbol = stairs.symbol;
+                color = stairs.color;
+                shadow = 0;
+                stroke = 0;
+                break;
+            case SYMBOL_FLOOR:
+                symbol = '.';
+                color = colorList.white;
+                shadow = 0;
+                stroke = 0;
+                break;
+        }
 
-        if (!rogue.litMapIds[this.x + ',' + this.y]) {
-            ctxBuf.globalAlpha = 0.5;
-            ctxBuf.fillStyle = colorList.black;
-            ctxBuf.shadowColor = colorList.clear;
+        if (!minimap) {
+            this.symbol = symbol;
+            this.color = color;
+            this.shadow = shadow;
+            this.stroke = stroke;
+        }
+
+        return {symbol: symbol, color: color, shadow: shadow, stroke: stroke};
+    }
+
+    draw(minimap, type, fs) {
+        let {symbol, color, shadow, stroke} = this.getSymbol(minimap, type);
+        let ctx = display.ctxes[minimap ? 'map' : 'buf'];
+        let [x, y] = [this.x, this.y];
+        if (!minimap) {
             display.rect({
-                ctx: ctxBuf,
-                x: this.x,
-                y: this.y,
+                ctx: ctx,
+                x: x,
+                y: y,
                 width: 1,
                 height: 1,
+                fs: fs,
+                clear: true,
+            });
+        }
+        
+        if (rogue.blinded && (!this.fighter || this.fighter.id !== ROGUE)) return;
+        ctx.save();
+        ctx.fillStyle = color;
+        if (rogue.hallucinated && !shadow) ctx.shadowColor = colorList.purple;
+        if (shadow && option.shadow.user) ctx.shadowColor = shadow;
+        let xPx, yPx;
+        if (minimap && !rogue.cdl) {
+            xPx = display.width / 4;
+            yPx = display.height / 4;
+        }
+
+        display.text({
+            ctx: ctx,
+            msg: symbol,
+            x: x + 0.5,
+            y: y + 0.5,
+            xPx: xPx,
+            yPx: yPx,
+            fs: fs,
+            stroke: stroke,
+        });
+
+        if (!minimap && (!rogue.litMapIds[x + ',' + y] || this.wall && this.item['a'])) {
+            ctx.globalAlpha = 0.5;
+            ctx.fillStyle = colorList.black;
+            ctx.shadowColor = colorList.clear;
+            display.rect({
+                ctx: ctx,
+                x: x,
+                y: y,
+                width: 1,
+                height: 1,
+                fs: fs,
             });
 		}
 		
-        ctxBuf.restore();
+        ctx.restore();
     }
 
     getInfo(stepOn) {
@@ -113,13 +161,12 @@ const Location = class extends Position {
             message.draw(msg + ` (${cursol.x},${cursol.y})`, true);
 		}
 		
-        if (!this.found && !this.detected) return;
         let msg = '';
-        if (flag.examine && this.fighter && this.fighter.id !== ROGUE) {
+        if (flag.examine && this.fighter && this.fighter.id !== ROGUE && this.fighter.isShowing()) {
 			msg = statistics.drawEnemyBar(this.fighter, true);
 		}
 
-        if (this.stairs && !this.hidden) {
+        if (this.found && this.stairs && !this.hidden) {
             let nameStairs = this.stairs.getName();
             if (option.isEnglish()) {
                 msg += (msg ? ' on ' : '') + nameStairs;
@@ -128,26 +175,45 @@ const Location = class extends Position {
 			}
 		}
 		
-        if (this.item['a'] && !this.wall) {
+        if (this.item['a']) {
             let l = Object.keys(this.item).length;
             let item = this.item[EA[l - 1]];
-            if (!this.stairs && !this.hidden && msg) {
-                msg = option.isEnglish() ? msg + ' on ' : 'の上に' + msg;
-            } else if (l === 1 && msg) {
-                msg = option.isEnglish() ? msg + ' and ' : 'と' + msg;
-			} else if (l > 1 && msg) {
-				msg = option.isEnglish() ? msg + ', ' : 'と' + msg;
-			}
+            if (item.isShowing()) {
+                if (this.found && !this.stairs && !this.hidden && msg) {
+                    msg = option.isEnglish() ? msg + ' on ' : 'の上に' + msg;
+                } else if (l === 1 && msg) {
+                    msg = option.isEnglish() ? msg + ' and ' : 'と' + msg;
+                } else if (l > 1 && msg) {
+                    msg = option.isEnglish() ? msg + ', ' : 'と' + msg;
+                }
 
-            let nameItem = item.getName();
-            if (option.isEnglish()) {
-                msg = msg + nameItem + (l > 1 ? ' and more' : '');
-			} else {
-				msg = nameItem + (l > 1 ? 'とアイテムの山' : '') + msg;
-			}
+                let nameItem = item.getName();
+                if (item.type === 'coin') {
+                    if (option.isEnglish()) {
+                        nameItem = 'Gold worth ' + nameItem;
+                    } else {
+                        nameItem += '相当の金塊';
+                    }
+                }
+                if (this.found && this.wall) {
+                    if (option.isEnglish()) {
+                        nameItem += ' through the wall';
+                    } else {
+                        nameItem = '壁の中に' + nameItem;
+                    }
+                }
+
+                if (l > 1) nameItem += option.isEnglish() ? ' and more' : 'とアイテムの山';
+
+                if (option.isEnglish()) {
+                    msg += nameItem;
+                } else {
+                    msg = nameItem + msg;
+                }
+            }
 		}
 		
-        if (this.enter) {
+        if (this.found && this.enter) {
             let msgAdd = flag.examine;
             if (!flag.examine) {
                 if (flag.dash) flag.dash = false;
@@ -168,7 +234,7 @@ const Location = class extends Position {
                 let nameEnter = this.enter.getName();
                 msg = !msg ? nameEnter : nameEnter + (option.isEnglish() ? ', ' : 'と') + msg;
             }
-        } else if (this.trap) {
+        } else if (this.found && this.trap) {
             let nameTrap = this.trap.getName();
             if (flag.examine && !this.hidden) {
                 msg = !msg ? nameTrap : nameTrap + (option.isEnglish() ? ', ' : 'と') + msg;

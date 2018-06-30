@@ -16,8 +16,15 @@ const minimap = {
     },
 
     draw(keyCode) {
-        if (!(keyCode === 65 || keyCode === 83 || keyCode === 67 || keyCode === 73 || keyCode === 77 && input.isShift ||
-            keyCode === 188 && input.isShift || keyCode === 190 && input.isShift || keyCode === 80 || keyCode === 84)) { //a,s,c,i,m,<,>,p,t
+        if (!(keyCode === 65 || //a all
+            keyCode === 83 || //s self
+            keyCode === 67 || //c char
+            keyCode === 73 || //i item
+            keyCode === 77 && input.isShift || //M map
+            keyCode === 188 && input.isShift || //<
+            keyCode === 190 && input.isShift || //>
+            keyCode === 80 || //p portal
+            keyCode === 84)) { //t trap
             return;
         }
 
@@ -32,57 +39,50 @@ const minimap = {
         if (rogue.blinded) return;
         for (let i = 0, l = map.coords.length; i < l; i++) {
             for (let loc of map.coords[i]) {
-                if ((loc.found || loc.detected) && loc.symbol !== '.' && (!loc.fighter || loc.fighter.detected || rogue.litMapIds[loc.x + ',' + loc.y])) {
-                    if (keyCode === 83 && (rogue.x != loc.x || rogue.y != loc.y) &&
-                        (loc.item['a'] || loc.fighter || loc.stairs || loc.enter || loc.trap)) { //s
-                        continue;
-                    } else if (keyCode === 67 && !loc.fighter &&
-                        (loc.item['a'] || loc.stairs || loc.enter || loc.trap)) { //c
-                        continue;
-                    } else if (keyCode === 73 && (loc.fighter || loc.stairs || loc.enter || loc.trap)) { //i
+                let type;
+                switch (keyCode) {
+                    case  83: //s
+                        if (loc.fighter && loc.fighter.id === ROGUE) type = SYMBOL_FIGHTER;
+                        break;
+                    case  67: //c
+                        if (loc.fighter && loc.fighter.isShowing()) type = SYMBOL_FIGHTER;
+                        break;
+                    case  73: //i
                         if (loc.item['a']) {
-                            let s = loc.item[EA[Object.keys(loc.item).length - 1]];
-                            this.symbol(loc.x, loc.y, s.symbol, s.color, s.identified || rogue.hallucinated ? s.shadow : 0,
-                                s.identified || rogue.hallucinated ? s.stroke : 0);
+                            let item = loc.item[EA[Object.keys(loc.item).length - 1]];
+                            if (item.isShowing()) type = SYMBOL_ITEM;
                         }
 
-                        continue;
-                    } else if ((keyCode === 188 || keyCode === 190) &&
-                        (loc.item['a'] || loc.fighter || loc.enter || loc.trap)) { //<,>
-                        if (loc.stairs && !loc.hidden) this.symbol(loc.x, loc.y, loc.stairs.symbol, loc.stairs.color, 0);
-                        continue;
-                    } else if (keyCode === 80 &&
-                        (loc.item['a'] || loc.fighter || loc.stairs || loc.enter || loc.trap)) { //p
-                        if (loc.enter && loc.enter.portal) this.symbol(loc.x, loc.y, loc.enter.symbol, loc.enter.color, 0, loc.enter.stroke);
-                        continue;
-                    } else if (keyCode === 84 &&
-                        (loc.item['a'] || loc.fighter || loc.stairs || loc.enter)) { //t
-                        if (loc.trap && !loc.hidden) this.symbol(loc.x, loc.y, loc.trap.symbol, loc.trap.color, 0, 0);
-                        continue;
-                    }
-
-                    this.symbol(loc.x, loc.y, loc.symbol, loc.color, loc.shadow, loc.stroke);
+                        break;
+                    case  188: //<
+                    case  190: //>
+                        if (loc.found && loc.stairs && !loc.hidden) type = SYMBOL_STAIRS;
+                        break;
+                    case  80: //p
+                        if (loc.found && loc.enter && loc.enter.portal) type = SYMBOL_ENTER;
+                        break;
+                    case  84: //t
+                        if (loc.found && loc.trap && !loc.hidden) type = SYMBOL_TRAP;
+                        break;
                 }
+
+                if (!type && keyCode !== 65) { //a
+                    if (!loc.found) {
+                        type = SYMBOL_BLANK;
+                    } else if (loc.wall) {
+                        type = SYMBOL_WALL;
+                    } else if (loc.door && !loc.hidden) {
+                        type = SYMBOL_DOOR;
+                    } else if (loc.enter && !loc.enter.portal && !rogue.cdl) {
+                        type = SYMBOL_ENTER;
+                    } else if (loc.floor) {
+                        type = SYMBOL_BLANK;
+                    }
+                }
+
+                loc.draw(true, type, this.fs);
             }
         }
-    },
-
-    symbol(x, y, symbol, color, shadow, stroke) {
-        let ctxMap = display.ctxes.map;
-        ctxMap.save();
-        ctxMap.fillStyle = color;
-        if (rogue.hallucinated && !shadow) ctxMap.shadowColor = colorList.purple;
-        if (shadow) ctxMap.shadowColor = shadow;
-        display.text({
-            ctx: ctxMap,
-            msg: symbol,
-            x: x + 1.5,
-            y: y + 0.5,
-            stroke: stroke,
-            fs: this.fs,
-        });
-
-        ctxMap.restore();
     },
 };
 
@@ -118,7 +118,7 @@ const map = {
                 if (town) {
                     if (!loc.wall) loc.floor = true;
                 } else if (!loc.floor && !loc.wall) {
-                    if (evalPercentage(1)) {
+                    if (evalPercentage(0.1)) {
                         creation.item({
                             type: 'coin',
                             tabId: 1,
@@ -127,18 +127,6 @@ const map = {
                             y: j,
                         });
                     }
-
-                    /*
-                    else if (evalPercentage(0.1)) {
-                        creation.item({
-                            type: 'gem',
-                            tabId: 1,
-                            position: LOCATION,
-                            x: i,
-                            y: j,
-                        });
-                    }
-                    */
 
                     loc.wall = WALL_HP;
                 }

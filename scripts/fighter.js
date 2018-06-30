@@ -3541,14 +3541,7 @@ const Fighter = class extends Material {
 
     drawOrErase(draw, move) {
         let loc = map.coords[this.x][this.y];
-        if (draw) {
-            loc.fighter = this;
-            loc.detected = this.detected;
-        } else {
-            loc.fighter = null;
-            loc.detected = false;
-		}
-		
+        loc.fighter = draw ? this : null;
         if (!draw && this.mod !== NORMAL && option.shadow.user) {
             map.coords[this.x][this.y + 1].draw();
             map.coords[this.x + 1][this.y].draw();

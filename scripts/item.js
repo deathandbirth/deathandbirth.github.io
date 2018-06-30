@@ -2251,7 +2251,7 @@ const Item = class extends Material {
     }
 
     static goldAmount(lvl) {
-        return 5 * (lvl + 1) + rndInt(10 * lvl)
+        return 50 * lvl + rndIntBet(1, 50 * (lvl + 1));
     }
 
     init(position, x, y, magic, lvl, uniqueId, starter, matBase, matId) {
@@ -2698,6 +2698,11 @@ const Item = class extends Material {
                 this.embeddedMax = 0;
             }
         }
+    }
+
+    isShowing() {
+        let loc = map.coords[this.x][this.y];
+        return !rogue.blinded && (loc.found && !loc.wall || this.detected);
     }
 
     static getType(magic) {
