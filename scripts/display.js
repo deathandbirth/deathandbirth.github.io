@@ -182,7 +182,7 @@ const display = {
     display.ctxes['buf'] = canvas.getContext('2d');
     let children = document.getElementById('canvas-container').children;
     for (let i = 0, l = children.length; i < l; i++) {
-        child = children[i];
+        let child = children[i];
         if (child.id === "msg-err") {
            child.style.display = 'none';
            continue; 
