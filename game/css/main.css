@@ -1,0 +1,162 @@
+body{
+	color:white;
+	background:#3A362D;
+	font-family: "'Yu Gothic', 'Hiragino Kaku Gothic Pro', 'Hiragino Kaku Gothic ProN', 'TakaoExGothic', 'Meiryo', 'MS PGothic', sans-serif";
+	font-size: 14px;
+	letter-spacing: 1px;
+}
+
+main{
+	padding-left:5px;
+}
+
+article {
+	margin-left: 10px;
+	margin-bottom: 50px;
+}
+
+h1 {
+	font-family: 'Stardos Stencil';
+	font-weight: 500;
+	font-size: 30px;
+}
+
+h2 {
+	margin: 20px 0 5px 0;
+	font-size: 16px;
+	font-weight: 500;
+}
+
+ul {
+	margin-top: 0;
+}
+
+ul li{
+	padding-top:5px;
+	padding-bottom:5px;
+}
+
+a {
+	color: #9BC8A1;
+}
+
+footer {
+	text-align: center;
+}
+
+#canvas-container{
+	background-color: black;
+	border: 2px solid #E8D296;
+	margin: 20px auto 50px;
+	position:relative;
+	overflow: hidden;
+}
+
+canvas {
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+
+canvas:nth-of-type(1) {
+	z-index: 0;
+}
+
+canvas:nth-of-type(2) {
+	z-index: 1;
+}
+
+canvas:nth-of-type(3) {
+	z-index: 2;
+}
+
+canvas:nth-of-type(4) {
+	z-index: 3;
+}
+
+canvas:nth-of-type(5) {
+	z-index: 4;
+}
+
+canvas:nth-of-type(6) {
+	z-index: 5;
+}
+
+#msg-err {
+	margin: 10px;
+	display: inline-block;
+}
+
+button:hover {
+	cursor: pointer;
+}
+
+#command-container,
+#recipe-container {
+	background-color: rgb(41, 38, 30);
+	margin-top: 20px;
+	padding-top: 10px;
+	padding-bottom: 5px;
+	overflow-x: hidden;
+}
+
+#command-container ul {
+	margin-bottom: 0;
+	display: -webkit-flex;
+	display: flex;
+	-webkit-flex-direction: column;
+	flex-direction: column;
+	-webkit-flex-wrap: wrap;
+	flex-wrap: wrap;
+	height: 550px;
+}
+
+#command-container ul > li {
+	margin-right: 30px;
+}
+
+#command-container span:first-child {
+	display: block;
+	float: left;
+}
+
+#command-container span:last-child {
+	display: block;
+	margin-left: 90px;
+}
+
+#recipe-container li:first-child {
+	list-style: none;
+}
+
+#recipe-container li:first-child .cost {
+	margin-left: 75px;
+}
+
+#recipe-container span:nth-of-type(1) {
+	position: absolute;
+	left: 60px;
+}
+
+#recipe-container span:nth-of-type(2) {
+	display: block;
+	float: left;
+	margin-left: 90px;
+}
+
+#recipe-container span:nth-of-type(3) {
+	display: block;
+	margin-left: 150px;
+}
+
+@media screen and (max-width: 850px) {
+	#command-container ul {
+		height: 820px;;
+	}
+}
+
+@media screen and (max-width: 600px) {
+	#command-container ul {
+		height: auto;
+	}
+}

@@ -1,0 +1,177 @@
+<!doctype html>
+<html>
+<head>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-102167526-4"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+
+		gtag('config', 'UA-102167526-4');
+	</script>
+
+	<meta charset="UTF-8">
+	<meta name="description" content="デスアンドバースはダンテの神曲とギリシャ神話を題材にした、PCブラウザで遊べる開発中のローグライクゲーム。">
+	<title>Death and Birth | デスアンドバース</title>
+	<link href="css/main.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Stardos+Stencil" rel="stylesheet">
+</head>
+<body>
+	<main>
+		<div id="canvas-container">
+			<span id="msg-err">※ お使いのブラウザではこのゲームは動作しません。chromeの最新版を推奨します。</span>
+			<canvas id="canvas-main"></canvas>
+			<canvas id="canvas-cur"></canvas>
+			<canvas id="canvas-msg"></canvas>
+			<canvas id="canvas-stats"></canvas>
+			<canvas id="canvas-map"></canvas>
+			<canvas id="canvas-inv"></canvas>
+		</div>
+		<article>
+			<button id="command-btn">コマンド一覧</button>
+			<button id="recipe-btn">レシピ一覧</button>
+			<div id="command-container" style="display: none">
+				<ul>
+					<li><span>方向キー</span><span>移動</span></li>
+					<li><span>h</span><span>左移動</span></li>
+					<li><span>j</span><span>下移動</span></li>
+					<li><span>k</span><span>上移動</span></li>
+					<li><span>l</span><span>右移動</span></li>
+					<li><span>y</span><span>左上移動</span></li>
+					<li><span>b</span><span>左下移動</span></li>
+					<li><span>u</span><span>右上移動</span></li>
+					<li><span>n</span><span>右下移動</span></li>
+					<li><span>i</span><span>持物一覧</span></li>
+					<li><span>e</span><span>装備一覧</span></li>
+					<li><span>w</span><span>装備する</span></li>
+					<li><span>T</span><span>装備を外す</span></li>
+					<li><span>g</span><span>アイテムを拾う</span></li>
+					<li><span>d</span><span>アイテムを落とす</span></li>
+					<li><span>o</span><span>ドアを開ける</span></li>
+					<li><span>c</span><span>ドアを閉める</span></li>
+					<li><span>s</span><span>捜索する</span></li>
+					<li><span>r</span><span>巻物を読む</span></li>
+					<li><span>q</span><span>薬を飲む</span></li>
+					<li><span>z</span><span>魔法棒を振る</span></li>
+					<li><span>p</span><span>アイテムを詰める</span></li>
+					<li><span>E</span><span>食事する</span></li>
+					<li><span>Q</span><span>ゲームを放棄する</span></li>
+					<li><span>Esc</span><span>取り消す</span></li>
+					<li><span>x</span><span>探査する</span></li>
+					<li><span>a</span><span>しおりを挟む</span></li>
+					<li><span>G</span><span>スキル/能力値を得る</span></li>
+					<li><span>f</span><span>射る</span></li>
+					<li><span>t</span><span>アイテムを投げる</span></li>
+					<li><span>S</span><span>装備を持ち替える</span></li>
+					<li><span>C</span><span>キャラ詳細</span></li>
+					<li><span>F</span><span>補給する</span></li>
+					<li><span>R</span><span>休む</span></li>
+					<li><span>A</span><span>錬金術</span></li>
+					<li><span>1-9</span><span>アイテムを使う</span></li>
+					<li><span>F1-F12</span><span>スキルを使う</span></li>
+					<li><span>Alt+方向</span><span>その場で攻撃する/掘る</span></li>
+					<li><span>Shift+方向</span><span>走る</span></li>
+					<li><span>.</span><span>踏む</span></li>
+					<li><span>&gt;</span><span>階段を降りる</span></li>
+					<li><span>&lt;</span><span>階段を昇る</span></li>
+					<li><span>=</span><span>オプション</span></li>
+					<li><span>?</span><span>コマンドを表示</span></li>
+					<li><span>Ctrl+p</span><span>メッセージ履歴</span></li>
+					<li><span>Ctrl+r</span><span>再描写</span></li>
+					<li><span>Ctrl+m</span><span>消音</span></li>
+					<li><span>Ctrl+s</span><span>記録する</span></li>
+					<li><span>Ctrl+d</span><span>アイテムを破壊する</span></li>
+					<li><span>Ctrl+x</span><span>記録して終了する</span></li>
+					<li><span>Ctrl+v</span><span>ゲームのバージョン</span></li>
+				</ul>
+			</div>
+			<div id="recipe-container" style="display: none">
+				<ul>
+					<li><span class="name">名称</span><span class="cost">MP(毎)</span><span class="recipe">レシピ</span></li>
+					<li><span class="name">錬金</span><span class="cost">5</span><span class="recipe">ジュエル [1-4] -> 硬貨</span></li>
+					<li><span class="name">松明</span><span class="cost">1</span><span class="recipe">松明 [2-4] -> 松明 [期間 計]</span></li>
+					<li><span class="name">ランプ</span><span class="cost">1</span><span class="recipe">ランプまたはランタン + オイル [2-4] -> ランプまたはランタン [期間 計]</span></li>
+					<li><span class="name">埋め込み</span><span class="cost">5</span><span class="recipe">埋め込み可能な装備品 + 同素材・ジュエル・オーブ -> 装備品 [素材・ジュエル・オーブ]</span></li>
+					<li><span class="name">取り外し</span><span class="cost">1</span><span class="recipe">装備品 [素材・ジュエル・オーブ] -> 埋め込み可能な装備品 + 同素材・ジュエル・オーブ</span></li>
+					<li><span class="name">魔法棒</span><span class="cost">1</span><span class="recipe">魔法棒 [2-4] -> 魔法棒 [充填 計]</span></li>
+					<li><span class="name">充填書</span><span class="cost">1</span><span class="recipe">充填書 + 巻物 -> 充填書 [充填 計]</span></li>
+					<li><span class="name">特大回復</span><span class="cost">10</span><span class="recipe">回復の薬 [3] -> 特大回復の薬</span></li>
+					<li><span class="name">拡張</span><span class="cost">30</span><span class="recipe">ノーマルの埋め込み不可な装備品 + ジュエル + オーブ -> 埋め込み可能な装備品</span></li>
+					<li><span class="name">素材化</span><span class="cost">50</span><span class="recipe">マジックまたはレアの埋め込み不可な装備品 + ジュエル + オーブ + 同素材 -> 素材</span></li>
+				</ul>
+			</div>
+			<h2>攻撃</h2>
+			<ul>
+				<li>敵に対して方向キーを押すとそれが攻撃動作となります。</li>
+				<li>敵を攻撃するとその敵を標的とし右下に枠が表示されます。</li>
+				<li>'x'コマンドでその敵にカーソルを合わせ、't'を押すことでも標的となり、'r'を押すと標的を解除します。</li>
+			</ul>
+			<h2>ダイス</h2>
+			<ul>
+				<li>武器やスキルに'2d6'などの表示がありますが、これは1から6まで書かれた6面のダイスを2個振るという操作の略記です。</li>
+				<li>攻撃する毎にこの操作を行い、その出目の合計値を、与えるダメージの基礎値として決定しています。</li>
+				<li>Avg(average)の表記はこの操作の期待値です。</li>
+			</ul>
+			<h2>アイテム</h2>
+			<ul>
+				<li>'p'コマンドより、画面下部に表示される枠に詰めたアイテムは、その枠に対応する数字を押すことで使用します。</li>
+				<li>この時、詰めたアイテムが矢弾で、それに対応する射出武器を装備していれば、標的とした敵を攻撃し、標的が設定されていなければ自動で近くの敵に対して攻撃します。</li>
+			</ul>
+			<h2>スキル</h2>
+			<ul>
+				<li>スキルポイントを消費して魔法書から取得し、そのスキルが書かれた魔法書を所持していることで使用できます。</li>
+				<li>'a'コマンドより設定したスキルは、その対応するキー(F1-F12)を押すことで使用します。</li>
+				<li>メインに設定したスキルは、'alt'を押しながら方向キーを押すことで、その方向に対してスキルを使用します。</li>
+			</ul>
+			<h2>射出武器</h2>
+			<ul>
+				<li>スキルと同様に、射出武器を装備していれば、'alt'を押しながら方向キーを押すことで、その方向に対して矢弾を発射します。</li>
+				<li>メインにスキルが設定されてあれば、スキルの使用が優先されます。</li>
+			</ul>
+			<h2>錬金術</h2>
+			<ul>
+				<li><s>レシピを所持していることでアイテム合成ができます。</s></li>
+				<li><s>合成の種類は'I'コマンドからレシピを選択することで一覧が確認できます。</s></li>
+				<li>v0.009より各レシピを個別のアイテムとし、入手した際にそれを読み上げる事で、アイテム合成が可能となります。</li>
+				<li>また、合成時にはレシピに対応したMPを消費します。</li>
+				<li>取得したレシピの一覧は、'A'による合成選択中に'Ctrl + r'と押すことで確認出来ます。</li>
+			</ul>
+			<h2>充填書</h2>
+			<ul>
+				<li>白紙の充填書に巻物を1種類合成すると、その巻物に対応した充填書が作成されます。</li>
+				<li>巻物と同じように使用でき、その毎に充填数を消費します。</li>
+				<li>対応する充填書と巻物、または充填書同士を合成することで充填数が増加しますが、重量が増えるなどのペナルティはありません。</li>
+			</ul>
+			<h2>素材</h2>
+			<ul>
+				<li>名前に修飾詞のついた敵を倒すと、その敵に対応した素材を落とすことがあります。</li>
+				<li>装備品に埋め込み数の空きがあり、同じ種類の素材であれば埋め込むことができます。</li>
+			</ul>
+			<h2><s>宝石</s><small style="color: yellow"> 宝石の代わりにジュエルを導入しました。（v0.006）</small></h2>
+			<ul>
+				<li>素材とは違い、空きがあれば、どんな装備品にも埋め込めます。</li>
+			</ul>
+			<h2>エラー</h2>
+			<ul>
+				<li>ゲーム内でエラーが発生すると、それ以後はデータが記録されません。</li>
+				<li>ブラウザを再読み込みすると、自動記録や'ctrl+s'で記録したデータまで巻き戻ります。</li>
+				<li>このゲームのバージョン更新時に、お使いのブラウザで頻繁にエラーが発生する場合、キャッシュやクッキー等のサイトデータを消去すると、解消される場合があります。</li>
+			</ul>
+		</article>
+		<h1>Death and Birth</h1>
+		<article>
+			<p>ジャンル:&ensp;PCブラウザゲーム・ローグライク</p>
+			<p>対応ブラウザ:&ensp;<a href="https://www.google.co.jp/chrome" target="_blank">Chrome 最新版</a></p>
+			<p>ソースコード:&ensp;<a href="https://github.com/deathandbirth/deathandbirth.github.io" target="_blank">Github</a></p>
+			<p>BGM・SE:&ensp;<a href="https://ringil-music.com" target="_blank">Ringil</a></p>
+			<p>更新内容:&ensp;<a href="https://ringil-blog.info/" target="_blank">Blog</a></p>
+			<p><a href="../">LP（ランディングページ）</a></p>
+		</article>
+		<small>※ブラウザ読み込み時にタイトル曲を再生しないようにしました。（v0.009）</small>
+	</main>
+	<footer><p>(c) Death and Birth 2018</p></footer>
+	<script src="site.js?0630"></script>
+	<script src="main.js?0630"></script>
+</body>
+</html>

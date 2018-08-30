@@ -1,166 +1,291 @@
 <!doctype html>
 <html>
 <head>
-	<meta charset="UTF-8">
-	<meta name="description" content="ダンテの神曲やギリシャ神話を題材にした、開発中のローグライク・ブラウザゲーム">
-	<title>Death and Birth | デスアンドバース</title>
-	<link href="css/main.css" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css?family=Stardos+Stencil" rel="stylesheet">
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-102167526-4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-102167526-4');
+  </script>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Top | Death and Birth β</title>
+  <meta name="description" content="デスアンドバースはダンテの神曲とギリシャ神話を題材にした、PCブラウザで遊べる開発中のローグライクゲーム。">
+
+  <link href="https://fonts.googleapis.com/css?family=Stardos+Stencil" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Crimson+Text" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/css/lightbox.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css" />
+  <link rel="stylesheet" href="css/main.css">
+  
+   <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
 </head>
 <body>
-	<main>
-		<div id="canvas-container">
-			<span id="msg-err">※ お使いのブラウザではこのゲームは動作しません。chromeの最新版を推奨します。</span>
-			<canvas id="canvas-main"></canvas>
-			<canvas id="canvas-cur"></canvas>
-			<canvas id="canvas-msg"></canvas>
-			<canvas id="canvas-stats"></canvas>
-			<canvas id="canvas-map"></canvas>
-			<canvas id="canvas-inv"></canvas>
-		</div>
-		<article>
-			<button id="command-btn">コマンド一覧</button>
-			<button id="recipe-btn">レシピ一覧</button>
-			<div id="command-container" style="display: none">
-				<ul>
-					<li><span>方向キー</span><span>移動</span></li>
-					<li><span>h</span><span>左移動</span></li>
-					<li><span>j</span><span>下移動</span></li>
-					<li><span>k</span><span>上移動</span></li>
-					<li><span>l</span><span>右移動</span></li>
-					<li><span>y</span><span>左上移動</span></li>
-					<li><span>b</span><span>左下移動</span></li>
-					<li><span>u</span><span>右上移動</span></li>
-					<li><span>n</span><span>右下移動</span></li>
-					<li><span>i</span><span>持物一覧</span></li>
-					<li><span>e</span><span>装備一覧</span></li>
-					<li><span>w</span><span>装備する</span></li>
-					<li><span>T</span><span>装備を外す</span></li>
-					<li><span>g</span><span>アイテムを拾う</span></li>
-					<li><span>d</span><span>アイテムを落とす</span></li>
-					<li><span>o</span><span>ドアを開ける</span></li>
-					<li><span>c</span><span>ドアを閉める</span></li>
-					<li><span>s</span><span>捜索する</span></li>
-					<li><span>r</span><span>巻物を読む</span></li>
-					<li><span>q</span><span>薬を飲む</span></li>
-					<li><span>z</span><span>魔法棒を振る</span></li>
-					<li><span>p</span><span>アイテムを詰める</span></li>
-					<li><span>E</span><span>食事する</span></li>
-					<li><span>Q</span><span>ゲームを放棄する</span></li>
-					<li><span>Esc</span><span>取り消す</span></li>
-					<li><span>x</span><span>探査する</span></li>
-					<li><span>a</span><span>しおりを挟む</span></li>
-					<li><span>G</span><span>スキル/能力値を得る</span></li>
-					<li><span>f</span><span>射る</span></li>
-					<li><span>t</span><span>アイテムを投げる</span></li>
-					<li><span>S</span><span>装備を持ち替える</span></li>
-					<li><span>C</span><span>キャラ詳細</span></li>
-					<li><span>F</span><span>補給する</span></li>
-					<li><span>R</span><span>休む</span></li>
-					<li><span>A</span><span>錬金術</span></li>
-					<li><span>1-9</span><span>アイテムを使う</span></li>
-					<li><span>F1-F12</span><span>スキルを使う</span></li>
-					<li><span>Alt+方向</span><span>その場で攻撃する/掘る</span></li>
-					<li><span>Shift+方向</span><span>走る</span></li>
-					<li><span>.</span><span>踏む</span></li>
-					<li><span>&gt;</span><span>階段を降りる</span></li>
-					<li><span>&lt;</span><span>階段を昇る</span></li>
-					<li><span>=</span><span>オプション</span></li>
-					<li><span>?</span><span>コマンドを表示</span></li>
-					<li><span>Ctrl+p</span><span>メッセージ履歴</span></li>
-					<li><span>Ctrl+r</span><span>再描写</span></li>
-					<li><span>Ctrl+m</span><span>消音</span></li>
-					<li><span>Ctrl+s</span><span>記録する</span></li>
-					<li><span>Ctrl+d</span><span>アイテムを破壊する</span></li>
-					<li><span>Ctrl+x</span><span>記録して終了する</span></li>
-					<li><span>Ctrl+v</span><span>ゲームのバージョン</span></li>
-				</ul>
-			</div>
-			<div id="recipe-container" style="display: none">
-				<ul>
-					<li><span class="name">名称</span><span class="cost">MP(毎)</span><span class="recipe">レシピ</span></li>
-					<li><span class="name">錬金</span><span class="cost">5</span><span class="recipe">ジュエル [1-4] -> 硬貨</span></li>
-					<li><span class="name">松明</span><span class="cost">1</span><span class="recipe">松明 [2-4] -> 松明 [期間 計]</span></li>
-					<li><span class="name">ランプ</span><span class="cost">1</span><span class="recipe">ランプまたはランタン + オイル [2-4] -> ランプまたはランタン [期間 計]</span></li>
-					<li><span class="name">埋め込み</span><span class="cost">5</span><span class="recipe">埋め込み可能な装備品 + 同素材・ジュエル・オーブ -> 装備品 [素材・ジュエル・オーブ]</span></li>
-					<li><span class="name">取り外し</span><span class="cost">1</span><span class="recipe">装備品 [素材・ジュエル・オーブ] -> 埋め込み可能な装備品 + 同素材・ジュエル・オーブ</span></li>
-					<li><span class="name">魔法棒</span><span class="cost">1</span><span class="recipe">魔法棒 [2-4] -> 魔法棒 [充填 計]</span></li>
-					<li><span class="name">充填書</span><span class="cost">1</span><span class="recipe">充填書 + 巻物 -> 充填書 [充填 計]</span></li>
-					<li><span class="name">特大回復</span><span class="cost">10</span><span class="recipe">回復の薬 [3] -> 特大回復の薬</span></li>
-					<li><span class="name">拡張</span><span class="cost">30</span><span class="recipe">ノーマルの埋め込み不可な装備品 + ジュエル + オーブ -> 埋め込み可能な装備品</span></li>
-					<li><span class="name">素材化</span><span class="cost">50</span><span class="recipe">マジックまたはレアの埋め込み不可な装備品 + ジュエル + オーブ + 同素材 -> 素材</span></li>
-				</ul>
-			</div>
-			<h2>攻撃</h2>
-			<ul>
-				<li>敵に対して方向キーを押すとそれが攻撃動作となります。</li>
-				<li>敵を攻撃するとその敵を標的とし右下に枠が表示されます。</li>
-				<li>'x'コマンドでその敵にカーソルを合わせ、't'を押すことでも標的となり、'r'を押すと標的を解除します。</li>
-			</ul>
-			<h2>ダイス</h2>
-			<ul>
-				<li>武器やスキルに'2d6'などの表示がありますが、これは1から6まで書かれた6面のダイスを2個振るという操作の略記です。</li>
-				<li>攻撃する毎にこの操作を行い、その出目の合計値を、与えるダメージの基礎値として決定しています。</li>
-				<li>Avg(average)の表記はこの操作の期待値です。</li>
-			</ul>
-			<h2>アイテム</h2>
-			<ul>
-				<li>'p'コマンドより、画面下部に表示される枠に詰めたアイテムは、その枠に対応する数字を押すことで使用します。</li>
-				<li>この時、詰めたアイテムが矢弾で、それに対応する射出武器を装備していれば、標的とした敵を攻撃し、標的が設定されていなければ自動で近くの敵に対して攻撃します。</li>
-			</ul>
-			<h2>スキル</h2>
-			<ul>
-				<li>スキルポイントを消費して魔法書から取得し、そのスキルが書かれた魔法書を所持していることで使用できます。</li>
-				<li>'a'コマンドより設定したスキルは、その対応するキー(F1-F12)を押すことで使用します。</li>
-				<li>メインに設定したスキルは、'alt'を押しながら方向キーを押すことで、その方向に対してスキルを使用します。</li>
-			</ul>
-			<h2>射出武器</h2>
-			<ul>
-				<li>スキルと同様に、射出武器を装備していれば、'alt'を押しながら方向キーを押すことで、その方向に対して矢弾を発射します。</li>
-				<li>メインにスキルが設定されてあれば、スキルの使用が優先されます。</li>
-			</ul>
-			<h2>錬金術</h2>
-			<ul>
-				<li><s>レシピを所持していることでアイテム合成ができます。</s></li>
-				<li><s>合成の種類は'I'コマンドからレシピを選択することで一覧が確認できます。</s></li>
-				<li>v0.009より各レシピを個別のアイテムとし、入手した際にそれを読み上げる事で、アイテム合成が可能となります。</li>
-				<li>また、合成時にはレシピに対応したMPを消費します。</li>
-				<li>取得したレシピの一覧は、'A'による合成選択中に'Ctrl + r'と押すことで確認出来ます。</li>
-			</ul>
-			<h2>充填書</h2>
-			<ul>
-				<li>白紙の充填書に巻物を1種類合成すると、その巻物に対応した充填書が作成されます。</li>
-				<li>巻物と同じように使用でき、その毎に充填数を消費します。</li>
-				<li>対応する充填書と巻物、または充填書同士を合成することで充填数が増加しますが、重量が増えるなどのペナルティはありません。</li>
-			</ul>
-			<h2>素材</h2>
-			<ul>
-				<li>名前に修飾詞のついた敵を倒すと、その敵に対応した素材を落とすことがあります。</li>
-				<li>装備品に埋め込み数の空きがあり、同じ種類の素材であれば埋め込むことができます。</li>
-			</ul>
-			<h2><s>宝石</s><small style="color: yellow"> 宝石の代わりにジュエルを導入しました。（v0.006）</small></h2>
-			<ul>
-				<li>素材とは違い、空きがあれば、どんな装備品にも埋め込めます。</li>
-			</ul>
-			<h2>エラー</h2>
-			<ul>
-				<li>ゲーム内でエラーが発生すると、それ以後はデータが記録されません。</li>
-				<li>ブラウザを再読み込みすると、自動記録や'ctrl+s'で記録したデータまで巻き戻ります。</li>
-				<li>このゲームのバージョン更新時に、お使いのブラウザで頻繁にエラーが発生する場合、キャッシュやクッキー等のサイトデータを消去すると、解消される場合があります。</li>
-			</ul>
-		</article>
-		<h1>Death and Birth</h1>
-		<article>
-			<p>ジャンル:&ensp;PCブラウザゲーム・ローグライク</p>
-			<p>対応ブラウザ:&ensp;<a href="https://www.google.co.jp/chrome" target="_blank">Chrome 最新版</a></p>
-			<p>ソースコード:&ensp;<a href="https://github.com/deathandbirth/deathandbirth.github.io" target="_blank">Github</a></p>
-			<p>BGM・SE:&ensp;<a href="https://ringil-music.com" target="_blank">Ringil</a></p>
-			<p>更新内容:&ensp;<a href="https://ringil-blog.info/" target="_blank">Blog</a></p>
-		</article>
-		<small>※ブラウザ読み込み時にタイトル曲を再生しないようにしました。（v0.009）</small>
-	</main>
-	<footer><p>(c) Death and Birth 2018</p></footer>
-	<script src="site.js?0630"></script>
-	<script src="main.js?0630"></script>
+
+  <nav class="navbar fixed-top navbar-expand-md navbar-transparent">
+    <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+
+    <a class="navbar-brand" href="#header">DnB</a>
+
+    <div class="music-box">
+      <button class="btn music-btn" type="button"><i class="fas fa-volume-off"></i></button>
+      <span class="popup">Sound On</span>
+      <audio src="music/title.mp3" preload="auto" loop></audio>
+    </div>
+
+    <div class="collapse navbar-collapse" id="navbar">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="#header">home<span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#info">info</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#system">system</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#spec">spec</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <header id="header">
+    <div class="header-bg"></div>
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="text-box">
+        <h1>Death and Birth<span style="color: tomato;"> β</span></h1>
+        <p>デスアンドバースはダンテの神曲とギリシャ神話を題材にした、<br class="hp">PCブラウザで遊べる開発中のローグライクゲーム。</p>
+        <div class="link-box animated">
+          <a class="game-link" href="game/index.html">Pl<span class="play-at animated">a</span>y Now</a>
+        </div>
+      </div> 
+    </div>
+  </header>
+
+  <div class="section section-story">
+    <div class="overlay"></div>
+    <div class="container">
+      <div class="text-box">
+        <p class="animated">人生の道半ばで<br>
+        正道を踏みはずした私が<br>
+        目をさました時は<br class="sp">暗い森の中にいた。</p>
+        <p class="animated">その苛烈で荒涼とした<br class="sp">峻厳な森が<br>
+        いかなるものであったか、<br class="sp">口にするのも辛い。<br>
+        思い返しただけでも<br class="sp">ぞっとする。</p>
+        <p class="animated">その苦しさにもう<br class="sp">死なんばかりであった。<br>
+        しかしそこでめぐりあった<br class="sp">幸せを語るためには、<br>
+        そこで目撃した二、三の事を<br class="sp">まず話そうと思う。</p>
+        <small class="animated article-sub">神曲「地獄篇」<br class="sp"> ダンテ・アリギエーリ著<br class="sp"> 平川祐弘訳</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-container">
+    <div class="section section-news" id="info">
+      <div class="container">
+        <h2>Information</h2>
+        <div class="news-box animated">
+          <ul>
+            <li><time datetime="2018-06-30">2018-06-30</time>
+              <a href="https://ringil-blog.info/game/deathandbirth/854/" target="_blank">アップデート v0.009 | UIの調整</a></li>
+            <li><time datetime="2018-05-27">2018-05-27</time>
+              <a href="https://ringil-blog.info/game/deathandbirth/847/" target="_blank">アップデート v0.009 | 合成方法の見直し</a></li>
+            <li><time datetime="2018-03-30">2018-03-30</time>
+              <a href="https://ringil-blog.info/game/deathandbirth/818/" target="_blank">アップデート v0.008 | 装備品の素材化</a></li>
+            <li><time datetime="2018-03-22">2018-03-22</time>
+              <a href="https://ringil-blog.info/game/deathandbirth/809/" target="_blank">アップデート v0.007 | オーブの導入</a></li>
+            <li><time datetime="2018-03-11">2018-03-11</time>
+              <a href="https://ringil-blog.info/game/deathandbirth/797/" target="_blank">アップデート v0.006 | ジュエルの導入</a></li>
+            <li><time datetime="2018-02-25">2018-02-25</time>
+              <a href="https://ringil-blog.info/game/deathandbirth/775/" target="_blank">アップデート v0.005 | 素材に固有の属性値を付与・角類追加</a></li>
+            <li><time datetime="2018-02-12">2018-02-12</time>
+              <a href="https://ringil-blog.info/game/deathandbirth/752/" target="_blank">アップデート v0.004 | ＠の初期位置・光源装備</a></li>
+            <li><time datetime="2018-02-05">2018-02-05</time>
+              <a href="https://ringil-blog.info/game/deathandbirth/731/" target="_blank">リリース v0.003 | フォントの変更・解像度の追加</a></li>
+          </ul>
+          <div class="news-list">
+            <a href="https://ringil-blog.info/category/game/deathandbirth/" target="_blank">一覧へ</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section section-system" id="system">
+      <div class="container">
+        <h2>System</h2>
+        <hr class="section-line">
+        <div class="system-box">
+          <h3 class="animated">遊び方</h3>
+          <div class="row">
+            <div class="col-md-7">
+              <div class="img-box left animated">
+                <a href="img/dnb_dungeon.png" data-lightbox="system" data-title="Screenshot ダンジョン探索">
+                  <img src="img/dnb_dungeon.png" alt="Screenshot ダンジョン探索">
+                </a>
+              </div>
+            </div>
+            <div class="col-md-5">
+              <div class="text-box animated">
+                <p>このゲームはキーボードで操作し、ターン制で進みます。
+                街とダンジョンを行き来しながら、プレイヤーである＠を強化し最深部を目指します。
+                ＠死亡時には初期状態に戻り、再び街からスタートします。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr class="section-line animated">
+        <div class="system-box">
+          <h3 class="animated">レアリティ</h3>
+          <div class="row">
+            <div class="col-md-7 order-md-2">
+              <div class="img-box right animated">
+                <a href="img/dnb_rare_item.png" data-lightbox="system" data-title="Screenshot レアアイテム">
+                  <img src="img/dnb_rare_item.png" alt="Screenshot レアアイテム">
+                </a>
+              </div>
+            </div>
+            <div class="col-md-5 order-md-1">
+              <div class="text-box animated">
+                <p>アイテムやモンスターにはノーマル・マジック・レア・ユニークといったレアリティがあり、接辞や色で区別されます。
+                マッジクとレアは選ばれた接辞によってランダムに、またユニークは固定の属性値が付与されます。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr class="section-line animated">
+        <div class="system-box">
+          <h3 class="animated">埋め込み</h3>
+          <div class="row">
+            <div class="col-md-7">
+              <div class="img-box left animated">
+                <a href="img/dnb_material.png" data-lightbox="system" data-title="Screenshot モンスターからドロップした素材">
+                  <img src="img/dnb_material.png" alt="Screenshot モンスターからドロップした素材">
+                </a>
+              </div>
+            </div>
+            <div class="col-md-5">
+              <div class="text-box animated">
+                <p>素材や、ジュエル、オーブなどのアイテムは装備品に合成することでその属性値が付与されます。
+                装備品には埋め込み数が設定されており、ジュエルであればどの装備品にも、素材であれば同素材の装備品と合成出来ます。
+                オーブはジュエルと同じようにどの装備品にも合成出来ますが、装備品の種類によって付与される属性値も異なります。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr class="section-line animated">
+        <div class="system-box">
+          <h3 class="animated">錬金術</h3>
+          <div class="row">
+            <div class="col-md-7 order-md-2">
+              <div class="img-box right animated">
+                <a href="img/dnb_synthesis.png" data-lightbox="system" data-title="Screenshot 充填書の合成">
+                  <img src="img/dnb_synthesis.png" alt="Screenshot 充填書の合成">
+                </a>
+              </div>
+            </div>
+            <div class="col-md-5 order-md-1">
+              <div class="text-box animated">
+                <p>ダンジョンから入手したレシピによりアイテム合成が可能となります。
+                レシピに応じたMPを消費し、装備品の素材化といったものから、複数の巻物を充填書にまとめたりするなど様々な用途があります。</p>
+                <p></p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr class="section-line animated">
+        <div class="system-box">
+          <h3 class="animated">スキル</h3>
+          <div class="row">
+            <div class="col-md-7">
+              <div class="img-box left animated">
+                <a href="img/dnb_skill.png" data-lightbox="system" data-title="Screenshot 習得したスキル一覧">
+                  <img src="img/dnb_skill.png" alt="Screenshot 習得したスキル一覧">
+                </a>
+              </div>
+            </div>
+            <div class="col-md-5">
+              <div class="text-box animated">
+                <p>魔法書を入手しポイントを割り振る事でスキルを習得します。
+                近接・遠隔・各元素を系統とし、それらのスキルを自由に組み合わせる事が出来ます。
+                スキルを習得した際に、その系統のシナジー値が得られ、この値により同系統のスキルの効果が増したり、より高度なスキルを習得出来るようになります。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr class="section-line animated">
+        <div class="system-box">
+          <h3 class="animated">リスペック</h3>
+          <div class="row">
+            <div class="col-md-7 order-md-2">
+              <div class="img-box right animated">
+                <a href="img/dnb_lethe.png" data-lightbox="system" data-title="Screenshot リスペック">
+                  <img src="img/dnb_lethe.png" alt="Screenshot リスペック">
+                </a>
+              </div>
+            </div>
+            <div class="col-md-5 order-md-1">
+              <div class="text-box animated">
+                <p>ダンジョンで1度のみ入手出来る「レテの水」というアイテムを使用する事で、自身の能力値や習得したスキルをリセットします。
+                このリセットによりステータスポイントやスキルポイントの振り直しが出来ます。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr class="section-line animated">
+      </div>
+    </div>
+
+    <div class="section section-spec" id="spec">
+      <div class="container">
+        <h2>Spec</h2>
+        <div class="spec-box">
+          <div class="text-box order-md-2 animated">
+            <ul class="spec-list">
+              <li><span>タイトル</span><span> : デスアンドバース β版</span></li>
+              <li><span>ジャンル</span><span> : ローグライク</span></li>
+              <li><span>対応機種</span><span> : PCブラウザ</span></li>
+              <li><span>対応ブラウザ</span><span> : Chrome 最新版</span></li>
+            </ul>
+          </div>
+          <div class="link-box orde-md-1 animated">
+            <a class="game-link" href="game/index.html">Pl<span class="play-at animated">a</span>y Now</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="nav-back-box">
+        <a class="nav-back" href="#header">Top</a>
+      </div>
+      <p class="copyright">&copy; Death and Birth All Rights Reserved. <br class="sp">Composed by <a href="https://ringil-music.com/" target="_blank">Ringil</a>.</p>
+    </footer>
+  </div><!-- bg-container -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/js/lightbox.min.js" type="text/javascript"></script>
+  <script src="js/jquery.inview.min.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>
