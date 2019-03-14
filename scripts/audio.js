@@ -54,6 +54,8 @@ const audio = {
         disintegrate: new Audio('sound/annihilate.wav'),
         encourage: new Audio('sound/enchant.wav'),
         hallucinate: new Audio('sound/hallucinate.wav'),
+        eat: new Audio('sound/eat.wav'),
+        shoot: new Audio('sound/shoot.wav'),
     },
 
     init() {

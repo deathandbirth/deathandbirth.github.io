@@ -5036,6 +5036,7 @@ const Fighter = class extends Material {
                 skill.type === 'spell' ?
                 `${nameChar}${name}を唱えた` :
                 `${nameChar}${name}を放った`);
+            if (skill.type === 'missile') audio.playSound('shoot');
             audio.playSound(skill.element);
         } else if (flag.scroll) {
             nameSkill = this.ci.nameSkill;
@@ -5047,7 +5048,9 @@ const Fighter = class extends Material {
                 `Threw ${name}` :
                 `${name}を投げた`);
                 audio.playSound('throw');
-		}
+		} else if (flag.arrow) {
+            audio.playSound('shoot');
+        }
 		
         let thrown = flag.arrow || flag.throw;
         if (flag.zap && !w.charges) {

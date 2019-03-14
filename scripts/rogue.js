@@ -895,6 +895,7 @@ const Rogue = class extends Fighter {
         message.draw(option.isEnglish() ?
             `Ate ${name}` :
             `${name}を食べた`);
+        audio.playSound('eat');
         this.haveCast(item.nameSkill, item.skillLvl, this);
         this.deleteItem(item, 1);
         if (!boxItem) {
@@ -2403,7 +2404,7 @@ const Rogue = class extends Fighter {
                         `You studied ${name} deeply` :
                         `${name}の知識を深めた`);
 				}
-				
+                
                 this.skillPoints -= i;
                 this.skill[key].lvl += i;
                 this.gainSynerzy(skill, i);
