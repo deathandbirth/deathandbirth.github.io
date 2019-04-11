@@ -61,7 +61,7 @@ const display = {
             } else if (key === 'map') {
                 ctx.font = '10px ' + fontStyle;
             } else if (key === 'buf') {
-                ctx.font = fs - 2  + 'px ' + FONT_STYLE[ENG];
+                ctx.font = fs - 1  + 'px ' + FONT_STYLE[ENG];
             } else {
                 ctx.font = fs - 2 + 'px ' + fontStyle;
             }
@@ -98,6 +98,10 @@ const display = {
 
         ctx.fillText(...args);
         ctx.font = fs;
+
+        if (ctx.canvas.id === "canvas-main") {
+            
+        }
     },
 
     rect({
@@ -158,6 +162,7 @@ const display = {
     },
 
     clearAll() {
+        message.clearFixed();
         for (let i in this.ctxes) {
             this.clearOne(this.ctxes[i], i === 'buf');
         };

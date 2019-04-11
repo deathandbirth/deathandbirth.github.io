@@ -2356,6 +2356,27 @@ const Fighter = class extends Material {
                 this.boxes[i] = null;
             }
         }
+
+        //HP Bar Color
+        this.sleeping = 0;
+        this.paralyzed = 0;
+        this.confused = 0;
+        this.blinded = 0;
+        this.hallucinated = 0;
+        this.canceled = 0;
+        this.infected = 0;
+        this.poisoned = 0;
+
+        //Stats Color
+        this.expBuff = 0;
+
+        //Condition Display
+        this.seeInvisible = 0;
+        this.invisibility = 0;
+        this.ecco = 0;
+        this.enchantSelfDur = 0;
+        this.venomDur = 0;
+        this.confusing = 0;
     }
 
     initSynerzy() {
@@ -3542,10 +3563,10 @@ const Fighter = class extends Material {
     drawOrErase(draw, move) {
         let loc = map.coords[this.x][this.y];
         loc.fighter = draw ? this : null;
-        if (!draw && this.mod !== NORMAL && option.shadow.user) {
-            map.coords[this.x][this.y + 1].draw();
-            map.coords[this.x + 1][this.y].draw();
-		}
+        // if (!draw && this.mod !== NORMAL && option.shadow.user) {
+        //     map.coords[this.x][this.y + 1].draw();
+        //     map.coords[this.x + 1][this.y].draw();
+		// }
 		
         loc.draw();
         if (this.id === ROGUE && draw) {
@@ -3584,440 +3605,50 @@ const Fighter = class extends Material {
     }
 
     showInventory(place, a) {
+        let list, dr, enter;
         switch (place) {
             case P_PACK:
-                inventory.show(this.pack, RIGHT, a, place);
-                break;
-            case P_EQUIPMENT:
-                this.equipmentList(BP[a]);
+                list = this.pack;
+                dr = RIGHT; 
                 break;
             case P_FLOOR:
-                inventory.show(map.coords[this.x][this.y].item, RIGHT, a, place);
+                list = map.coords[this.x][this.y].item;
+                dr = RIGHT; 
                 break;
             case P_BOX:
-                inventory.show(this.boxes, LEFT, a, place);
+                list = this.boxes;
+                dr = LEFT;
                 break;
             case P_SHOP:
             case P_STASH:
-                let enter = map.coords[this.x][this.y].enter;
-                inventory.show(enter.list, LEFT, a, place, enter);
+                enter = map.coords[this.x][this.y].enter;
+                list = enter.list
+                dr = LEFT;
                 break;
             case P_CUBE:
-                inventory.show(this.cube, LEFT, a, place);
+                list = this.cube;
+                dr = LEFT;
                 break;
+            case P_EQUIPMENT:
+                this.equipmentList(BP[a]);
+                return;
         }
+
+        inventory.show({
+            list: list,
+            dr: dr,
+            a: a,
+            place: place,
+            enter: enter,
+        });
     }
 
     equipmentList(bp) {
-        inventory.shadow(LEFT);
-        let i = 1;
-        let j = MS + 0.5;
-        let k = 0;
-        let weight = 0;
-        let count = 0;
-        let ctxInv = display.ctxes.inv;
-        if (flag.blacksmith) var priceAll = 0;
-        for (let key in this.equipment) {
-            let item = this.equipment[key];
-            if (flag.destroy && flag.number && key !== bp ||
-              	  (flag.repair || flag.blacksmith) && (!item || item.durab === item.durabMax)) {
-                k++;
-                continue;
-			}
-            ctxInv.save();
-            ctxInv.textAlign = 'center';
-            display.text({
-                ctx: ctxInv,
-                msg: EA[k++].toUpperCase(),
-                x: i,
-                y: j,
-            });
-
-            ctxInv.textAlign = 'left';
-            let parts = option.isEnglish() ? key : translation.bodyParts[key];
-            if (key === 'main' || key === 'off') parts += this.swapped ? 2 : 1;
-            display.text({
-                ctx: ctxInv,
-                msg: parts,
-                x: i + 0.5,
-                y: j,
-            });
-
-            if (!item) {
-                if (key === 'off' && this.equipment['main'] && this.equipment['main'].twoHanded) {
-                    display.text({
-                        ctx: ctxInv,
-                        msg: option.isEnglish() ?
-                            `(two-handed)` :
-                            `(両手持ち)`,
-                        x: i + 5,
-                        y: j,
-                        limit: 14,
-                    });
-				}
-				
-                j++;
-                ctxInv.restore();
-                continue;
-			}
-			
-            ctxInv.textAlign = 'center';
-            if (item.shadow) ctxInv.shadowColor = item.shadow;
-            ctxInv.fillStyle = item.color;
-            display.text({
-                ctx: ctxInv,
-                msg: item.symbol,
-                x: i + 4.5,
-                y: j,
-                stroke: item.stroke,
-            });
-
-            if (item.cursed) {
-                ctxInv.fillStyle = colorList.red;
-			} else if (!item.durab) {
-                ctxInv.fillStyle = colorList.gray;
-			} else {
-				ctxInv.fillStyle = colorList.white;
-			}
-
-            ctxInv.textAlign = 'left';
-            let name = item.getName();
-            let limit = flag.blacksmith ? 12 : 15;
-            display.text({
-                ctx: ctxInv,
-                msg: name,
-                x: i + 5,
-                y: j,
-                limit: limit,
-                stroke: item.stroke,
-            });
-
-            ctxInv.fillStyle = colorList.white;
-            ctxInv.shadowColor = colorList.clear;
-            ctxInv.textAlign = 'right';
-            if (flag.blacksmith) {
-                let price = item.getDurabPrice();
-                display.text({
-                    ctx: ctxInv,
-                    msg: `$${price}`,
-                    x: -2.5,
-                    y: j,
-                    xPx: display.width / 2,
-                    limit: 3.5,
-                });
-
-                priceAll += price;
-			}
-			
-            display.text({
-                ctx: ctxInv,
-                msg: (item.weight * item.quantity).toFixed(1),
-                x: -0.5,
-                y: j,
-                xPx: display.width / 2,
-                limit: 1.8,
-            });
-
-            weight += item.weight * item.quantity;
-            count++;
-            j++;
-            ctxInv.restore();
-		}
-		
-        if (!flag.destroy && !flag.number && !flag.repair && !flag.blacksmith) {
-            j += 0.5;
-            let xPx = 0;
-            let row = j;
-            let count2 = 0;
-            for (let [key, term] of investigationMap.entries()) {
-                if (!term || !term.equipList) {
-                    if (key === 'end') break;
-                    continue;
-				}
-				
-                ctxInv.save();
-                if (this.findBuffStat(key)) ctxInv.shadowColor = colorList.buff;
-				if (this.lowerRes && (key === 'fire' || key === 'water' ||
-						key === 'air' || key === 'earth' || key === 'poison')) {
-					ctxInv.fillStyle = colorList.red;
-				}
-
-                display.text({
-                    ctx: ctxInv,
-                    msg: term.name[option.getLanguage()],
-                    x: i,
-                    y: j,
-                    xPx: xPx,
-                    limit: 7,
-                });
-
-                ctxInv.textAlign = 'right';
-                let value = this[key];
-                if (term.perc) value += '%';
-                if (term.max) {
-                    let max = this[term.max];
-                    if (term.perc) max += '%';
-                    value += ` (${max})`;
-				}
-				
-                display.text({
-                    ctx: ctxInv,
-                    msg: value,
-                    x: -0.5,
-                    y: j++,
-                    xPx: xPx + display.width / 4,
-                    limit: 3.5,
-                });
-
-                ctxInv.restore();
-                if (!(++count2 % 8)) {
-                    xPx += display.width / 4;
-                    j = row;
-                }
-            }
-		}
-		
-        let maxNum = MAX_EQUIPMENT_NUM;
-        display.text({
-            ctx: ctxInv,
-            msg: `[${count}/${maxNum}]`,
-            x: i,
-            y: -SS - .9,
-            yPx: display.height,
-        });
-
-        ctxInv.textAlign = 'right';
-        let total = option.isEnglish() ? 'Total' : '計';
-        if (flag.blacksmith) {
-            let cost = option.isEnglish() ? 'Total Cost' : '全費用';
-            total = `${cost} $${priceAll} ${total}`;
-		}
-		
-        display.text({
-            ctx: ctxInv,
-            msg: `${total} ${weight.toFixed(1)}kg`,
-            x: -0.5,
-            y: -SS - .9,
-            xPx: display.width / 2,
-            yPx: display.height,
-        });
-
-        ctxInv.textAlign = 'left';
+        inventory.showEquipment(this, bp);
     }
 
     showSkill(list, bookmark) {
-        inventory.shadow(bookmark ? LEFT : RIGHT);
-        let i = 1;
-        let j = MS + 1.7;
-        let right = bookmark ? 0 : display.width / 2;
-        let count = 0;
-        let main = option.isEnglish() ? 'Main' : 'メイン';
-        let ctxInv = display.ctxes.inv;
-        for (let key in list) {
-            if (flag.number && list[key] !== this.cs) continue;
-            let skill;
-            if (list[key]) skill = skillMap.get(list[key].id ? list[key].id : list[key]);
-            ctxInv.save();
-            if (bookmark) {
-                if (skill) ctxInv.shadowColor = skill.color;
-                display.text({
-                    ctx: ctxInv,
-                    msg: key === '0' ? main : `F${key}`,
-                    x: i - 0.5,
-                    y: j,
-                    limit: 2,
-                    xPx: right,
-                });
-
-                if (!skill) {
-                    j++;
-                    ctxInv.restore();
-                    continue;
-                }
-            } else {
-                if (skill.reqLvl > this.lvl) {
-                    ctxInv.fillStyle = colorList.gray;
-				} else {
-					ctxInv.shadowColor = skill.color;
-				}
-
-                ctxInv.textAlign = 'center';
-                display.text({
-                    ctx: ctxInv,
-                    msg: key,
-                    x: i,
-                    y: j,
-                    xPx: right,
-                });
-			}
-			
-            ctxInv.textAlign = 'left';
-            let name = skill.name[option.getLanguage()];
-            display.text({
-                ctx: ctxInv,
-                msg: name,
-                x: i + 0.75 + (bookmark ? 1 : 0),
-                y: j,
-                limit: 8,
-                xPx: right,
-            });
-
-            ctxInv.textAlign = 'right';
-            let lvl = 0;
-            if (list[key].lvl) {
-                lvl = list[key].lvl
-			} else {
-                let a = this.searchSkill(list[key]);
-                if (a) lvl = this.skill[a].lvl;
-			}
-			
-            let boost = this.getSkillBoost(skill);
-            display.text({
-                ctx: ctxInv,
-                msg: `${lvl}+${boost}`,
-                x: -10,
-                y: j,
-                xPx: display.width / 2 + right,
-                limit: 3,
-            });
-
-            if (skill.rate) {
-                let value;
-                let bonus = skill.rate * (lvl + boost) + (skill.synerzy ? skill.synerzy * this.getSynerzy(skill) : 0);
-                if (skill.kind === 'breath') {
-                    value = Math.ceil(this.hp * BREATH_RATE * (1 + bonus / 100));
-                } else if (isFinite(skill.base)) {
-                    value = skill.base + bonus;
-                    if (skill.limit && value > skill.limit) value = skill.limit;
-                    if (skill.radiusRate) {
-                        let radius = option.isEnglish() ? 'radius ' : '半径';
-                        value = `${radius}${value}`;
-                    } else if (value > 0) {
-						 value = `+${value}`;
-					}
-
-                    if (skill.perc) value = `${value}%`;
-                } else {
-                    let avg = Math.ceil(dice.getAvg(skill.base) * (1 + bonus / 100));
-                    value = `Avg ${avg}`;
-				}
-				
-                display.text({
-                    ctx: ctxInv,
-                    msg: value,
-                    x: -5.5,
-                    y: j,
-                    xPx: display.width / 2 + right,
-                    limit: 4,
-                });
-			}
-			
-            if (skill.reqLvl <= this.lvl && skill.mp > this.mp) {
-                ctxInv.shadowColor = colorList.clear;
-                ctxInv.fillStyle = colorList.red;
-			}
-			
-            display.text({
-                ctx: ctxInv,
-                msg: skill.mp,
-                x: -3.5,
-                y: j,
-                xPx: display.width / 2 + right,
-            });
-
-            if (skill.reqLvl <= this.lvl) {
-                ctxInv.shadowColor = skill.color;
-                ctxInv.fillStyle = colorList.white;
-			}
-			
-            display.text({
-                ctx: ctxInv,
-                msg: skill.reqLvl,
-                x: -2,
-                y: j,
-                xPx: display.width / 2 + right,
-            });
-
-            if (skill.reqSynerzy){
-                display.text({
-                    ctx: ctxInv,
-                    msg: skill.reqSynerzy,
-                    x: -0.5,
-                    y: j,
-                    xPx: display.width / 2 + right,
-                });
-            }
-
-            ctxInv.restore();
-            count++;
-            j++;
-		}
-		
-        ctxInv.save();
-        j = MS + 0.5;
-        let maxNum;
-        if (flag.gain) {
-            maxNum = Object.keys(list).length;
-		} else if (bookmark) {
-            maxNum = MAX_BOOKMARK_NUM;
-		} else {
-			maxNum = MAX_SKILL_NUM;
-		}
-
-        display.text({
-            ctx: ctxInv,
-            msg: `[${count}/${maxNum}]`,
-            x: i,
-            y: j,
-            xPx: right,
-        });
-
-        ctxInv.textAlign = 'right';
-        let [lvl, value, mp, reqLv, reqSy] = option.isEnglish() ? ['Lv', 'Value', 'MP', 'RLv', 'RSy'] :
-            ['レベル', '値', 'MP', '必レ', '必シ'];
-        display.text({
-            ctx: ctxInv,
-            msg: lvl,
-            x: -10,
-            y: j,
-            xPx: display.width / 2 + right,
-        });
-
-        display.text({
-            ctx: ctxInv,
-            msg: value,
-            x: -5.5,
-            y: j,
-            xPx: display.width / 2 + right,
-        });
-
-        display.text({
-            ctx: ctxInv,
-            msg: mp,
-            x: -3.5,
-            y: j,
-            xPx: display.width / 2 + right,
-        });
-
-        display.text({
-            ctx: ctxInv,
-            msg: reqLv,
-            x: -2,
-            y: j,
-            xPx: display.width / 2 + right,
-            limit: 1.3,
-        });
-
-        display.text({
-            ctx: ctxInv,
-            msg: reqSy,
-            x: -0.5,
-            y: j,
-            xPx: display.width / 2 + right,
-            limit: 1.3,
-        });
-
-        ctxInv.restore();
+        inventory.showSkill(this, list, bookmark);
     }
 
     findBuffStat(key) {
@@ -4363,13 +3994,16 @@ const Fighter = class extends Material {
         let num = this.numBoxes + 1;
         if (num > MAX_BOX_NUM) return;
         for (let i = num; i <= this.numBoxes + numBoxes && i <= MAX_BOX_NUM; i++) {
+            if (this.id === ROGUE) {
+                Vue.set(vuejs.statsFixed.rogue.boxes, i, null)
+            } else {
+				this.boxes[i] = null;
+            }
             let item = this.eqt[i];
             if (item) {
                 this.boxAdd(item, i);
                 delete this.eqt[i];
-            } else {
-				this.boxes[i] = null;
-			}
+            }
         }
 
         if (Object.keys(this.eqt).length) {
@@ -4387,7 +4021,12 @@ const Fighter = class extends Material {
         if (num > MAX_BOX_NUM) return;
         for (let i = num; i <= this.numBoxes && i <= MAX_BOX_NUM; i++) {
             let item = this.boxes[i];
-            delete this.boxes[i];
+            if (this.id === ROGUE) {
+                Vue.delete(vuejs.statsFixed.rogue.boxes, i)
+            } else {
+                delete this.boxes[i];
+            }
+
             if (!item) continue;
             this.gainOrloseWeight(item, item.quantity);
             if (flag.equip) {
@@ -4613,28 +4252,32 @@ const Fighter = class extends Material {
 				}
 				
                 break;
-            case IDENTIFY:
+            case IDENTIFY: {
                 flag.identify = true;
                 flag.regular = false;
                 inventory.clear();
+                let msg = message.get(M_IDENTIFY) + message.get(M_FLOOR);
                 this.showInventory(P_PACK);
                 this.equipmentList();
-                message.draw(message.get(M_IDENTIFY) + message.get(M_FLOOR), true);
+                message.draw(msg, true);
                 return null;
+            }
             case DISINTEGRATION:
                 inventory.clear();
                 flag.disint = true;
                 flag.regular = false;
                 message.draw(message.get(M_DISINTEGRATION), true);
                 return null;
-            case RESTORE_DURABILITY:
+            case RESTORE_DURABILITY: {
                 inventory.clear();
                 flag.repair = true;
+                let msg = message.get(M_REPAIR) + message.get(M_FLOOR);
                 this.showInventory(P_PACK);
                 this.equipmentList();
-                message.draw(message.get(M_REPAIR) + message.get(M_FLOOR), true);
+                message.draw(msg, true);
                 flag.regular = false;
                 return null;
+            }
             case REPAIR_ALL:
                 this.repairAll();
                 break;
@@ -5200,7 +4843,11 @@ const Fighter = class extends Material {
 		}
 		
         if (this.id !== ROGUE) return;
-        if (!flag.examine) display.clearOne(display.ctxes.cur);
+        if (!flag.examine) {
+             display.clearOne(display.ctxes.cur);
+             cursol.clearAll();
+        }
+
         inventory.clear();
         rogue.done = true;
         flag.aim = false;

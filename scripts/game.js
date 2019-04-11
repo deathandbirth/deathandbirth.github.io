@@ -37,7 +37,7 @@ const game = {
         });
 
         ctxInv.restore();
-        flag.retry = true;
+        flag.title = true;
         audio.stop(audio.curTrack);
         if (!init) audio.playMusic('title');
 	},
@@ -92,8 +92,11 @@ const game = {
         initFlag();
         initTab();
         audio.init();
-        rogue = new Rogue();
+        rogue = new Rogue;
         rogue.init();
+
+        vuejs.init();
+
         map.stashList = [];
         message.list = [];
         message.clear(true);
@@ -103,6 +106,7 @@ const game = {
 	
     clearLevel() {
         display.clearAll();
+        statistics.clearEnemyBar();
         rogue.checkUnique();
         rogue.numSteps = 0;
         rogue.ce = null;

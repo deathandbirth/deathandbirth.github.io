@@ -79,21 +79,24 @@ const creation = {
 		}
 
         this.enemy({
-            times: 10,
+            times: ENEMY_NUM_INIT,
             position: INIT,
 		});
 		
         this.item({
-            times: 10,
+            times: ITEM_NUM_INIT,
             position: INIT,
 		});
 		
-        map.draw(rogue.x, rogue.y);
         let track = audio.getDungeonTrack(rogue.cdl, boss);
         if (audio.curTrack !== track) {
             audio.stop(audio.curTrack);
             audio.playMusic(track);
         }
+
+        vuejs.mapMain.$nextTick(function(){
+            map.draw(rogue.x, rogue.y);
+        });
     },
 
     town() {
@@ -101,9 +104,11 @@ const creation = {
         town.createAll();
         this.stairs(1, DOWN, LOCATION, POSITION.hell.x, POSITION.hell.y, true);
         rogue.putDown(true);
-        map.draw(rogue.x, rogue.y);
         audio.stop(audio.curTrack);
         audio.playMusic(!rogue.inferno ? 'town' : 'town2');
+        vuejs.mapMain.$nextTick(function(){
+            map.draw(rogue.x, rogue.y);
+        });
     },
 
     enemy({

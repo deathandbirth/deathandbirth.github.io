@@ -1,5 +1,5 @@
 const help = {
-    list: [
+    listLeft: [
         { cmd: { a: 'Arrow keys', b: '方向キー'}, name: { a: 'move', b: '移動' }},
         { cmd: { a: 'h', b: 'h'}, name: { a: 'move left', b: '左移動' }},
         { cmd: { a: 'j', b: 'j'}, name: { a: 'move down', b: '下移動' }},
@@ -24,7 +24,6 @@ const help = {
         { cmd: { a: 'p', b: 'p'}, name: { a: 'pack item', b: 'アイテムを詰める' }},
         { cmd: { a: 'E', b: 'E'}, name: { a: 'eat food', b: '食事する' }},
         { cmd: { a: 'Q', b: 'Q'}, name: { a: 'quit', b: 'ゲームを放棄する' }},
-        { cmd: { a: 'Esc', b: 'Esc'}, name: { a: 'cancel command', b: '取り消す' }},
         { cmd: { a: 'x', b: 'x'}, name: { a: 'examine things', b: '探査する' }},
         { cmd: { a: 'a', b: 'a'}, name: { a: 'add bookmark', b: 'しおりを挟む' }},
         { cmd: { a: 'G', b: 'G'}, name: { a: 'gain stat/skill', b: 'スキル/能力値を得る' }},
@@ -35,11 +34,15 @@ const help = {
         { cmd: { a: 'F', b: 'F'}, name: { a: 'fuel', b: '補給する' }},
         { cmd: { a: 'R', b: 'R'}, name: { a: 'Rest', b: '休む' }},
         { cmd: { a: 'A', b: 'A'}, name: { a: 'alchemy', b: '錬金術' }},
+    ],
+
+    listRight: [
+        { cmd: { a: 'Esc', b: 'Esc'}, name: { a: 'cancel command', b: '取り消す' }},
         { cmd: { a: '1-9', b: '1-9'}, name: { a: 'use item', b: 'アイテムを使う' }},
         { cmd: { a: 'F1-F12', b: 'F1-F12'}, name: { a: 'use skill', b: 'スキルを使う' }},
         { cmd: { a: 'Alt+dir', b: 'Alt+方向'}, name: { a: 'attack stationary/dig', b: 'その場で攻撃する/掘る' }},
         { cmd: { a: 'Shift+dir', b: 'Shift+方向'}, name: { a: 'dash', b: '走る' }},
-        { cmd: { a: '.', b: '.'}, name: { a: 'stap on', b: '踏む' }},
+        { cmd: { a: '.', b: '.'}, name: { a: 'step on', b: '踏む' }},
         { cmd: { a: '>', b: '>'}, name: { a: 'down stairs', b: '階段を降りる' }},
         { cmd: { a: '<', b: '<'}, name: { a: 'up stairs', b: '階段を昇る' }},
         { cmd: { a: '=', b: '='}, name: { a: 'option', b: 'オプション' }},
@@ -53,7 +56,7 @@ const help = {
         { cmd: { a: 'Ctrl+v', b: 'Ctrl+v'}, name: { a: 'game version', b: 'ゲームのバージョン' }},
     ],
 
-    wizardList: [ 
+    listWizard: [
         { cmd: { a: 'Ctrl+e', b: 'Ctrl+e'}, name: { a: '*enlightenment*', b: '*啓蒙*' }},
         { cmd: { a: 'Ctrl+z', b: 'Ctrl+z'}, name: { a: '*indestructible*', b: '*破壊不能*' }},
         { cmd: { a: 'Ctrl+q', b: 'Ctrl+q'}, name: { a: '*create trap*', b: '*罠を生成する*' }},
@@ -61,53 +64,13 @@ const help = {
         { cmd: { a: 'Ctrl+i', b: 'Ctrl+i'}, name: { a: '*create item*', b: '*アイテムを生成する*' }},
     ],
 
-    main() {
-        this.i = 1;
-        this.j = MS + 1;
-        this.xPx = 0;
-        inventory.shadow(MIDDLE);
-        this.loop(this.list);
-        if (rogue.isWizard) this.loop(this.wizardList);
-    },
-    
-    loop(list) {
-        let i = this.i;
-        let j = this.j;
-        let xPx = this.xPx;
-        let ctxInv = display.ctxes.inv;
-        let a = option.getLanguage();
-        for (let value of list) {
-            let cmd = value.cmd[a];
-            ctxInv.save();
-            display.text({
-                ctx: ctxInv,
-                msg: cmd,
-                x: i - 0.5,
-                y: j,
-                xPx: xPx,
-                limit: 3,
-            });
-
-            let name = value.name[a];
-            ctxInv.textAlign = 'left';
-            display.text({
-                ctx: ctxInv,
-                msg: name,
-                x: i + 3,
-                y: j++,
-                xPx: xPx,
-                limit: 12,
-            });
-
-            ctxInv.restore();
-            if (j === IN_HEIGHT) {
-                j = MS + 1;
-                xPx += display.width / 3;
-            }
+    scroll(keyCode, init) {
+        if (init) {
+            message.draw(message.get(M_HELP) + message.get(M_SCROLL), true);
+            if (!this.eleP) this.eleP = document.getElementById('command-list-box');
+            if (!this.eleC) this.eleC = document.getElementById('command-list').firstChild;
         }
-        
-        this.i = i;
-        this.j = j;
-        this.xPx = xPx;
+
+        input.scroll(this.eleP, this.eleC, keyCode, init);
     }
 };

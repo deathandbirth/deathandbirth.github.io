@@ -28,6 +28,10 @@ const Data = class {
         }
 
         this.convertCe();
+        
+        vuejs.init();
+        vuejs.list.isEnglish = option.isEnglish();
+
         display.clearAll();
         display.change(option.display.user, true);
         initFlag();
@@ -81,8 +85,8 @@ const Data = class {
     }
 
     loadCoords() {
-        map.init(false, true);
         map.coords = this.coords;
+        map.init(false, true);
         for (let locs of map.coords) {
             for (let loc of locs) {
                 loc.__proto__ = Location.prototype;
@@ -96,6 +100,7 @@ const Data = class {
                 }
             }
         }
+
     }
 
     loadFighter(fighter) {
@@ -177,9 +182,9 @@ const Data = class {
         audio.stop(audio.curTrack);
         audio.curTrack = this.track;
         let a = this.option['BGM'].user;
-        audio.volBGM = option['BGM'].choise[a].a / 10;
+        audio.volBGM = option['BGM'].select[a].a / 10;
         a = this.option['SE'].user;
-        audio.volSE = option['SE'].choise[a].a / 10;
+        audio.volSE = option['SE'].select[a].a / 10;
         audio.playMusic(audio.curTrack);
     }
 }
@@ -188,19 +193,19 @@ const data = {
     name: 'Player',
     save(unload) {
         if (unload && audio.curTrack) audio.music[audio.curTrack].pause();
-        if (flag.died || flag.retry || this.error) {
+        if (flag.died || flag.retry || flag.title || this.error) {
             return;
         } else if (flag.synthesize) {
             rogue.returnCubeItem();
         }
 
+        cursol.clearAll();
         message.draw(option.isEnglish() ? 'Saved' : '記録した');
         let saveData = new Data();
         localStorage.setItem(this.name, JSON.stringify(saveData));
     },
 
     load() {
-        let found;
         let saveData = JSON.parse(localStorage.getItem(this.name));
         if (saveData !== null) {
             saveData.__proto__ = Data.prototype;
@@ -208,8 +213,11 @@ const data = {
                 saveData.loadInit();
                 message.draw(option.isEnglish() ? 'Loaded' : '記録を読み込んだ');
             } catch (e) {
-                this.failed = true;
+                console.log(e);
                 let ver = saveData.ver;
+                vuejs.gameLoader.verData = ver;
+                flag.regular = false;
+                flag.failed = true;
                 display.text({
                     ctx: display.ctxes.inv,
                     msg: option.isEnglish() ?

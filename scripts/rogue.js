@@ -26,6 +26,7 @@ const Rogue = class extends Fighter {
         this.turn = 1;
         this.done = false;
         this.initBookmarks();
+        this.isWizard = window.location.href.split('/').pop().indexOf('debug') === 0;
     }
 
     init() {
@@ -599,27 +600,35 @@ const Rogue = class extends Fighter {
         if (enter.stash) {
             flag.stash = true;
             enter.page = 1;
+            let msg = message.get(M_STASH);
             this.showInventory(P_PACK);
             this.showInventory(P_STASH);
-            message.draw(message.get(M_STASH), true);
+            message.draw(msg, true);
             return;
         } else if (enter.shop) {
             flag.shop = true;
             this.cn = 1;
             flag.gamble = enter.gamble;
+            let msg = message.get(M_SHOP);
             this.showInventory(P_PACK);
             if (!enter.list['a']) enter.createShopItem();
             this.showInventory(P_SHOP);
-            message.draw(message.get(M_SHOP), true);
+            message.draw(msg, true);
         } else if (enter.cure) {
             flag.cure = true;
-            inventory.show(enter.list, RIGHT, false, false, enter);
+            inventory.show({
+                list: enter.list,
+                dr: RIGHT,
+                enter: enter,
+            });
+
             message.draw(message.get(M_CURE), true);
         } else if (enter.blacksmith) {
             flag.blacksmith = true;
+            let msg = message.get(M_BLACKSMITH);
             this.equipmentList();
             this.showInventory(P_PACK);
-            message.draw(message.get(M_BLACKSMITH), true);
+            message.draw(msg, true);
 		}
 		
         let nameEnter = enter.getName();
@@ -702,8 +711,9 @@ const Rogue = class extends Fighter {
             if (!loc.item['b']) {
                 this.grabItem(65);
 			} else {
+                let msg = message.get(M_GRAB);
                 this.showInventory(P_FLOOR);
-                message.draw(message.get(M_GRAB), true);
+                message.draw(msg, true);
                 flag.regular = false;
             }
         }
@@ -1076,13 +1086,14 @@ const Rogue = class extends Fighter {
 		}
 		
         let name = item.getName();
+
         message.draw(option.isEnglish() ?
             `Identified ${name}` :
             `${name}を判別した`);
         if (keyCode) {
             inventory.clear();
             this.showInventory(item.place, a);
-            item.investigate(item.place === P_EQUIPMENT || item.place === P_BOX ? RIGHT : LEFT);
+            investigation.main(item, item.place === P_EQUIPMENT || item.place === P_BOX ? RIGHT : LEFT);
             if (item.place === P_PACK) inventory.sort(a, this.pack);
             rogue.done = true;
             flag.identify = false;
@@ -1161,9 +1172,10 @@ const Rogue = class extends Fighter {
         if (flag.blacksmith) {
             this.purse -= price;
             this.drawStats();
+            let msg = message.get(M_BLACKSMITH);
             this.equipmentList();
             this.showInventory(P_PACK);
-            message.draw(message.get(M_BLACKSMITH), true);
+            message.draw(msg, true);
             return;
 		}
 		
@@ -1245,9 +1257,11 @@ const Rogue = class extends Fighter {
         inventory.clear();
         statistics.clearEnemyBar();
         display.clearOne(display.ctxes.cur);
+        cursol.clearAll();
     }
 
-    investigateOne(keyCode, item, place, direction, msg) {
+    investigate(keyCode, item, place, direction, msg) {
+        investigation.clear();
         if (!item) {
             if (this.switchInventory(keyCode, M_INVESTIGATE, true)) return;
             let a = getAlphabetOrNumber(keyCode);
@@ -1261,13 +1275,13 @@ const Rogue = class extends Fighter {
             return;
         }
 
-        inventory.clear();
-        if (place === undefined) place = item.place;
-        this.showInventory(place);
+        // inventory.clear();
+        // if (msg === undefined) msg = message.get(M_INVESTIGATE) + message.get(flag.floor ? M_PACK : M_FLOOR);
+        // message.draw(msg, true);
+        // if (place === undefined) place = item.place;
+        // this.showInventory(place);
         if (direction === undefined) direction = item.place === P_EQUIPMENT || item.place === P_BOX ? RIGHT : LEFT;
-        item.investigate(direction);
-        if (msg === undefined) msg = message.get(M_INVESTIGATE) + message.get(flag.floor ? M_PACK : M_FLOOR);
-        message.draw(msg, true);
+        investigation.main(item, direction);
     }
 
     getSkillInfo(skill, lvl, item) {
@@ -1301,17 +1315,18 @@ const Rogue = class extends Fighter {
         if (this.switchInventory(keyCode, M_SYNTHESIZE)) return;
         if (!flag.recipe && input.isCtrl && keyCode === 82) { //^r
             flag.recipe = true;
-            this.showRecipe();
+            inventory.showRecipe();
             return;
         }
         
         if (flag.recipe) {
-            if (keyCode !== 13) return; //Enter
+            if (keyCode !== 67) return; //c
             flag.recipe = false;
             inventory.clear();
+            let msg = message.get(M_SYNTHESIZE) + message.get(flag.floor ? M_PACK : M_FLOOR);
             this.showInventory(flag.floor ? P_FLOOR : P_PACK);
             this.showInventory(P_CUBE);
-            message.draw(message.get(M_SYNTHESIZE) + message.get(flag.floor ? M_PACK : M_FLOOR), true);
+            message.draw(msg, true);
             return;
         }
 
@@ -1342,76 +1357,10 @@ const Rogue = class extends Fighter {
         
         inventory.clear();
         if (item.place === P_BOX) this.drawStats();
+        let msg = message.get(M_SYNTHESIZE) + message.get(flag.floor ? M_PACK : M_FLOOR);
         this.showInventory(flag.floor ? P_FLOOR : P_PACK);
         this.showInventory(P_CUBE);
-        message.draw(message.get(M_SYNTHESIZE) + message.get(flag.floor ? M_PACK : M_FLOOR), true);
-    }
-
-    showRecipe() {
-        let i = 1;
-        let j = MS + 1;
-        let ctxInv = display.ctxes.inv;
-        let a = option.getLanguage();
-        inventory.clear();
-        inventory.shadow(MIDDLE);
-        message.draw(message.get(M_RECIPE), true);
-        display.text({
-            ctx: ctxInv,
-            msg: option.isEnglish() ? 'Name' : '名称',
-            x: i,
-            y: j,
-        });
-
-        ctxInv.textAlign = 'right';
-        display.text({
-            ctx: ctxInv,
-            msg: option.isEnglish() ? 'MP(per)' : 'MP(毎)',
-            x: i + 8,
-            y: j,
-        });
-
-        ctxInv.textAlign = 'left';
-        display.text({
-            ctx: ctxInv,
-            msg: option.isEnglish() ? 'Recipe' : 'レシピ',
-            x: i + 9,
-            y: j,
-        });
-
-        j += 2; 
-        let recipes = itemTab['recipe'];
-        for (let [key, value] of recipes.entries()) {
-            if (!this.recipes[key]) continue;
-            let name = value.nameReal[a];
-            let cost = value.cost;
-            let recipe = value.recipe[a];
-            display.text({
-                ctx: ctxInv,
-                msg: name,
-                x: i,
-                y: j,
-                limit: 6
-            });
-
-            ctxInv.textAlign = 'right';
-            display.text({
-                ctx: ctxInv,
-                msg: cost,
-                x: i + 8,
-                y: j,
-            });
-
-            ctxInv.textAlign = 'left';
-            display.text({
-                ctx: ctxInv,
-                msg: recipe,
-                x: i + 9,
-                y: j,
-                limit: 37
-            });
-
-            j += 1.2;
-        }
+        message.draw(msg, true);
     }
 
     tryToSynthesize() {
@@ -1879,9 +1828,10 @@ const Rogue = class extends Fighter {
 		}
 		
         inventory.clear();
+        let msg = message.get(M_PACK_OR_UNPACK) + message.get(flag.floor ? M_PACK : M_FLOOR);
         this.showInventory(flag.floor ? P_FLOOR : P_PACK);
         this.showInventory(P_BOX);
-        message.draw(message.get(M_PACK_OR_UNPACK) + message.get(flag.floor ? M_PACK : M_FLOOR), true);
+        message.draw(msg, true);
         this.drawStats();
     }
 
@@ -1940,8 +1890,13 @@ const Rogue = class extends Fighter {
             if (loc.item['a'] && this.litMapIds[cursol.x + ',' + cursol.y] &&
                 distanceSq(cursol.x, cursol.y, this.x, this.y) <= FOV_SQ &&
                 lineOfSight(this.x, this.y, cursol.x, cursol.y)) {
-                inventory.show(loc.item, RIGHT, undefined, P_FLOOR)
+                flag.floor = true;
                 flag.clearInv = true;
+                inventory.show({
+                    list: loc.item,
+                    dr: RIGHT,
+                    place: P_FLOOR
+                })
 			}
 			
             return;
@@ -1952,16 +1907,22 @@ const Rogue = class extends Fighter {
             if (fighter && fighter.isShowing() &&
                 (fighter.id === ROGUE || !rogue.hallucinated)) {
                 if (keyCode === 67) {
-                    fighter.investigate(MIDDLE, true);
-				} else if (keyCode === 77) {
-                    fighter.showSkill(fighter.skill);
-				} else if (keyCode === 69 && this.isWizard) {
-                    fighter.equipmentList();
-				} else if (keyCode === 73 && this.isWizard) {
-					fighter.showInventory(P_PACK);
-				}
+                    flag.character = true;
+                    investigation.main(fighter ,MIDDLE, true);
+                    Vue.nextTick(function(){
+                        investigation.scroll(null, true);
+                    });
+				} else {
+                    if (keyCode === 77) {
+                        fighter.showSkill(fighter.skill);
+                    } else if (keyCode === 69 && this.isWizard) {
+                        fighter.equipmentList();
+                    } else if (keyCode === 73 && this.isWizard) {
+                        fighter.showInventory(P_PACK);
+                    }
 
-                flag.clearInv = true;
+                    flag.clearInv = true;
+                }
 			}
 			
             return;
@@ -2009,6 +1970,7 @@ const Rogue = class extends Fighter {
         if (!keyCode) {
             if (flag.aim) this.examinePlot();
             cursol.draw(X, Y);
+            map.coords[cursol.x][cursol.y].cursor = true;
             map.coords[cursol.x][cursol.y].getInfo();
             return;
 		}
@@ -2041,6 +2003,9 @@ const Rogue = class extends Fighter {
 		}
 		
         cursol.clear(X, Y);
+
+        map.coords[cursol.x][cursol.y].cursor = false;
+
         cursol.x += xinc;
         cursol.y += yinc;
         X += xinc;
@@ -2078,6 +2043,7 @@ const Rogue = class extends Fighter {
         if (found) map.draw(cursol.cX, cursol.cY);
         if (flag.aim) this.examinePlot();
         cursol.draw(X, Y);
+        map.coords[cursol.x][cursol.y].cursor = true;
         map.coords[cursol.x][cursol.y].getInfo();
     }
 
@@ -2087,6 +2053,7 @@ const Rogue = class extends Fighter {
         let color = colorList.white;
         let skill;
         display.clearOne(display.ctxes.cur);
+        cursol.clearAll();
         if (flag.zap) {
             if (this.ci.identified || itemTab[this.ci.type].get(this.ci.tabId).identified) { //
                 skill = skillMap.get(this.ci.nameSkill);
@@ -2101,11 +2068,19 @@ const Rogue = class extends Fighter {
         lineOfSight(this.x, this.y, x, y, color, skill);
     }
 
+    drawMsgExamine() {
+        let msg = message.get(M_EXAMINE);
+        if (rogue.isWizard) msg += message.get(M_EXAMINE_W);
+        message.draw(msg + ` (${cursol.x},${cursol.y})`, true);
+    }
+
+
     cancelCommand() {
         if (flag.synthesize) {
             this.returnCubeItem();
 		} else if (flag.aim || flag.examine) {
             display.clearOne(display.ctxes.cur);
+            cursol.clearAll();
             map.draw(rogue.x, rogue.y);
             statistics.clearEnemyBar();
             statistics.drawEnemyBar(this.ce);
@@ -2119,162 +2094,12 @@ const Rogue = class extends Fighter {
     }
 
     showStats(a) {
-        inventory.shadow(LEFT);
-        let i = 1;
-        let j = MS + 0.5;
-        let count = 0;
-        let ctxInv = display.ctxes.inv;
-        for (let key in statistics.list) {
-            if (a && key !== a) continue;
-            let stat = statistics.list[key];
-            ctxInv.save();
-            ctxInv.textAlign = 'center';
-            display.text({
-                ctx: ctxInv,
-                msg: key.toUpperCase(),
-                x: i,
-                y: j,
-            });
-
-            ctxInv.textAlign = 'left';
-            display.text({
-                ctx: ctxInv,
-                msg: stat.name[option.getLanguage()],
-                x: i + 1,
-                y: j,
-            });
-
-            ctxInv.textAlign = 'right';
-            display.text({
-                ctx: ctxInv,
-                msg: this[stat.term + 'Max'],
-                x: -0.5,
-                y: j++,
-                xPx: display.width / 2,
-            });
-
-            ctxInv.restore();
-            count++;
-		}
-		
-        let maxNum = count; //
-        display.text({
-            ctx: ctxInv,
-            msg: `[${count}/${maxNum}]`,
-            x: i,
-            y: -SS - .9,
-            yPx: display.height,
-        });
-
-        ctxInv.save();
-        ctxInv.textAlign = 'right';
-        let [statPoints, currentValues] = option.isEnglish() ? ['Stat Points', 'Current Values'] : ['ステータスポイント', '現在値'];
-        display.text({
-            ctx: ctxInv,
-            msg: `${statPoints} ${this.statPoints} ${currentValues}`,
-            x: -0.5,
-            y: -SS - .9,
-            xPx: display.width / 2,
-            yPx: display.height,
-        });
-
-        ctxInv.restore();
+        inventory.showStats(this, a);
     }
 
 
-    showSKillDetail(skill, dir) {
-        inventory.shadow(dir);
-        let i = 0.5;
-        let j = MS + 1;
-        let ctxInv = display.ctxes.inv;
-        ctxInv.save();
-        ctxInv.shadowColor = skill.color;
-        let nameEle = option.isEnglish() ? getUpperCase(skill.element) : translation.element[skill.element];
-        display.text({
-            ctx: ctxInv,
-            msg: skill.name[option.getLanguage()] + ` [${nameEle}]`,
-            x: i,
-            y: j++,
-        });
-
-        ctxInv.shadowColor = colorList.shadow;
-        j++;
-        let lvl = 0;
-        let a = this.searchSkill(skill.id);
-        if (a) lvl = this.skill[a].lvl;
-        let boost = this.getSkillBoost(skill);
-        let msg = this.getSkillInfo(skill, lvl + boost);
-        display.text({
-            ctx: ctxInv,
-            msg: msg,
-            x: i + 1,
-            y: j++,
-            limit: 22,
-        });
-
-        j++;
-        let [base, perLvl, perSy, durBase] = option.isEnglish() ? ['Base', 'per Level', 'per Synerzy', 'Duration Base'] : ['基礎値', 'レベル毎', 'シナジー毎', '期間基礎値'];
-        let perc = skill.perc ? '%' : '';
-        if (skill.rate) {
-            let skillBase = skill.base;
-            if (isFinite(skillBase) && perc && skillBase > 0) {
-                skillBase = '+' + skillBase;
-			} else if (skill.radiusRate) {
-				skillBase = (option.isEnglish() ? 'radius ' : '半径') + skillBase;
-			}
-
-            display.text({
-                ctx: ctxInv,
-                msg: `${base} ${skillBase}${perc}`,
-                x: i + 1,
-                y: j++,
-                limit: 22,
-            });
-
-            if (!isFinite(skill.base)) perc = '%';
-            let sign = skill.rate > 0 ? '+' : '';
-            display.text({
-                ctx: ctxInv,
-                msg: `${perLvl} ${sign}${skill.rate}${perc}`,
-                x: i + 1,
-                y: j++,
-                limit: 22,
-            });
-		}
-		
-        if (skill.synerzy) {
-            let sign = skill.synerzy > 0 ? '+' : '';
-            display.text({
-                ctx: ctxInv,
-                msg: `${perSy} ${sign}${skill.synerzy}${perc}`,
-                x: i + 1,
-                y: j++,
-                limit: 22,
-            });
-		}
-		
-        if (skill.durBase) {
-            display.text({
-                ctx: ctxInv,
-                msg: `${durBase} ${skill.durBase}`,
-                x: i + 1,
-                y: j++,
-                limit: 22,
-            });
-		}
-		
-        if (skill.durRate) {
-            let sign = skill.durRate > 0 ? '+' : '';
-            display.text({
-                ctx: ctxInv,
-                msg: `${perLvl} ${sign}${skill.durRate}`,
-                x: i + 1,
-                y: j++,
-                limit: 22,
-            });
-		}
-		
-        ctxInv.restore();
+    showSKillDetail(skill, dr) {
+        investigation.skill(this, skill, dr);
     }
 
 
@@ -2573,12 +2398,12 @@ const Rogue = class extends Fighter {
         if (keyCode === 188) { //,
             flag.floor = false;
             if (equipment) this.equipmentList();
-            this.showInventory(P_PACK);
             msg += message.get(M_FLOOR);
+            this.showInventory(P_PACK);
         } else if (keyCode === 190 || keyCode === 110) { //., T.
             flag.floor = true;
-            this.showInventory(P_FLOOR);
             msg += message.get(M_PACK);
+            this.showInventory(P_FLOOR);
 		}
 		
         message.draw(msg, true);
@@ -2630,7 +2455,7 @@ const Rogue = class extends Fighter {
                 let place = input.isShift ? P_SHOP : P_PACK;
                 let direction = input.isShift ? RIGHT : LEFT;
                 let msg = message.get(M_SHOP);
-                this.investigateOne(null, item, place, direction, msg);
+                this.investigate(null, item, place, direction, msg);
                 return;
             }
 
@@ -2692,9 +2517,10 @@ const Rogue = class extends Fighter {
             flag.number = false;
             inventory.clear();
             this.cn = 1;
+            let msg = message.get(M_SHOP);
             this.showInventory(P_PACK);
             this.showInventory(P_SHOP);
-            message.draw(message.get(M_SHOP), true);
+            message.draw(msg, true);
         }
     }
 
@@ -2709,9 +2535,10 @@ const Rogue = class extends Fighter {
 				}
 
                 inventory.clear();
-                this.showInventory(P_STASH);
+                let msg = message.get(M_STASH)
                 this.showInventory(P_PACK);
-                message.draw(message.get(M_STASH), true);
+                this.showInventory(P_STASH);
+                message.draw(msg, true);
                 return;
 			}
 			
@@ -2731,7 +2558,7 @@ const Rogue = class extends Fighter {
                 let place = input.isShift ? P_STASH : P_PACK;
                 let direction = input.isShift ? RIGHT : LEFT;
                 let msg = message.get(M_STASH);
-                this.investigateOne(null, item, place, direction, msg);
+                this.investigate(null, item, place, direction, msg);
                 return;
             }
 
@@ -2783,9 +2610,10 @@ const Rogue = class extends Fighter {
             flag.stash = true;
             flag.number = false;
             inventory.clear();
-            this.showInventory(P_STASH);
+            let msg = message.get(M_STASH);
             this.showInventory(P_PACK);
-            message.draw(message.get(M_STASH), true);
+            this.showInventory(P_STASH);
+            message.draw(msg, true);
         }
     }
 
@@ -2921,7 +2749,9 @@ const Rogue = class extends Fighter {
                 this.cn = this.cn.substr(0, this.cn.length - 1);
 			} else {
 				this.cn += keyCode - 48;
-			}
+            }
+            
+            let msg = message.get(M_NUMBER) + this.cn;
 
             if (!flag.gain) {
                 inventory.clear();
@@ -2937,7 +2767,7 @@ const Rogue = class extends Fighter {
                 this.showInventory(place, this.ca);
 			}
 			
-            message.draw(message.get(M_NUMBER) + this.cn, true);
+            message.draw(msg, true);
             return;
 		}
 		

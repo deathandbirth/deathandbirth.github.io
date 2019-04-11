@@ -250,7 +250,8 @@ const shadowcasting = {
         if (this.type === 'Lighten') {
             for (let key in this.oldLitMap) {
                 let [x, y] = key.split(',');
-                map.coords[x][y].draw();
+                map.coords[x][y].sight = false;
+                map.coords[x][y].draw(); //delete
             }
         }
     },
@@ -317,7 +318,8 @@ const shadowcasting = {
                 delete this.oldLitMap[id];
             } else {
                 loc.found = true;
-                loc.draw();
+                if (!this.wall || !this.item['a']) loc.sight = true;
+                loc.draw(); //delete
             }
         } else if (this.type === 'Light') {
             if (!loc.lighten) {

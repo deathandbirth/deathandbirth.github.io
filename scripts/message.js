@@ -57,7 +57,7 @@ const [
     M_EXAMINE_W,
     M_GAIN_SKILL,
     M_OPTION,
-    M_PREVIOUS,
+    M_MESSAGE,
     M_STUCK,
     M_DIED,
     M_RECOVER_ALL,
@@ -76,6 +76,9 @@ const [
     M_NO_CLUE,
     M_RECIPE,
     M_DONT_KNOW_RECIPE,
+    M_SCROLL,
+    M_HELP,
+    M_CHARACTER,
 ] = enums(1, 80);
 
 const msgMap = new Map([
@@ -102,6 +105,11 @@ const msgMap = new Map([
     [M_EXAMINE_W, {
         a: ' [e] to equipment [i] for inventory',
         b: ' [e] 装備 [i] 持物'
+    }],
+
+    [M_SCROLL, {
+        a: ' [direction] + [Shift] or [Ctrl] to scroll [c] to close',
+        b: ' [方向] + [Shift] または [Ctrl] ページ移動 [c] 閉じる'
     }],
 
     [M_CANT_DESTROY, {
@@ -340,8 +348,8 @@ const msgMap = new Map([
     }],
 
     [M_RECIPE, {
-        a: '[Enter] to go back',
-        b: '[Enter] 戻る'
+        a: '[c] to close',
+        b: '[c] 閉じる'
     }],
 
     [M_PACK_OR_UNPACK, {
@@ -429,9 +437,19 @@ const msgMap = new Map([
         b: '[a-z] オプション変更'
     }],
 
-    [M_PREVIOUS, {
-        a: '[direction] to scroll',
-        b: '[方向] 項移動'
+    [M_MESSAGE, {
+        a: 'Previous Massage:',
+        b: 'メッセージ履歴:'
+    }],
+
+    [M_HELP, {
+        a: 'Help - Command:',
+        b: 'ヘルプ - コマンド:'
+    }],
+
+    [M_CHARACTER, {
+        a: 'Character Description:',
+        b: 'キャラ詳細:'
     }],
 
     [M_OPEN_OR_CLOSE, {
@@ -466,67 +484,23 @@ const msgMap = new Map([
 ]);
 
 const message = {
+    listTemp: [],
     list: [],
-    page: 1,
-    previous(keyCode) {
-        let l = this.list.length;
-        let p = Math.ceil(l / (IN_HEIGHT - MS - 2));
-        if (p === 0) p = 1;
-        if (keyCode === 72 || keyCode === 37 | keyCode === 100) { //h,left arrow,T4
-            this.page = 1;
-        } else if (keyCode === 74 || keyCode === 40 || keyCode === 98) { //j,down arrow,T2
-            if (p !== this.page) this.page++;
-        } else if (keyCode === 75 || keyCode === 38 || keyCode === 104) { //k,up arrow,T8
-            if (this.page !== 1) this.page--;
-        } else if (keyCode === 76 || keyCode === 39 || keyCode === 102) { //l,right arrow,T6
-            this.page = p;
-        } else {
-            return;
+    total: '',
+    scroll(keyCode, init) {
+        if (init) {
+            message.draw(message.get(M_MESSAGE) + message.get(M_SCROLL), true);
+            if (!this.eleP) this.eleP = document.getElementById('message-prev-list');
+            let l = this.list.length;
+            this.total = `[${l}/${MAX_MSG_LIST_LEN}] `
+                + (option.isEnglish() ? 'Message List' : 'メッセージ一覧'); 
         }
 
-        inventory.clear();
-        inventory.shadow(MIDDLE);
-        let i = (this.page - 1) * (IN_HEIGHT - MS - 2);
-        let j = MS + 1;
-        let ctxInv = display.ctxes.inv;
-        for (i; i < this.page * (IN_HEIGHT - MS - 2); i++) {
-            if (!this.list[i]) break;
-            let msg = this.list[i].text;
-            if (this.list[i].count > 1) msg += ` (x${this.list[i].count})`;
-            display.text({
-                ctx: ctxInv,
-                msg: `${msg}`,
-                x: 0.5,
-                y: j++,
-            });
-        }
-
-        ctxInv.save();
-        display.text({
-            ctx: ctxInv,
-            msg: `[${l}/${MAX_MSG_LIST_LEN}]`,
-            x: 1,
-            y: - SS - .9,
-            yPx: display.height,
-        });
-
-        ctxInv.textAlign = 'right';
-        display.text({
-            ctx: ctxInv,
-            msg: option.isEnglish() ?
-                `Message List [${this.page}/${p}]` :
-                `メッセージ項目 [${this.page}/${p}]`,
-            x: -1,
-            xPx: display.width,
-            y: - SS - .9,
-            yPx: display.height,
-        });
-
-        ctxInv.restore();
-        message.draw(message.get(M_PREVIOUS), true);
+        input.scroll(this.eleP, this.eleP.firstChild, keyCode, init);
     },
 
     counter: 0,
+    countDelete: 0,
     clear(all) {
         let num = all ? 1 : 2;
         display.rect({
@@ -535,6 +509,10 @@ const message = {
             heightPx: display.height / num,
             clear: true,
         });
+    },
+
+    clearFixed() {
+        if (vuejs.msgFixed) vuejs.msgFixed.msg = '';
     },
 
     delete() {
@@ -548,6 +526,7 @@ const message = {
                 clear: true,
             });
         }, MSG_SPEED);
+
     },
 
     draw(msg, fixed) {
@@ -555,13 +534,29 @@ const message = {
             this.counter++;
             let ctxMsg = display.ctxes.msg;
             if (!this.list[0] || this.list[0].text !== msg) {
-                this.list.unshift({ text: msg, count: 1 });
+                let obj = { text: msg, count: 1};
+
+                this.listTemp.unshift(obj);
+                if (this.listTemp.length > MAX_MSG_LEN) {
+                    this.listTemp.pop();
+                    this.countDelete++;
+                }
+
+                this.list.unshift(obj);
                 if (this.list.length > MAX_MSG_LIST_LEN) this.list.pop();
                 let curMap = ctxMsg.getImageData(0, 0, display.width / 2, (MAX_MSG_LEN - 0.5) * display.fs);
                 this.clear();
                 ctxMsg.putImageData(curMap, 0, display.fs);
             } else {
-                msg += ` (x${++this.list[0].count})`;
+                let obj = this.list[0];
+                if(!this.listTemp.length){
+                    this.listTemp.unshift(obj);
+                } else {
+                    this.countDelete++;
+                }
+
+                obj.count++;
+                msg += ` (x${obj.count})`;
                 display.rect({
                     ctx: ctxMsg,
                     y: 0.5,
@@ -572,7 +567,16 @@ const message = {
                 });
             }
             
-            this.delete();
+            setTimeout(() => {
+                let list = this.listTemp;
+                if(list.length && !this.countDelete) {
+                    list.pop();
+                } else if (this.countDelete) {
+                    this.countDelete--;
+                }
+            }, MSG_SPEED * this.counter--);
+
+            // this.delete();
             display.text({
                 ctx: ctxMsg,
                 msg: msg,
@@ -582,6 +586,8 @@ const message = {
                 limitPx: display.width / 2,
             });
         } else {
+
+            vuejs.msgFixed.msg = msg;
 			let ctxInv = display.ctxes.inv;
             display.rect({
                 ctx: ctxInv,

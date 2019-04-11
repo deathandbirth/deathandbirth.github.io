@@ -1,4 +1,21 @@
 const minimap = {
+    coords: [],
+    init() {
+        this.coords = [];
+        let width = map.coords.length;
+        let height = map.coords[0].length;
+        for (let i = 0; i < width; i++) {
+            this.coords.push([]);
+            for (let j = 0; j < height; j++) {
+                this.coords[i].push(new Location(i, j));
+                let loc = this.coords[i][j];
+                loc.sight = true;
+            }
+        }
+
+        if (vuejs.mapMini) vuejs.mapMini.coords = this.coords;
+    },
+
     shadow() {
         let ctxMap = display.ctxes.map;
         ctxMap.save();
@@ -80,33 +97,48 @@ const minimap = {
                     }
                 }
 
-                loc.draw(true, type, this.fs);
+                // loc.draw(true, type, this.fs);
+
+                let {symbol, color, shadow, stroke} = loc.getSymbol(true, type);
+                let locMini = this.coords[loc.x][loc.y];
+                locMini.symbol = symbol;
+                locMini.color = color;
+                locMini.shadow = shadow;
+                locMini.stroke = stroke;
             }
         }
     },
 };
 
 const map = {
+    coords: [],
     init(town, load) {
-        this.coords = [];
         this.queue = new Queue();
         this.enemyList = {};
         this.itemList = {};
         this.staircaseList = {};
         this.portal = null;
-        if (load) return;
-        let width = town ? IN_WIDTH : WIDTH;
-        let height = town ? IN_HEIGHT : HEIGHT;
-        for (let i = 0; i < width; i++) {
-            this.coords.push([]);
-            for (let j = 0; j < height; j++) {
-                this.coords[i].push(new Location(i, j));
-                if (i === 0 || i === width - 1 || j === 0 || j === height - 1) {
-                    this.coords[i][j].indestructible = true;
-                    this.coords[i][j].wall = WALL_HP;
+        if (!load) {
+            this.coords = [];
+            let width = town ? IN_WIDTH : WIDTH;
+            let height = town ? IN_HEIGHT : HEIGHT;
+            for (let i = 0; i < width; i++) {
+                this.coords.push([]);
+                for (let j = 0; j < height; j++) {
+                    this.coords[i].push(new Location(i, j));
+                    let loc = this.coords[i][j];
+                    if (i === 0 || i === width - 1 || j === 0 || j === height - 1) {
+                        loc.indestructible = true;
+                        loc.wall = WALL_HP;
+                    }
+
+                    loc.getSymbol();
                 }
             }
         }
+
+        if (vuejs.mapMain) vuejs.mapMain.coords = this.coords;
+        minimap.init();
     },
 
     fill(town) {
@@ -150,6 +182,25 @@ const map = {
             dWidth: IN_WIDTH,
             dHeight: IN_HEIGHT,
         });
+        
+        if (!this.eleP) {
+            this.eleP = document.getElementById('map-main-container');
+            this.eleC = this.eleP.firstChild;
+        }
+
+        let rectP = this.eleP.getBoundingClientRect(); 
+        let rectC = this.eleC.getBoundingClientRect(); 
+        let x = rectC.left - rectP.left + (cX + 1 / 2) * display.fs;
+        let y = rectC.top - rectP.top + (cY + 1 / 2) * display.fs;
+        let winMidX = rectP.width / 2;
+        let winMidY = rectP.height / 2;
+        if (!this.offsetXPre) this.offsetXPre = 0;
+        if (!this.offsetYPre) this.offsetYPre = 0;
+        let offsetX = Math.floor(winMidX- x + this.offsetXPre);
+        let offsetY = Math.floor(winMidY- y + this.offsetYPre);
+        this.eleC.style.transform = 'translate(' + offsetX + "px, " + offsetY +'px)';
+        this.offsetXPre = offsetX;
+        this.offsetYPre = offsetY;
     },
 
     redraw(cX, cY) {
@@ -265,7 +316,7 @@ const hallucinate = {
             }
 
             obj.shadow = colorList.gold;
-            obj.stroke = colorList.indigo;
+            obj.stroke = colorList.gold;
         } else if (coinToss()) {
             obj.stroke = 0;
             let bias = rndIntBet(1, MAX_BIAS_NUMS);
@@ -402,10 +453,12 @@ const statistics = {
 
     drawEnemyBar(e, examine) {
         if (!e) return;
-        this.clearEnemyBar();
+        this.clearEnemyBar(true);
         if (!(e.isShowing() &&
             (examine || distanceSq(e.x, e.y, rogue.x, rogue.y) <= FOV_SQ &&
             lineOfSight(e.x, e.y, rogue.x, rogue.y)))) {
+
+            vuejs.enemyBar.enemy = null;
             return '';
         }
             
@@ -415,6 +468,12 @@ const statistics = {
         ctxStats.textAlign = 'center';
         if (e.shadow) ctxStats.shadowColor = e.shadow;
         let name = e.getName(false, true);
+
+        if (vuejs.enemyBar) {
+            vuejs.enemyBar.enemy = e;
+            vuejs.enemyBar.name = name;
+        }
+
         if (e.cursed) ctxStats.fillStyle = colorList.red;
         display.text({
             ctx: ctxStats,
@@ -429,7 +488,11 @@ const statistics = {
         if (examine) return name;
     },
 
-    clearEnemyBar() {
+    clearEnemyBar(draw) {
+        if (!draw && vuejs.enemyBar) {
+            vuejs.enemyBar.enemy = null;
+        }
+
         display.rect({
             ctx: display.ctxes.stats,
             y: MS,
@@ -477,8 +540,10 @@ const statistics = {
 
 const cursol = {
     init() {
-        this.x = this.cX = rogue.x;
-        this.y = this.cY = rogue.y;
+        let [x, y] = [rogue.x, rogue.y];
+        this.x = this.cX = x;
+        this.y = this.cY = y;
+        map.coords[x][y].cursor = true;
     },
 
     draw(x, y) {
@@ -508,6 +573,15 @@ const cursol = {
         });
     },
 
+    clearAll() {
+        for (let locs of map.coords) {
+            for (let loc of locs) {
+                loc.cursor = false;
+                loc.plot = false;
+            }
+        }
+    },
+
     plot(x, y, color) {
         let X = x - this.cX;
         let Y = y - this.cY + (IN_HEIGHT) / 2;
@@ -534,5 +608,7 @@ const cursol = {
         });
 
         ctxCur.restore();
+
+        map.coords[x][y].plot = color;
     }
 };

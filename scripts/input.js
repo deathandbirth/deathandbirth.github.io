@@ -36,17 +36,15 @@ const input = {
         if (keyCode === 27 || keyCode === 32) message.clear();
         if (flag.regular) {
             this.eventFlag(keyCode, e.altKey);
-        } else if (!flag.died && !flag.retry &&
-            (keyCode === 27 ||
-            (!flag.create && keyCode == 32) ||
-            (flag.message && keyCode === 80 && this.isCtrl))) { //ESC,  Space, ^p
+        } else if (!flag.died && !flag.retry && !flag.title && !flag.failed &&
+            (keyCode === 27 || (!flag.create && keyCode == 32))) { //ESC,  Space
             rogue.cancelCommand();
         } else if (flag.number) {
             rogue.inputNumber(keyCode);
         } else if (flag.openDoor || flag.closeDoor) {
             rogue.openOrCloseDoor(keyCode);
         } else if (flag.investigate) {
-            rogue.investigateOne(keyCode);
+            rogue.investigate(keyCode);
         } else if (flag.drop) {
             rogue.drop(keyCode);
         } else if (flag.destroy) {
@@ -65,6 +63,8 @@ const input = {
             rogue.synthesize(keyCode);
         } else if (flag.grab) {
             rogue.grabItem(keyCode);
+        } else if (flag.character) {
+            investigation.scroll(keyCode);
         } else if (flag.examine) {
             rogue.examine(keyCode);
         } else if (flag.identify) {
@@ -84,7 +84,7 @@ const input = {
         } else if (flag.sortSkill) {
             rogue.sortSkill(keyCode);
         } else if (flag.message) {
-            message.previous(keyCode);
+            message.scroll(keyCode);
         } else if (flag.pack) {
             rogue.packOrUnpack(keyCode);
         } else if (flag.bookmark) {
@@ -99,10 +99,8 @@ const input = {
             rogue.cureShop(keyCode);
         } else if (flag.stash) {
             rogue.stash(keyCode, e.altKey);
-        } else if (flag.help && keyCode === 191 && this.isShift) { //?
-            inventory.clear();
-            flag.help = false;
-            flag.regular = true;
+        } else if (flag.help) {
+            help.scroll(keyCode);
         } else if (flag.create) {
             creation.input(keyCode);
         } else if (flag.minimap) {
@@ -113,20 +111,19 @@ const input = {
             game.quit(keyCode);
         }
 
-        if (flag.died) {
-            if (data.failed) {
-                if (keyCode === 89 && this.isShift) { //Y
-                    game.start();
-                    data.failed = false;
-                    data.delete(data.name);
-                    message.draw(option.isEnglish() ?
-                        'Deleted the data' :
-                        'データ消去しました')
-                }
-            } else if (keyCode === 13) { //Enter
+        if (flag.failed) {
+            if (keyCode === 89 && this.isShift) { //Y
+                game.start();
+                data.delete(data.name);
+                message.draw(option.isEnglish() ?
+                    'Deleted the data' :
+                    'データ消去しました')
+            }
+        } else if (flag.died) {
+            if (keyCode === 13) { //Enter
                 if (rogue && rogue.isWizard) {
                     rogue.revive();
-                } else if (!flag.retry) {
+                } else if (!flag.retry && !flag.title) {
                     game.over();
                 } else {
                     data.load();
@@ -158,8 +155,14 @@ const input = {
         //^m
         if (keyCode === 77 && this.isCtrl) audio.mute();
         
-        //disable browser shortcuts
-        if (!this.isShift || !this.isCtrl || keyCode !== 73) return false;
+        //dev tool shortcut
+        if (this.isShift && this.isCtrl && keyCode === 73) {
+            this.isShift = this.isCtrl = false;
+        } else {
+
+            //disable browser shortcuts
+            return false;
+        }
     },
 
     eventFlag(keyCode, isAlt) {
@@ -221,9 +224,10 @@ const input = {
                     }
 
                     flag.synthesize = true;
+                    let msg = message.get(M_SYNTHESIZE) + message.get(M_FLOOR);
                     rogue.showInventory(P_PACK);
                     rogue.showInventory(P_CUBE);
-                    message.draw(message.get(M_SYNTHESIZE) + message.get(M_FLOOR), true);
+                    message.draw(msg, true);
                     flag.regular = false;
                 } else {
                     rogue.showSkill(rogue.skill);
@@ -236,8 +240,13 @@ const input = {
                 break;
             case 67: //c close door, C character description
                 if (this.isShift) {
-                    rogue.investigate(MIDDLE, true);
-                    flag.clearInv = true;
+                    flag.character = true;
+                    investigation.main(rogue, MIDDLE, true);
+                    Vue.nextTick(function(){
+                        investigation.scroll(keyCode, true);
+                    });
+
+                    flag.regular = false;
                     break;
                 }
             case 79: //o openDoor
@@ -254,16 +263,18 @@ const input = {
             case 68: //d drop, ^d destroy, 
                 if (this.isShift) break;
                 if (this.isCtrl) {
-                    message.draw(message.get(M_DESTROY) + message.get(M_FLOOR), true);
+                    let msg = message.get(M_DESTROY) + message.get(M_FLOOR);
+                    message.draw(msg, true);
                     flag.destroy = true;
                     rogue.showInventory(P_PACK);
                     rogue.equipmentList();
                     flag.regular = false;
                 } else {
                     flag.drop = true;
+                    let msg = message.get(M_DROP);
                     rogue.showInventory(P_PACK);
                     rogue.equipmentList();
-                    message.draw(message.get(M_DROP), true);
+                    message.draw(msg, true);
                     flag.regular = false;
 				}
 				
@@ -275,8 +286,9 @@ const input = {
                     map.draw(rogue.x, rogue.y);
                 } else if (this.isShift) {
                     flag.eat = true;
+                    let msg = message.get(M_EAT) + message.get(M_FLOOR);
                     rogue.showInventory(P_PACK);
-                    message.draw(message.get(M_EAT) + message.get(M_FLOOR), true);
+                    message.draw(msg, true);
                     flag.regular = false;
                 } else {
                     flag.equipment = !flag.equipment;
@@ -292,9 +304,10 @@ const input = {
 					}
 					
                     flag.fuel = true;
+                    let msg = message.get(M_FUEL) + message.get(M_FLOOR);
                     rogue.showInventory(P_PACK);
                     rogue.equipmentList();
-                    message.draw(message.get(M_FUEL) + message.get(M_FLOOR), true);
+                    message.draw(msg, true);
                     flag.regular = false;
                 } else {
                     if (!rogue.haveMissile(true)) break;
@@ -316,9 +329,10 @@ const input = {
                 if(this.isCtrl) break;
                 if (this.isShift) {
                     flag.gain = 1;
+                    let msg = message.get(M_GAIN);
                     rogue.showInventory(P_PACK);
                     rogue.showStats();
-                    message.draw(message.get(M_GAIN), true);
+                    message.draw(msg, true);
                     flag.regular = false;
                 } else {
                     rogue.grabItem();
@@ -326,6 +340,7 @@ const input = {
 
                 break;
             case 73: //i inventory, I investigate, ^i *create item*
+                if (this.isCtrl && this.isShift) break;
                 if (this.isCtrl) {
                     if (!rogue.isWizard) break;
                     flag.create = 'item';
@@ -334,9 +349,10 @@ const input = {
                     flag.regular = false;
                 } else if (this.isShift) {
                     flag.investigate = true;
+                    let msg = message.get(M_INVESTIGATE) + message.get(M_FLOOR);
                     rogue.showInventory(P_PACK);
                     rogue.equipmentList();
-                    message.draw(message.get(M_INVESTIGATE) + message.get(M_FLOOR), true)
+                    message.draw(msg, true)
                     flag.regular = false;
                 } else {
                     flag.inventory = !flag.inventory;
@@ -346,7 +362,7 @@ const input = {
             case 77: //m skill, M minimap
                 if (this.isCtrl) break;
                 if (this.isShift) {
-                    minimap.draw(65);
+                    minimap.draw(65); // a
                     message.draw(message.get(M_MINIMAP), true);
                     flag.minimap = true;
                     flag.regular = false;
@@ -362,14 +378,18 @@ const input = {
             case 80: //p pack sort, ^p previous message
                 if (this.isShift) break;
                 if (this.isCtrl) {
-                    message.previous(72); //h
                     flag.message = true;
+                    Vue.nextTick(function(){
+                        message.scroll(false, true);
+                    });
+
                     flag.regular = false;
                 } else {
                     flag.pack = true;
+                    let msg = message.get(M_PACK_OR_UNPACK) + message.get(M_FLOOR);
                     rogue.showInventory(P_PACK);
                     rogue.showInventory(P_BOX);
-                    message.draw(message.get(M_PACK_OR_UNPACK) + message.get(M_FLOOR), true);
+                    message.draw(msg, true);
                     flag.regular = false;
 				}
 				
@@ -386,8 +406,9 @@ const input = {
                     flag.regular = false;
                 } else {
                     flag.quaff = true;
+                    let msg = message.get(M_QUAFF) + message.get(M_FLOOR);
                     rogue.showInventory(P_PACK);
-                    message.draw(message.get(M_QUAFF) + message.get(M_FLOOR), true);
+                    message.draw(msg, true);
                     flag.regular = false;
                 }
 
@@ -402,8 +423,9 @@ const input = {
                 } else {
                     if (!rogue.canRead()) break;
                     flag.read = true;
+                    let msg = message.get(M_READ) + message.get(M_FLOOR);
                     rogue.showInventory(P_PACK);
-                    message.draw(message.get(M_READ) + message.get(M_FLOOR), true);
+                    message.draw(msg, true);
                     flag.regular = false;
                 }
 
@@ -425,15 +447,17 @@ const input = {
                         message.draw(message.get(M_DONT_HAVE_EQUIPMENT));
                         break;
 					}
-					
-                    message.draw(message.get(M_TAKE_OFF), true);
+                    
+                    let msg = message.get(M_TAKE_OFF);
+                    message.draw(msg, true);
                     rogue.equipmentList();
                     rogue.showInventory(P_PACK);
                     flag.unequip = true;
                     flag.regular = false;
                 } else {
+                    let msg = message.get(M_THROW) + message.get(M_FLOOR);
                     rogue.showInventory(P_PACK);
-                    message.draw(message.get(M_THROW) + message.get(M_FLOOR), true);
+                    message.draw(msg, true);
                     flag.throw = true;
                     flag.regular = false;
 				}
@@ -443,14 +467,16 @@ const input = {
                 if (this.isShift) break;
                 if (this.isCtrl) message.draw(`Death and Birth ver ${VERSION.toFixed(3)}`);
                 break;
-            case 87: //w equip
-                if (this.isShift || this.isCtrl) break;
-                flag.equip = true;
-                rogue.showInventory(P_PACK);
-                rogue.equipmentList();
-                message.draw(message.get(M_EQUIP) + message.get(M_FLOOR), true);
-                flag.regular = false;
-                break;
+            case 87: { //w equip
+                    if (this.isShift || this.isCtrl) break;
+                    flag.equip = true;
+                    let msg = message.get(M_EQUIP) + message.get(M_FLOOR);
+                    rogue.showInventory(P_PACK);
+                    rogue.equipmentList();
+                    message.draw(msg, true);
+                    flag.regular = false;
+                    break;
+            }
             case 88: //x examine, ^x exit 
                 if (this.isShift) break;
                 if (this.isCtrl) {
@@ -475,8 +501,9 @@ const input = {
                     rogue.indestructible = !rogue.indestructible;
                 } else {
                     flag.zap = true;
+                    let msg = message.get(M_ZAP) + message.get(M_FLOOR);
                     rogue.showInventory(P_PACK);
-                    message.draw(message.get(M_ZAP) + message.get(M_FLOOR), true);
+                    message.draw(msg, true);
                     flag.regular = false;
                 }
 
@@ -501,7 +528,11 @@ const input = {
             case 173: //firefox
                 if (this.isCtrl) break;
                 flag.option = true;
-                inventory.show(option.list, RIGHT);
+                inventory.show({
+                    list: option.list,
+                    dr: RIGHT,
+                });
+
                 message.draw(message.get(M_OPTION), true);
                 flag.regular = false;
                 break;
@@ -509,8 +540,8 @@ const input = {
                 if (this.isCtrl) break;
                 if (this.isShift) rogue.downOrUpStairs(keyCode);
                 break;
-            case 190: //. stap on, > down stairs
-            case 110: //T. stap on
+            case 190: //. step on, > down stairs
+            case 110: //T. step on
                 if (this.isCtrl) break;
                 if (keyCode === 190 && this.isShift) {
                     rogue.downOrUpStairs(keyCode);
@@ -522,12 +553,62 @@ const input = {
             case 191: //? help
                 if (this.isCtrl) break;
                 if (this.isShift) {
-                    flag.help = true;
-                    help.main();
                     flag.regular = false;
+                    flag.help = true;
+                    Vue.nextTick(function(){
+                        help.scroll(false, true);
+                    });
                 }
 
                 break;
 		}
+    },
+
+    scroll(eleP, eleC, keyCode, init) {
+        if (!init && keyCode === 67) { // c
+            rogue.cancelCommand();
+            return;
+        }
+
+        let scrollByX, scrollByY, left, down, up, right;
+        if (init) {
+            scrollByX = -eleP.scrollWidth;
+            scrollByY = -eleP.scrollHeight;
+        } else if (keyCode === 72 || keyCode === 37 | keyCode === 100) { // h, left arrow, T4
+            left = true;
+        } else if (keyCode === 74 || keyCode === 40 || keyCode === 98) { // j, down arrow, T2
+            down = true;
+        } else if (keyCode === 75 || keyCode === 38 || keyCode === 104) { // k, up arrow, T8
+            up = true;
+        } else if (keyCode === 76 || keyCode === 39 || keyCode === 102) { // l, right arrow, T6
+            right = true;
+
+        }
+
+        if (up || down) {
+            if (this.isCtrl) {
+                scrollByY = eleP.scrollHeight;
+            } else if (this.isShift) {
+                scrollByY = eleP.getBoundingClientRect().height;
+            } else if (eleC) {
+                scrollByY = eleC.getBoundingClientRect().height;
+            }
+
+            if (up) scrollByY = -scrollByY;
+        } else if (left || right) {
+            if (this.isCtrl) {
+                scrollByX = eleP.scrollWidth;
+            } else if (this.isShift) {
+                scrollByX = eleP.getBoundingClientRect().width;
+            } else if (eleC) {
+                scrollByX = eleC.getBoundingClientRect().width;
+            }
+
+            if (left) scrollByX = -scrollByX;
+        }
+
+
+        if (scrollByX !== undefined) eleP.scrollBy(scrollByX, 0);
+        if (scrollByY !== undefined) eleP.scrollBy(0, scrollByY);
     }
 }

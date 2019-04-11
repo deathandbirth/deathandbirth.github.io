@@ -2542,10 +2542,10 @@ const Item = class extends Material {
         this.name['a'] = this.nameReal['a'];
         this.name['b'] = this.nameReal['b'];
         this.changePrice();
-        if (this.equipable || this.type === 'material' || this.type === 'gem') {
-            this.color = this.colorReal = this.colorMod;
-        } else if (this.type === 'orb') {
-            this.color = this.colorReal;
+        if (this.equipable || this.type === 'material' ||
+        this.type === 'gem' || this.type === 'orb') {
+            let color = this.colorMod ? this.colorMod : this.colorReal;
+            this.color = this.colorReal = color;
         }
     }
 

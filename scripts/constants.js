@@ -47,7 +47,9 @@ const INIT_BOX_NUM = 4;
 const MAX_EMBEDDED_NUM = 6;
 const MAX_CHARGE_NUM = 100;
 const RARE_MOD_NUM = 2;
+const ENEMY_NUM_INIT = 10;
 const SPAWN_FREQ = 100;
+const ITEM_NUM_INIT = 10;
 const CURSE_PERC = 5;
 const FOV = 15;
 const FOV_SQ = FOV ** 2;
@@ -266,6 +268,7 @@ const flag = {
     openDoor: false,
     closeDoor: false,
     retry: false,
+    title: false,
     inventory: false,
     drop: false,
     destroy: false,
@@ -308,6 +311,8 @@ const flag = {
     blacksmith: false,
     floor: false,
     throw: false,
+    character: false,
+    failed: false,
 };
 
 const modBonusMap = new Map([
@@ -317,8 +322,8 @@ const modBonusMap = new Map([
 ]);
 
 const FONT_STYLE = {
-    a: 'sans serif',
-    b: "'Yu Gothic', 'Hiragino Kaku Gothic Pro', 'Hiragino Kaku Gothic ProN', 'TakaoExGothic', 'Meiryo', 'MS PGothic', sans-serif",
+    a: 'Arial, sans serif',
+    b: "Arial, 'Yu Gothic', 'Hiragino Kaku Gothic Pro', 'Hiragino Kaku Gothic ProN', 'TakaoExGothic', 'Meiryo', 'MS PGothic', sans-serif",
     c: 'Stardos Stencil, sans serif'
 };
 

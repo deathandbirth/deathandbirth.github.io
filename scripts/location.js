@@ -7,6 +7,12 @@ const Location = class extends Position {
     constructor(x, y) {
         super(x, y);
         this.item = {};
+        this.cursor = false;
+        this.plot = false;
+        this.symbol = '';
+        this.color = '';
+        this.shadow = 0;
+        this.stroke = 0;
     }
 
     getType() {
@@ -52,7 +58,7 @@ const Location = class extends Position {
                 let enter = this.enter;
                 symbol = enter.symbol;
                 color = enter.color;
-                shadow = 0;
+                shadow = enter.shadow;
                 stroke = enter.stroke;
                 break;
             case SYMBOL_TRAP:
@@ -137,6 +143,7 @@ const Location = class extends Position {
             stroke: stroke,
         });
 
+        //delete
         if (!minimap && (!rogue.litMapIds[x + ',' + y] || this.wall && this.item['a'])) {
             ctx.globalAlpha = 0.5;
             ctx.fillStyle = colorList.black;
@@ -155,12 +162,7 @@ const Location = class extends Position {
     }
 
     getInfo(stepOn) {
-        if (flag.examine) {
-            let msg = message.get(M_EXAMINE);
-            if (rogue.isWizard) msg += message.get(M_EXAMINE_W);
-            message.draw(msg + ` (${cursol.x},${cursol.y})`, true);
-		}
-		
+        if (flag.examine) rogue.drawMsgExamine();
         let msg = '';
         if (flag.examine && this.fighter && this.fighter.id !== ROGUE && this.fighter.isShowing()) {
 			msg = statistics.drawEnemyBar(this.fighter, true);

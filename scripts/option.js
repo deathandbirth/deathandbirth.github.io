@@ -13,26 +13,26 @@ const option = {
         k: { a: 'Rogue Style Movement', b: 'ローグ型移動', key:'rogueStyleMove'}
     },
 
-    display: { defaults: 'c', choise: {} },
+    display: { defaults: 'c', select: {} },
     shadow: { defaults: false },
     mute: { defaults: false },
     autosave: { defaults: true },
     'auto-destroy': { defaults: false },
     'auto-charge': { defaults: true },
     'auto-identify': { defaults: true },
-    BGM: { defaults: 'k', choise: {} },
-    SE: { defaults: 'k', choise: {} },
+    BGM: { defaults: 'k', select: {} },
+    SE: { defaults: 'k', select: {} },
     rogueStyleMove: { defaults: true },
     language: { 
         defaults: 'b',
-        choise: { 
+        select: { 
             a: { a: 'English', b: '英語' },
             b: { a: 'Japanese', b: '日本語' }
         }
     },
 
     main(keyCode) {
-        let list = !flag.option2 ? this.list : this[this.name].choise;
+        let list = !flag.option2 ? this.list : this[this.name].select;
         if (keyCode < 65 || keyCode >= Object.keys(list).length + 65) return;
         let a = getAlphabet(keyCode);
         if (!flag.option2) this.name = this.list[a]['key'];
@@ -48,6 +48,7 @@ const option = {
                 display.change(a, true);
             } else if (this.name === 'language') {
                 this[this.name].user = a;
+                vuejs.list.isEnglish = this.isEnglish();
                 display.change(this.display.user, true);
             } else if (this.name === 'BGM' || this.name === 'SE') {
                 this[this.name].user = a;
@@ -74,15 +75,28 @@ const option = {
         }
 
         inventory.clear();
-        inventory.show(this.list, RIGHT);
+        inventory.show({
+            list: this.list,
+            dr: RIGHT,
+        });
+        
         message.draw(message.get(M_OPTION), true);
     },
 
     choose(a) {
         inventory.clear();
-        inventory.show(this.list, RIGHT, a);
+        inventory.show({
+            list: this.list,
+            dr: RIGHT,
+            a: a,
+        });
+
         flag.option2 = true;
-        inventory.show(this[this.name].choise, LEFT);
+        inventory.show({
+            list: this[this.name].select,
+            dr: LEFT
+        });
+
         message.draw(message.get(M_OPTION), true);
     },
     
@@ -101,15 +115,15 @@ const option = {
         option[key2].user = option[key2].defaults;
         if (key2 === 'BGM' || key2 === 'SE') {
             for (let i = 0; i <= 10; i++) {
-                option[key2].choise[EA[i]] = { a: i, b: i };
+                option[key2].select[EA[i]] = { a: i, b: i };
             }
         }
     }
     
-    let choise = option.display.choise;
+    let select = option.display.select;
     for (let key in display.list) {
         let size = display.list[key];
-        choise[key] = {};
-        choise[key]['a'] = choise[key]['b'] = size.width + ' x ' + size.height;
+        select[key] = {};
+        select[key]['a'] = select[key]['b'] = size.width + ' x ' + size.height;
     }
 }
