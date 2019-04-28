@@ -2897,150 +2897,64 @@ const Fighter = class extends Material {
                 Math.ceil(this.totalWeight - this.weightLimit) : 0);
     }
 
-    getConditionColor() {
-        return this.sleeping ? colorList.royalblue :
-            this.paralyzed ? colorList.orange :
-            this.confused ? colorList.yellow :
-            this.blinded ? colorList.gray :
-            this.hallucinated ? colorList.purple :
-            this.canceled ? colorList.white :
-            this.infected ? colorList.infection :
-            this.poisoned ? colorList.poison :
-            colorList.red;
-    }
+    // getConditionColor() {
+    //     return this.sleeping ? colorList.royalblue :
+    //         this.paralyzed ? colorList.orange :
+    //         this.confused ? colorList.yellow :
+    //         this.blinded ? colorList.gray :
+    //         this.hallucinated ? colorList.purple :
+    //         this.canceled ? colorList.white :
+    //         this.infected ? colorList.infection :
+    //         this.poisoned ? colorList.poison :
+    //         colorList.red;
+    // }
 
-    calcCondition(calc, draw) {
-        var j = -4;
+    calcCondition() {
         let name = this.getName(true);
-        if (draw) {
-            statistics.clearCondition();
-            var len = display.fs;
-            if (this.hunger >= 800) {
-                let condition = option.isEnglish() ? 'full' : textLenList.names['full'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.lime,
-				});
-				
-                len += textLenList['full'][option.getLanguage()];
-            } else if (this.hunger > 0 && this.hunger <= 200) {
-                let condition = option.isEnglish() ? 'hungry' : textLenList.names['hungry'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.yellow,
-				});
-				
-                len += textLenList['hungry'][option.getLanguage()];
-            } else if (this.hunger === 0) {
-                let condition = option.isEnglish() ? 'starved' : textLenList.names['starved'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.red,
-				});
-				
-                len += textLenList['starved'][option.getLanguage()];
-            }
-		}
-		
         if (this.poisoned) {
-            if (calc) {
-                if (!this.indestructible && --this.hp <= 0) {
-                    let fighter;
-                    if (this.poisonedId && this.poisonedId !== this.id) {
-						fighter = this.poisonedId === ROGUE ? rogue : map.enemyList[this.poisonedId];
-					}
+            if (!this.indestructible && --this.hp <= 0) {
+                let fighter;
+                if (this.poisonedId && this.poisonedId !== this.id) {
+                    fighter = this.poisonedId === ROGUE ? rogue : map.enemyList[this.poisonedId];
+                }
 
-                    this.poisonedId = 0;
-                    this.died(fighter);
-                    return null;
-                } else if (--this.poisoned === 0) {
-                    message.draw(option.isEnglish() ?
-                        `${name} recovered from poison` :
-                        `${name}毒状態から復帰した`);
-				}
-				
-                if (flag.dash || flag.rest) flag.dash = flag.rest = false;
-			}
-			
-            if (draw) {
-                let condition = option.isEnglish() ? 'poisoned' : textLenList.names['poisoned'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.poison,
-				});
-				
-                len += textLenList['poisoned'][option.getLanguage()];
+                this.poisonedId = 0;
+                this.died(fighter);
+                return null;
+            } else if (--this.poisoned === 0) {
+                message.draw(option.isEnglish() ?
+                    `${name} recovered from poison` :
+                    `${name}毒状態から復帰した`);
             }
+            
+            if (flag.dash || flag.rest) flag.dash = flag.rest = false;
 		}
 		
         if (this.confused) {
-            if (calc && --this.confused === 0) {
+            if (--this.confused === 0) {
                 if (this.id !== ROGUE) this.removeCe();
                 message.draw(option.isEnglish() ?
                     `${name} recovered from confusion` :
                     `${name}混乱状態から復帰した`);
 			}
-			
-            if (draw) {
-                let condition = option.isEnglish() ? 'confused' : textLenList.names['confused'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.yellow,
-				});
-				
-                len += textLenList['confused'][option.getLanguage()];
-            }
 		}
 		
         if (this.paralyzed) {
-            if (calc && --this.paralyzed === 0) {
+            if (--this.paralyzed === 0) {
                 message.draw(option.isEnglish() ?
                     `${name} recovered from paralysis` :
                     `${name}麻痺状態から復帰した`);
 			}
-			
-            if (draw) {
-                let condition = option.isEnglish() ? 'paralyzed' : textLenList.names['paralyzed'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.orange,
-				});
-				
-                len += textLenList['paralyzed'][option.getLanguage()];
-            }
 		}
 		
         if (this.sleeping > 0) {
-            if (calc && --this.sleeping === 0) this.wakeUp();
-            if (draw) {
-                let condition = option.isEnglish() ? 'sleeping' : textLenList.names['sleeping'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.royalblue,
-				});
-				
-                len += textLenList['sleeping'][option.getLanguage()];
-            }
+            if (--this.sleeping === 0) this.wakeUp();
 		}
 		
         if (this.blinded) {
-            if (calc && --this.blinded === 0) {
+            if (--this.blinded === 0) {
                 if (this.id === ROGUE) {
-                    map.redraw(rogue.x, rogue.y);
+                    this.goBlind(true);
 				} else {
 					this.removeCe();
 				}
@@ -3049,43 +2963,19 @@ const Fighter = class extends Material {
                     `${name} recovered from blindness` :
                     `${name}盲目状態から復帰した`);
 			}
-			
-            if (draw) {
-                let condition = option.isEnglish() ? 'blinded' : textLenList.names['blinded'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.gray,
-				});
-				
-                len += textLenList['blinded'][option.getLanguage()];
-            }
 		}
 		
         if (this.infected > 0) {
-            if (calc && coinToss()) this.decayOrRestore();
-            if (calc && --this.infected === 0) {
+            if (coinToss()) this.decayOrRestore();
+            if (--this.infected === 0) {
                 message.draw(option.isEnglish() ?
                     `${name} recovered from infection` :
                     `${name}感染状態から復帰した`);
 			}
-			
-            if (draw) {
-                let condition = option.isEnglish() ? 'infected' : textLenList.names['infected'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.infection,
-				});
-				
-                len += textLenList['infected'][option.getLanguage()];
-            }
 		}
 		
         if (this.hallucinated) {
-            if (calc && --this.hallucinated === 0) {
+            if (--this.hallucinated === 0) {
                 if (this.id === ROGUE) {
                     hallucinate.all(true);
 				} else {
@@ -3096,101 +2986,37 @@ const Fighter = class extends Material {
                     `${name} recovered from hallucination` :
                     `${name}幻覚状態から復帰した`);
 			}
-			
-            if (draw) {
-                let condition = option.isEnglish() ? 'hallucinated' : textLenList.names['hallucinated'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.purple,
-				});
-				
-                len += textLenList['hallucinated'][option.getLanguage()];
-            }
 		}
 		
         if (this.canceled) {
-            if (calc && --this.canceled === 0) {
+            if (--this.canceled === 0) {
                 message.draw(option.isEnglish() ?
                     `${name} recovered from cancellation` :
                     `${name}封印状態から復帰した`);
 			}
-			
-            if (draw) {
-                let condition = option.isEnglish() ? 'canceled' : textLenList.names['canceled'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.white,
-				});
-				
-                len += textLenList['canceled'][option.getLanguage()];
-            }
 		}
 		
         if (this.seeInvisible > 0) {
-            if (calc && --this.seeInvisible === 0) {
+            if (--this.seeInvisible === 0) {
                 message.draw(option.isEnglish() ?
                     `${name} can no longer see invisible things` :
                     `${name}もう透明な物体を見ることが出来なくなった`);
                 seeInvisible(false);
 			}
-			
-            if (draw) {
-                let condition = option.isEnglish() ? 'see invisible' : textLenList.names['see invisible'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.light,
-                    shadow: colorList.light,
-				});
-				
-                len += textLenList['see invisible'][option.getLanguage()];
-            }
 		}
 		
         if (this.invisibility) {
-            if (calc && --this.invisibility === 0) {
+            if (--this.invisibility === 0) {
                 this.invisible = false;
-                map.coords[this.x][this.y].draw();
-                //message.draw();
 			}
-			
-            if (draw) {
-                let condition = option.isEnglish() ? 'invisible' : textLenList.names['invisible'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.light,
-                    shadow: colorList.light,
-				});
-				
-                len += textLenList['invisible'][option.getLanguage()];
-            }
 		}
 		
         if (this.ecco) {
-            if (calc && --this.ecco === 0) {
+            if (--this.ecco === 0) {
                 message.draw(option.isEnglish() ?
                     `${name} lost the effect of Ecco` :
                     `${name}エコーの効果を失った`);
 			}
-			
-            if (draw) {
-                let condition = option.isEnglish() ? 'ecco' : textLenList.names['ecco'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.air,
-				});
-				
-                len += textLenList['ecco'][option.getLanguage()];
-            }
 		}
 		
         if (this.enchantSelfDur) {
@@ -3205,18 +3031,6 @@ const Fighter = class extends Material {
                     `${name} lost the effect of Enchant Self` :
                     `${name}自己強化の効果を失った`);
 			}
-			
-            if (draw) {
-                let condition = option.isEnglish() ? 'enchant self' : textLenList.names['enchant self'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.earth,
-				});
-				
-                len += textLenList['enchant self'][option.getLanguage()];
-            }
 		}
 		
         if (this.venomDur) {
@@ -3227,18 +3041,6 @@ const Fighter = class extends Material {
                     `${name} lost the effect of Venom Hands` :
                     `${name}猛毒の手の効果を失った`);
 			}
-			
-            if (draw) {
-                let condition = option.isEnglish() ? 'venom hands' : textLenList.names['venom hands'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.poison,
-				});
-				
-                len += textLenList['venom hands'][option.getLanguage()];
-            }
 		}
 		
         if (this.confusing) {
@@ -3249,21 +3051,8 @@ const Fighter = class extends Material {
                     `${name} lost the effect of Touch of Confusion` :
                     `${name}混乱の手の効果を失った`);
 			}
-			
-            if (draw) {
-                let condition = option.isEnglish() ? 'confusing hands' : textLenList.names['confusing hands'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.poison,
-				});
-				
-                len += textLenList['confusing hands'][option.getLanguage()];
-            }
 		}
 		
-        if (!calc) return;
         if (this.speeded) {
             if (--this.speeded === 0) {
                 this.spdBuff = 0;
@@ -3563,24 +3352,17 @@ const Fighter = class extends Material {
     drawOrErase(draw, move) {
         let loc = map.coords[this.x][this.y];
         loc.fighter = draw ? this : null;
-        // if (!draw && this.mod !== NORMAL && option.shadow.user) {
-        //     map.coords[this.x][this.y + 1].draw();
-        //     map.coords[this.x + 1][this.y].draw();
-		// }
-		
-        loc.draw();
         if (this.id === ROGUE && draw) {
+            this.lightenOrDarken('Lighten', move);
             this.distMap = pathfinding.main({
                 x0: this.x,
                 y0: this.y,
                 map: true,
 			});
-			
-            this.lightenOrDarken('Lighten', move);
         }
     }
 
-    lightenOrDarken(type, search) {
+    lightenOrDarken(type, search, init) {
         shadowcasting.main({
             x0: this.x,
             y0: this.y,
@@ -4076,7 +3858,7 @@ const Fighter = class extends Material {
                 f.confused = 0;
                 if (f.blinded) {
                     f.blinded = 0;
-                    map.redraw(rogue.x, rogue.y);
+                    this.goBlind(true);
 				}
 				
                 if (skillId === EXTRA_HEAL) {
@@ -4152,7 +3934,7 @@ const Fighter = class extends Material {
                 f.confused = f.canceled = f.poisoned = f.infected = f.paralyzed = f.sleeping = 0;
                 if (f.blinded) {
                     f.blinded = 0;
-                    if (f.id === ROGUE) map.redraw(rogue.x, rogue.y);
+                    if (f.id === ROGUE) f.goBlind(true);
 				}
 				
                 if (f.hallucinated) {
@@ -4314,7 +4096,8 @@ const Fighter = class extends Material {
                     radius: skill.radius,
                     perc: percEQ < skill.limit ? percEQ : skill.limit,
 				});
-				
+                
+                map.drawShadow();
                 rogue.litMapIds = {};
                 rogue.lightenOrDarken('Lighten');
                 break;
@@ -4439,7 +4222,6 @@ const Fighter = class extends Material {
                 if (boss || f.invisible) return;
                 f.invisibility = duration;
                 f.invisible = true;
-                map.coords[f.x][f.y].draw();
                 break;
             case SEE_INVISIBLE:
                 f.seeInvisible = duration;
@@ -4449,7 +4231,7 @@ const Fighter = class extends Material {
                     `${name}透明の物体が見えるようになった`);
                 if (f.blinded) {
                     f.blinded = 0;
-                    if (f.id === ROGUE) map.redraw(rogue.x, rogue.y);
+                    if (f.id === ROGUE) f.goBlind(true);
 				}
 				
                 break;
@@ -4482,6 +4264,7 @@ const Fighter = class extends Material {
                     x: tempX,
                     y: tempY,
                     summon: true,
+                    noGroup: true,
 				});
 				
                 message.draw(option.isEnglish() ?
@@ -4494,13 +4277,11 @@ const Fighter = class extends Material {
                 if (f.invisible) {
                     if (f.invisible !== DEFAULT) f.invisibility = 0;
                     f.invisible = false;
-                    map.coords[x][y].draw();
 				}
 				
                 if (f.mimic && !f.identified) {
                     hallucinate.undoOne(f);
                     f.identified = true;
-                    map.coords[f.x][f.y].draw();
 				}
 				
                 message.draw(option.isEnglish() ?
@@ -4642,7 +4423,7 @@ const Fighter = class extends Material {
 			}
 			
             flag.examine = true;
-            cursol.init();
+            cursor.init();
             this.examine();
             return;
 		}
@@ -4844,8 +4625,7 @@ const Fighter = class extends Material {
 		
         if (this.id !== ROGUE) return;
         if (!flag.examine) {
-             display.clearOne(display.ctxes.cur);
-             cursol.clearAll();
+             cursor.clearAll();
         }
 
         inventory.clear();

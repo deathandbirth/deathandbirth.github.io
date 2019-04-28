@@ -645,30 +645,9 @@ const investigation = {
         let objVue = {};
         if (!this.ele) this.ele = document.getElementById('investigation-item');
         this.ele.style.left = direction === RIGHT ? '50%' : '0';
-        inventory.shadow(direction);
-        let i = 1;
-        let j = MS + 1;
-        let xPx = direction === RIGHT ? display.width / 2 : 0;
-        let ctxInv = display.ctxes.inv;
-        ctxInv.save();
-        ctxInv.textAlign = 'center';
-        if (obj.shadow) {
-            ctxInv.shadowColor = obj.shadow;
-            objVue.shadow = obj.shadow;
-		}
-
-        ctxInv.fillStyle = obj.color;
+        if (obj.shadow) objVue.shadow = obj.shadow;
         objVue.symbolColor = obj.color;
         objVue.symbol = obj.symbol;
-        display.text({
-            ctx: ctxInv,
-            msg: obj.symbol,
-            x: i,
-            y: j,
-            xPx: xPx,
-            stroke: obj.stroke,
-        });
-
         let nameColor;
         if (obj.cursed) {
             nameColor = colorList.red;
@@ -678,65 +657,21 @@ const investigation = {
             nameColor = colorList.white;
         }
 
-        ctxInv.fillStyle = nameColor;
         objVue.nameColor = nameColor;
-        ctxInv.textAlign = 'left';
-        let name = char ? obj.getName(false, true) : obj.getName(false, 1);
-        objVue.name = name;
-        display.text({
-            ctx: ctxInv,
-            msg: name,
-            x: i + 0.6,
-            y: j++,
-            xPx: xPx,
-            limit: 17.5,
-            stroke: obj.stroke,
-        });
+        objVue.name = char ? obj.getName(false, true) : obj.getName(false, 1);
 
-        j += 0.75;
-        ctxInv.fillStyle = colorList.white;
-        ctxInv.shadowColor = colorList.clear;
-        let limit = char ? 47 : 23;
+        let desc = '';
         if (obj.desc) {
-            inv.desc = obj.desc[option.getLanguage()];
-            obj.desc[option.getLanguage()].replace(/\t/g, '').split('\n').forEach((value, key) => {
-                display.text({
-                    ctx: ctxInv,
-                    msg: value,
-                    x: i - 0.5,
-                    y: j,
-                    xPx: xPx,
-                    limit: limit,
-                });
-
-                j += 1.1
-            });
+            desc = obj.desc[option.getLanguage()];
         } else if (obj.nameSkill) {
-            let msg = rogue.getSkillInfo(skillMap.get(obj.nameSkill), obj.skillLvl, true);
-            inv.desc = msg;
-            display.text({
-                ctx: ctxInv,
-                msg: msg,
-                x: i - 0.5,
-                y: j++,
-                xPx: xPx,
-                limit: limit,
-            });
-        } else {
-            inv.desc = "";
+            desc = rogue.getSkillInfo(skillMap.get(obj.nameSkill), obj.skillLvl, true);
         }
 
+        inv.desc = desc
         inv.obj = objVue;
-        let embeddedList = [];
 
-        j += 0.75;
-        if (char) j++;
-        ctxInv.restore();
+        let embeddedList = [];
         let mod;
-        let count = 0;
-        let jSaved = j;
-        let fs;
-        if (char) fs = display.fs - 3;
         let propList = [];
         for (let [key, term] of investigationMap.entries()) {
             if (!term) {
@@ -745,8 +680,6 @@ const investigation = {
                     propList = [];
                     mod = true;
                     if (obj.modParts) break;
-                    xPx += display.width / 4;
-                    j = jSaved;
 				}
 				
                 continue;
@@ -758,49 +691,19 @@ const investigation = {
 				continue;
             }
             
-            this.loop(obj, propList, char, ctxInv, key, term, obj[key], mod, i, j, fs, xPx);
-            j += 1.05;
+            this.loop(obj, propList, char, key, term, obj[key], mod);
             if (key === 'embeddedNum' && obj[key]) {
                 for (let k = 0, l = obj.embeddedList.length; k < l; k++) {
                     let itemVue = {};
-                    ctxInv.save();
                     let item = obj.embeddedList[k]
                     itemVue.symbol = item.symbol;
                     itemVue.symbolColor = item.color;
-                    let name = item.getName();
-                    itemVue.name = name;
-                    if (item.shadow) {
-                        ctxInv.shadowColor = item.shadow;
-                        itemVue.shadow = item.shadow;
-                    }
-
-                    if (item.cursed) {
-                        ctxInv.fillStyle = colorList.red;
-                        itemVue.nameColor = colorList.red;
-                    }
-
-                    display.text({
-                        ctx: ctxInv,
-                        msg: name,
-                        x: i + 0.5,
-                        y: j,
-                        xPx: xPx,
-                        limit: 10,
-                        stroke: item.stroke,
-                    });
-
-                    j += 1.05;
-                    ctxInv.restore();
+                    itemVue.name = item.getName();
+                    if (item.shadow) itemVue.shadow = item.shadow;
+                    if (item.cursed) itemVue.nameColor = colorList.red;
                     embeddedList.push(itemVue);
                 }
 			}
-			
-            if (char && !(++count % /*18*/ 21)) {
-                xPx += display.width / 5;
-                j = jSaved;
-			} else if (mod) {
-                if (j * display.fs > display.height - SS * display.fs) break;
-            }
         }
         
         if (char) {
@@ -812,42 +715,27 @@ const investigation = {
         inv.modPropList = propList;
         let modPartsList = {};
         if (obj.modParts) {
-            j++;
             for (let key in obj.modParts) {
                 propList = [];
-                let parts = option.isEnglish() ? key : translation.item[key];
-                ctxInv.textAlign = 'right';
-                display.text({
-                    ctx: ctxInv,
-                    msg: parts,
-                    x: i - 4.5,
-                    y: j,
-                    xPx: xPx + display.width / 4,
-                    limit: 10,
-                });
-
-                ctxInv.textAlign = 'left';
                 let objMod = obj.modParts[key];
-                
                 if (obj.type === 'orb') {
                     for (let key2 in objMod) {
                         let term = investigationMap.get(key2);
-                        this.loop(obj, propList, false, ctxInv, key2, term, objMod[key2], true, i - 3, j, undefined, xPx + display.width / 4);
-                        j += 1.1;
+                        this.loop(obj, propList, false, key2, term, objMod[key2], true);
                     }
                 } else {
                     let mod;
                     for (let [key2, term] of investigationMap.entries()) {
-                            if (!mod || !term || term.char || !objMod[key2]) {
+                        if (!mod || !term || term.char || !objMod[key2]) {
                             if (key2 === 'mod') mod = true;
                             continue;
                         }
 
-                        this.loop(obj, propList, false, ctxInv, key2, term, objMod[key2], true, i - 3, j, undefined, xPx + display.width / 4);
-                        j += 1.1;
+                        this.loop(obj, propList, false, key2, term, objMod[key2], true);
                     }
                 }
 
+                let parts = option.isEnglish() ? key : translation.item[key];
                 modPartsList[parts] = propList;
             }
         }
@@ -855,15 +743,9 @@ const investigation = {
         inv.modPartsList = modPartsList;
     },
 
-    loop(obj, propList, char, ctxInv, key, term, value, mod, i, j, fs, xPx) {
+    loop(obj, propList, char, key, term, value, mod) {
         let prop = {};
-        ctxInv.save();
-        if (fs) {
-            let fontStyle = FONT_STYLE[option.getLanguage()];
-            ctxInv.font = fs - 1 + 'px ' + fontStyle;
-        }
-    
-        let msg = term.name[option.getLanguage()];
+        prop.text = term.name[option.getLanguage()];
         if (term.plus && !char && value > 0) value = '+' + value;
         if (term.perc) value += '%';
         if (term.weight) value += 'kg';
@@ -873,11 +755,9 @@ const investigation = {
             if (obj.findBuffStat(key) || obj.modList &&
             (obj.modList[key] || obj.modList['resistAll'] &&
             (key === 'fire' || key === 'water' || key === 'air' || key === 'earth' || key === 'poison'))) {
-                ctxInv.shadowColor = colorList.buff;
                 prop.shadow = colorList.buff;
             }
         } else if (mod) {
-            ctxInv.shadowColor = colorList.buff;
             prop.shadow = colorList.buff;
         }
 
@@ -900,81 +780,34 @@ const investigation = {
             value = materialMap.get(value).name[option.getLanguage()];
         }
         
-        let rightPx = display.width / (char ? 5 : 4);
         prop.value = value;
-        ctxInv.textAlign = 'right';
-        display.text({
-            ctx: ctxInv,
-            msg: value,
-            x: i - 1.5,
-            y: j,
-            xPx: xPx + rightPx,
-            limit: 4.5,
-            fs: fs,
-        });
-
-        prop.text = msg;
-        ctxInv.textAlign = 'left';
-        display.text({
-            ctx: ctxInv,
-            msg: msg,
-            x: i - 0.5,
-            y: j,
-            xPx: xPx,
-            limit: 6,
-            fs: fs,
-        });
-
-        ctxInv.restore();
         propList.push(prop);
     },
 
-    skill(fighter, skill, dr) {
+    skill(fighter, skill) {
         let inv = this.list.skill;
         inv.show = true;
         let objVue = {};
-        inventory.shadow(dr);
-        let i = 0.5;
-        let j = MS + 1;
-        let ctxInv = display.ctxes.inv;
-        ctxInv.save();
-        ctxInv.shadowColor = skill.color;
         objVue.shadow = skill.color;
-        let nameEle = option.isEnglish() ? getUpperCase(skill.element) : translation.element[skill.element];
-        let name = skill.name[option.getLanguage()];
-        objVue.name = name;
+        objVue.name = skill.name[option.getLanguage()];
         inv.obj = objVue;
-        display.text({
-            ctx: ctxInv,
-            msg: `[${nameEle}] ` + name,
-            x: i,
-            y: j++,
-        });
 
-        ctxInv.shadowColor = colorList.shadow;
-        j++;
         let lvl = 0;
         let a = fighter.searchSkill(skill.id);
         if (a) lvl = fighter.skill[a].lvl;
         let boost = fighter.getSkillBoost(skill);
-        let desc = fighter.getSkillInfo(skill, lvl + boost);
-        inv.desc = desc;
-        display.text({
-            ctx: ctxInv,
-            msg: desc,
-            x: i + 1,
-            y: j++,
-            limit: 22,
-        });
+        inv.desc = fighter.getSkillInfo(skill, lvl + boost);
 
         let basePropList = [];
         let prop = {};
         prop.text = option.isEnglish() ? 'Element' : '元素';
-        prop.value = nameEle;
+        prop.value = option.isEnglish() ? getUpperCase(skill.element) : translation.element[skill.element];
         prop.shadow = skill.color;
         basePropList.push(prop);
-        j++;
-        let [base, perLvl, perSy, durBase] = option.isEnglish() ? ['Base', 'per Level', 'per Synerzy', 'Duration Base'] : ['基礎値', 'レベル毎', 'シナジー毎', '期間基礎値'];
+
+        let [base, perLvl, perSy, durBase] = option.isEnglish() ?
+            ['Base', 'per Level', 'per Synerzy', 'Duration Base'] :
+            ['基礎値', 'レベル毎', 'シナジー毎', '期間基礎値'];
         let perc = skill.perc ? '%' : '';
         if (skill.rate) {
             let skillBase = skill.base;
@@ -984,14 +817,6 @@ const investigation = {
 				skillBase = (option.isEnglish() ? 'radius ' : '半径') + skillBase;
             }
             
-            display.text({
-                ctx: ctxInv,
-                msg: `${base} ${skillBase}${perc}`,
-                x: i + 1,
-                y: j++,
-                limit: 22,
-            });
-
             prop = {};
             prop.text = base;
             prop.value = skillBase +perc;
@@ -999,14 +824,6 @@ const investigation = {
 
             if (!isFinite(skill.base)) perc = '%';
             let sign = skill.rate > 0 ? '+' : '';
-            display.text({
-                ctx: ctxInv,
-                msg: `${perLvl} ${sign}${skill.rate}${perc}`,
-                x: i + 1,
-                y: j++,
-                limit: 22,
-            });
-
             prop = {};
             prop.text = perLvl;
             prop.value = sign + skill.rate + perc;
@@ -1015,14 +832,6 @@ const investigation = {
 		
         if (skill.synerzy) {
             let sign = skill.synerzy > 0 ? '+' : '';
-            display.text({
-                ctx: ctxInv,
-                msg: `${perSy} ${sign}${skill.synerzy}${perc}`,
-                x: i + 1,
-                y: j++,
-                limit: 22,
-            });
-
             prop = {};
             prop.text = perSy;
             prop.value = sign + skill.synerzy + perc;
@@ -1030,14 +839,6 @@ const investigation = {
 		}
 		
         if (skill.durBase) {
-            display.text({
-                ctx: ctxInv,
-                msg: `${durBase} ${skill.durBase}`,
-                x: i + 1,
-                y: j++,
-                limit: 22,
-            });
-
             prop = {};
             prop.text = durBase;
             prop.value = skill.durBase;
@@ -1046,14 +847,6 @@ const investigation = {
 		
         if (skill.durRate) {
             let sign = skill.durRate > 0 ? '+' : '';
-            display.text({
-                ctx: ctxInv,
-                msg: `${perLvl} ${sign}${skill.durRate}`,
-                x: i + 1,
-                y: j++,
-                limit: 22,
-            });
-
             prop = {};
             prop.text = perLvl;
             prop.value = sign + skill.durRate;
@@ -1061,7 +854,6 @@ const investigation = {
 		}
         
         inv.basePropList = basePropList;
-        ctxInv.restore();
     },
 
     clear() {
@@ -1077,7 +869,7 @@ const investigation = {
         } else if (flag.examine && keyCode === 67) { // c
             flag.character = false;
             inventory.clear();
-            rogue.drawMsgExamine();
+            rogue.examineMsg();
             return;
         }
 

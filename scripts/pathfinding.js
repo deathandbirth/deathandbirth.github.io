@@ -49,7 +49,7 @@ const circleSearch = {
             case MAGIC_MAPPING:
                 if (loc.found) return;
                 loc.found = true;
-                loc.draw();
+                loc.drawGround();
                 break;
             case ITEM_DETECTION:
                 if(!loc.item['a']) return;
@@ -61,12 +61,10 @@ const circleSearch = {
                     }
                 } 
 
-                loc.draw();
                 break;
             case MONSTER_DETECTION:
                 if (!loc.fighter || loc.fighter.id === ROGUE || loc.fighter.detected) return;
                 loc.fighter.detected = true;
-                loc.draw();
                 this.count++;
                 break;
             case SCREAM:
@@ -130,7 +128,7 @@ const circleSearch = {
 
                 loc.wall = WALL_HP * (!found && coinToss());
                 loc.floor = !loc.wall;
-                loc.draw();
+                loc.drawGround();
                 break;
         }
     }
@@ -164,7 +162,7 @@ const lineOfSight = (x0, y0, x1, y1, color, skill) => {
                 break;
             }
 
-            cursol.plot(xS, yS, color);
+            cursor.drawPlot(xS, yS, color);
             if (radius && (skill.each || loc.fighter && skill.penetrate)) {
                 if (!loc.isObstacle()) {
                     shadowcasting.main({
@@ -250,8 +248,8 @@ const shadowcasting = {
         if (this.type === 'Lighten') {
             for (let key in this.oldLitMap) {
                 let [x, y] = key.split(',');
-                map.coords[x][y].sight = false;
-                map.coords[x][y].draw(); //delete
+                let loc = map.coords[x][y];
+                loc.drawShadow();
             }
         }
     },
@@ -308,7 +306,7 @@ const shadowcasting = {
     do(x, y, distance) {
         let loc = map.coords[x][y];
         if (this.color) {
-            cursol.plot(x, y, this.color);
+            cursor.drawPlot(x, y, this.color);
         } else if (this.type === 'Lighten') {
             if ((!this.lightRadSq || distance > this.lightRadSq) &&
                 !loc.lighten) return;
@@ -319,18 +317,20 @@ const shadowcasting = {
             } else {
                 loc.found = true;
                 if (!this.wall || !this.item['a']) loc.sight = true;
-                loc.draw(); //delete
+                loc.drawGround();
+                loc.drawShadow(true);
             }
         } else if (this.type === 'Light') {
             if (!loc.lighten) {
                 loc.lighten = true;
                 loc.found = true;
-                loc.draw();
+                loc.drawGround();
+                loc.drawShadow(true);
             }
         } else if (this.type === 'Dark') {
             if (loc.lighten) {
                 loc.lighten = false;
-                loc.draw();
+                loc.drawShadow();
             }
         } else if (this.type === 'Aim') {
             let self = this.fighter;

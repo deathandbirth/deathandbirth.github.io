@@ -12,6 +12,7 @@ const Data = class {
     }
 
     loadInit() {
+        display.clearAll();
         this.loadOption();
         getRndName.init();
         this.loadItemTab();
@@ -28,13 +29,12 @@ const Data = class {
         }
 
         this.convertCe();
-        
         vuejs.init();
         vuejs.list.isEnglish = option.isEnglish();
-
-        display.clearAll();
-        display.change(option.display.user, true);
         initFlag();
+        rogue.litMapIds = {};
+        rogue.lightenOrDarken('Lighten');
+        map.redraw();
         this.loadAudio();
     }
 
@@ -49,7 +49,7 @@ const Data = class {
                 thisItem.name = {};
                 thisItem.name['a'] = item.name['a'];
                 thisItem.name['b'] = item.name['b'];
-                if (key === 'potion') thisItem.color = item.color;
+                if (key === 'potion' || key === 'wand') thisItem.color = item.color;
                 this.itemTab[key][tabId] = thisItem;
             }
         }
@@ -79,7 +79,7 @@ const Data = class {
                 item.identified = thisItem.identified;
                 item.name['a'] = thisItem.name['a'];
                 item.name['b'] = thisItem.name['b'];
-                if (key === 'potion') item.color = thisItem.color;
+                if (key === 'potion' || key === 'wand') item.color = thisItem.color;
             }
         }
     }
@@ -100,7 +100,6 @@ const Data = class {
                 }
             }
         }
-
     }
 
     loadFighter(fighter) {
@@ -199,7 +198,7 @@ const data = {
             rogue.returnCubeItem();
         }
 
-        cursol.clearAll();
+        cursor.clearAll();
         message.draw(option.isEnglish() ? 'Saved' : '記録した');
         let saveData = new Data();
         localStorage.setItem(this.name, JSON.stringify(saveData));
@@ -218,14 +217,6 @@ const data = {
                 vuejs.gameLoader.verData = ver;
                 flag.regular = false;
                 flag.failed = true;
-                display.text({
-                    ctx: display.ctxes.inv,
-                    msg: option.isEnglish() ?
-                        `Failed to load. In order to delete your save data and continue, please push 'Y'.(ver ${ver})` :
-                        `読み込みに失敗しました。セーブデータを消去してゲームを続けるには、'Y'を押してください。(ver ${ver})`,
-                    x: 1,
-                    y: 1,
-                });
             }
         } else {
             game.start();

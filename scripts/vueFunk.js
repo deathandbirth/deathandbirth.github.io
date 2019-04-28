@@ -273,44 +273,6 @@ Vue.component('help', {
     `
 })
 
-Vue.component('grid-map', {
-    props:['coords', 'rogue'],
-    template: /*html*/`
-        <div 
-            class="grid-map"
-            v-bind:class="{
-                blinded: rogue.blinded,
-                hallucinated: rogue.hallucinated
-            }"
-        >
-            <ul v-for="row in coords">
-                <li
-                    v-for="loc in row"
-                    v-bind:class="{ 
-                        'sight-shadow': !loc.sight,
-                        cursor: loc.cursor,
-                        'rogue': loc.fighter && loc.fighter.id === rogue.id,
-                    }"
-                    v-bind:style="{ 
-                        color: loc.color,
-                        'text-shadow': loc.shadow ? '1px 1px 0px ' + loc.shadow : '',
-                        '-webkit-text-stroke': loc.stroke ? '1px ' + loc.stroke : ''
-                    }">
-                    {{ loc.symbol }}
-                    <span class="asterisk"
-                        v-show="loc.plot"
-                        v-bind:style="{ 
-                            color: loc.plot
-                        }">
-                        ＊
-                    </span>
-                </li>
-            </ul>	
-        </div>
-    `
-})
-
-
 const vuejs = {
     list: {
         isEnglish: false
@@ -343,26 +305,10 @@ const vuejs = {
             }
         });
 
-        this.mapMain = new Vue({
-            el: '#map-main-container',
-            data: {
-                coords: map.coords,
-                rogue: rogue,
-            }
-        });
-
-        this.mapMini = new Vue({
-            el: '#map-mini-container',
-            data: {
-                coords: minimap.coords,
-                rogue: rogue,
-                flag: flag
-            }
-        });
-
         this.msgTemp = new Vue({
             el: '#msg-temp-container',
             data: {
+                flag: flag,
                 msgs: message.listTemp
             }
         }); 
@@ -379,6 +325,7 @@ const vuejs = {
         this.condition =  new Vue({
             el: '#condition-container',
             data: {
+                flag: flag,
                 rogue: rogue,
                 colorList: colorList,
                 vueList: this.list 
@@ -388,6 +335,7 @@ const vuejs = {
         this.enemyBar =  new Vue({
             el: '#enemy-bar-container',
             data: {
+                flag: flag,
                 enemy: null,
                 name: '',
                 rogue: rogue,

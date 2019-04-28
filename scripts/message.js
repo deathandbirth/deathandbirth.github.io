@@ -388,8 +388,8 @@ const msgMap = new Map([
     }],
 
     [M_MINIMAP, {
-        a: '[a] for all [s] for yourself [c] for char [i] for item [t] fot trap [p] for portal [<],[>] for staircase',
-        b: '[a] すべて [s] 自身 [c] キャラ [i] アイテム [t] 罠 [p] ポータル [<],[>] 階段'
+        a: '[a] for all [s] for yourself [e] for enemy [i] for item [t] fot trap [p] for portal [<],[>] for staircase [c] to close',
+        b: '[a] すべて [s] 自身 [e] 敵 [i] アイテム [t] 罠 [p] ポータル [<],[>] 階段 [c] 閉じる'
     }],
 
     [M_SORT_SKILL, {
@@ -499,117 +499,51 @@ const message = {
         input.scroll(this.eleP, this.eleP.firstChild, keyCode, init);
     },
 
-    counter: 0,
-    countDelete: 0,
-    clear(all) {
-        let num = all ? 1 : 2;
-        display.rect({
-            ctx: display.ctxes.msg,
-            widthPx: display.width / num,
-            heightPx: display.height / num,
-            clear: true,
-        });
+    clear() {
+        // this.listTemp = [];
     },
 
     clearFixed() {
         if (vuejs.msgFixed) vuejs.msgFixed.msg = '';
     },
 
-    delete() {
-        setTimeout(() => {
-            display.rect({
-                ctx: display.ctxes.msg,
-                y: this.counter - 0.5,
-                widthPx: display.width / 2,
-                height: this.counter--,
-                heightPx: 1,
-                clear: true,
-            });
-        }, MSG_SPEED);
-
-    },
-
+    counter: 0,
+    countDelete: 0,
     draw(msg, fixed) {
-        if (!fixed) {
-            this.counter++;
-            let ctxMsg = display.ctxes.msg;
-            if (!this.list[0] || this.list[0].text !== msg) {
-                let obj = { text: msg, count: 1};
-
-                this.listTemp.unshift(obj);
-                if (this.listTemp.length > MAX_MSG_LEN) {
-                    this.listTemp.pop();
-                    this.countDelete++;
-                }
-
-                this.list.unshift(obj);
-                if (this.list.length > MAX_MSG_LIST_LEN) this.list.pop();
-                let curMap = ctxMsg.getImageData(0, 0, display.width / 2, (MAX_MSG_LEN - 0.5) * display.fs);
-                this.clear();
-                ctxMsg.putImageData(curMap, 0, display.fs);
-            } else {
-                let obj = this.list[0];
-                if(!this.listTemp.length){
-                    this.listTemp.unshift(obj);
-                } else {
-                    this.countDelete++;
-                }
-
-                obj.count++;
-                msg += ` (x${obj.count})`;
-                display.rect({
-                    ctx: ctxMsg,
-                    y: 0.5,
-                    widthPx: display.width / 2 + 1,
-                    height: 1,
-                    heightPx: 1,
-                    clear: true,
-                });
-            }
-            
-            setTimeout(() => {
-                let list = this.listTemp;
-                if(list.length && !this.countDelete) {
-                    list.pop();
-                } else if (this.countDelete) {
-                    this.countDelete--;
-                }
-            }, MSG_SPEED * this.counter--);
-
-            // this.delete();
-            display.text({
-                ctx: ctxMsg,
-                msg: msg,
-                x: 0.5,
-                y: 1,
-                limit: -0.5,
-                limitPx: display.width / 2,
-            });
-        } else {
-
+        if (fixed) {
             vuejs.msgFixed.msg = msg;
-			let ctxInv = display.ctxes.inv;
-            display.rect({
-                ctx: ctxInv,
-                x: 0.5,
-                xPx: display.width / 2,
-                y: 0.5,
-                widthPx: display.width / 2 + 1,
-                height: 1,
-                heightPx: 1,
-                clear: true,
-            });
-
-            display.text({
-                ctx: ctxInv,
-                msg: msg,
-                x: 0.5,
-                y: 1,
-                limit: -0.5,
-                xPx: display.width / 2,
-                limitPx: display.width / 2,
-            });
+            return;
         }
+
+        this.counter++;
+        if (!this.list[0] || this.list[0].text !== msg) {
+            let obj = { text: msg, count: 1};
+            this.listTemp.unshift(obj);
+            if (this.listTemp.length > MAX_MSG_LEN) {
+                this.listTemp.pop();
+                this.countDelete++;
+            }
+
+            this.list.unshift(obj);
+            if (this.list.length > MAX_MSG_LIST_LEN) this.list.pop();
+        } else {
+            let obj = this.list[0];
+            obj.count++;
+            if(!this.listTemp.length){
+                this.listTemp.unshift(obj);
+            } else {
+                this.countDelete++;
+            }
+        }
+        
+        setTimeout(() => {
+            let list = this.listTemp;
+            if(list.length && !this.countDelete) {
+                list.pop();
+            } else if (this.countDelete) {
+                this.countDelete--;
+            }
+        }, MSG_SPEED * this.counter--);
     },
 
     get(id) {

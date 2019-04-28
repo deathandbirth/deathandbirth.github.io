@@ -24,7 +24,8 @@ const Queue = class extends BinaryHeap {
 
         rogue.turn++;
         rogue.healAndHunger();
-        if (!flag.rest) map.draw(rogue.x, rogue.y);
+        map.drawObjectAll();
+        map.draw();
         if (rogue.paralyzed || rogue.sleeping) {
             rogue.decreaseEnergy();
             message.draw(option.isEnglish() ?

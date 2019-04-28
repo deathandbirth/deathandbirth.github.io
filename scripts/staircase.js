@@ -26,7 +26,6 @@ const Staircase = class extends Thing {
         let loc = map.coords[this.x][this.y];
         loc.stairs = this;
         loc.hidden = this.hidden;
-        if (!this.hidden) loc.draw();
         map.staircaseList[this.x + ',' + this.y] = this;
     }
 }

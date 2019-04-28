@@ -7,30 +7,10 @@ const Location = class extends Position {
     constructor(x, y) {
         super(x, y);
         this.item = {};
-        this.cursor = false;
-        this.plot = false;
-        this.symbol = '';
-        this.color = '';
-        this.shadow = 0;
-        this.stroke = 0;
     }
 
-    getType() {
-        return this.fighter && this.fighter.isShowing() ? SYMBOL_FIGHTER :
-            this.item['a'] && this.item['a'].isShowing() ? SYMBOL_ITEM :
-            !this.found ? SYMBOL_BLANK :
-            this.enter ? SYMBOL_ENTER :
-            this.trap && !this.hidden ? SYMBOL_TRAP :
-            this.door && !this.hidden ? SYMBOL_DOOR :
-            this.wall ? SYMBOL_WALL :
-            this.stairs && !this.hidden ? SYMBOL_STAIRS :
-            this.floor ? SYMBOL_FLOOR :
-            -1;
-    }
-
-    getSymbol(minimap, type) {
+    getSymbol(type) {
         let symbol, color, shadow, stroke;
-        if (!type) type = this.getType(); 
         switch (type) {
             case SYMBOL_FIGHTER:
                 let fighter = this.fighter;
@@ -51,8 +31,6 @@ const Location = class extends Position {
             case SYMBOL_BLANK: 
                 symbol = ' ';
                 color = colorList.white;
-                shadow = 0;
-                stroke = 0;
                 break;
             case SYMBOL_ENTER:
                 let enter = this.enter;
@@ -65,104 +43,129 @@ const Location = class extends Position {
                 let trap = this.trap;
                 symbol = trap.symbol;
                 color = trap.color;
-                shadow = 0;
-                stroke = 0;
                 break;
             case SYMBOL_DOOR:
                 symbol = this.isClosedDoor() ? '+' : '\'';
                 color = colorList.brown;
-                shadow = 0;
-                stroke = 0;
                 break;
             case SYMBOL_WALL:
                 symbol = '#';
                 color = this.indestructible ? colorList.brown : colorList.gray;
-                shadow = 0;
-                stroke = 0;
                 break;
             case SYMBOL_STAIRS:
                 let stairs = this.stairs;
                 symbol = stairs.symbol;
                 color = stairs.color;
-                shadow = 0;
-                stroke = 0;
                 break;
             case SYMBOL_FLOOR:
                 symbol = '.';
                 color = colorList.white;
-                shadow = 0;
-                stroke = 0;
                 break;
-        }
-
-        if (!minimap) {
-            this.symbol = symbol;
-            this.color = color;
-            this.shadow = shadow;
-            this.stroke = stroke;
         }
 
         return {symbol: symbol, color: color, shadow: shadow, stroke: stroke};
     }
 
-    draw(minimap, type, fs) {
-        let {symbol, color, shadow, stroke} = this.getSymbol(minimap, type);
-        let ctx = display.ctxes[minimap ? 'map' : 'buf'];
+    draw(typeCtx, typeSymbol) {
+        let {symbol, color, shadow, stroke} = this.getSymbol(typeSymbol);
+        let ctx = display.ctxes[typeCtx];
         let [x, y] = [this.x, this.y];
-        if (!minimap) {
-            display.rect({
-                ctx: ctx,
-                x: x,
-                y: y,
-                width: 1,
-                height: 1,
-                fs: fs,
-                clear: true,
-            });
+        let obj = {
+            ctx: ctx,
+            x: x,
+            y: y,
+            width: 1,
+            height: 1,
+        }
+
+        ctx.save();
+        if (typeCtx === 'ground') {
+            obj.clear = true;
+        } else if (typeCtx === 'object') {
+            ctx.fillStyle = colorList.black;
         }
         
-        if (rogue.blinded && (!this.fighter || this.fighter.id !== ROGUE)) return;
-        ctx.save();
+        display.rect(obj);
         ctx.fillStyle = color;
-        if (rogue.hallucinated && !shadow) ctx.shadowColor = colorList.purple;
-        if (shadow && option.shadow.user) ctx.shadowColor = shadow;
-        let xPx, yPx;
-        if (minimap && !rogue.cdl) {
-            xPx = display.width / 4;
-            yPx = display.height / 4;
+        if (!option.shadow.user) {
+            stroke = 0;
+        } else if(shadow) {
+            ctx.shadowColor = shadow;
+        } else if (rogue.hallucinated) {
+            ctx.shadowColor = colorList.purple;
         }
 
         display.text({
             ctx: ctx,
             msg: symbol,
-            x: x + 0.5,
-            y: y + 0.5,
-            xPx: xPx,
-            yPx: yPx,
-            fs: fs,
+            x: x,
+            y: y,
             stroke: stroke,
         });
-
-        //delete
-        if (!minimap && (!rogue.litMapIds[x + ',' + y] || this.wall && this.item['a'])) {
-            ctx.globalAlpha = 0.5;
-            ctx.fillStyle = colorList.black;
-            ctx.shadowColor = colorList.clear;
-            display.rect({
-                ctx: ctx,
-                x: x,
-                y: y,
-                width: 1,
-                height: 1,
-                fs: fs,
-            });
-		}
 		
         ctx.restore();
     }
 
+    drawGround() {
+        let type;
+        if (!this.found) {
+            type = SYMBOL_BLANK;
+        } else if (this.enter) {
+            type = SYMBOL_ENTER;
+        } else if (this.wall) {
+            type = SYMBOL_WALL;
+        } else if (this.door && !this.hidden) {
+            type = SYMBOL_DOOR;
+        } else if (this.floor) {
+            type = SYMBOL_FLOOR;
+        }
+
+        if (type) this.draw('ground', type);
+    }
+
+    drawObject(type) {
+        let draw;
+        if (type === SYMBOL_FIGHTER) {
+            draw = this.fighter && this.fighter.isShowing();
+        } else if (type === SYMBOL_ITEM) {
+            draw = this.item['a'] && this.item['a'].isShowing();
+        } else if (this.found) {
+            if (type === SYMBOL_TRAP) {
+                draw = this.trap && !this.hidden;
+            } else if (type === SYMBOL_STAIRS) {
+                draw = this.stairs && !this.hidden;
+            } else if (type === SYMBOL_ENTER) {
+                draw = this.enter;
+            }
+        }
+        
+        if (draw) this.draw('object', type);
+    }
+
+    drawShadow(clear) {
+        let ctx = display.ctxes.shadow;
+        let [x, y] = [this.x, this.y];
+        display.rect({
+            ctx: ctx,
+            x: x,
+            y: y,
+            width: 1,
+            height: 1,
+            clear: true,
+        });
+
+        if (clear) return;
+        display.rect({
+            ctx: ctx,
+            x: x,
+            y: y,
+            width: 1,
+            height: 1,
+        });
+    }
+
     getInfo(stepOn) {
-        if (flag.examine) rogue.drawMsgExamine();
+        if (flag.examine) rogue.examineMsg();
         let msg = '';
         if (flag.examine && this.fighter && this.fighter.id !== ROGUE && this.fighter.isShowing()) {
 			msg = statistics.drawEnemyBar(this.fighter, true);
@@ -273,7 +276,7 @@ const Location = class extends Position {
             audio.playSound('opendoor', l);
 		}
 		
-        this.draw();
+        this.drawGround();
         if (rogue.litMapIds[this.x + ',' + this.y]) rogue.lightenOrDarken('Lighten');
     }
 
@@ -284,14 +287,11 @@ const Location = class extends Position {
             delete map.itemList[item.id];
             deleteAndSortItem(this.item, a);
 		}
-		
-        this.draw();
     }
 
     deleteTrap(draw) {
         if (this.hidden) this.hidden = false;
         this.trap = null;
-        if (draw) this.draw();
     }
 
     deleteDoor(draw) {
@@ -302,14 +302,14 @@ const Location = class extends Position {
 		
         this.door = 0;
         this.floor = true;
-        if (draw) this.draw();
+        if (draw) this.drawGround();
     }
 
     deleteWall(draw) {
         if (this.indestructible) this.indestructible = false;
         this.wall = false;
         this.floor = true;
-        if (draw) this.draw();
+        if (draw) this.drawGround();
     }
 
     findHiddenObject() {
@@ -321,6 +321,7 @@ const Location = class extends Position {
 		} else if (this.isClosedDoor()) {
             name = option.isEnglish() ? 'door' : 'ドア';
             this.wall = false;
+            this.drawGround();
         } else if (this.stairs) {
 			name = this.stairs.getName();
 		}
@@ -328,7 +329,6 @@ const Location = class extends Position {
         message.draw(option.isEnglish() ?
             `You found a hidden ${name}` :
             `隠された${name}を発見した`);
-        this.draw();
         if (flag.dash) flag.dash = false;
     }
 

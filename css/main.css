@@ -1,13 +1,15 @@
+html, body {
+    height: 100%;
+}
+
 body{
 	color:white;
 	background:#3A362D;
 	font-family: "'Yu Gothic', 'Hiragino Kaku Gothic Pro', 'Hiragino Kaku Gothic ProN', 'TakaoExGothic', 'Meiryo', 'MS PGothic', sans-serif";
 	font-size: 14px;
 	letter-spacing: 1px;
-}
-
-main{
-	padding-left:5px;
+	margin: 0;
+	padding: 5px;
 }
 
 article {
@@ -42,44 +44,6 @@ article a {
 
 footer {
 	text-align: center;
-}
-
-#canvas-container{
-	background-color: black;
-	border: 2px solid #E8D296;
-	margin: 20px auto 50px;
-	position:relative;
-	overflow: hidden;
-}
-
-canvas {
-	position: absolute;
-	left: 0;
-	top: 0;
-}
-
-canvas:nth-of-type(1) {
-	z-index: 0;
-}
-
-canvas:nth-of-type(2) {
-	z-index: 1;
-}
-
-canvas:nth-of-type(3) {
-	z-index: 2;
-}
-
-canvas:nth-of-type(4) {
-	z-index: 3;
-}
-
-canvas:nth-of-type(5) {
-	z-index: 4;
-}
-
-canvas:nth-of-type(6) {
-	z-index: 5;
 }
 
 button:hover {

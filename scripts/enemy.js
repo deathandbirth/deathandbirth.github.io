@@ -100,7 +100,7 @@ const Enemy = class extends Fighter {
 
     act() {
         let dr = null;
-        if (this.calcCondition(true) === null) return;
+        if (this.calcCondition() === null) return;
         this.heal()
         if (!this.ce) {
             if (this.hallucinated) this.searchCe();
@@ -265,8 +265,7 @@ const Enemy = class extends Fighter {
             let enemy = map.enemyList[key];
             if (enemy.ce && enemy.ce.id === this.id) enemy.removeCe();
 		}
-		
-        loc.draw();
+        
         audio.playSound('kill', distanceSq(rogue.x, rogue.y, this.x, this.y));
         if (!f) return;
         if (rogue.hallucinated || this.mimic && !this.identified) hallucinate.undoOne(this);

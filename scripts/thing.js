@@ -1,6 +1,8 @@
 const Thing = class {
     constructor(obj) {
         copyObj(this, obj);
+        this.x = 0;
+        this.y = 0;
     }
 
     init(position, x, y) {

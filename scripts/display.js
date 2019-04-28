@@ -1,79 +1,42 @@
-const textLenList = {
-    names: {
-        full: '満腹',
-        hungry: '空腹',
-        starved: '飢餓',
-        poisoned: '毒',
-        confused: '混乱',
-        paralyzed: '麻痺',
-        sleeping: '睡眠',
-        blinded: '盲目',
-        infected: '感染',
-        hallucinated: '幻覚',
-        canceled: '封印',
-        'see invisible': '透視',
-        invisible: '透明',
-        ecco: 'エコー',
-        'enchant self': '自己強化',
-        'venom hands': '猛毒の手',
-        'confusing hands': '混乱の手',
-    },
-};
-
 const display = {
-    list: {
-        a: { width: 640, height: 360, fs: 13 },
-        b: { width: 768, height: 432, fs: 16 },
-        c: { width: 896, height: 504, fs: 18 },
-        d: { width: 1024, height: 576, fs: 20 },
-    },
-
-    change(a, draw) {
-        let list = this.list[a];
-        let container = document.getElementById('canvas-container');
-        container.style.width = list.width + 'px';
-        container.style.height = list.height + 'px';
-        this.width = list.width;
-        this.height = list.height;
-        let fs = list.fs;
+    init() {
+        let fs = 18;
         this.fs = fs;
-        minimap.fs = fs / 2;
-        for (let key in this.canvases) {
-            if (key === 'width' || key === 'height') continue;
-            let cvs = this.canvases[key];
-            let times = key === 'buf' ? 2 : 1;
-            cvs.setAttribute('width', list.width * times);
-            cvs.setAttribute('height', list.height * times);
-        }
-
+        this.setSize();
         for (let key in this.ctxes) {
             let ctx = this.ctxes[key];
-            if (key === 'main') continue;
-            ctx.textBaseline = 'middle';
-            ctx.lineJoin = 'bevel';
-            ctx.shadowOffsetX = 1;
-            ctx.shadowOffsetY = 1;
-            ctx.fillStyle = colorList.white;
-            let fontStyle = FONT_STYLE[option.getLanguage()];
-            if (key === 'cur') {
-                ctx.font = fs + 6 + 'px ' + fontStyle;
-                ctx.strokeStyle = colorList.yellow;
-            } else if (key === 'map') {
-                ctx.font = '10px ' + fontStyle;
-            } else if (key === 'buf') {
-                ctx.font = fs - 1  + 'px ' + FONT_STYLE[ENG];
-            } else {
-                ctx.font = fs - 2 + 'px ' + fontStyle;
+            if (key === 'shadow') {
+                ctx.globalAlpha = 0.5;
+                ctx.fillStyle = colorList.black;
+            } else if (key === 'ground' || key === 'object' || key === 'cursor') {
+                ctx.textBaseline = 'middle';
+                ctx.shadowOffsetX = 1;
+                ctx.shadowOffsetY = 1;
+                ctx.fillStyle = colorList.white;
+                ctx.font = fs + 'px ' + FONT_STYLE[ENG];
+                ctx.textAlign = 'center';
+                if (key === 'cursor') ctx.strokeStyle = colorList.yellow;
+            }
+        }
+    },
+
+    setSize(resize) {
+        for (let key in this.canvases) {
+            if (resize && key !== 'main') continue;
+            let cvs = this.canvases[key];
+            let width, height;
+            if (key === 'ground' || key === 'object' || key === 'shadow' || key === 'cursor') {
+                this.widthBuf = width = WIDTH * this.fs;
+                this.heightBuf = height = HEIGHT * this.fs;
+            } else if (key === 'main') {
+                let rect = document.getElementById("canvas-container")
+                    .getBoundingClientRect();
+                this.width = width = rect.width;
+                this.height = height = rect.height;
             }
 
-            ctx.textAlign = key === 'stats' || key === 'inv' || key === 'msg' ? 'left' : 'center';
-        }
-
-        this.textLenInit();
-        if (draw) {
-            map.redraw(rogue.x, rogue.y);
-            map.draw(rogue.x, rogue.y);
-            rogue.drawStats();
+            cvs.setAttribute('width', width);
+            cvs.setAttribute('height', height);
         }
     },
 
@@ -90,6 +53,8 @@ const display = {
         fs = this.fs,
     }) {
         let limitX = limit ? limit * fs + limitPx : undefined;
+        x += .5;
+        y += .5;
         let args = [msg, x * fs + xPx, y * fs + yPx, limitX];
         if (stroke) {
             ctx.strokeStyle = stroke;
@@ -131,70 +96,77 @@ const display = {
     image({
         ctx,
         img,
-        sx,
-        sy,
-        sWidth,
-        sHeight,
-        dx, 
-        dxPx,
-        dy,
-        dWidth,
-        dHeight,
+        sx = 0,
+        sxPx = 0,
+        sy = 0,
+        syPx = 0,
+        sWidthPx = 0,
+        sHeightPx = 0,
+        dxPx = 0, 
+        dyPx = 0,
+        dWidthPx = 0,
+        dHeightPx = 0,
     }) {
         let fs = this.fs;
-        ctx.drawImage(img, sx * fs, sy * fs, sWidth * fs, sHeight * fs, dx * fs + dxPx, dy, dWidth * fs, dHeight * fs);
+        ctx.drawImage(img, sx * fs + sxPx, sy * fs + syPx, sWidthPx, sHeightPx, dxPx, dyPx, dWidthPx, dHeightPx);
     },
 
-    clearOne(ctx, buf) {
-        let width = this.width;
-        let height = this.height;
-        if (buf) {
-            width *= 2;
-            height *= 2;
-        }
-
+    clearOne(ctx) {
+        let canvas = ctx.canvas;
         this.rect({
             ctx: ctx,
-            widthPx: width,
-            heightPx: height,
+            widthPx: canvas.width,
+            heightPx: canvas.height,
             clear: true,
         });
     },
 
     clearAll() {
         message.clearFixed();
-        for (let i in this.ctxes) {
-            this.clearOne(this.ctxes[i], i === 'buf');
-        };
-    },
-
-    textLenInit() {
-        let ctxStats = this.ctxes.stats;
-        let names = textLenList.names;
-        for (let key in names) {
-            textLenList[key] = {};
-            textLenList[key].a = ctxStats.measureText(key).width + this.fs;
-            textLenList[key].b = ctxStats.measureText(names[key]).width + this.fs;
-        }
+        for (let i in this.ctxes) this.clearOne(this.ctxes[i]);
     },
 };
 
 {
     display.canvases = {};
     display.ctxes = {};
-    let canvas = document.createElement('canvas');
-    display.canvases['buf'] = canvas;
-    display.ctxes['buf'] = canvas.getContext('2d');
-    let children = document.getElementById('canvas-container').children;
-    for (let i = 0, l = children.length; i < l; i++) {
-        let child = children[i];
-        if (child.id === "msg-err") {
-           child.style.display = 'none';
-           continue; 
-        }
-
-        let id = child.id.replace('canvas-', '');
-        display.canvases[id] = child;
-        display.ctxes[id] = child.getContext('2d');
+    let canvases = [];
+    let canvasNames = ['ground', 'object', 'shadow', 'cursor'];
+    for (let name of canvasNames) {
+        let canvas = document.createElement('canvas');
+        canvas.id = 'canvas-' + name;
+        canvases.push(canvas);
     }
+
+    canvases.push(document.getElementById('canvas-main'));
+    for (let canvas of canvases) {
+        let id = canvas.id.replace('canvas-', '');
+        display.canvases[id] = canvas;
+        display.ctxes[id] = canvas.getContext('2d');
+    }
+
+    display.init();
+}
+
+{
+    let timer;
+    window.addEventListener('resize', function () {
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(function () {
+            display.setSize(true);
+            if (!rogue) return;
+            let x, y, examine, minimap;
+            if (flag.examine) {
+                x = cursor.cX = cursor.x;
+                y = cursor.cY = cursor.y;
+                examine = true;
+            } else if (flag.minimap) {
+                minimap = true;
+            } else {
+                [x, y] = [rogue.x, rogue.y];
+            }
+
+            map.draw(x, y, examine, minimap);
+        }, 200);
+    });
 }

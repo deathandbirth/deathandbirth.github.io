@@ -1,20 +1,18 @@
 const option = {
     list: {
         a: { a: 'Language', b: '言語' , key:'language'},
-        b: { a: 'Display', b: '解像度', key:'display'},
-        c: { a: 'Shadow', b: '影', key:'shadow'},
-        d: { a: 'Mute', b: '消音', key:'mute'},
-        e: { a: 'BGM', b: 'BGM', key:'BGM'},
-        f: { a: 'SE', b: '効果音', key:'SE'},
-        g: { a: 'Autosave', b: '自動記録', key:'autosave'},
-        h: { a: 'Auto-destroy', b: '自動破壊', key:'auto-destroy'},
-        i: { a: 'Auto-charge', b: '自動充填', key:'auto-charge'},
-        j: { a: 'Auto-identify', b: '自動識別', key:'auto-identify'},
-        k: { a: 'Rogue Style Movement', b: 'ローグ型移動', key:'rogueStyleMove'}
+        b: { a: 'Shadow', b: '影', key:'shadow'},
+        c: { a: 'Mute', b: '消音', key:'mute'},
+        d: { a: 'BGM', b: 'BGM', key:'BGM'},
+        e: { a: 'SE', b: '効果音', key:'SE'},
+        f: { a: 'Autosave', b: '自動記録', key:'autosave'},
+        g: { a: 'Auto-destroy', b: '自動破壊', key:'auto-destroy'},
+        h: { a: 'Auto-charge', b: '自動充填', key:'auto-charge'},
+        i: { a: 'Auto-identify', b: '自動識別', key:'auto-identify'},
+        j: { a: 'Rogue Style Movement', b: 'ローグ型移動', key:'rogueStyleMove'}
     },
 
-    display: { defaults: 'c', select: {} },
-    shadow: { defaults: false },
+    shadow: { defaults: true },
     mute: { defaults: false },
     autosave: { defaults: true },
     'auto-destroy': { defaults: false },
@@ -36,20 +34,15 @@ const option = {
         if (keyCode < 65 || keyCode >= Object.keys(list).length + 65) return;
         let a = getAlphabet(keyCode);
         if (!flag.option2) this.name = this.list[a]['key'];
-        if (this.name === 'display' || this.name === 'language' ||
-            this.name === 'BGM' || this.name === 'SE') {
+        if (this.name === 'language' || this.name === 'BGM' || this.name === 'SE') {
             if (!flag.option2) {
                 this.choose(a);
                 return;
             } else if (a === this[this.name].user) {
                 return;
-            } else if (this.name === 'display') {
-                this[this.name].user = a;
-                display.change(a, true);
             } else if (this.name === 'language') {
                 this[this.name].user = a;
                 vuejs.list.isEnglish = this.isEnglish();
-                display.change(this.display.user, true);
             } else if (this.name === 'BGM' || this.name === 'SE') {
                 this[this.name].user = a;
                 let vol = (keyCode - 65) / 10;
@@ -64,8 +57,7 @@ const option = {
             flag.option2 = false;
         } else if (this.name === 'shadow') {
             this[this.name].user = !this[this.name].user;
-            map.redraw(rogue.x, rogue.y);
-            map.draw(rogue.x, rogue.y);
+            map.redraw();
         } else if (this.name === 'mute') {
             audio.mute();
         } else if (this.name === 'autosave' || this.name === 'auto-identify' ||
@@ -118,12 +110,5 @@ const option = {
                 option[key2].select[EA[i]] = { a: i, b: i };
             }
         }
-    }
-    
-    let select = option.display.select;
-    for (let key in display.list) {
-        let size = display.list[key];
-        select[key] = {};
-        select[key]['a'] = select[key]['b'] = size.width + ' x ' + size.height;
     }
 }

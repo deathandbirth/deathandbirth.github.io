@@ -6,12 +6,11 @@ const generateNumber = function*(i, j, bit) {
 const enums = (i, j) => [...generateNumber(i, j)];
 const enumsBit = (i, j) => [...generateNumber(i, j, true)];
 const VERSION = 0.010;
-const MS = 2; //message space
-const SS = 3; //stats space
-const IN_WIDTH = 47; //canvas.width/fs-1;
-const IN_HEIGHT = 24; //canvas.height/fs-SS;
-const WIDTH = IN_WIDTH * 2;
-const HEIGHT = IN_HEIGHT * 2;
+const IN_WIDTH = 47;
+const IN_HEIGHT = 24;
+const BUF_SIZE = 2;
+const WIDTH = IN_WIDTH * BUF_SIZE;
+const HEIGHT = IN_HEIGHT * BUF_SIZE;
 const CAVE_NUM_ROW = 4;
 const CAVE_NUM_COL = 5;
 const CAVE_NUM_MAX = CAVE_NUM_COL * CAVE_NUM_ROW;
@@ -58,6 +57,7 @@ const MIN_TELE_RAD_SQ = 15 ** 2;
 const SENSING_SQ = IN_HEIGHT ** 2;
 const MAX_MSG_LEN = 5;
 const MAX_MSG_LIST_LEN = 1000;
+const MINIMAP_MIN_RATIO = .5;
 const ENG = 'a';
 const DEFAULT = -1;
 const ROGUE = -1;

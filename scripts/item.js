@@ -2409,7 +2409,6 @@ const Item = class extends Material {
         loc.item[EA[l]] = this;
         if (sound) audio.playSound(this.type);
         if (rogue.hallucinated) hallucinate.one(this);
-        loc.draw();
     }
 
     indexOf(list) {

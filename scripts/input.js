@@ -104,7 +104,7 @@ const input = {
         } else if (flag.create) {
             creation.input(keyCode);
         } else if (flag.minimap) {
-            minimap.draw(keyCode);
+            map.drawMini(keyCode);
         } else if (flag.option) {
             option.main(keyCode);
         } else if (flag.quit) {
@@ -121,12 +121,12 @@ const input = {
             }
         } else if (flag.died) {
             if (keyCode === 13) { //Enter
-                if (rogue && rogue.isWizard) {
-                    rogue.revive();
-                } else if (!flag.retry && !flag.title) {
-                    game.over();
-                } else {
+                if (flag.retry || flag.title) {
                     data.load();
+                } else if (rogue && rogue.isWizard) {
+                    rogue.revive();
+                } else {
+                    game.over();
                 }
             }
         } else {
@@ -224,9 +224,9 @@ const input = {
                     }
 
                     flag.synthesize = true;
-                    let msg = message.get(M_SYNTHESIZE) + message.get(M_FLOOR);
                     rogue.showInventory(P_PACK);
                     rogue.showInventory(P_CUBE);
+                    let msg = message.get(M_SYNTHESIZE) + message.get(M_FLOOR);
                     message.draw(msg, true);
                     flag.regular = false;
                 } else {
@@ -283,7 +283,7 @@ const input = {
                 if (this.isCtrl) {
                     if (!rogue.isWizard) break;
                     map.lighten();
-                    map.draw(rogue.x, rogue.y);
+                    map.draw();
                 } else if (this.isShift) {
                     flag.eat = true;
                     let msg = message.get(M_EAT) + message.get(M_FLOOR);
@@ -329,9 +329,9 @@ const input = {
                 if(this.isCtrl) break;
                 if (this.isShift) {
                     flag.gain = 1;
-                    let msg = message.get(M_GAIN);
                     rogue.showInventory(P_PACK);
-                    rogue.showStats();
+                    inventory.showStats(rogue);
+                    let msg = message.get(M_GAIN);
                     message.draw(msg, true);
                     flag.regular = false;
                 } else {
@@ -362,9 +362,9 @@ const input = {
             case 77: //m skill, M minimap
                 if (this.isCtrl) break;
                 if (this.isShift) {
-                    minimap.draw(65); // a
-                    message.draw(message.get(M_MINIMAP), true);
                     flag.minimap = true;
+                    map.drawMini(65); // a
+                    message.draw(message.get(M_MINIMAP), true);
                     flag.regular = false;
                 } else {
                     if (!rogue.checkToCast()) break;
@@ -398,7 +398,7 @@ const input = {
                 if (this.isCtrl) {
                     if (!rogue.isWizard) break;
                     rogue.haveCast(CREATE_TRAP, 10);
-                    map.draw(rogue.x, rogue.y);
+                    map.draw();
                 } else if (this.isShift) {
                     flag.quit = true;
                     message.draw(message.get(M_ASK_TO_QUIT));
@@ -415,8 +415,7 @@ const input = {
                 break;
             case 82: //r read, R rest, ^r redraw
                 if (this.isCtrl) {
-                    map.redraw(rogue.x, rogue.y);
-                    map.draw(rogue.x, rogue.y);
+                    map.redraw();
                 } else if (this.isShift) {
                     flag.rest = true;
                     rogue.rest();
@@ -488,7 +487,7 @@ const input = {
                     }
                     
                     flag.examine = true;
-                    cursol.init();
+                    cursor.init();
                     rogue.examine();
                     flag.regular = false;
                 }

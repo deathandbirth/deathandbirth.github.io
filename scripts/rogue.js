@@ -100,7 +100,6 @@ const Rogue = class extends Fighter {
             setTimeout(this.rest.bind(this), WAIT_TIME);
 		} else {
             flag.rest = false;
-            map.draw(rogue.x, rogue.y);
         }
     }
 
@@ -285,18 +284,15 @@ const Rogue = class extends Fighter {
 
     died() {
         inventory.clear();
-        rogue.drawStats();
-        if (this.blinded || this.hallucinated) {
-            this.blinded = 0;
-            if (this.hallucinated) {
-                this.hallucinated = 0;
-                hallucinate.all(true);
-            } else {
-				map.redraw(rogue.x, rogue.y);
-			}
-		}
-		
-        map.draw(rogue.x, rogue.y);
+        if (this.blinded) this.blinded = 0;
+        if (this.hallucinated) {
+            this.hallucinated = 0;
+            hallucinate.all(true);
+        } else {
+            map.drawObjectAll()
+            map.draw();
+        }
+
         audio.playSound('kill');
         audio.stop(audio.curTrack);
         audio.playMusic('gameover');
@@ -307,227 +303,6 @@ const Rogue = class extends Fighter {
         flag.wait = false;
         flag.died = true;
         data.delete(data.name);
-    }
-
-    drawStats() {
-        let j = -2.4;
-        statistics.drawEnemyBar(this.ce);
-        this.calcCondition(false, true);
-        statistics.clear();
-        this.drawBoxes();
-        statistics.drawCurrentEnemy(this.ce);
-        let ctxStats = display.ctxes.stats;
-        ctxStats.save();
-        ctxStats.fillStyle = this.getConditionColor();
-        display.rect({
-            ctx: ctxStats,
-            y:  -SS,
-            yPx: display.height,
-            widthPx: (this.hp / this.hpMax) * display.width / 2,
-            heightPx: 3,
-        });
-
-        ctxStats.fillStyle = colorList.blue;
-        display.rect({
-            ctx: ctxStats,
-            xPx: (2 - this.mp / this.mpMax) * display.width / 2,
-            y: -SS,
-            yPx: display.height,
-            widthPx: display.width / 2,
-            heightPx: 3,
-        });
-
-        ctxStats.restore();
-
-        let [level, exp, str, dex, con, int, spd] = option.isEnglish() ? ['Level', 'Exp', 'Str', 'Dex', 'Con', 'Int', 'Spd'] :
-            ['レベル', '経験値', '筋', '器', '耐', '知', '速'];
-        statistics.draw({
-            msg: `${level} ${this.lvl}`,
-            x: 0.5,
-            y: j,
-            color: this.lvl < this.lvlMax ? colorList.yellow : undefined,
-        });
-
-        statistics.draw({
-            msg: `${exp} ${this.exp}`,
-            x: 5,
-            y: j,
-            color: this.exp < this.expMax ? colorList.yellow : undefined,
-            shadow: this.expBuff ? colorList.buff : undefined,
-            limit: 6,
-        });
-
-        statistics.draw({
-            msg: `$ ${this.purse}`,
-            x: 11.5,
-            y: j,
-            limit: 5,
-        });
-
-        statistics.draw({
-            msg: `HP ${this.hp}/${this.hpMax}`,
-            x: 17,
-            y: j,
-            color: this.hp <= 0 ? colorList.red : undefined,
-            limit: 7,
-        });
-
-        statistics.draw({
-            msg: `MP ${this.mp}/${this.mpMax}`,
-            x: 0.5,
-            y: j,
-            xPx: display.width / 2,
-            color: this.mp <= 0 ? colorList.red : undefined,
-            limit: 6,
-        });
-
-        statistics.draw({
-            msg: `${str} ${this.str}`,
-            x: 7,
-            y: j,
-            xPx: display.width / 2,
-            color: this.str < this.strMax ? colorList.yellow :
-                this.strSus ? colorList.lime :
-                undefined,
-            limit: 3,
-        });
-
-        statistics.draw({
-            msg: `${dex} ${this.dex}`,
-            x: 10.5,
-            y: j,
-            xPx: display.width / 2,
-            color: this.dex < this.dexMax ? colorList.yellow :
-                this.dexSus ? colorList.lime :
-                undefined,
-            limit: 3,
-        });
-
-        statistics.draw({
-            msg: `${con} ${this.con}`,
-            x: 14,
-            y: j,
-            xPx: display.width / 2,
-            color: this.con < this.conMax ? colorList.yellow :
-                this.conSus ? colorList.lime :
-                undefined,
-            limit: 3,
-        });
-
-        statistics.draw({
-            msg: `${int} ${this.int}`,
-            x: 17.5,
-            y: j,
-            xPx: display.width / 2,
-            color: this.int < this.intMax ? colorList.yellow :
-                this.intSus ? colorList.lime :
-                undefined,
-            limit: 3,
-        });
-
-        statistics.draw({
-            msg: `${spd} ${this.spd}`,
-            x: 21,
-            y: j,
-            xPx: display.width / 2,
-            color: this.slowed ? colorList.red : undefined,
-            shadow: this.speeded ? colorList.buff : undefined,
-            limit: 2.5,
-        });
-
-        let msg;
-        if (!rogue.cdl) {
-            msg = option.isEnglish() ? 'Limbo' : '辺獄';
-		} else {
-            if (rogue.cdl >= 1 && rogue.cdl <= 33) {
-                msg = option.isEnglish() ? 'Hell B' : '地獄 地下';
-                msg += rogue.cdl;
-            } else if (rogue.cdl >= 34 && rogue.cdl <= 66) {
-                msg = option.isEnglish() ? 'Purgatory' : '煉獄';
-                msg += rogue.cdl - 33;
-            } else if (rogue.cdl >= 67 && rogue.cdl <= 99) {
-                msg = option.isEnglish() ? 'Heaven' : '天国';
-                msg += rogue.cdl - 66;
-            }
-		}
-		
-        statistics.draw({
-            msg: msg,
-            x: -0.5,
-            y: j + 1.2,
-            xPx: display.width,
-            right: true,
-        });
-    }
-
-    drawBoxes() {
-        let x = 1;
-        let j = 0.1;
-        let ctxStats = display.ctxes.stats;
-        for (let i = 1; i <= this.numBoxes; i++) {
-            let item = this.boxes[i];
-            ctxStats.save();
-            ctxStats.textAlign = 'center';
-            ctxStats.fillStyle = colorList.gray;
-            ctxStats.strokeStyle = colorList.gray;
-            ctxStats.lineWidth = 0.5;
-            display.rect({
-                ctx: ctxStats,
-                x: x + i * 1.4 - 1,
-                y: -1.5 + j,
-                yPx: display.height,
-                width: 1,
-                height: 1,
-                stroke: true,
-            });
-
-            if (!item) {
-                display.text({
-                    ctx: ctxStats,
-                    msg: i,
-                    x: x + i * 1.4 - 0.5,
-                    y: -1 + j,
-                    yPx: display.height,
-                });
-			} else {
-                if (item.shadow) ctxStats.shadowColor = item.shadow;
-                ctxStats.fillStyle = item.color;
-                display.text({
-                    ctx: ctxStats,
-                    msg: item.symbol,
-                    x: x + i * 1.4 - 0.5,
-                    y: -1 + j,
-                    yPx: display.height,
-                    stroke: item.stroke,
-                });
-
-                ctxStats.font = display.fs / 2 + 'px ' + FONT_STYLE[option.getLanguage()];
-                ctxStats.fillStyle = colorList.white;
-                ctxStats.shadowColor = colorList.clear;
-                display.text({
-                    ctx: ctxStats,
-                    msg: item.quantity,
-                    x: x + i * 1.4,
-                    y: -0.5 + j,
-                    yPx: display.height,
-                    stroke: item.stroke,
-                });
-
-                if (item.charges >= 0 && item.identified) {
-                    display.text({
-                        ctx: ctxStats,
-                        msg: item.charges,
-                        x: x + i * 1.4,
-                        y: -1.2 + j,
-                        yPx: display.height,
-                    });
-                }
-			}
-            
-            x += 0.1;
-            ctxStats.restore();
-            if (i === MAX_BOX_NUM) break;
-        }
     }
 
     getStartPointInTown() {
@@ -549,7 +324,6 @@ const Rogue = class extends Fighter {
 
         map.coords[this.x][this.y].traces = ++this.numSteps;
         this.drawOrErase(true);
-        this.drawStats();
         map.queue.push(this);
     }
 
@@ -596,7 +370,8 @@ const Rogue = class extends Fighter {
 
     enterBuild(enter) {
         flag.regular = false;
-        map.draw(rogue.x, rogue.y);
+        map.drawObjectAll();
+        map.draw();
         if (enter.stash) {
             flag.stash = true;
             enter.page = 1;
@@ -1171,7 +946,6 @@ const Rogue = class extends Fighter {
         inventory.clear();
         if (flag.blacksmith) {
             this.purse -= price;
-            this.drawStats();
             let msg = message.get(M_BLACKSMITH);
             this.equipmentList();
             this.showInventory(P_PACK);
@@ -1256,8 +1030,7 @@ const Rogue = class extends Fighter {
         rogue.done = true;
         inventory.clear();
         statistics.clearEnemyBar();
-        display.clearOne(display.ctxes.cur);
-        cursol.clearAll();
+        cursor.clearAll();
     }
 
     investigate(keyCode, item, place, direction, msg) {
@@ -1312,24 +1085,21 @@ const Rogue = class extends Fighter {
     }
 
     synthesize(keyCode) {
-        if (this.switchInventory(keyCode, M_SYNTHESIZE)) return;
-        if (!flag.recipe && input.isCtrl && keyCode === 82) { //^r
+        if (flag.recipe) {
+            if (keyCode !== 67) return; //c
+            flag.recipe = false;
+            inventory.list.recipe.show = false;
+            let msg = message.get(M_SYNTHESIZE) + message.get(flag.floor ? M_PACK : M_FLOOR);
+            message.draw(msg, true);
+            return;
+        } else if (input.isCtrl && keyCode === 82) { //^r
             flag.recipe = true;
+            message.draw(message.get(M_RECIPE), true);
             inventory.showRecipe();
             return;
         }
         
-        if (flag.recipe) {
-            if (keyCode !== 67) return; //c
-            flag.recipe = false;
-            inventory.clear();
-            let msg = message.get(M_SYNTHESIZE) + message.get(flag.floor ? M_PACK : M_FLOOR);
-            this.showInventory(flag.floor ? P_FLOOR : P_PACK);
-            this.showInventory(P_CUBE);
-            message.draw(msg, true);
-            return;
-        }
-
+        if (this.switchInventory(keyCode, M_SYNTHESIZE)) return;
         let l = Object.keys(this.cube).length;
         if (keyCode === 13 && l >= 1) { //Enter
             flag.floor = false;
@@ -1355,12 +1125,8 @@ const Rogue = class extends Fighter {
             this.cubeIndex[EA[l]] = a;
         }
         
-        inventory.clear();
-        if (item.place === P_BOX) this.drawStats();
-        let msg = message.get(M_SYNTHESIZE) + message.get(flag.floor ? M_PACK : M_FLOOR);
         this.showInventory(flag.floor ? P_FLOOR : P_PACK);
         this.showInventory(P_CUBE);
-        message.draw(msg, true);
     }
 
     tryToSynthesize() {
@@ -1780,7 +1546,6 @@ const Rogue = class extends Fighter {
 
         this.cube = {};
         this.cubeIndex = {};
-        this.drawStats();
     }
 
     returnItem(item, a) {
@@ -1832,7 +1597,6 @@ const Rogue = class extends Fighter {
         this.showInventory(flag.floor ? P_FLOOR : P_PACK);
         this.showInventory(P_BOX);
         message.draw(msg, true);
-        this.drawStats();
     }
 
     useBoxItem(keyCode) {
@@ -1885,11 +1649,14 @@ const Rogue = class extends Fighter {
     }
 
     examine(keyCode) {
-        if (keyCode === 88) { //x
-            let loc = map.coords[cursol.x][cursol.y];
-            if (loc.item['a'] && this.litMapIds[cursol.x + ',' + cursol.y] &&
-                distanceSq(cursol.x, cursol.y, this.x, this.y) <= FOV_SQ &&
-                lineOfSight(this.x, this.y, cursol.x, cursol.y)) {
+        let loc = map.coords[cursor.x][cursor.y];
+        if (!keyCode) {
+            if (flag.aim) this.examinePlot();
+            loc.getInfo();
+		} else if (keyCode === 88) { //x
+            if (loc.item['a'] && this.litMapIds[cursor.x + ',' + cursor.y] &&
+                distanceSq(cursor.x, cursor.y, this.x, this.y) <= FOV_SQ &&
+                lineOfSight(this.x, this.y, cursor.x, cursor.y)) {
                 flag.floor = true;
                 flag.clearInv = true;
                 inventory.show({
@@ -1898,11 +1665,8 @@ const Rogue = class extends Fighter {
                     place: P_FLOOR
                 })
 			}
-			
-            return;
         } else if (keyCode === 67 || keyCode === 77 ||
             keyCode === 69 || keyCode === 73) { //c,m,e,i
-            let loc = map.coords[cursol.x][cursol.y];
             let fighter = loc.fighter;
             if (fighter && fighter.isShowing() &&
                 (fighter.id === ROGUE || !rogue.hallucinated)) {
@@ -1924,15 +1688,12 @@ const Rogue = class extends Fighter {
                     flag.clearInv = true;
                 }
 			}
-			
-            return;
         } else if (keyCode === 84 || keyCode === 82) { //t,r
-            let loc = map.coords[cursol.x][cursol.y];
             if (flag.wormhole) {
                 if (keyCode === 82) {
                     flag.wormhole = false;
 				} else {
-                    this.wormhole(cursol.x, cursol.y);
+                    this.wormhole(cursor.x, cursor.y);
                     return;
                 }
 			}
@@ -1949,111 +1710,27 @@ const Rogue = class extends Fighter {
             if (flag.aim && keyCode !== 82) {
                 if (flag.skill || flag.scroll) {
                     let nameSkill = flag.skill ? this.cs.id : this.ci.nameSkill;
-                    if (skillMap.get(nameSkill).range === 0) [cursol.x, cursol.y] = [this.x, this.y];
+                    if (skillMap.get(nameSkill).range === 0) [cursor.x, cursor.y] = [this.x, this.y];
 				}
 				
                 this.aim({
-                    x1: cursol.x,
-                    y1: cursol.y,
+                    x1: cursor.x,
+                    y1: cursor.y,
                 });
 			}
 			
             this.cancelCommand();
-            this.drawStats();
-            return;
-		}
-		
-        let offsetX = (IN_WIDTH - 1) / 2;
-        let offsetY = IN_HEIGHT / 2;
-        let X = cursol.x - cursol.cX + offsetX;
-        let Y = cursol.y - cursol.cY + offsetY;
-        if (!keyCode) {
-            if (flag.aim) this.examinePlot();
-            cursol.draw(X, Y);
-            map.coords[cursol.x][cursol.y].cursor = true;
-            map.coords[cursol.x][cursol.y].getInfo();
-            return;
-		}
-		
-        let dr = getDirection(keyCode);
-        if (!dr) return;
-        let [x, y] = [cursol.x + dr.x, cursol.y + dr.y];
-        let width = map.coords.length;
-        let height = map.coords[0].length;
-        if (x < 0 || x >= width || y < 0 || y >= height) return;
-        let [xinc, yinc] = [dr.x, dr.y];
-        if (input.isShift) {
-            xinc *= 10;
-            yinc *= 10;
-            if (cursol.x + xinc < 0) {
-                xinc = -cursol.x;
-                if (yinc) yinc = (yinc > 0 ? -1 : 1) * xinc;
-            } else if (cursol.x + xinc >= width) {
-                xinc = width - cursol.x - 1;
-                if (yinc) yinc = (yinc > 0 ? 1 : -1) * xinc;
-			}
-			
-            if (cursol.y + yinc < 0) {
-                yinc = -cursol.y;
-                if (xinc) xinc = (xinc > 0 ? -1 : +1) * yinc;
-            } else if (cursol.y + yinc >= height) {
-                yinc = height - cursol.y - 1;
-                if (xinc) xinc = (xinc > 0 ? 1 : -1) * yinc;
-            }
-		}
-		
-        cursol.clear(X, Y);
-
-        map.coords[cursol.x][cursol.y].cursor = false;
-
-        cursol.x += xinc;
-        cursol.y += yinc;
-        X += xinc;
-        Y += yinc;
-        let found;
-        if (X < 0 || X >= IN_WIDTH) {
-            cursol.cX = cursol.x;
-            X = offsetX;
-            if (yinc > 0 && Y > offsetY && Y < IN_HEIGHT ||
-                yinc < 0 && Y < offsetY && Y >= 0) {
-                cursol.cY = cursol.y;
-                Y = offsetY;
-			}
-			
-            found = true;
-		}
-		
-        if (Y < 0 || Y >= IN_HEIGHT) {
-            cursol.cY = cursol.y;
-            Y = offsetY;
-            if (Y >= IN_HEIGHT) {
-                cursol.cY++;
-                Y++;
-			}
-			
-            if (xinc > 0 && X > offsetX && X < IN_WIDTH ||
-                xinc < 0 && X < offsetX && X >= 0) {
-                cursol.cX = cursol.x;
-                X = offsetX;
-			}
-			
-            found = true;
-		}
-		
-        if (found) map.draw(cursol.cX, cursol.cY);
-        if (flag.aim) this.examinePlot();
-        cursol.draw(X, Y);
-        map.coords[cursol.x][cursol.y].cursor = true;
-        map.coords[cursol.x][cursol.y].getInfo();
+		} else {
+            cursor.move(keyCode);
+        }
     }
 
     examinePlot(aim) {
-        if (aim) cursol.init();
-        let [x, y] = [cursol.x, cursol.y];
+        if (aim) cursor.init();
+        let [x, y] = [cursor.x, cursor.y];
         let color = colorList.white;
         let skill;
-        display.clearOne(display.ctxes.cur);
-        cursol.clearAll();
+        cursor.clearAll();
         if (flag.zap) {
             if (this.ci.identified || itemTab[this.ci.type].get(this.ci.tabId).identified) { //
                 skill = skillMap.get(this.ci.nameSkill);
@@ -2064,44 +1741,32 @@ const Rogue = class extends Fighter {
             color = skill.color;
             if (skill.range === 0)[x, y] = [this.x, this.y];
 		}
-		
+        
         lineOfSight(this.x, this.y, x, y, color, skill);
     }
 
-    drawMsgExamine() {
+    examineMsg() {
         let msg = message.get(M_EXAMINE);
-        if (rogue.isWizard) msg += message.get(M_EXAMINE_W);
-        message.draw(msg + ` (${cursol.x},${cursol.y})`, true);
+        if (this.isWizard) msg += message.get(M_EXAMINE_W);
+        message.draw(msg + ` (${cursor.x},${cursor.y})`, true);
     }
-
 
     cancelCommand() {
         if (flag.synthesize) {
             this.returnCubeItem();
 		} else if (flag.aim || flag.examine) {
-            display.clearOne(display.ctxes.cur);
-            cursol.clearAll();
-            map.draw(rogue.x, rogue.y);
-            statistics.clearEnemyBar();
-            statistics.drawEnemyBar(this.ce);
+            cursor.clearAll();
+            map.draw();
+            this.checkCe();
         } else if (flag.minimap) {
-            display.clearOne(display.ctxes.map);
-		}
+            map.drawObjectAll();
+            map.draw();
+        }
 
         inventory.clear();
         initFlag();
         this.ci = null;
     }
-
-    showStats(a) {
-        inventory.showStats(this, a);
-    }
-
-
-    showSKillDetail(skill, dr) {
-        investigation.skill(this, skill, dr);
-    }
-
 
     addOrRemoveBookmark(keyCode) {
         if (flag.bookmark === 1) {
@@ -2152,7 +1817,7 @@ const Rogue = class extends Fighter {
             this.ca = a;
             inventory.clear();
             if (input.isShift) {
-                this.showStats(a);
+                inventory.showStats(this, a);
                 flag.gain = 3;
                 flag.number = true;
                 this.inputNumber();
@@ -2168,14 +1833,13 @@ const Rogue = class extends Fighter {
             if (!id) return;
             let skill = skillMap.get(id);
             if (input.isShift) {
-                inventory.clear();
-                this.showSkill(this.pack[this.ca].list);
-                this.showSKillDetail(skill, LEFT);
-                message.draw(message.get(M_GAIN_SKILL), true);
+                investigation.skill(this, skill);
                 return;
 			}
 			
             let key = this.searchSkill(id);
+
+            //TODO
             let lvl = key ? this.skill[key].lvl : 0;
             if (this.lvl < skill.reqLvl + lvl ||
                 skill.reqSynerzy && skill.reqSynerzy > this.getSynerzy(skill)) {
@@ -2194,7 +1858,6 @@ const Rogue = class extends Fighter {
                 return;
 			}
 			
-            inventory.clear();
             this.cs = id;
             flag.number = true;
             this.showSkill(this.pack[this.ca].list);
@@ -2279,7 +1942,7 @@ const Rogue = class extends Fighter {
         if (input.isShift) {
             inventory.clear();
             this.showSkill(this.skill);
-            this.showSKillDetail(skill, LEFT);
+            investigation.skill(this, skill);
             flag.skill = true;
             message.draw(message.get(M_CAST), true);
             return;
@@ -2512,7 +2175,6 @@ const Rogue = class extends Fighter {
                 audio.playSound('grab');
 			}
 			
-            this.drawStats();
             flag.shop = true;
             flag.number = false;
             inventory.clear();
@@ -2606,7 +2268,6 @@ const Rogue = class extends Fighter {
                     `${name}を保管した`);
 			}
 			
-            this.drawStats();
             flag.stash = true;
             flag.number = false;
             inventory.clear();
@@ -2643,7 +2304,6 @@ const Rogue = class extends Fighter {
 			this.hunger = MAX_HUNGER;
 		}
 
-        this.drawStats();
         flag.cure = false;
         flag.regular = true;
         inventory.clear();
@@ -2725,8 +2385,7 @@ const Rogue = class extends Fighter {
 		
         if (!this.hunger && (flag.dash || flag.rest)) flag.dash = flag.rest = false;
         this.checkCe();
-        this.calcCondition(true);
-        this.drawStats();
+        this.calcCondition();
     }
 
     inputNumber(keyCode) {
@@ -2849,10 +2508,13 @@ const Rogue = class extends Fighter {
     }
 
     checkCe() {
+        statistics.clearEnemyBar();
         if (!this.ce) return;
         if (!this.ce.isShowing()) {
             statistics.clearEnemyBar();
             this.ce = null;
+        } else {
+			statistics.drawEnemyBar(this.ce);
         }
     }
 
@@ -2886,9 +2548,9 @@ const Rogue = class extends Fighter {
         statistics.clearEnemyBar();
     }
 
-    goBlind() {
-        display.clearOne(display.ctxes.buf, true);
-        map.coords[this.x][this.y].draw();
-        this.removeCe();
+    goBlind(clear) {
+        map.drawObjectAll();
+        map.draw();
+        if (!clear) this.removeCe();
     }
 }

@@ -26,7 +26,6 @@ const creation = {
             if (type === 'coin') {
                 if (num > 0) {
                     rogue.purse += num;
-                    rogue.drawStats();
                 } else {
                     message.draw('Incorrect syntax');
                 }
@@ -37,6 +36,9 @@ const creation = {
                     quantity: num2,
                     uniqueId: num3,
                 });
+
+                map.drawObjectAll();
+                map.draw();
             } else {
 				message.draw('Incorrect syntax');
 			}
@@ -49,9 +51,10 @@ const creation = {
                     x: rogue.x,
                     y: rogue.y,
                     summon: true,
-				});
-				
-                map.draw(rogue.x, rogue.y);
+                });
+                
+                map.drawObjectAll();
+                map.draw();
             } else {
 				message.draw('Incorrect syntax');
 			}
@@ -88,15 +91,12 @@ const creation = {
             position: INIT,
 		});
 		
+        map.redraw();
         let track = audio.getDungeonTrack(rogue.cdl, boss);
         if (audio.curTrack !== track) {
             audio.stop(audio.curTrack);
             audio.playMusic(track);
         }
-
-        vuejs.mapMain.$nextTick(function(){
-            map.draw(rogue.x, rogue.y);
-        });
     },
 
     town() {
@@ -104,11 +104,9 @@ const creation = {
         town.createAll();
         this.stairs(1, DOWN, LOCATION, POSITION.hell.x, POSITION.hell.y, true);
         rogue.putDown(true);
+        map.redraw();
         audio.stop(audio.curTrack);
         audio.playMusic(!rogue.inferno ? 'town' : 'town2');
-        vuejs.mapMain.$nextTick(function(){
-            map.draw(rogue.x, rogue.y);
-        });
     },
 
     enemy({
@@ -116,6 +114,7 @@ const creation = {
         x,
         y,
         summon,
+        noGroup,
         magic,
         boost,
         times = 1,
@@ -147,7 +146,7 @@ const creation = {
                 fighter = fighterTab[typeT][tabIdT];
             }
 
-            let count = fighter.group ? rndIntBet(2, 4) : 1;
+            let count = !noGroup && fighter.group ? rndIntBet(2, 4) : 1;
             let [posT, xT, yT] = [position, x, y];
             for (let j = 0; j < count; j++) {
                 let fighterNew = new Enemy(fighter);
