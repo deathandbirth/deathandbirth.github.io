@@ -1,5 +1,22 @@
 const display = {
     init() {
+        this.canvases = {};
+        this.ctxes = {};
+        let canvases = [];
+        let canvasNames = ['ground', 'object', 'shadow', 'cursor'];
+        for (let name of canvasNames) {
+            let canvas = document.createElement('canvas');
+            canvas.id = 'canvas-' + name;
+            canvases.push(canvas);
+        }
+
+        canvases.push(vue.$refs.canvasMain);
+        for (let canvas of canvases) {
+            let id = canvas.id.replace('canvas-', '');
+            this.canvases[id] = canvas;
+            this.ctxes[id] = canvas.getContext('2d');
+        }
+
         let fs = 18;
         this.fs = fs;
         this.setSize();
@@ -29,8 +46,7 @@ const display = {
                 this.widthBuf = width = WIDTH * this.fs;
                 this.heightBuf = height = HEIGHT * this.fs;
             } else if (key === 'main') {
-                let rect = document.getElementById("canvas-container")
-                    .getBoundingClientRect();
+                let rect = vue.$refs.canvasContainer.getBoundingClientRect();
                 this.width = width = rect.width;
                 this.height = height = rect.height;
             }
@@ -126,27 +142,6 @@ const display = {
         for (let i in this.ctxes) this.clearOne(this.ctxes[i]);
     },
 };
-
-{
-    display.canvases = {};
-    display.ctxes = {};
-    let canvases = [];
-    let canvasNames = ['ground', 'object', 'shadow', 'cursor'];
-    for (let name of canvasNames) {
-        let canvas = document.createElement('canvas');
-        canvas.id = 'canvas-' + name;
-        canvases.push(canvas);
-    }
-
-    canvases.push(document.getElementById('canvas-main'));
-    for (let canvas of canvases) {
-        let id = canvas.id.replace('canvas-', '');
-        display.canvases[id] = canvas;
-        display.ctxes[id] = canvas.getContext('2d');
-    }
-
-    display.init();
-}
 
 {
     let timer;

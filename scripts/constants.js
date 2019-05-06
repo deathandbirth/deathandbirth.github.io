@@ -328,3 +328,4 @@ const FONT_STYLE = {
 };
 
 let rogue;
+let vue;

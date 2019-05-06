@@ -486,17 +486,17 @@ const msgMap = new Map([
 const message = {
     listTemp: [],
     list: [],
-    total: '',
     scroll(keyCode, init) {
         if (init) {
             message.draw(message.get(M_MESSAGE) + message.get(M_SCROLL), true);
-            if (!this.eleP) this.eleP = document.getElementById('message-prev-list');
+            this.eleP = vue.$refs.messagePrevContainer.$refs.messagePrevList;
+            this.eleC = this.eleP.firstElementChild;
             let l = this.list.length;
-            this.total = `[${l}/${MAX_MSG_LIST_LEN}] `
+            vue.msgTotal = `[${l}/${MAX_MSG_LIST_LEN}] `
                 + (option.isEnglish() ? 'Message List' : 'メッセージ一覧'); 
         }
 
-        input.scroll(this.eleP, this.eleP.firstChild, keyCode, init);
+        input.scroll(this.eleP, this.eleC, keyCode, init);
     },
 
     clear() {
@@ -504,14 +504,14 @@ const message = {
     },
 
     clearFixed() {
-        if (vuejs.msgFixed) vuejs.msgFixed.msg = '';
+        vue.msgFixed = '';
     },
 
     counter: 0,
     countDelete: 0,
     draw(msg, fixed) {
         if (fixed) {
-            vuejs.msgFixed.msg = msg;
+            vue.msgFixed = msg;
             return;
         }
 

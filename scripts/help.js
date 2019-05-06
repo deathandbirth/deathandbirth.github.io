@@ -67,8 +67,9 @@ const help = {
     scroll(keyCode, init) {
         if (init) {
             message.draw(message.get(M_HELP) + message.get(M_SCROLL), true);
-            if (!this.eleP) this.eleP = document.getElementById('command-list-box');
-            if (!this.eleC) this.eleC = document.getElementById('command-list').firstChild;
+            let $refs = vue.$refs.help.$refs;
+            this.eleP = $refs.commandListBox;
+            this.eleC = $refs.commandList.$el.firstElementChild;
         }
 
         input.scroll(this.eleP, this.eleC, keyCode, init);

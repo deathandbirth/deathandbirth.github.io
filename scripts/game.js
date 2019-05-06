@@ -33,9 +33,9 @@ const game = {
         audio.init();
         rogue = new Rogue;
         rogue.init();
-        vuejs.init();
+        vue.rogue = rogue;
         map.stashList = [];
-        message.list = [];
+        vue.msgList.splice(0);
         message.clear();
         this.clearLevel();
         creation.town();

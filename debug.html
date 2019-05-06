@@ -9,170 +9,53 @@
 	<link href="https://fonts.googleapis.com/css?family=Stardos+Stencil" rel="stylesheet">
 </head>
 <body>
-	<div class="game-container">
+	<div id="game-container">
 
 		<!-- Message Fixed -->
 		<p
 			id="message-fixed"
-			:title="msg"
-		>{{ msg }}</p>
+			:title="msgFixed"
+		>{{ msgFixed }}</p>
 
 		<!-- UI -->
 		<div id="ui-container">
 
 			<!-- Canvas -->
-			<div id="canvas-container">
-				<canvas id="canvas-main"></canvas>
+			<div
+				id="canvas-container"
+				ref="canvasContainer"
+				:class="{ front: flag.minimap }"
+			>
+				<canvas
+					id="canvas-main"
+					ref="canvasMain"
+				></canvas>
 			</div>
 
 			<!-- Message Temp-->
-			<div id="message-container">
-				<div
-					v-show="!flag.minimap"
-					id="msg-temp-container"
-				>
-					<ul>
-						<li
-							v-for="msg in msgs"
-						>{{ msg.text + (msg.count > 1 ? ' (x' + msg.count + ')' : '') }}</li>
-					</ul>
-				</div>
-			</div>
+			<message-temp
+				id="message-temp-container"
+				:list="msgListTemp"
+			></message-temp>
 			
 			<!-- Condition -->
-			<div
-				v-show="!flag.minimap"
+			<condition
+				v-if="rogue"
 				id="condition-container"
-			>
-				<ul>
-					<li
-						v-if="rogue.hunger >= 800"
-						v-bind:style="{ color: colorList.lime }"
-					>{{ vueList.isEnglish ? 'full' : '満腹'}}</li>
-					<li
-						v-else-if="rogue.hunger > 0 && rogue.hunger <= 200"
-						v-bind:style="{ color: colorList.yellow }"
-					>{{ vueList.isEnglish ? 'hungry' : '空腹'}}</li>
-					<li
-						v-else-if="rogue.hunger === 0"
-						v-bind:style="{ color: colorList.red }"
-					>{{ vueList.isEnglish ? 'starved' : '飢餓'}}</li>
-					<li
-						v-if="rogue.poisoned"
-						v-bind:style="{ color: colorList.poison }"
-					>{{ vueList.isEnglish ? 'poisoned' : '毒'}}</li>
-					<li
-						v-if="rogue.confused"
-						v-bind:style="{ color: colorList.yellow }"
-					>{{ vueList.isEnglish ? 'confused' : '混乱'}}</li>
-					<li
-						v-if="rogue.paralyzed"
-						v-bind:style="{ color: colorList.orange }"
-					>{{ vueList.isEnglish ? 'paralyzed' : '麻痺'}}</li>
-					<li
-						v-if="rogue.sleeping > 0"
-						v-bind:style="{ color: colorList.royalblue }"
-					>{{ vueList.isEnglish ? 'sleeping' : '睡眠'}}</li>
-					<li
-						v-if="rogue.blinded"
-						v-bind:style="{ color: colorList.gray }"
-					>{{ vueList.isEnglish ? 'blinded' : '盲目'}}</li>
-					<li
-						v-if="rogue.infected"
-						v-bind:style="{ color: colorList.infection }"
-					>{{ vueList.isEnglish ? 'infected' : '感染'}}</li>
-					<li
-						v-if="rogue.hallucinated"
-						v-bind:style="{ color: colorList.purple }"
-					>{{ vueList.isEnglish ? 'hallucinated' : '幻覚'}}</li>
-					<li
-						v-if="rogue.canceled"
-						v-bind:style="{ color: colorList.white }"
-					>{{ vueList.isEnglish ? 'canceled' : '封印'}}</li>
-					<li
-						v-if="rogue.seeInvisible"
-						v-bind:style="{
-							color: colorList.light,
-							'text-shadow': '1px 1px 0 ' + colorList.light
-						}"
-					>{{ vueList.isEnglish ? 'see invisible' : '透視'}}</li>
-					<li
-						v-if="rogue.invisibility"
-						v-bind:style="{
-							color: colorList.light,
-							'text-shadow': '1px 1px 0 ' + colorList.light
-						}"
-					>{{ vueList.isEnglish ? 'invisible' : '透明'}}</li>
-					<li
-						v-if="rogue.ecco"
-						v-bind:style="{ color: colorList.air }"
-					>{{ vueList.isEnglish ? 'ecco' : 'エコー'}}</li>
-					<!-- TODO -->
-					<li
-						v-if="rogue.enchantSelfDur"
-						v-bind:style="{ color: colorList.earth }"
-					>{{ vueList.isEnglish ? 'enchant self' : '自己強化'}}</li>
-					<li
-						v-if="rogue.venomDur"
-						v-bind:style="{ color: colorList.poison }"
-					>{{ vueList.isEnglish ? 'venom hands' : '猛毒の手'}}</li>
-					<li
-						v-if="rogue.confusing"
-						v-bind:style="{ color: colorList.poison }"
-					>{{ vueList.isEnglish ? 'confusing hands' : '混乱の手'}}</li>
-				</ul>
-			</div>
+				:rogue="rogue"
+				:color-list="colorList"
+				:is-english="isEnglish"
+			></condition>
 
 			<!-- Enemy Bar -->
-			<div
-				v-show="!flag.minimap"
+			<enemy-bar
+				v-if="barEnemy"
 				id="enemy-bar-container"
-			>
-				<div 
-					v-if="enemy"
-					class="enemy-bar-box"
-				>
-					<p
-						v-bind:class="{ 
-							'unique-color': enemy.stroke,
-						}"
-						v-bind:style="{ 
-							color: enemy.cursed ? colorList.red : '',
-							'text-shadow': enemy.shadow ? '1px 1px 0 ' + enemy.shadow : ''
-						}"
-					>{{ 'Lv' + enemy.lvl + ' ' + name }}</p>
-					<div class="enemy-bar">
-						<span 
-							class="hp"
-							v-bind:style="{ 
-								width: (enemy.hp < 0 ? 0 : enemy.hp / enemy.hpMax * 100) + '%',
-								'background-color': (
-									enemy.sleeping ? colorList.royalblue :
-									enemy.paralyzed ? colorList.orange :
-									enemy.confused ? colorList.yellow :
-									enemy.blinded ? colorList.gray :
-									enemy.hallucinated ? colorList.purple :
-									enemy.canceled ? colorList.white :
-									enemy.infected ? colorList.infection :
-									enemy.poisoned ? colorList.poison :
-									''
-								)
-							}"
-						></span>
-					</div>
-				</div>
-				<span
-					v-if="rogue.ce"
-					class="enemy-icon"
-					v-bind:class="{ 
-						'unique-color': rogue.ce.stroke,
-					}"
-					v-bind:style="{ 
-						color: rogue.ce.color,
-						'text-shadow': rogue.ce.shadow ? '1px 1px 0 ' + rogue.ce.shadow : ''
-					}"
-				>{{ rogue.ce.symbol }}</span>
-			</div>
+				:enemy="barEnemy"
+				:name="barName"
+				:rogue="rogue"
+				:color-list="colorList"
+			></enemy-bar>
 
 			<!-- Menu -->
 			<div id="menu-container">
@@ -181,385 +64,108 @@
 				<inventory
 					id="inventory-right"
 					class="right"
-					:inv="inv"
+					:inv="inventoryList.right"
 				></inventory>
 
 				<!-- Inventory Left -->
 				<inventory
 					id="inventory-left"
 					class="left"
-					:inv="inv"
+					:inv="inventoryList.left"
 				></inventory>
 
 				<!-- Stats -->
 				<inventory
-					id="stats" 
+					id="stats-container" 
 					class="left"
-					:inv="inv"
+					:inv="inventoryList.stats"
 				></inventory>
 
 				<!-- Recipe -->
-				<div
-					v-show="inv.show"
-					id="recipe" 
-					class="inventory middle"
-				>
-					<ul class="item-list">
-						<li v-for="item in inv.items">
-							<ul class="item-prop-list">
-								<li class="item-name">{{ item.name }}</li>
-								<li class="item-cost">{{ item.cost }}</li>
-								<li class="item-recipe">{{ item.recipe }}</li>
-							</ul>
-						</li>
-					</ul>
-				</div>
+				<recipe
+					id="recipe-container" 
+					:inv="inventoryList.recipe"
+				></recipe>
 
 				<!-- Equipment -->
 				<equipment
-					id="equipment"
-					:inv="inv"
+					id="equipment-container"
+					:inv="inventoryList.equipment"
 				></equipment>
 
 				<!-- Skill Right -->
 				<skill
-					id="skill"
+					id="skill-container"
 					class="right"
-					:inv="inv"
+					:inv="inventoryList.skill"
 				></skill>
 
-				<!-- Bookmark -->
+				<!-- Bookmark Left -->
 				<skill
-					id="bookmark"
+					id="bookmark-container"
 					class="left"
-					:inv="inv"
+					:inv="inventoryList.bookmark"
 				></skill>
 
-				<!-- Message List -->
-				<div
-					v-show="flag.message"
-					id="message-list-container"
-					class="inventory middle"
-				>
-					<ul id="message-prev-list"
-						class="message-list"
-					>
-						<li v-for="msg in message.list">{{ msg.text + (msg.count > 1 ? ` (x${msg.count})` : '') }}</li>
-					</ul>
-					<inv-bottom
-						:left="message.total"
-					></inv-bottom>
-				</div>
+				<!-- Message Prev -->
+				<message-prev
+					v-if="flag.message"
+					ref="messagePrevContainer"
+					:list="msgList"
+					:total="msgTotal"
+				></message-prev>
 
 				<!-- Help -->
 				<help
-					v-show="flag.help"
-					id="help"
+					v-if="flag.help"
+					id="help-container"
+					ref="help"
 					:help="help"
 					:rogue="rogue"
-					:vue-list="vueList"
+					:is-english="isEnglish"
 				></help>
 
 				<!-- Investigation Item -->
-				<div
-					v-show="inv.show"
+				<investigation-item
 					id="investigation-item"
-					class="inventory investigation"
-				>
-					<ul class="item-prop-list">
-						<item-symbol :item="inv.obj"></item-symbol>
-						<item-name :item="inv.obj"></item-name>
-					</ul>
-					<p class="description">{{ inv.desc }}</p>
-					<ul class="base-prop-list">
-						<li v-for="prop in inv.basePropList">
-							<ul
-								class="base-prop"
-								:style="{ 
-									'text-shadow': prop && prop.shadow ? '1px 1px 0 ' + prop.shadow : ''
-								}"
-							>
-								<li>{{ prop.text }}</li>
-								<li>{{ prop.value }}</li>
-							</ul>
-						</li>
-					</ul>
-					<ul class="embedded-list">
-						<li v-for="item in inv.embeddedList">
-							<ul class="embedded-prop">
-								<item-symbol :item="item"></item-symbol>
-								<item-name :item="item"></item-name>
-							</ul>
-						</li>
-					</ul>
-					<ul class="mod-prop-list">
-						<li v-for="prop in inv.modPropList">
-							<ul class="mod-prop buff">
-								<li>{{ prop.text }}</li>
-								<li>{{ prop.value }}</li>
-							</ul>
-						</li>
-					</ul>
-					<ul class="mod-parts-list">
-						<li v-for="(props, key) in inv.modPartsList">
-							<ul class="mod-parts-prop-list">
-								<li class="mod-parts">{{ key }}</li>
-								<li>
-									<ul
-										v-for="prop in props"
-										class="mod-prop buff"
-									>
-										<li>{{ prop.text }}</li>
-										<li>{{ prop.value }}</li>
-									</ul>
-								</li>
-							</ul>
-						</li>
-					</ul>
-				</div>
+					ref="investigationItem"
+					:inv="investigationList.item"
+				></investigation-item>
 
 				<!-- Investigation Fighter -->
-				<div
-					v-show="inv.show"
+				<investigation-fighter
 					id="investigation-fighter"
-					class="inventory investigation"
-				>
-					<ul class="item-prop-list">
-						<item-symbol :item="inv.obj"></item-symbol>
-						<item-name :item="inv.obj"></item-name>
-					</ul>
-					<p class="description">{{ inv.desc }}</p>
-					<ul
-						id="fighter-prop-list"
-						class="base-prop-list"
-					>
-						<li v-for="prop in inv.basePropList">
-							<ul
-								class="base-prop"
-								:style="{ 
-									'text-shadow': prop && prop.shadow ? '1px 1px 0 ' + prop.shadow : ''
-								}"
-							>
-								<li>{{ prop.text }}</li>
-								<li>{{ prop.value }}</li>
-							</ul>
-						</li>
-					</ul>
-				</div>
+					ref="investigationFighter"
+					:inv="investigationList.fighter"
+				></investigation-fighter>
 
 				<!-- Investigation Skill -->
-				<div
-					v-show="inv.show"
+				<investigation-skill
 					id="investigation-skill"
-					class="inventory investigation"
-				>
-					<ul class="item-prop-list">
-						<item-symbol :item="inv.obj"></item-symbol>
-						<item-name :item="inv.obj"></item-name>
-					</ul>
-					<p class="description">{{ inv.desc }}</p>
-					<ul class="base-prop-list">
-						<li v-for="prop in inv.basePropList">
-							<ul
-								class="base-prop"
-								:style="{ 
-									'text-shadow': prop && prop.shadow ? '1px 1px 0 ' + prop.shadow : ''
-								}"
-							>
-								<li>{{ prop.text }}</li>
-								<li>{{ prop.value }}</li>
-							</ul>
-						</li>
-					</ul>
-				</div>
+					:inv="investigationList.skill"
+				></investigation-skill>
 
 			</div>
 		</div>
 
 		<!-- Stats Fixed -->
-		<div id="stats-fixed-container">
-			<div class="stats-fixed-left-container">
-				<div class="stats-fixed-bar">
-					<span 
-						class="hp"
-						v-bind:style="{ 
-							width: (rogue.hp < 0 ? 0 : rogue.hp / rogue.hpMax * 100) + '%',
-							'background-color': (
-								rogue.sleeping ? colorList.royalblue :
-								rogue.paralyzed ? colorList.orange :
-								rogue.confused ? colorList.yellow :
-								rogue.blinded ? colorList.gray :
-								rogue.hallucinated ? colorList.purple :
-								rogue.canceled ? colorList.white :
-								rogue.infected ? colorList.infection :
-								rogue.poisoned ? colorList.poison :
-								''
-							)
-						}"
-					></span>
-				</div>
-				<div class="stats-fixed-box">
-					<ul class="stats-fixed-list-top">
-						<li
-							v-bind:style="{ color: rogue.lvl < rogue.lvlMax ? colorList.yellow : '' }"
-						>{{ (vueList.isEnglish ? 'Level ' : 'レベル ') + rogue.lvl }}</li>
-						<li
-							v-bind:class="{ 
-								buff: rogue.expBuff,
-							}"
-
-							v-bind:style="{
-								color: rogue.exp < rogue.expMax ? colorList.yellow : '',
-							}"
-						>{{ (vueList.isEnglish ? 'Exp ' : '経験値 ') + rogue.exp }}</li>
-						<li>{{ '$ ' + rogue.purse }}</li>
-						<li
-							v-bind:style="{
-								color: rogue.hp <= 0 ? colorList.red : '',
-							}"
-						>{{ 'HP '+ rogue.hp + '/' + rogue.hpMax }}</li>
-					</ul>
-					<ul class="stats-fixed-list-bottom">
-						<li 
-							class="rogue-boxes-list"
-							v-for="(item, key) in rogue.boxes"
-						>
-							<span
-								v-bind:class="{ 
-									'unique-color': item && item.stroke,
-								}"
-
-								v-bind:style="{ 
-									color: item ? item && item.color : '',
-									'text-shadow': item && item.shadow ? '1px 1px 0 ' + item.shadow : ''
-								}"
-							>{{ item ? item.symbol : key }}</span>
-							<span 
-								class="item-num"
-								v-if="item"
-							>{{ item.quantity }}</span>
-							<span 
-								class="item-charge"
-								v-if="item && item.identified && isFinite(item.charges)"
-							>{{ item.charges}}</span>
-						</li>
-					</ul>
-				</div>
-			</div>
-			<div class="stats-fixed-right-container">
-				<div class="stats-fixed-bar">
-					<span class="mp"
-						v-bind:style="{ 
-							width: (rogue.mp < 0 ? 0 : rogue.mp / rogue.mpMax * 100) + '%'
-						}"
-					></span>
-				</div>
-				<div class="stats-fixed-box">
-					<ul class="stats-fixed-list-top">
-						<li
-							v-bind:style="{
-								color: rogue.mp <= 0 ? colorList.red : '',
-							}"
-						>{{ 'MP '+ rogue.mp + '/' + rogue.mpMax }}</li>
-						<li
-							v-bind:class="{ 
-								sustain: rogue.strSus
-							}"
-
-							v-bind:style="{
-								color: rogue.str < rogue.strMax ? colorList.yellow : '',
-							}"
-						>{{ (vueList.isEnglish ? 'Str ' : '筋 ') + rogue.str }}</li>
-						<li
-							v-bind:class="{ 
-								sustain: rogue.dexSus
-							}"
-
-							v-bind:style="{
-								color: rogue.dex < rogue.dexMax ? colorList.yellow : '',
-							}"
-						>{{ (vueList.isEnglish ? 'Dex ' : '器 ') + rogue.dex }}</li>
-						<li
-							v-bind:class="{ 
-								sustain: rogue.conSus
-							}"
-
-							v-bind:style="{
-								color: rogue.con < rogue.conMax ? colorList.yellow : '',
-							}"
-						>{{ (vueList.isEnglish ? 'Con ' : '耐 ') + rogue.con }}</li>
-						<li
-							v-bind:class="{ 
-								sustain: rogue.intSus
-							}"
-
-							v-bind:style="{
-								color: rogue.int < rogue.intMax ? colorList.yellow : '',
-							}"
-						>{{ (vueList.isEnglish ? 'Int ' : '知 ') + rogue.int }}</li>
-						<li
-							v-bind:class="{ 
-								buff: rogue.speeded
-							}"
-
-							v-bind:style="{
-								color: rogue.slowed ? colorList.red : '',
-							}"
-						>{{ (vueList.isEnglish ? 'Spd ' : '速 ') + rogue.spd }}</li>
-					</ul>
-					<div class="stats-fixed-list-bottom">
-						<span v-if="!rogue.cdl">{{ vueList.isEnglish ? 'Limbo' : '辺獄' }}</span>
-						<span v-else-if="rogue.cdl >= 1 && rogue.cdl <= 33">{{ (vueList.isEnglish ? 'Hell B' : '地獄 地下') + rogue.cdl }}</span>
-						<span v-else-if="rogue.cdl >= 34 && rogue.cdl <= 66">{{ (vueList.isEnglish ? 'Purgatory ' : '煉獄') + (rogue.cdl - 33) }}</span>
-						<span v-else-if="rogue.cdl >= 67 && rogue.cdl <= 99">{{ (vueList.isEnglish ? 'Heaven ' : '天国') + (rogue.cdl - 66) }}</span>
-					</div>
-				</div>
-			</div>
-		</div>
+		<stats-fixed
+			v-if="rogue"
+			id="stats-fixed-container"
+			:rogue="rogue"
+			:color-list="colorList"
+			:is-english="isEnglish"
+		></stats-fixed>
 
 		<!-- Game Loader -->
-		<div
+		<game-loader
+			v-if="flag.title || flag.retry || flag.failed"
 			id="game-loader"
-			v-show="flag.title || flag.retry || flag.failed"
-		>
-			<div
-				id="title"
-				class="title"
-				v-show="flag.title || flag.failed"
-				v-cloak
-			>
-				<p
-					class="err-msg"
-					v-show="flag.failed"
-				>
-					{{ (vueList.isEnglish ?
-					"Failed to load. In order to delete your save data and continue, please push 'Y'" :
-					"読み込みに失敗しました。セーブデータを消去してゲームを続けるには、'Y'を押してください。")
-					+ ` (data ver ${verData.toFixed(3)})` }}
-				</p>
-				<div class="msg-box">
-					<h1>Death and Birth</h1>
-					<h2>{{ vueList.isEnglish ?
-						'[Enter] to start' :
-						'[Enter] ゲームスタート' }}
-					</h2>
-				</div>
-				<small class="ver">{{ `ver ${ver.toFixed(3)}` }}</small>
-			</div>
-			<div
-				class="retry"
-				v-show="flag.retry"
-				v-cloak
-			>
-				<div class="msg-box">
-					<h1>G A M E  O V E R</h1>
-					<h2>{{ vueList.isEnglish ?
-						'[Enter] to retry' :
-						'[Enter] リトライ' }}
-					</h2>
-				</div>
-			</div>
-		</div>
+			:flag="flag"
+			:ver="ver"
+			:ver-data="verData"
+			:is-english="isEnglish"
+		></game-loader>
 
 	</div>
 

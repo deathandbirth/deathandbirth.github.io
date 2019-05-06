@@ -642,9 +642,14 @@ const investigation = {
         if (char && obj.mimic && !obj.identified) return;
         let inv = this.list[char ? 'fighter' : 'item'];
         inv.show = true;
+        if (!char) {
+            Vue.nextTick(function(){
+                let ele = vue.$refs.investigationItem.$el;
+                ele.style.left = direction === RIGHT ? '50%' : '0';
+            });
+        }
+
         let objVue = {};
-        if (!this.ele) this.ele = document.getElementById('investigation-item');
-        this.ele.style.left = direction === RIGHT ? '50%' : '0';
         if (obj.shadow) objVue.shadow = obj.shadow;
         objVue.symbolColor = obj.color;
         objVue.symbol = obj.symbol;
@@ -864,7 +869,8 @@ const investigation = {
 
     scroll(keyCode, init) {
         if (init) {
-            if (!this.eleP) this.eleP = document.getElementById('fighter-prop-list');
+            this.eleP = vue.$refs.investigationFighter.$refs.fighterPropList;
+            this.eleC = this.eleP.firstElementChild;
             message.draw(message.get(M_CHARACTER) + message.get(M_SCROLL), true);
         } else if (flag.examine && keyCode === 67) { // c
             flag.character = false;
@@ -873,7 +879,7 @@ const investigation = {
             return;
         }
 
-        input.scroll(this.eleP, this.eleP.firstChild, keyCode, init);
+        input.scroll(this.eleP, this.eleC, keyCode, init);
     }
 };
 

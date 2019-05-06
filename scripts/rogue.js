@@ -369,7 +369,7 @@ const Rogue = class extends Fighter {
     }
 
     enterBuild(enter) {
-        flag.regular = false;
+        input.switchFlag();
         map.drawObjectAll();
         map.draw();
         if (enter.stash) {
@@ -486,10 +486,10 @@ const Rogue = class extends Fighter {
             if (!loc.item['b']) {
                 this.grabItem(65);
 			} else {
+                input.switchFlag();
                 let msg = message.get(M_GRAB);
                 this.showInventory(P_FLOOR);
                 message.draw(msg, true);
-                flag.regular = false;
             }
         }
     }
@@ -733,8 +733,8 @@ const Rogue = class extends Fighter {
         if (this.switchInventory(keyCode, M_ZAP)) return;
         let item;
         if (boxItem) {
+            input.switchFlag();
             flag.zap = true;
-            flag.regular = false;
             item = boxItem;
         } else {
             let a = getAlphabetOrNumber(keyCode);
@@ -1989,7 +1989,7 @@ const Rogue = class extends Fighter {
                 nameSkill: id,
             });
         } else if (skill.wall) {
-            flag.regular = false;
+            input.switchFlag();
             flag.aim = true;
             message.draw(message.get(M_CAST_DIR) + message.get(M_TO_EXAMINE), true);
             this.examinePlot(true);

@@ -1,6 +1,7 @@
 window.onload = () => {
-    vuejs.loader();
+    vueInit();
     Vue.nextTick(function(){
+        display.init();
         game.title(true);
         input.init();
     });

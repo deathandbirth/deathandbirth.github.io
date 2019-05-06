@@ -42,7 +42,7 @@ const option = {
                 return;
             } else if (this.name === 'language') {
                 this[this.name].user = a;
-                vuejs.list.isEnglish = this.isEnglish();
+                vue.isEnglish = this.isEnglish();
             } else if (this.name === 'BGM' || this.name === 'SE') {
                 this[this.name].user = a;
                 let vol = (keyCode - 65) / 10;

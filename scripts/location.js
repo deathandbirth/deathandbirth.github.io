@@ -110,7 +110,7 @@ const Location = class extends Position {
         let type;
         if (!this.found) {
             type = SYMBOL_BLANK;
-        } else if (this.enter) {
+        } else if (this.enter && !this.enter.portal) {
             type = SYMBOL_ENTER;
         } else if (this.wall) {
             type = SYMBOL_WALL;

@@ -1,4 +1,29 @@
-/* TEMP */
+function vueInit() {
+    vue = new Vue({
+        el: '#game-container',
+        data: {
+            isEnglish: false,
+            flag: flag,
+            ver: VERSION,
+            verData: 0,
+            msgFixed: '',
+            rogue: null,
+            help: help,
+            inventoryList: inventory.list,
+            investigationList: investigation.list,
+            colorList: colorList,
+            msgListTemp: message.listTemp,
+
+            // Message Prev
+            msgList: message.list,
+            msgTotal: '', 
+
+            // Enemy Bar
+            barEnemy: null,
+            barName: '',
+        }
+    });
+}
 
 Vue.component('item-key', {
     props:['item'],
@@ -22,11 +47,11 @@ Vue.component('item-symbol', {
         <li
             class="item-symbol"
             v-show="item.symbol"
-            v-bind:class="{ 
+            :class="{ 
                 'unique-color': item.stroke,
             }"
 
-            v-bind:style="{ 
+            :style="{ 
                 color: item.symbolColor,
                 'text-shadow': item.shadow ? '1px 1px 0 ' + item.shadow : ''
             }"
@@ -39,11 +64,11 @@ Vue.component('item-name', {
     template: /*html*/`
         <li
             class="item-name flex-ellipsis"
-            v-bind:class="{ 
+            :class="{ 
                 'unique-color': item.stroke,
             }"
 
-            v-bind:style="{ 
+            :style="{ 
                 color: item.nameColor ? item.nameColor : '',
                 'text-shadow': item.shadow ? '1px 1px 0 ' + item.shadow : ''
             }"
@@ -136,7 +161,7 @@ Vue.component('stats-list', {
             <li
                 class="stats-prop-list"
                 v-for="stats in list"
-                v-bind:style="{ 
+                :style="{ 
                     color: stats.color ? stats.color : '',
                     'text-shadow': stats.shadow ? '1px 1px 0 ' + stats.shadow : ''
                 }"
@@ -226,13 +251,13 @@ Vue.component('skill', {
 })
 
 Vue.component('command-list', {
-    props:['cmdList', 'vueList'],
+    props:['cmdList', 'isEnglish'],
     template: /*html*/`
         <ul class="command-list">
             <li v-for="command in cmdList">
                 <ul class="command">
-                    <li class="command-key">{{ command.cmd[vueList.isEnglish ? 'a' : 'b'] }}</li>
-                    <li class="command-text">{{ command.name[vueList.isEnglish ? 'a' : 'b'] }}</li>
+                    <li class="command-key">{{ command.cmd[isEnglish ? 'a' : 'b'] }}</li>
+                    <li class="command-text">{{ command.name[isEnglish ? 'a' : 'b'] }}</li>
                 </ul>
             </li>
         </ul>
@@ -240,204 +265,528 @@ Vue.component('command-list', {
 })
 
 Vue.component('help', {
-    props:['help', 'rogue', 'vueList'],
+    props:['help', 'rogue', 'isEnglish'],
     template: /*html*/`
         <div
             class="inventory middle"
         >
             <div 
-                id="command-list-box"
+                ref="commandListBox"
                 class="command-list-box"
             >
                 <command-list
-                    id="command-list"
+                    ref="commandList"
                     :cmd-list="help.listLeft"
-                    :vue-list="vueList"
+                    :isEnglish="isEnglish"
                 ></command-list>
                 <div class="command-list-box-right">
                     <command-list
                         :cmd-list="help.listRight"
-                        :vue-list="vueList"
+                        :isEnglish="isEnglish"
                     ></command-list>
                     <command-list
-                        v-show="rogue.isWizard"
+                        v-if="rogue&&rogue.isWizard"
                         :cmd-list="help.listWizard"
-                        :vue-list="vueList"
                     ></command-list>
                 </div>
             </div>
             <inv-bottom
-                :left="vueList.isEnglish ? 'Command List' : 'コマンド一覧'"
+                :left="isEnglish ? 'Command List' : 'コマンド一覧'"
             ></inv-bottom>
         </div>
     `
 })
 
-const vuejs = {
-    list: {
-        isEnglish: false
-    },
+Vue.component('message-temp', {
+    props:['list'],
+    template: /*html*/`
+        <div class="message-temp-box">
+            <ul>
+                <li
+                    v-for="msg in list"
+                >{{ msg.text + (msg.count > 1 ? ' (x' + msg.count + ')' : '') }}</li>
+            </ul>
+        </div>
+    `
+})
 
-    loader() {
-        this.gameLoader = new Vue({
-            el: '#game-loader',
-            data: {
-                flag: flag,
-                ver: VERSION,
-                verData: 0,
-                vueList: this.list 
-            }
-        });
-    },
+Vue.component('message-prev', {
+    props:['list', 'total'],
+    template: /*html*/`
+        <div class="inventory middle">
+            <ul ref="messagePrevList"
+                class="message-list"
+            >
+                <li v-for="msg in list">{{ msg.text + (msg.count > 1 ? ' (x' + msg.count + ')' : '') }}</li>
+            </ul>
+            <inv-bottom
+                :left="total"
+            ></inv-bottom>
+        </div>
+    `
+})
 
-    initDone: false,
-    init() {
-        if (this.initDone) {
-            this.update();
-            return;
-        }
+Vue.component('investigation-item', {
+    props:['inv'],
+    template: /*html*/`
+        <div
+            v-if="inv.show"
+            class="inventory investigation"
+        >
+            <ul class="item-prop-list">
+                <item-symbol :item="inv.obj"></item-symbol>
+                <item-name :item="inv.obj"></item-name>
+            </ul>
+            <p class="description">{{ inv.desc }}</p>
+            <ul class="base-prop-list">
+                <li v-for="prop in inv.basePropList">
+                    <ul
+                        class="base-prop"
+                        :style="{ 
+                            'text-shadow': prop && prop.shadow ? '1px 1px 0 ' + prop.shadow : ''
+                        }"
+                    >
+                        <li>{{ prop.text }}</li>
+                        <li>{{ prop.value }}</li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="embedded-list">
+                <li v-for="item in inv.embeddedList">
+                    <ul class="embedded-prop">
+                        <item-symbol :item="item"></item-symbol>
+                        <item-name :item="item"></item-name>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="mod-prop-list">
+                <li v-for="prop in inv.modPropList">
+                    <ul class="mod-prop buff">
+                        <li>{{ prop.text }}</li>
+                        <li>{{ prop.value }}</li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="mod-parts-list">
+                <li v-for="(props, key) in inv.modPartsList">
+                    <ul class="mod-parts-prop-list">
+                        <li class="mod-parts">{{ key }}</li>
+                        <li>
+                            <ul
+                                v-for="prop in props"
+                                class="mod-prop buff"
+                            >
+                                <li>{{ prop.text }}</li>
+                                <li>{{ prop.value }}</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    `
+})
+
+Vue.component('investigation-fighter', {
+    props:['inv'],
+    template: /*html*/`
+        <div
+            v-if="inv.show"
+            class="inventory investigation"
         
-        this.initDone = true;
-        this.msgFixed = new Vue({
-            el: '#message-fixed',
-            data: {
-                msg: '' 
-            }
-        });
+        >
+            <ul class="item-prop-list">
+                <item-symbol :item="inv.obj"></item-symbol>
+                <item-name :item="inv.obj"></item-name>
+            </ul>
+            <p class="description">{{ inv.desc }}</p>
+            <ul
+                ref="fighterPropList"
+                class="base-prop-list"
+            >
+                <li v-for="prop in inv.basePropList">
+                    <ul
+                        class="base-prop"
+                        :style="{ 
+                            'text-shadow': prop && prop.shadow ? '1px 1px 0 ' + prop.shadow : ''
+                        }"
+                    >
+                        <li>{{ prop.text }}</li>
+                        <li>{{ prop.value }}</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    `
+})
 
-        this.msgTemp = new Vue({
-            el: '#msg-temp-container',
-            data: {
-                flag: flag,
-                msgs: message.listTemp
-            }
-        }); 
+Vue.component('investigation-skill', {
+    props:['inv'],
+    template: /*html*/`
+        <div
+            v-if="inv.show"
+            class="inventory investigation"
+        >
+            <ul class="item-prop-list">
+                <item-symbol :item="inv.obj"></item-symbol>
+                <item-name :item="inv.obj"></item-name>
+            </ul>
+            <p class="description">{{ inv.desc }}</p>
+            <ul class="base-prop-list">
+                <li v-for="prop in inv.basePropList">
+                    <ul
+                        class="base-prop"
+                        :style="{ 
+                            'text-shadow': prop && prop.shadow ? '1px 1px 0 ' + prop.shadow : ''
+                        }"
+                    >
+                        <li>{{ prop.text }}</li>
+                        <li>{{ prop.value }}</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    `
+})
 
-        this.statsFixed =  new Vue({
-            el: '#stats-fixed-container',
-            data: {
-                rogue: rogue,
-                colorList: colorList,
-                vueList: this.list 
-            },
-        });
+Vue.component('recipe', {
+    props:['inv'],
+    template: /*html*/`
+        <div
+            v-if="inv.show"
+            class="inventory middle"
+        >
+            <ul class="item-list">
+                <li v-for="item in inv.items">
+                    <ul class="item-prop-list">
+                        <li class="item-name">{{ item.name }}</li>
+                        <li class="item-cost">{{ item.cost }}</li>
+                        <li class="item-recipe">{{ item.recipe }}</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    `
+})
 
-        this.condition =  new Vue({
-            el: '#condition-container',
-            data: {
-                flag: flag,
-                rogue: rogue,
-                colorList: colorList,
-                vueList: this.list 
-            },
-        });
+Vue.component('enemy-bar', {
+    props:['enemy', 'name', 'rogue', 'colorList'],
+    template: /*html*/`
+        <div>
+            <div class="enemy-bar-box">
+                <p
+                    :class="{ 
+                        'unique-color': enemy.stroke,
+                    }"
+                    :style="{ 
+                        color: enemy.cursed ? colorList.red : '',
+                        'text-shadow': enemy.shadow ? '1px 1px 0 ' + enemy.shadow : ''
+                    }"
+                >{{ 'Lv' + enemy.lvl + ' ' + name }}</p>
+                <div class="enemy-bar">
+                    <span 
+                        class="hp"
+                        :style="{ 
+                            width: (enemy.hp < 0 ? 0 : enemy.hp / enemy.hpMax * 100) + '%',
+                            'background-color': (
+                                enemy.sleeping ? colorList.royalblue :
+                                enemy.paralyzed ? colorList.orange :
+                                enemy.confused ? colorList.yellow :
+                                enemy.blinded ? colorList.gray :
+                                enemy.hallucinated ? colorList.purple :
+                                enemy.canceled ? colorList.white :
+                                enemy.infected ? colorList.infection :
+                                enemy.poisoned ? colorList.poison :
+                                ''
+                            )
+                        }"
+                    ></span>
+                </div>
+            </div>
+            <span
+                v-if="rogue.ce"
+                class="enemy-icon"
+                :class="{ 
+                    'unique-color': rogue.ce.stroke,
+                }"
+                :style="{ 
+                    color: rogue.ce.color,
+                    'text-shadow': rogue.ce.shadow ? '1px 1px 0 ' + rogue.ce.shadow : ''
+                }"
+            >{{ rogue.ce.symbol }}</span>
+        </div>
+    `
+})
 
-        this.enemyBar =  new Vue({
-            el: '#enemy-bar-container',
-            data: {
-                flag: flag,
-                enemy: null,
-                name: '',
-                rogue: rogue,
-                colorList: colorList,
-                vueList: this.list 
-            },
-        });
+Vue.component('condition', {
+    props:['rogue', 'colorList', 'isEnglish'],
+    template: /*html*/`
+        <div>
+            <ul>
+                <li
+                    v-if="rogue.hunger >= 800"
+                    :style="{ color: colorList.lime }"
+                >{{ isEnglish ? 'full' : '満腹'}}</li>
+                <li
+                    v-else-if="rogue.hunger > 0 && rogue.hunger <= 200"
+                    :style="{ color: colorList.yellow }"
+                >{{ isEnglish ? 'hungry' : '空腹'}}</li>
+                <li
+                    v-else-if="rogue.hunger === 0"
+                    :style="{ color: colorList.red }"
+                >{{ isEnglish ? 'starved' : '飢餓'}}</li>
+                <li
+                    v-if="rogue.poisoned"
+                    :style="{ color: colorList.poison }"
+                >{{ isEnglish ? 'poisoned' : '毒'}}</li>
+                <li
+                    v-if="rogue.confused"
+                    :style="{ color: colorList.yellow }"
+                >{{ isEnglish ? 'confused' : '混乱'}}</li>
+                <li
+                    v-if="rogue.paralyzed"
+                    :style="{ color: colorList.orange }"
+                >{{ isEnglish ? 'paralyzed' : '麻痺'}}</li>
+                <li
+                    v-if="rogue.sleeping > 0"
+                    :style="{ color: colorList.royalblue }"
+                >{{ isEnglish ? 'sleeping' : '睡眠'}}</li>
+                <li
+                    v-if="rogue.blinded"
+                    :style="{ color: colorList.gray }"
+                >{{ isEnglish ? 'blinded' : '盲目'}}</li>
+                <li
+                    v-if="rogue.infected"
+                    :style="{ color: colorList.infection }"
+                >{{ isEnglish ? 'infected' : '感染'}}</li>
+                <li
+                    v-if="rogue.hallucinated"
+                    :style="{ color: colorList.purple }"
+                >{{ isEnglish ? 'hallucinated' : '幻覚'}}</li>
+                <li
+                    v-if="rogue.canceled"
+                    :style="{ color: colorList.white }"
+                >{{ isEnglish ? 'canceled' : '封印'}}</li>
+                <li
+                    v-if="rogue.seeInvisible"
+                    :style="{
+                        color: colorList.light,
+                        'text-shadow': '1px 1px 0 ' + colorList.light
+                    }"
+                >{{ isEnglish ? 'see invisible' : '透視'}}</li>
+                <li
+                    v-if="rogue.invisibility"
+                    :style="{
+                        color: colorList.light,
+                        'text-shadow': '1px 1px 0 ' + colorList.light
+                    }"
+                >{{ isEnglish ? 'invisible' : '透明'}}</li>
+                <li
+                    v-if="rogue.ecco"
+                    :style="{ color: colorList.air }"
+                >{{ isEnglish ? 'ecco' : 'エコー'}}</li>
+                <li
+                    v-if="rogue.enchantSelfDur"
+                    :style="{ color: colorList.earth }"
+                >{{ isEnglish ? 'enchant self' : '自己強化'}}</li>
+                <li
+                    v-if="rogue.venomDur"
+                    :style="{ color: colorList.poison }"
+                >{{ isEnglish ? 'venom hands' : '猛毒の手'}}</li>
+                <li
+                    v-if="rogue.confusing"
+                    :style="{ color: colorList.poison }"
+                >{{ isEnglish ? 'confusing hands' : '混乱の手'}}</li>
+            </ul>
+        </div>
+    `
+})
 
-        this.inventory =  new Vue({
-            el: '#inventory-right',
-            data: {
-                inv: inventory.list.right,
-            },
-        });
+Vue.component('stats-fixed', {
+    props:['rogue', 'colorList', 'isEnglish'],
+    template: /*html*/`
+        <div>
+            <div class="stats-fixed-left-container">
+                <div class="stats-fixed-bar">
+                    <span 
+                        class="hp"
+                        :style="{ 
+                            width: (rogue.hp < 0 ? 0 : rogue.hp / rogue.hpMax * 100) + '%',
+                            'background-color': (
+                                rogue.sleeping ? colorList.royalblue :
+                                rogue.paralyzed ? colorList.orange :
+                                rogue.confused ? colorList.yellow :
+                                rogue.blinded ? colorList.gray :
+                                rogue.hallucinated ? colorList.purple :
+                                rogue.canceled ? colorList.white :
+                                rogue.infected ? colorList.infection :
+                                rogue.poisoned ? colorList.poison :
+                                ''
+                            )
+                        }"
+                    ></span>
+                </div>
+                <div class="stats-fixed-box">
+                    <ul class="stats-fixed-list-top">
+                        <li
+                            :style="{ color: rogue.lvl < rogue.lvlMax ? colorList.yellow : '' }"
+                        >{{ (isEnglish ? 'Level ' : 'レベル ') + rogue.lvl }}</li>
+                        <li
+                            :class="{ 
+                                buff: rogue.expBuff,
+                            }"
 
-        this.inventory =  new Vue({
-            el: '#inventory-left',
-            data: {
-                inv: inventory.list.left,
-            },
-        });
+                            :style="{
+                                color: rogue.exp < rogue.expMax ? colorList.yellow : '',
+                            }"
+                        >{{ (isEnglish ? 'Exp ' : '経験値 ') + rogue.exp }}</li>
+                        <li>{{ '$ ' + rogue.purse }}</li>
+                        <li
+                            :style="{
+                                color: rogue.hp <= 0 ? colorList.red : '',
+                            }"
+                        >{{ 'HP '+ rogue.hp + '/' + rogue.hpMax }}</li>
+                    </ul>
+                    <ul class="stats-fixed-list-bottom">
+                        <li 
+                            class="rogue-boxes-list"
+                            v-for="(item, key) in rogue.boxes"
+                        >
+                            <span
+                                :class="{ 
+                                    'unique-color': item && item.stroke,
+                                }"
 
-        this.equipment =  new Vue({
-            el: '#equipment',
-            data: {
-                inv: inventory.list.equipment,
-            },
-        });
+                                :style="{ 
+                                    color: item ? item && item.color : '',
+                                    'text-shadow': item && item.shadow ? '1px 1px 0 ' + item.shadow : ''
+                                }"
+                            >{{ item ? item.symbol : key }}</span>
+                            <span 
+                                class="item-num"
+                                v-if="item"
+                            >{{ item.quantity }}</span>
+                            <span 
+                                class="item-charge"
+                                v-if="item && item.identified && isFinite(item.charges)"
+                            >{{ item.charges}}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="stats-fixed-right-container">
+                <div class="stats-fixed-bar">
+                    <span class="mp"
+                        :style="{ 
+                            width: (rogue.mp < 0 ? 0 : rogue.mp / rogue.mpMax * 100) + '%'
+                        }"
+                    ></span>
+                </div>
+                <div class="stats-fixed-box">
+                    <ul class="stats-fixed-list-top">
+                        <li
+                            :style="{
+                                color: rogue.mp <= 0 ? colorList.red : '',
+                            }"
+                        >{{ 'MP '+ rogue.mp + '/' + rogue.mpMax }}</li>
+                        <li
+                            :class="{ 
+                                sustain: rogue.strSus
+                            }"
 
-        this.skill =  new Vue({
-            el: '#skill',
-            data: {
-                inv: inventory.list.skill,
-            },
-        });
+                            :style="{
+                                color: rogue.str < rogue.strMax ? colorList.yellow : '',
+                            }"
+                        >{{ (isEnglish ? 'Str ' : '筋 ') + rogue.str }}</li>
+                        <li
+                            :class="{ 
+                                sustain: rogue.dexSus
+                            }"
 
-        this.stats =  new Vue({
-            el: '#stats',
-            data: {
-                inv: inventory.list.stats,
-            },
-        });
+                            :style="{
+                                color: rogue.dex < rogue.dexMax ? colorList.yellow : '',
+                            }"
+                        >{{ (isEnglish ? 'Dex ' : '器 ') + rogue.dex }}</li>
+                        <li
+                            :class="{ 
+                                sustain: rogue.conSus
+                            }"
 
-        this.recipe =  new Vue({
-            el: '#recipe',
-            data: {
-                inv: inventory.list.recipe,
-            },
-        });
+                            :style="{
+                                color: rogue.con < rogue.conMax ? colorList.yellow : '',
+                            }"
+                        >{{ (isEnglish ? 'Con ' : '耐 ') + rogue.con }}</li>
+                        <li
+                            :class="{ 
+                                sustain: rogue.intSus
+                            }"
 
-        this.bookmark =  new Vue({
-            el: '#bookmark',
-            data: {
-                inv: inventory.list.bookmark,
-            },
-        });
+                            :style="{
+                                color: rogue.int < rogue.intMax ? colorList.yellow : '',
+                            }"
+                        >{{ (isEnglish ? 'Int ' : '知 ') + rogue.int }}</li>
+                        <li
+                            :class="{ 
+                                buff: rogue.speeded
+                            }"
 
-        this.message =  new Vue({
-            el: '#message-list-container',
-            data: {
-                flag: flag,
-                message: message,
-                vueList: this.list 
-            },
-        });
+                            :style="{
+                                color: rogue.slowed ? colorList.red : '',
+                            }"
+                        >{{ (isEnglish ? 'Spd ' : '速 ') + rogue.spd }}</li>
+                    </ul>
+                    <div class="stats-fixed-list-bottom">
+                        <span v-if="!rogue.cdl">{{ isEnglish ? 'Limbo' : '辺獄' }}</span>
+                        <span v-else-if="rogue.cdl >= 1 && rogue.cdl <= 33">{{ (isEnglish ? 'Hell B' : '地獄 地下') + rogue.cdl }}</span>
+                        <span v-else-if="rogue.cdl >= 34 && rogue.cdl <= 66">{{ (isEnglish ? 'Purgatory ' : '煉獄') + (rogue.cdl - 33) }}</span>
+                        <span v-else-if="rogue.cdl >= 67 && rogue.cdl <= 99">{{ (isEnglish ? 'Heaven ' : '天国') + (rogue.cdl - 66) }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `
+})
 
-        this.help =  new Vue({
-            el: '#help',
-            data: {
-                flag: flag,
-                help: help,
-                rogue: rogue,
-                vueList: this.list 
-            },
-        });
-
-        this.investigationItem =  new Vue({
-            el: '#investigation-item',
-            data: {
-                inv: investigation.list.item
-            },
-        });
-
-        this.investigationFighter =  new Vue({
-            el: '#investigation-fighter',
-            data: {
-                inv: investigation.list.fighter
-            },
-        });
-
-        this.investigationSkill =  new Vue({
-            el: '#investigation-skill',
-            data: {
-                inv: investigation.list.skill
-            },
-        });
-    },
-
-    update() {
-        this.statsFixed.rogue = rogue;
-        this.condition.rogue = rogue;
-        this.enemyBar.rogue = rogue;
-    }
-}
-
+Vue.component('game-loader', {
+    props:['flag', 'ver', 'verData', 'isEnglish'],
+    template: /*html*/`
+		<div>
+			<div
+				class="title"
+				v-if="flag.title || flag.failed"
+				v-cloak
+			>
+				<p
+					class="err-msg"
+					v-show="flag.failed"
+				>
+					{{ (isEnglish ?
+					"Failed to load. In order to delete your save data and continue, please push 'Y'" :
+					"読み込みに失敗しました。セーブデータを消去してゲームを続けるには、'Y'を押してください。")
+					+ "(data ver " + verData.toFixed(3) + ")" }}
+				</p>
+				<div class="msg-box">
+					<h1>Death and Birth</h1>
+					<h2>{{ isEnglish ?
+						'[Enter] to start' :
+						'[Enter] ゲームスタート' }}
+					</h2>
+				</div>
+				<small class="ver">{{ "ver " + ver.toFixed(3) }}</small>
+			</div>
+			<div
+				class="retry"
+				v-else-if="flag.retry"
+				v-cloak
+			>
+				<div class="msg-box">
+					<h1>G A M E  O V E R</h1>
+					<h2>{{ isEnglish ?
+						'[Enter] to retry' :
+						'[Enter] リトライ' }}
+					</h2>
+				</div>
+			</div>
+		</div>
+    `
+})

@@ -18,6 +18,7 @@ const Data = class {
         this.loadItemTab();
         this.loadCoords();
         message.list = this.messageList;
+        vue.msgList = message.list;
         if(this.ver < 0.003) {
             rogue.litMapIds = this.litMapIds;
             rogue.inferno = this.difficulty.inferno;
@@ -29,8 +30,8 @@ const Data = class {
         }
 
         this.convertCe();
-        vuejs.init();
-        vuejs.list.isEnglish = option.isEnglish();
+        vue.rogue = rogue;
+        vue.isEnglish = option.isEnglish();
         initFlag();
         rogue.litMapIds = {};
         rogue.lightenOrDarken('Lighten');
@@ -93,7 +94,11 @@ const Data = class {
                 if (loc.fighter) this.loadFighter(loc.fighter);
                 if (loc.item['a']) this.loadItem(loc.item, true);
                 if (loc.enter) this.loadEntrance(loc.enter);
-                if (loc.trap) loc.trap.__proto__ = Trap.prototype;
+                if (loc.trap) { 
+                    loc.trap.__proto__ = Trap.prototype;
+                    map.trapList[loc.x + ',' + loc.y] = loc.trap;
+                }
+
                 if (loc.stairs) {
                     loc.stairs.__proto__ = Staircase.prototype;
                     map.staircaseList[loc.x + ',' + loc.y] = loc.stairs;
@@ -214,7 +219,7 @@ const data = {
             } catch (e) {
                 console.log(e);
                 let ver = saveData.ver;
-                vuejs.gameLoader.verData = ver;
+                vue.verData = ver;
                 flag.regular = false;
                 flag.failed = true;
             }

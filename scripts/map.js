@@ -394,21 +394,18 @@ const statistics = {
         if (!(e.isShowing() &&
             (examine || distanceSq(e.x, e.y, rogue.x, rogue.y) <= FOV_SQ &&
             lineOfSight(e.x, e.y, rogue.x, rogue.y)))) {
-            vuejs.enemyBar.enemy = null;
+            vue.barEnemy = null;
             return '';
         }
             
         let name = e.getName(false, true);
-        if (vuejs.enemyBar) {
-            vuejs.enemyBar.enemy = e;
-            vuejs.enemyBar.name = name;
-        }
-
+        vue.barEnemy = e;
+        vue.barName = name;
         if (examine) return name;
     },
 
     clearEnemyBar() {
-        if (vuejs.enemyBar) vuejs.enemyBar.enemy = null;
+        vue.barEnemy = null;
     },
 };
 

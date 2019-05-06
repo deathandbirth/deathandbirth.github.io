@@ -3777,7 +3777,7 @@ const Fighter = class extends Material {
         if (num > MAX_BOX_NUM) return;
         for (let i = num; i <= this.numBoxes + numBoxes && i <= MAX_BOX_NUM; i++) {
             if (this.id === ROGUE) {
-                Vue.set(vuejs.statsFixed.rogue.boxes, i, null)
+                Vue.set(vue.rogue.boxes, i, null)
             } else {
 				this.boxes[i] = null;
             }
@@ -3804,7 +3804,7 @@ const Fighter = class extends Material {
         for (let i = num; i <= this.numBoxes && i <= MAX_BOX_NUM; i++) {
             let item = this.boxes[i];
             if (this.id === ROGUE) {
-                Vue.delete(vuejs.statsFixed.rogue.boxes, i)
+                Vue.delete(vue.rogue.boxes, i)
             } else {
                 delete this.boxes[i];
             }
@@ -4035,9 +4035,8 @@ const Fighter = class extends Material {
 				
                 break;
             case IDENTIFY: {
+                input.switchFlag();
                 flag.identify = true;
-                flag.regular = false;
-                inventory.clear();
                 let msg = message.get(M_IDENTIFY) + message.get(M_FLOOR);
                 this.showInventory(P_PACK);
                 this.equipmentList();
@@ -4045,19 +4044,17 @@ const Fighter = class extends Material {
                 return null;
             }
             case DISINTEGRATION:
-                inventory.clear();
+                input.switchFlag();
                 flag.disint = true;
-                flag.regular = false;
                 message.draw(message.get(M_DISINTEGRATION), true);
                 return null;
             case RESTORE_DURABILITY: {
-                inventory.clear();
+                input.switchFlag();
                 flag.repair = true;
                 let msg = message.get(M_REPAIR) + message.get(M_FLOOR);
                 this.showInventory(P_PACK);
                 this.equipmentList();
                 message.draw(msg, true);
-                flag.regular = false;
                 return null;
             }
             case REPAIR_ALL:
@@ -4869,10 +4866,8 @@ const Fighter = class extends Material {
             `${name}装備を持ち替えた`);
         if (this.id !== ROGUE) return;
         rogue.done = true;
-        if (!flag.equipment) {
-            this.equipmentList();
-            flag.clearInv = true;
-        }
+        this.equipmentList();
+        flag.clearInv = true;
     }
 
     stealGold(enemy) {
