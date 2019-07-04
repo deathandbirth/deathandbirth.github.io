@@ -1,4 +1,9 @@
 const investigationMap = new Map([
+    ['race', {
+        name: { a: 'Race', b: '種族' },
+        char: true,
+    }],
+
     ['lvl', {
         name: { a: 'Level', b: 'レベル' },
         char: true,
@@ -34,6 +39,11 @@ const investigationMap = new Map([
         weight: true,
     }],
 
+    ['reqStr', {
+        name: { a: 'Strength Requirement', b:'必要筋力' },
+        item: true,
+    }],
+
     ['charges', {
         name: { a: 'Charges', b:'充填数' },
         item: true,
@@ -43,20 +53,51 @@ const investigationMap = new Map([
         name: { a: 'Attack Type', b: '攻撃種類' },
     }],
 
-    ['dmgBase', {
-        name: { a: 'Damage Base', b: 'ダメージ基礎値' },
+    ['dmgValue', {
+        name: { a: 'Damage', b: 'ダメージ' },
+        item: true,
     }],
 
     ['dmgAvg', {
-        name: { a: 'Damage Average', b: 'ダメージ期待値' },
+        name: { a: 'Averate Damage', b: '平均ダメージ' },
         char: true,
         equipList: true,
+    }],
+
+    ['dmgSValue', {
+        name: { a: 'Slash Damage', b: '斬ダメージ' },
+        char: true,
+    }],
+
+    ['dmgTValue', {
+        name: { a: 'Thrust Damage', b: '突ダメージ' },
+        char: true,
+    }],
+
+    ['dmgBValue', {
+        name: { a: 'Blunt Damage', b: '打ダメージ' },
+        char: true,
+    }],
+
+    ['timesMelee', {
+        name: { a: 'Melee Attack Times', b: '近接攻撃回数' },
+        char: true,
+    }],
+
+    ['timesMissile', {
+        name: { a: 'Missile Attack Times', b: '遠隔攻撃回数' },
+        char: true,
     }],
 
     ['rateValue', {
         name: { a: 'Hit Rating', b: '命中値' },
         char: true,
         equipList: true,
+    }],
+
+    ['acAvgValue', {
+        name: { a: 'Average Defence', b: '平均守備力' },
+        item: true,
     }],
 
     ['acSValue', {
@@ -74,49 +115,56 @@ const investigationMap = new Map([
         item: true,
     }],
 
+    ['acAvgValueTotal', {
+        name: { a: 'Average Defence', b: '平均守備力' },
+        char: true,
+        equipList: true,
+    }],
+
     ['acSValueTotal', {
         name: { a: 'Slash Defence', b: '斬守備力' },
         char: true,
-        equipList: true,
     }],
 
     ['acTValueTotal', {
         name: { a: 'Thrust Defence', b: '突守備力' },
         char: true,
-        equipList: true,
     }],
 
     ['acBValueTotal', {
         name: { a: 'Blunt Defence', b: '打守備力' },
         char: true,
-        equipList: true,
     }],
 
-    ['timesMelee', {
-        name: { a: 'Melee Attack Times', b: '近接攻撃回数' },
+    ['spdMeleeRate', {
+        name: { a: 'Melee Attack Speed', b: '近接攻撃速度' },
+        perc: true,
         char: true,
         equipList: true,
     }],
-
-    ['timesMissile', {
-        name: { a: 'Missile Attack Times', b: '遠隔攻撃回数' },
+    
+    ['spdMissileRate', {
+        name: { a: 'Missile Attack Speed', b: '遠隔攻撃速度' },
+        perc: true,
         char: true,
         equipList: true,
     }],
-
-    ['timesSpell', {
+    
+    ['spdSpellRate', {
         name: { a: 'Spell Cast Speed', b: '魔法詠唱速度' },
+        perc: true,
+        char: true,
+        equipList: true,
+    }],
+    
+    ['spdMoveRate', {
+        name: { a: 'Move Speed', b: '移動速度' },
+        perc: true,
         char: true,
         equipList: true,
     }],
     
     ['right', null],
-    
-    ['timesMove', {
-        name: { a: 'Move Speed', b: '移動速度' },
-        char: true,
-        equipList: true,
-    }],
     
     ['statPoints', {
         name: { a: 'Stat Points', b: 'ステータスポイント' },
@@ -130,14 +178,10 @@ const investigationMap = new Map([
         equipList: true,
     }],
 
-    ['duration', {
-        name: { a: 'Duration', b: '持続期間' },
+    ['fuelLvl', {
+        name: { a: 'Fuel Level', b: '燃料残量' },
         item: true,
-    }],
-    
-    ['durationMax', {
-        name: { a: 'Max Duration', b: '最大持続期間' },
-        item: true,
+        perc: true,
     }],
 
     ['durab', {
@@ -148,16 +192,22 @@ const investigationMap = new Map([
 
     ['iasBase', {
         name: { a: 'Base Attack Speed', b: '基礎攻撃速度' },
+        perc: true,
+        plus: true,
         item: true,
     }],
     
     ['fcrBase', {
         name: { a: 'Base Cast Speed', b: '基礎詠唱速度' },
+        perc: true,
+        plus: true,
         item: true,
     }],
     
     ['frwBase', {
         name: { a: 'Base Move Speed', b: '基礎移動速度' },
+        perc: true,
+        plus: true,
         item: true,
     }],
     
@@ -213,6 +263,7 @@ const investigationMap = new Map([
     ['spd', {
         name: { a: 'Speed', b: '速度' },
         plus: true,
+        perc: true,
         max: 'spdMax',
     }],
     
@@ -261,6 +312,13 @@ const investigationMap = new Map([
         perc: true,
         max: 'poisonMax',
         equipList: true,
+    }],
+    
+    ['physical', {
+        name: { a: 'Physical Resist', b: '耐物' },
+        plus: true,
+        perc: true,
+        max: 'physicalMax',
     }],
     
     ['end', null],
@@ -409,10 +467,11 @@ const investigationMap = new Map([
         plus: true,
     }],
     
-    ['durationBonus', {
-        name: { a: 'Duration Bonus', b: '持続期間加算値' },
+    ['fuelBonus', {
+        name: { a: 'Fuel Bonus', b: '燃料加算値' },
         item: true,
         plus: true,
+        perc: true,
     }],
     
     ['numBoxes', {
@@ -420,13 +479,13 @@ const investigationMap = new Map([
         plus: true,
     }],
 
-    ['dmgDiceNum', {
-        name: { a: 'Damage Dice Number', b: 'ダメージ・ダイス数' },
+    ['dmgMinBonus', {
+        name: { a: 'Minimum Damage Bonus', b: '最小ダメージ加算値' },
         plus: true,
     }],
     
-    ['dmgDiceSides', {
-        name: { a: 'Damage Dice Sides', b: 'ダメージ・ダイス面数' },
+    ['dmgMaxBonus', {
+        name: { a: 'Maximum Damage Bonus', b: '最大ダメージ加算値' },
         plus: true,
     }],
     
@@ -463,41 +522,55 @@ const investigationMap = new Map([
     ['digging', {
         name: { a: 'Digging', b: '採掘' },
         plus: true,
+        perc: true,
     }],
     
     ['dmgHuman', {
         name: { a: 'Damage to Human', b: '対人間ダメージ' },
         plus: true,
+        perc: true,
     }],
     
     ['dmgDemon', {
         name: { a: 'Damage to Demon', b: '対悪魔ダメージ' },
         plus: true,
+        perc: true,
     }],
     
     ['dmgAnimal', {
         name: { a: 'Damage to Animal', b: '対動物ダメージ' },
         plus: true,
+        perc: true,
     }],
     
     ['dmgDragon', {
-        name: { a: 'Damage to Dragon', b: '対ドラゴンダメージ' },
+        name: { a: 'Damage to Dragon', b: '対竜ダメージ' },
         plus: true,
+        perc: true,
     }],
     
     ['dmgUndead', {
         name: { a: 'Damage to Undead', b: '対不死ダメージ' },
         plus: true,
+        perc: true,
     }],
     
     ['dmgGiant', {
         name: { a: 'Damage to Giant', b: '対巨人ダメージ' },
         plus: true,
+        perc: true,
     }],
     
     ['dmgSpirit', {
         name: { a: 'Damage to Spirit', b: '対精霊ダメージ' },
         plus: true,
+        perc: true,
+    }],
+    
+    ['dmgGod', {
+        name: { a: 'Damage to God', b: '対神ダメージ' },
+        plus: true,
+        perc: true,
     }],
     
     ['dmgFire', {
@@ -639,7 +712,6 @@ const investigationMap = new Map([
 
 const investigation = {
     main(obj, direction, char) {
-        if (char && obj.mimic && !obj.identified) return;
         let inv = this.list[char ? 'fighter' : 'item'];
         inv.show = true;
         if (!char) {
@@ -755,7 +827,9 @@ const investigation = {
         if (term.perc) value += '%';
         if (term.weight) value += 'kg';
         if (key === 'atkType') {
-            value = obj.getAtkTypeName();
+            value = this.getAtkTypeName(obj.atkType);
+        } else if (key === 'race') {
+            value = this.getRaceName(obj.race);
         } else if (char) {
             if (obj.findBuffStat(key) || obj.modList &&
             (obj.modList[key] || obj.modList['resistAll'] &&
@@ -773,9 +847,18 @@ const investigation = {
             value += ` (${max})`;
         }
 
+        // if (term.base && obj[term.base] !== undefined) {
+        //     let base = obj[term.base];
+        //     value += ` [${base}]`;
+        // }
+
         if (term.bool) {
             if (value) {
-                value = option.isEnglish() ? 'yes' : '有り';
+                if (!char && mod) {
+                    value = '';
+                } else {
+                    value = option.isEnglish() ? 'yes' : '有り';
+                }
             } else {
                 value = option.isEnglish() ? 'no' : '無し';
             }
@@ -805,14 +888,14 @@ const investigation = {
 
         let basePropList = [];
         let prop = {};
-        prop.text = option.isEnglish() ? 'Element' : '元素';
+        prop.text = option.isEnglish() ? 'Element' : '属性';
         prop.value = option.isEnglish() ? getUpperCase(skill.element) : translation.element[skill.element];
         prop.shadow = skill.color;
         basePropList.push(prop);
 
-        let [base, perLvl, perSy, durBase] = option.isEnglish() ?
-            ['Base', 'per Level', 'per Synerzy', 'Duration Base'] :
-            ['基礎値', 'レベル毎', 'シナジー毎', '期間基礎値'];
+        let [base, perLvl, perSy, durBase, limit] = option.isEnglish() ?
+            ['Base', 'per Level', 'per Synerzy', 'Duration Base', 'Max Limit'] :
+            ['基礎値', 'レベル毎', 'シナジー毎', '期間基礎値', '上限'];
         let perc = skill.perc ? '%' : '';
         if (skill.rate) {
             let skillBase = skill.base;
@@ -843,6 +926,15 @@ const investigation = {
             basePropList.push(prop);
 		}
 		
+        if (skill.limit) {
+            let perc = skill.perc ? '%' : '';
+            let sign = '+';
+            prop = {};
+            prop.text = limit;
+            prop.value = sign + skill.limit + perc;
+            basePropList.push(prop);
+        }
+        
         if (skill.durBase) {
             prop = {};
             prop.text = durBase;
@@ -856,7 +948,7 @@ const investigation = {
             prop.text = perLvl;
             prop.value = sign + skill.durRate;
             basePropList.push(prop);
-		}
+        }
         
         inv.basePropList = basePropList;
     },
@@ -880,6 +972,29 @@ const investigation = {
         }
 
         input.scroll(this.eleP, this.eleC, keyCode, init);
+    },
+
+    getAtkTypeName(at) {
+        let name = '';
+        let isEng = option.isEnglish();
+        if (at & AT_S) name += isEng ? 'Slash・' : '斬・';
+        if (at & AT_T) name += isEng ? 'Thrust・' : '突・';
+        if (at & AT_B) name += isEng ? 'Blunt・' : '打・';
+        return name ? name.replace(/・$/, '') : '-';
+    },
+
+    getRaceName(race) {
+        let name = '';
+        let isEng = option.isEnglish();
+        if (race & HUMAN) name += isEng ? 'Human・' : '人間・';
+        if (race & ANIMAL) name += isEng ? 'Animal・' : '動物・';
+        if (race & DEMON) name += isEng ? 'Demon・' : '悪魔・';
+        if (race & UNDEAD) name += isEng ? 'Undead・' : '不死・';
+        if (race & DRAGON) name += isEng ? 'Dragon・' : '竜・';
+        if (race & GIANT) name += isEng ? 'Giant・' : '巨人・';
+        if (race & SPIRIT) name += isEng ? 'Spirit・' : '精霊・';
+        if (race & GOD) name += isEng ? 'God・' : '神・';
+        return name ? name.replace(/・$/, '') : '-';
     }
 };
 

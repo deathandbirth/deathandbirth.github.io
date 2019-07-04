@@ -117,6 +117,7 @@ const inventory = {
             let item = list[key];
             if (!flag.pack && !item ||
                 place === P_STASH && key < l ||
+                flag.drop && flag.number && key != a ||
                 flag.stash && a !== undefined && key != a ||
                 flag.equip && !item.equipable ||
                 flag.quaff && item.type != 'potion' ||
@@ -328,7 +329,6 @@ const inventory = {
                 }
                 
                 let stats = {};
-				
                 if (fighter.findBuffStat(key)) stats.shadow = colorList.buff;
 				if (fighter.lowerRes && (key === 'fire' || key === 'water' ||
                     key === 'air' || key === 'earth' || key === 'poison')) {
@@ -341,6 +341,16 @@ const inventory = {
                     stats.valueMax = fighter[term.max] + (term.perc ? '%' : '');
                 }
                 
+                if (key === 'dmgAvg') {
+                    let isMissile;
+                    if (fighter.equipment) {
+                        let weapon =  fighter.equipment.main;
+                        if (weapon && weapon.type === 'missile') isMissile = true;
+                    }
+
+                    stats.value += ` x${isMissile ? fighter.timesMissile : fighter.timesMelee}`;
+                }
+
                 statsList.push(stats);
             }
 
@@ -429,8 +439,11 @@ const inventory = {
 
                     if (skill.perc) value = `${value}%`;
                 } else {
-                    let avg = Math.ceil(dice.getAvg(skill.base) * (1 + bonus / 100));
-                    value = `Avg ${avg}`;
+                    let [min, max] = minMax.getNums(skill.base);
+                    let bonusRate = 1 + bonus / 100;
+                    min = Math.ceil(min * bonusRate);
+                    max = Math.ceil(max * bonusRate);
+                    value = `${min}-${max}`;
 				}
 				
                 skillVue.value = value;

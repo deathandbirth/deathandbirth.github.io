@@ -31,8 +31,8 @@ const MAX_PACK_COUNT = 20;
 const MAX_STASH_COUNT = MAX_PACK_COUNT * 10;
 const MAX_STASH_PAGE = MAX_STASH_COUNT / MAX_PACK_COUNT;
 const MAX_CUBE_COUNT = 4;
-const MAX_HUNGER = 1000;
-const HUNGER_POTION = 50;
+const MAX_HUNGER = 2000;
+const HUNGER_POTION = 10;
 const MAX_EQUIPMENT_NUM = 12;
 const MAX_BOOKMARK_NUM = 13;
 const MAX_FIGHTER_LVL = 99;
@@ -58,6 +58,7 @@ const SENSING_SQ = IN_HEIGHT ** 2;
 const MAX_MSG_LEN = 5;
 const MAX_MSG_LIST_LEN = 1000;
 const MINIMAP_MIN_RATIO = .5;
+const MAX_WEIGHT_LIMIT = 100;
 const ENG = 'a';
 const DEFAULT = -1;
 const ROGUE = -1;
@@ -107,13 +108,20 @@ const [
     DRAGON,
     GIANT,
     SPIRIT,
-] = enumsBit(1, 6);
+    GOD,
+] = enumsBit(1, 8);
 
 const [
     AT_S,
     AT_T,
     AT_B,
 ] = enumsBit(1, 3); //attack type, slash, thrust, blunt
+
+const atVarMap = new Map([
+    [AT_S, 30],
+    [AT_T, 80],
+    [AT_B, 10],
+]);
 
 const [
     LEFT,
@@ -214,7 +222,7 @@ const RARITY = {
     food: 50,
     potion: 0,
     scroll: 0,
-    recipe: 30,
+    recipe: 50,
     wand: 50,
     melee: 0,
     missile: 20,
@@ -227,8 +235,8 @@ const RARITY = {
     gloves: 50,
     boots: 50,
     light: 50,
-    ring: 80,
-    amulet: 80,
+    ring: 70,
+    amulet: 70,
     oil: 50,
     ammo: 50,
     coin: 70,
@@ -242,16 +250,14 @@ const DURAB_BASE = 20;
 const DURAB_RATE = 10;
 const DURAB_PRICE = 10;
 const WAND_PRICE = 0.2; //per charge
-const COST_REGULAR = 10;
-const COLD_DELAY = 10;
+const COST_REGULAR = 1000;
 const WAIT_TIME = 0;
 const MSG_SPEED = 3000;
-const BREATH_RATE = 1 / 15;
+const BREATH_RATE = 1 / 10;
 const NEST_BOOST = 5;
 const MAGIC_RARITY = 50;
-const BIAS_BONUS = 50;
-const HP_RATE = 6;
-const MP_RATE = 3;
+const HP_BASE_RATE = 20;
+const MP_BASE_RATE = 3;
 const WALL_HP = 100;
 const POSITION = {
     stash: { x: 22, y: 18 },
@@ -316,9 +322,9 @@ const flag = {
 };
 
 const modBonusMap = new Map([
-    [MAGIC, { fire: 10, water: 10, air: 10, earth: 10, poison: 10, }],
-    [RARE, { fire: 30, water: 30, air: 30, earth: 30, poison: 30, }],
-    [UNIQUE, { fire: 50, water: 50, air: 50, earth: 50, poison: 75, }],
+    [MAGIC, { fire: 10, water: 10, air: 10, earth: 10, poison: 10 }],
+    [RARE, { fire: 20, water: 20, air: 20, earth: 20, poison: 20 }],
+    [UNIQUE, { fire: 30, water: 30, air: 30, earth: 30, poison: 30, hpRate: HP_BASE_RATE, mpRate: MP_BASE_RATE, mpReg: 100 }],
 ]);
 
 const FONT_STYLE = {

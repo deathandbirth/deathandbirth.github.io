@@ -3,7 +3,6 @@ const Rogue = class extends Fighter {
         super(fighterTab['misc'][0])
         this.name['a'] = this.name['b'] = data.name;
         this.id = ROGUE;
-        this.dmgBare = this.dmgBase;
         this.expMax = this.exp = 0;
         this.expGain = this.getExp();
         this.expNext = this.calcNextLvl();
@@ -22,6 +21,7 @@ const Rogue = class extends Fighter {
         this.cui = {}; //current unique item
         this.cue = {}; //current unique enemy
         this.recipes = {};
+        this.recipes[RECIPE_EMBED] = true;
         this.lethe = 0;
         this.turn = 1;
         this.done = false;
@@ -34,7 +34,7 @@ const Rogue = class extends Fighter {
         this.calcAll();
         this.hp = this.hpMax;
         this.mp = this.mpMax;
-        this.energy = this.spd;
+        this.energy = this.spd / 100;
     }
 
     initBookmarks() {
@@ -56,13 +56,11 @@ const Rogue = class extends Fighter {
             rogue.done = true;
         } else if (loc.fighter) {
             if (this.haveMissile()) {
-                this.ci = this.getAmmo(this.equipment['main'].throwType);
-                if (this.ci) {
+                let ammo = this.getAmmo(this.equipment['main'].throwType);
+                if (ammo) {
+                    this.ci = ammo;
                     flag.arrow = true;
-                    let arrow = this.timesMissile === 1 ? 'an arrow' : 'arrows'
-                    message.draw(option.isEnglish() ?
-                        `You shot ${arrow}` :
-                        `矢を放った`);
+                    this.getShootMsg(ammo);
                     this.aim({ keyCode: keyCodeDr });
                 } else {
                     message.draw(message.get(M_DONT_HAVE_AMMO));
@@ -86,7 +84,7 @@ const Rogue = class extends Fighter {
             this.drawOrErase(true, true);
             if (!loc.getInfo()) {
                 rogue.done = true;
-                this.cost -= this.timesMove;
+                this.cost -= this.spdMove;
             }
         } else {
 			audio.playSound('hitwall');
@@ -257,13 +255,11 @@ const Rogue = class extends Fighter {
         if (this.bookmarks[0] !== null) {
             this.castBookmarkedSkill(48, keyCodeDr);
 		} else if (this.haveMissile()) {
-            this.ci = this.getAmmo(this.equipment['main'].throwType);
-            if (this.ci) {
+            let ammo = this.getAmmo(this.equipment['main'].throwType);
+            if (ammo) {
+                this.ci = ammo;
                 flag.arrow = true;
-                let arrow = this.timesMissile === 1 ? 'an arrow' : 'arrows';
-                message.draw(option.isEnglish() ?
-                    `You shot ${arrow}` :
-                    `矢を放った`);
+                this.getShootMsg(ammo);
                 this.aim({ keyCode: keyCodeDr });
             } else {
 				message.draw(message.get(M_DONT_HAVE_AMMO));
@@ -504,6 +500,8 @@ const Rogue = class extends Fighter {
             if (item.quantity > 1) {
                 this.ci = item;
                 flag.number = true;
+                inventory.clear();
+                this.showInventory(item.place, a);
                 this.inputNumber();
                 return;
             } else {
@@ -556,7 +554,7 @@ const Rogue = class extends Fighter {
 		}
 		
         if (item.durab) this.getOrLooseStats(item, true);
-        this.calcAll();
+        this.calcAll(true);
         inventory.clear();
         this.equipmentList();
         flag.equip = false;
@@ -596,7 +594,8 @@ const Rogue = class extends Fighter {
             msg = msg.charAt(0);
             message.draw(`${name}を${msg}した`);
 		}
-		
+        
+        audio.playSound('grab');
         this.equipment[parts] = null;
         this.gainOrloseWeight(item);
         if (flag.equip) {
@@ -640,15 +639,17 @@ const Rogue = class extends Fighter {
         let light = this.equipment['light'];
         if (light.torch && !item.torch || !light.torch && item.torch) return;
         flag.floor = false;
-        if (!light.duration && item.duration && light.durab) {
+        if (!light.fuelValue && item.fuelValue && light.durab) {
             this.lighten += light.lighten;
             this.lightenOrDarken('Lighten');
 		}
 		
-        light.duration += item.duration;
-        if (light.duration > light.durationMax) light.duration = light.durationMax;
+        light.fuelValue += item.fuelValue;
+        if (light.fuelValue > light.fuelMax) light.fuelValue = light.fuelMax;
+        light.calcFuelLvl();
         if (item.mod !== NORMAL) {
-            item.duration = 0;
+            item.fuelValue = 0;
+            item.calcFuelLvl();
         } else {
 			this.deleteItem(item, 1);
 		}
@@ -779,7 +780,7 @@ const Rogue = class extends Fighter {
         } else {
             this.attack({
                 enemy: fighter,
-                itemThrow: item,
+                itemThrown: item,
             });
         }
     }
@@ -822,7 +823,8 @@ const Rogue = class extends Fighter {
                 if (!boxItem) {
                     inventory.clear();
                     flag.aim = true;
-                    this.aim({ keyCode: 88 }); //examine
+                    message.draw(message.get(M_CAST_DIR) + message.get(M_TO_EXAMINE), true);
+                    this.examinePlot(true);
                     return;
                 } else {
                     this.aim({
@@ -1043,7 +1045,7 @@ const Rogue = class extends Fighter {
             if (!item) return;
         }
 
-        if (!item.identified){
+        if (!item.identified || item.typeHalluc){
             message.draw(message.get(M_NO_CLUE));
             return;
         }
@@ -1192,7 +1194,7 @@ const Rogue = class extends Fighter {
                 let found = true;
                 for (let key in this.cube) {
                     let item = this.cube[key];
-                    if (item.nameSkill !== HEAL) {
+                    if (item.tabId !== P_GREATER_HEALING) {
                         found = false;
                         break;
                     }
@@ -1272,7 +1274,7 @@ const Rogue = class extends Fighter {
                     }
                 }
 
-                let duration = 0;
+                let fuelValue = 0;
                 for (let key in this.cube) {
                     if (a === key) continue;
                     let item2 = this.cube[key];
@@ -1282,15 +1284,17 @@ const Rogue = class extends Fighter {
                     }
 
                     num++;
-                    duration += item2.duration;
+                    fuelValue += item2.fuelValue;
                     if (item2.type === 'light' && (item2.mod !== NORMAL || item2.embeddedList.length)) {
-                        item2.duration = 0;
+                        item2.fuelValue = 0;
+                        item2.calcFuelLvl();
                         this.packAdd(item2);
                     }
                 }
                 
-                item.duration += duration;
-                if (item.duration > item.durationMax) item.duration = item.durationMax;
+                item.fuelValue += fuelValue;
+                if (item.fuelValue > item.fuelMax) item.fuelValue = item.fuelMax;
+                item.calcFuelLvl();
                 this.packAdd(item);
                 name = item.getName()
             }
@@ -1400,9 +1404,8 @@ const Rogue = class extends Fighter {
                     item.weight = Math.round((item.weight + weight) * 100) / 100;
                     if (item.weapon) {
                         item.calcDmgOne();
-                    } else {
-                        item.dmgDiceNum = item.dmgDiceSides = undefined;
-                        if (item.armor) item.calcAcOne();
+                    } else if (item.armor) {
+                        item.calcAcOne();
                     }
                     
                     this.packAdd(item);
@@ -1435,9 +1438,8 @@ const Rogue = class extends Fighter {
                 item.calcDurab();
                 if (item.weapon) {
                     item.calcDmgOne();
-                } else {
-                    item.dmgDiceNum = item.dmgDiceSides = undefined;
-                    if (item.armor) item.calcAcOne();
+                } else if (item.armor) {
+                    item.calcAcOne();
                 }
                 
                 this.packAdd(item);
@@ -1621,7 +1623,7 @@ const Rogue = class extends Fighter {
         }
     }
 
-    autoAim(item) {
+    autoAim(ammo) {
         let x, y;
         if (this.ce) {
             [x, y] = [this.ce.x, this.ce.y];
@@ -1636,12 +1638,9 @@ const Rogue = class extends Fighter {
             [x, y] = [this.ce.x, this.ce.y];
 		}
 		
-        this.ci = item;
+        this.ci = ammo;
         flag.arrow = true;
-        let arrow = this.timesMissile === 1 ? 'an arrow' : 'arrows';
-        message.draw(option.isEnglish() ?
-            `You shot ${arrow}` :
-            `矢を放った`);
+        this.getShootMsg(ammo);
         this.aim({
             x1: x,
             y1: y,
@@ -1650,10 +1649,7 @@ const Rogue = class extends Fighter {
 
     examine(keyCode) {
         let loc = map.coords[cursor.x][cursor.y];
-        if (!keyCode) {
-            if (flag.aim) this.examinePlot();
-            loc.getInfo();
-		} else if (keyCode === 88) { //x
+		if (keyCode === 88) { //x
             if (loc.item['a'] && this.litMapIds[cursor.x + ',' + cursor.y] &&
                 distanceSq(cursor.x, cursor.y, this.x, this.y) <= FOV_SQ &&
                 lineOfSight(this.x, this.y, cursor.x, cursor.y)) {
@@ -1670,6 +1666,7 @@ const Rogue = class extends Fighter {
             let fighter = loc.fighter;
             if (fighter && fighter.isShowing() &&
                 (fighter.id === ROGUE || !rogue.hallucinated)) {
+                if (fighter.mimic && !fighter.identified && !rogue.isWizard) return;
                 if (keyCode === 67) {
                     flag.character = true;
                     investigation.main(fighter ,MIDDLE, true);
@@ -1725,12 +1722,11 @@ const Rogue = class extends Fighter {
         }
     }
 
-    examinePlot(aim) {
-        if (aim) cursor.init();
-        let [x, y] = [cursor.x, cursor.y];
+    examinePlot(init) {
+        cursor.clearAll();
+        let [x, y] = init ? [this.x, this.y] : [cursor.x, cursor.y];
         let color = colorList.white;
         let skill;
-        cursor.clearAll();
         if (flag.zap) {
             if (this.ci.identified || itemTab[this.ci.type].get(this.ci.tabId).identified) { //
                 skill = skillMap.get(this.ci.nameSkill);
@@ -1739,10 +1735,11 @@ const Rogue = class extends Fighter {
         } else if (flag.skill || flag.scroll) {
             skill = skillMap.get(flag.skill ? this.cs.id : this.ci.nameSkill);
             color = skill.color;
-            if (skill.range === 0)[x, y] = [this.x, this.y];
+            if (skill.range === 0) [x, y] = [this.x, this.y];
 		}
         
         lineOfSight(this.x, this.y, x, y, color, skill);
+        if (init) map.draw(x, y, true);
     }
 
     examineMsg() {
@@ -2136,7 +2133,6 @@ const Rogue = class extends Fighter {
             this.ci = item;
             inventory.clear();
             flag.number = true;
-            flag.shop = item.place;
             this.showInventory(item.place, a);
             this.inputNumber();
         } else {
@@ -2144,7 +2140,7 @@ const Rogue = class extends Fighter {
             this.ci = null;
             let i = item.getQuantity(keyCode, this.cn);
             let amount = item.price * i;
-            if (flag.shop === P_PACK) {
+            if (item.place === P_PACK) {
                 item = this.inventoryOut(item, i);
                 let l = Object.keys(shop.list).length;
                 shop.list[EA[l]] = item;
@@ -2175,7 +2171,6 @@ const Rogue = class extends Fighter {
                 audio.playSound('grab');
 			}
 			
-            flag.shop = true;
             flag.number = false;
             inventory.clear();
             this.cn = 1;
@@ -2237,7 +2232,6 @@ const Rogue = class extends Fighter {
 			
             this.ci = item;
             flag.number = true;
-            flag.stash = item.place;
             if (item.quantity === 1) {
                 this.cn = 1;
                 this.stash(13);
@@ -2251,7 +2245,7 @@ const Rogue = class extends Fighter {
             let item = this.ci;
             this.ci = null;
             let i = item.getQuantity(keyCode, this.cn);
-            if (flag.stash === P_STASH) {
+            if (item.place === P_STASH) {
                 item = item.split(i, stash.list);
                 this.packAdd(item);
                 let name = item.getName();
@@ -2268,7 +2262,6 @@ const Rogue = class extends Fighter {
                     `${name}を保管した`);
 			}
 			
-            flag.stash = true;
             flag.number = false;
             inventory.clear();
             let msg = message.get(M_STASH);
@@ -2357,12 +2350,14 @@ const Rogue = class extends Fighter {
 
     healAndHunger() {
         let light = this.equipment['light'];
-        if (light && light.duration && light.durab) {
-            if (--light.duration === 0) {
+        if (light && light.fuelValue && light.durab) {
+            if (--light.fuelValue === 0) {
                 this.lighten -= light.lighten;
                 this.lightenOrDarken('Lighten');
                 message.draw(message.get(M_LIGHT_GONE));
             }
+
+            light.calcFuelLvl();
 		}
 		
         if (this.hunger > 0) {
@@ -2410,22 +2405,12 @@ const Rogue = class extends Fighter {
 				this.cn += keyCode - 48;
             }
             
-            let msg = message.get(M_NUMBER) + this.cn;
-
-            if (!flag.gain) {
+            if (flag.shop) {
                 inventory.clear();
-                let place;
-                if (flag.shop) {
-                    place = flag.shop;
-				} else if (flag.stash) {
-                    place = flag.stash;
-                } else {
-					place = P_PACK;
-				}
-
-                this.showInventory(place, this.ca);
+                this.showInventory(this.ci.place, this.ca);
 			}
 			
+            let msg = message.get(M_NUMBER) + this.cn;
             message.draw(msg, true);
             return;
 		}

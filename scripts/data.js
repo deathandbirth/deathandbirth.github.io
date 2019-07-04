@@ -37,6 +37,7 @@ const Data = class {
         rogue.lightenOrDarken('Lighten');
         map.redraw();
         this.loadAudio();
+        creation.setList();
     }
 
     saveItemTab() {

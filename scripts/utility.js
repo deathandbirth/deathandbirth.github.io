@@ -8,7 +8,7 @@ Object.defineProperty(Array.prototype, 'shuffle', {
     value() {
         let i = this.length;
         while (i-- > 1) {
-            let j = rndInt(i - 1);
+            let j = rndInt(i);
             this.swap(i, j);
         }
     },
@@ -21,6 +21,13 @@ const copyObj = (obj, obj2) => {
     }
 }
 
+const numberPadding = (num, digit, zero) => {
+    if (!num) num = 0;
+    let padding = '';
+    for (let i = 0; i < digit; i++) padding += zero ? '0' : '*';
+    return (padding + num).slice(-digit);
+}
+
 const lightenProb = () => !evalPercentage((rogue.cdl - 1) * 5);
 const searchProb = () => evalPercentage(10 + rogue.searching);
 const calcLevel = x => (x - 1) ** 4 + 10 * (x - 1);
@@ -28,10 +35,10 @@ const calcLevel = x => (x - 1) ** 4 + 10 * (x - 1);
 const initTab = () => {
     getRndName.init();
     for (let key in itemTab) {
-        if (key !== 'potion' && key !== 'wand' && key !== 'scroll' && key !== 'recipe') continue;
+        if (key !== 'potion' && key !== 'wand' && key !== 'scroll' && key !== 'recipe' && key !== 'orb') continue;
         for (let item of itemTab[key].values()) {
             item.identified = false;
-            getRndName[key](item);
+            if (key !== 'orb') getRndName[key](item);
         }
     }
 }
@@ -86,31 +93,44 @@ const getRndName = {
     }
 }
 
-const dice = {
-    get(dmgBase, numBonus = 0, sidesBonus = 0) {
-        let num = '';
-        let sides = '';
+const minMax = {
+    getBase(base, varRate) {
+        let value = base * varRate / 100;
+        let min = Math.ceil(base - value);
+        let max = Math.floor(base + value);
+        return min + '-' + max;
+    },
+
+    getNums(base, leftBonus = 0, rightBonus = 0, dice) {
+        let left = '';
+        let right = '';
         let i = 0;
         do {
-            num += dmgBase.charAt(i++);
-        } while (dmgBase.charAt(i) !== 'd');
+            left += base.charAt(i++);
+        } while (isFinite(base.charAt(i)));
 
-        while (dmgBase.charAt(++i) !== '') {
-            sides += dmgBase.charAt(i);
+        while (base.charAt(++i) !== '') {
+            right += base.charAt(i);
         }
 
-        num = Number(num) + numBonus;
-        sides = Number(sides) + sidesBonus;
-        return { num, sides };
+        left = Number(left) + leftBonus;
+        right = Number(right) + rightBonus;
+        if (!dice && left >= right) right = left + 1;
+        return [left, right];
     },
 
     getAvg() {
-        let { num, sides } = this.get(...arguments);
-        return Math.ceil((1 + sides) / 2 * num);
+        let [min, max] = this.getNums(...arguments);
+        return Math.ceil((min + max) / 2);
     },
 
     roll() {
-        let { num, sides } = this.get(...arguments);
+        let [min, max] = this.getNums(...arguments);
+        return rndIntBet(min, max);
+    },
+
+    dice(base) {
+        let [num, sides] = this.getNums(base, 0, 0, true);
         let value = 0;
         if (sides === 1) {
             value = num;
@@ -243,6 +263,31 @@ const deleteAndSortItem = (list, a) => {
     }
     
     delete list[EA[i]];
+}
+
+/* TEMP */
+const getArticleAndPlural = (name, verb, noun, quantity, upperCase) => {
+    if (noun && quantity === 1) {
+        let article = /^[aeiou]/i.test(name) ? 'an ' : 'a ';
+        name = article + name;
+    }
+    
+    if (verb || quantity > 1) {
+        let plural;
+        if (/[bcdfghjklmnpqrstvwxz]y$/.test(name)) {
+            name = name.slice(0, -1);
+            plural =  'ies';
+        } else if (/[sxo]$|sh$|ch$/.test(name)) {
+            plural =  'es';
+        } else {
+            plural =  's';
+        }
+
+        name += plural;
+    }
+
+    if (upperCase) name = getUpperCase(name);
+    return name;
 }
 
 const Position = class {

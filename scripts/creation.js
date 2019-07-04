@@ -159,11 +159,38 @@ const creation = {
         }
     },
 
-    enemyList() {
-        this.enemies = {};
+    setEnemyList(detail, normal, unique) {
+        this.enemyList = {};
         for (let key in fighterTab) {
-            for (let fighter of fighterTab[key]) {
-				this.enemies[`${fighter.lvl},${fighter.mod},${key}`] = fighter.name['b'];
+            for (let [tabId, f] of fighterTab[key].entries()) {
+                if (key === 'misc' && f.mod !== UNIQUE) continue;
+                if (f.mod === UNIQUE) {
+                    if (!unique) continue;
+                } else {
+                    if (!normal) continue;
+                }
+
+                let func = numberPadding;
+                let lvl = func(f.lvl, 2, true);
+                let list = `Lv: ${lvl}`;
+                if (detail) {
+                    let hr = func(f.hpRate, 3);
+                    let mr = func(f.mpRate, 3);
+                    let str = func(f.str, 3);
+                    let dex = func(f.dex, 3);
+                    let con = func(f.con, 3);
+                    let int = func(f.int, 3);
+                    let spd = func(f.spd, 4);
+                    let dmg = func(f.dmgBase, 3);
+                    let ac = func(f.acBase, 3);
+                    let sr = func(f.acSRate, 3);
+                    let tr = func(f.acTRate, 3);
+                    let br = func(f.acBRate, 3);
+                    list += `, HR: ${hr}, MR: ${mr}, Str: ${str}, Dex: ${dex}, Con: ${con}, Int: ${int}, Spd: ${spd}, Dmg: ${dmg}, AC: ${ac}, SR: ${sr}, TR: ${tr}, BR: ${br}`;
+                }
+
+                list += `, Mod: ${f.mod}, ${key} ${tabId}`;
+				this.enemyList[list] = `${f.name['b']}`;
 			}
         }
     },
@@ -202,11 +229,11 @@ const creation = {
         }
     },
 
-    itemList() {
-        this.items = {};
+    setItemList() {
+        this.itemList = {};
         flag.shop = true;
         for (let type of equipmentList) {
-            this.items[type] = [];
+            this.itemList[type] = [];
             for (let [tabId, item] of itemTab[type]) {
                 let i = 0;
                 let list = [...materialList];
@@ -226,7 +253,7 @@ const creation = {
 					
                     item.embeddedMax = 0;
                     let name = item.getName();
-                    this.items[type].push(`${name},${item.weight}kg`);
+                    this.itemList[type].push(`${name},${item.weight}kg`);
                 }
             }
 		}
@@ -264,4 +291,10 @@ const creation = {
             staircase.init(position, x, y);
         }
     },
+
+    setList() {
+        if (!rogue.isWizard) return;
+        this.setEnemyList(true, true, true);
+        this.setItemList();
+    }
 };

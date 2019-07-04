@@ -79,6 +79,7 @@ const [
     M_SCROLL,
     M_HELP,
     M_CHARACTER,
+    M_TOO_HEAVY,
 ] = enums(1, 80);
 
 const msgMap = new Map([
@@ -103,7 +104,7 @@ const msgMap = new Map([
     }],
 
     [M_EXAMINE_W, {
-        a: ' [e] to equipment [i] for inventory',
+        a: ' [e] for equipment [i] for inventory',
         b: ' [e] 装備 [i] 持物'
     }],
 
@@ -272,6 +273,11 @@ const msgMap = new Map([
         b: '詳細が掴めない'
     }],
 
+    [M_TOO_HEAVY, {
+        a: 'It\'s too heavy to lift',
+        b: '重くて持ち上げられない'
+    }],
+
     [M_DESTROY, {
         a: '[a-Z] [1-9] to destroy',
         b: '[a-Z] [1-9] 破壊'
@@ -303,8 +309,8 @@ const msgMap = new Map([
     }],
 
     [M_ZAP_DIR, {
-        a: '[direction] [.] to zap',
-        b: '[方向] [.] 振り下ろし'
+        a: '[direction] [t] to zap',
+        b: '[方向] [t] 振り下ろし'
     }],
 
     [M_QUAFF, {
@@ -428,8 +434,8 @@ const msgMap = new Map([
     }],
 
     [M_CAST_DIR, {
-        a: '[direction] [.] to cast',
-        b: '[方向] [.] 行使'
+        a: '[direction] [t] to cast',
+        b: '[方向] [t] 行使'
     }],
 
     [M_OPTION, {
@@ -478,8 +484,8 @@ const msgMap = new Map([
     }],
 
     [M_THROW_DIR, {
-        a: '[direction] [.] to throw',
-        b: '[方向] [.] 投擲'
+        a: '[direction] [t] to throw',
+        b: '[方向] [t] 投擲'
     }],
 ]);
 

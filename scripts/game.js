@@ -39,6 +39,7 @@ const game = {
         message.clear();
         this.clearLevel();
         creation.town();
+        creation.setList();
 	},
 	
     clearLevel() {

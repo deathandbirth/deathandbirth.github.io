@@ -287,6 +287,7 @@ Vue.component('help', {
                     <command-list
                         v-if="rogue&&rogue.isWizard"
                         :cmd-list="help.listWizard"
+                        :isEnglish="isEnglish"
                     ></command-list>
                 </div>
             </div>
@@ -337,7 +338,10 @@ Vue.component('investigation-item', {
                 <item-symbol :item="inv.obj"></item-symbol>
                 <item-name :item="inv.obj"></item-name>
             </ul>
-            <p class="description">{{ inv.desc }}</p>
+            <p
+                v-show="inv.desc"
+                class="description"
+                >{{ inv.desc }}</p>
             <ul class="base-prop-list">
                 <li v-for="prop in inv.basePropList">
                     <ul
@@ -363,7 +367,7 @@ Vue.component('investigation-item', {
                 <li v-for="prop in inv.modPropList">
                     <ul class="mod-prop buff">
                         <li>{{ prop.text }}</li>
-                        <li>{{ prop.value }}</li>
+                        <li v-show="prop.value">{{ prop.value }}</li>
                     </ul>
                 </li>
             </ul>
@@ -377,7 +381,7 @@ Vue.component('investigation-item', {
                                 class="mod-prop buff"
                             >
                                 <li>{{ prop.text }}</li>
-                                <li>{{ prop.value }}</li>
+                                <li v-show="prop.value">{{ prop.value }}</li>
                             </ul>
                         </li>
                     </ul>
@@ -399,7 +403,10 @@ Vue.component('investigation-fighter', {
                 <item-symbol :item="inv.obj"></item-symbol>
                 <item-name :item="inv.obj"></item-name>
             </ul>
-            <p class="description">{{ inv.desc }}</p>
+            <p
+                v-show="inv.desc"
+                class="description"
+            >{{ inv.desc }}</p>
             <ul
                 ref="fighterPropList"
                 class="base-prop-list"
@@ -473,7 +480,10 @@ Vue.component('enemy-bar', {
     props:['enemy', 'name', 'rogue', 'colorList'],
     template: /*html*/`
         <div>
-            <div class="enemy-bar-box">
+            <div 
+                v-if="enemy"
+                class="enemy-bar-box"
+            >
                 <p
                     :class="{ 
                         'unique-color': enemy.stroke,
@@ -524,7 +534,7 @@ Vue.component('condition', {
         <div>
             <ul>
                 <li
-                    v-if="rogue.hunger >= 800"
+                    v-if="rogue.hunger >= 1600"
                     :style="{ color: colorList.lime }"
                 >{{ isEnglish ? 'full' : '満腹'}}</li>
                 <li
@@ -727,13 +737,13 @@ Vue.component('stats-fixed', {
                         >{{ (isEnglish ? 'Int ' : '知 ') + rogue.int }}</li>
                         <li
                             :class="{ 
-                                buff: rogue.speeded
+                                buff: rogue.spdBuffDur
                             }"
 
                             :style="{
-                                color: rogue.slowed ? colorList.red : '',
+                                color: rogue.spdNerfDur ? colorList.red : '',
                             }"
-                        >{{ (isEnglish ? 'Spd ' : '速 ') + rogue.spd }}</li>
+                        >{{ (isEnglish ? 'Spd ' : '速 ') + rogue.spd + '%' }}</li>
                     </ul>
                     <div class="stats-fixed-list-bottom">
                         <span v-if="!rogue.cdl">{{ isEnglish ? 'Limbo' : '辺獄' }}</span>

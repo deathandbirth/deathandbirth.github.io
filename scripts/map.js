@@ -326,7 +326,7 @@ const hallucinate = {
                 } else {
                     let array = itemUniqueMap[item.type].get(item.tabId);
                     let unique = array[rndInt(array.length - 1)];
-                    [obj.name['a'], obj.name['b']] = obj.getUniqueName(unique.name);
+                    obj.getUniqueName(unique.name, true);
                 }
             }
 

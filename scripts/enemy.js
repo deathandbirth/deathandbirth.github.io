@@ -7,19 +7,21 @@ const Enemy = class extends Fighter {
     }
 
     gainStats() {
-        switch (this.grow && coinToss() ? this.grow : rndInt(3)) {
-            case STR:
-                this.str = ++this.strMax;
-                break;
-            case DEX:
-                this.dex = ++this.dexMax;
-                break;
-            case CON:
-                this.con = ++this.conMax;
-                break;
-            case INT:
-                this.int = ++this.intMax;
-                break;
+        for (let i = 0; i < 5; i++ ) {
+            switch (this.grow && coinToss() ? this.grow : rndInt(3)) {
+                case STR:
+                    this.str = ++this.strMax;
+                    break;
+                case DEX:
+                    this.dex = ++this.dexMax;
+                    break;
+                case CON:
+                    this.con = ++this.conMax;
+                    break;
+                case INT:
+                    this.int = ++this.intMax;
+                    break;
+            }
         }
     }
 
@@ -37,17 +39,13 @@ const Enemy = class extends Fighter {
         this.exp = this.expMax = calcLevel(this.lvl);
         this.expGain = this.getExp();
         this.expNext = this.calcNextLvl();
-        if (this.volumeRate) {
-            this.getMaterial();
-            this.getBaseandWeight();
-		}
-		
+        if (this.piece) this.getMaterial();
         if (this.mod === UNIQUE) {
             this.getUnique();
-		} else if (this.mod === MAGIC || magic || this.material === M_GEM ||
-            evalPercentage(10 + rogue.mf)) {
+        } else if (this.mod !== NORMAL || magic ||
+            this.material === M_GEM || Material.evalMod(MAGIC, rogue.mf)) {
             if (this.bias) bias = this.bias;
-            if (evalPercentage((10 + rogue.mf) / 4)) {
+            if (this.mod === RARE || Material.evalMod(RARE, rogue.mf)) {
                 this.getRare(bias);
 			} else {
 				this.getMagic(bias);
@@ -55,8 +53,8 @@ const Enemy = class extends Fighter {
 		}
 		
         if (evalPercentage(10)) this.dropNum++;
-        if (this.mf) this.dropNum += Math.ceil(this.mf / 10);
-        this.calcDmgOne();
+        if (this.mf) this.dropNum += Math.ceil(this.mf / 220);
+        // this.calcDmgOne();
         this.gainSynerzyAll();
         if (this.starter) this.getStarterItems();
         if (this.mod !== NORMAL) this.getOrLooseStats(modBonusMap.get(this.mod), true);
@@ -73,7 +71,7 @@ const Enemy = class extends Fighter {
 
         if (this.gf) {
             this.createItemIntoPack({
-                times: rndIntBet(1, Math.ceil(this.gf / 20)),
+                times: rndIntBet(1, Math.ceil(this.gf / 40)),
                 type: 'coin',
                 tabId: C_COIN,
             });
@@ -81,7 +79,7 @@ const Enemy = class extends Fighter {
 
         this.hp = this.hpMax;
         this.mp = this.mpMax;
-        this.energy = summon ? -COST_REGULAR : this.spd;
+        this.energy = COST_REGULAR * (summon ? -1 : this.spd / 100);
         super.init(position, x, y);
     }
 
@@ -113,8 +111,9 @@ const Enemy = class extends Fighter {
                 this.wakeUp();
 			} else {
                 this.decreaseEnergy();
-                return;
             }
+
+            return;
 		}
 		
         let los = l <= FOV_SQ ? lineOfSight(this.x, this.y, this.ce.x, this.ce.y) : false;
@@ -169,7 +168,7 @@ const Enemy = class extends Fighter {
             this.drawOrErase(false);
             this.x += dr.x, this.y += dr.y;
             this.drawOrErase(true);
-            this.cost -= this.frw >= 100 ? 5 : Math.floor(this.frw / 20);
+            this.cost -= this.spdMove;
         }
     }
 
@@ -314,7 +313,7 @@ const Enemy = class extends Fighter {
                 break;
 		}
 		
-        return perc && this.matRedTimes ? evalPercentage(perc / this.matRedTimes) : false;
+        return perc && this.matDropRate ? evalPercentage(perc / this.matDropRate) : false;
     }
 
     dropEquipment(list) {
@@ -327,19 +326,16 @@ const Enemy = class extends Fighter {
     }
 
     decide(distance) {
-        if (this.skillProb && evalPercentage(this.skillProb * 100) && this.checkToCast()) {
+        if (this.skill && this.skill['a'] && evalPercentage(this.skillProb * 100) && this.checkToCast()) {
             if (this.castSkill(distance)) return;
 		}
 		
         if (this.haveMissile()) {
-            this.ci = this.getAmmo(this.equipment['main'].throwType);
-            if (this.ci) {
+            let ammo = this.getAmmo(this.equipment['main'].throwType);
+            if (ammo) {
+                this.ci = ammo;
                 flag.arrow = true;
-                let name = this.getName(true);
-                let arrow = this.timesMissile === 1 ? 'an arrow' : 'arrows';
-                message.draw(option.isEnglish() ?
-                    `${name} shot ${arrow}` :
-                    `${name}矢を放った`);
+                this.getShootMsg(ammo);
                 this.aim({
                     x1: this.ce.x,
                     y1: this.ce.y,
@@ -356,30 +352,50 @@ const Enemy = class extends Fighter {
     }
 
     castSkill(distance) {
-        let a = EA[rndInt(Object.keys(this.skill).length - 1)];
-        let id = this.skill[a].id;
-        let skill = skillMap.get(id);
-        if (!this.checkToCast(skill)) return;
-        if (skill.kind !== 'self' && skill.range >= 0) {
-            let l = skill.range;
-            l += skill.radius ? skill.radius : 0;
-            if (l ** 2 < distance) return;
-		}
-		
-        this.cs = this.skill[a];
-        if (skill.kind === 'self') {
-            if (this.castSelfSpell(skill) === null) return;
-        } else {
-            flag.skill = true;
-            let [x, y] = skill.range === 0 ? [this.x, this.y] : [this.ce.x, this.ce.y];
-            this.aim({
-                x1: x,
-                y1: y,
-                nameSkill: id,
-            });
-		}
-		
-        return true;
+        let cast;
+        let array = Object.keys(this.skill);
+        array.shuffle();
+        for (let a of array) {
+            let id = this.skill[a].id;
+            let skill = skillMap.get(id);
+            if (!this.checkToCast(skill)) continue;
+            if (skill.kind !== 'self' && skill.range >= 0) {
+                let l = skill.range;
+                l += skill.radius ? skill.radius : 0;
+                if (l ** 2 < distance) continue;
+            }
+            
+            if (id === TELEPORT_TO || id === RAID) {
+                if (1 > distance) continue;
+            } else if (id === HEAL) {
+                if (this.hp >= this.hpMax) continue;
+            } else if (id === ENCOURAGEMENT) {
+                if (this.dmgBuffDur) continue;
+            } else if (id === BLESSING) {
+                if (this.acBuffDur) continue;
+            } else if (id === SPEED) {
+                if (this.spdBuffDur) continue;
+            }
+            
+            this.cs = this.skill[a];
+            if (skill.kind === 'self') {
+                cast = this.castSelfSpell(skill) !== null;
+                if (cast) break;
+            } else {
+                cast = true;
+                flag.skill = true;
+                let [x, y] = skill.range === 0 ? [this.x, this.y] : [this.ce.x, this.ce.y];
+                this.aim({
+                    x1: x,
+                    y1: y,
+                    nameSkill: id,
+                });
+
+                break;
+            }
+        }
+
+        return cast;
     }
 
     probWakeUp(distanceSq) {
@@ -445,7 +461,7 @@ const Enemy = class extends Fighter {
         if (!this.skillPoints) return;
         let skill = skillMap.get(id);
         if (skill.kind === 'breath' && this.race === HUMAN ||
-            skill.kind !== 'breath' && skill.type === 'spell' && this.int < 10) {
+            skill.kind !== 'breath' && skill.type === 'spell' && this.int < 50) {
 			return;
 		}
 

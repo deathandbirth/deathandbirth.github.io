@@ -135,6 +135,7 @@ const circleSearch = {
 };
 
 const lineOfSight = (x0, y0, x1, y1, color, skill) => {
+    if (color) cursor.drawPlot(x0, y0, color);
     let parabora = flag.arrow || flag.throw || skill && skill.parabora;
     let rangeSq = skill && skill.range >= 0 ? skill.range ** 2 : FOV_SQ;
     let radius = skill && skill.radius ? skill.radius : 0;
@@ -308,30 +309,35 @@ const shadowcasting = {
         if (this.color) {
             cursor.drawPlot(x, y, this.color);
         } else if (this.type === 'Lighten') {
-            if ((!this.lightRadSq || distance > this.lightRadSq) &&
-                !loc.lighten) return;
+            if ((!this.lightRadSq || distance > this.lightRadSq) && !loc.lighten) return;
+            let goldmine = loc.wall && loc.item['a'];
             let id = x + ',' + y;
-            rogue.litMapIds[id] = true;
+            if (!goldmine) rogue.litMapIds[id] = true;
             if (this.oldLitMap[id]) {
                 delete this.oldLitMap[id];
             } else {
                 loc.found = true;
-                if (!this.wall || !this.item['a']) loc.sight = true;
                 loc.drawGround();
-                loc.drawShadow(true);
+                if (!goldmine) loc.drawShadow(true);
             }
         } else if (this.type === 'Light') {
+            let goldmine = loc.wall && loc.item['a'];
+            if (!goldmine) {
+                let id = x + ',' + y;
+                rogue.litMapIds[id] = true;
+                loc.drawShadow(true);
+            }
+
             if (!loc.lighten) {
                 loc.lighten = true;
                 loc.found = true;
                 loc.drawGround();
-                loc.drawShadow(true);
             }
-        } else if (this.type === 'Dark') {
-            if (loc.lighten) {
-                loc.lighten = false;
-                loc.drawShadow();
-            }
+        // } else if (this.type === 'Dark') {
+        //     if (loc.lighten) {
+        //         loc.lighten = false;
+        //         loc.drawShadow();
+        //     }
         } else if (this.type === 'Aim') {
             let self = this.fighter;
             let enemy = loc.fighter;

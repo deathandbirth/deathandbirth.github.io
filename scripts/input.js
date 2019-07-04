@@ -200,7 +200,7 @@ const input = {
                     this.switchFlag();
                     flag.create = 'fighter';
                     creation.input();
-                    message.draw('Input type and tagId', true);
+                    message.draw('Input type and tabId', true);
                 } else if (this.isShift) {
                     if (!Object.keys(rogue.recipes).length) {
                         message.draw(message.get(M_DONT_KNOW_RECIPE));
@@ -336,7 +336,7 @@ const input = {
                     this.switchFlag();
                     flag.create = 'item';
                     creation.input();
-                    message.draw('Input type, tagId and quantity', true);
+                    message.draw('Input type, tabId and quantity', true);
                 } else if (this.isShift) {
                     this.switchFlag();
                     flag.investigate = true;
@@ -487,7 +487,7 @@ const input = {
                     this.switchFlag();
                     flag.examine = true;
                     cursor.init();
-                    rogue.examine();
+                    map.coords[rogue.x][rogue.y].getInfo();
                 }
 
                 break;

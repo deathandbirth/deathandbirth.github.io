@@ -262,11 +262,11 @@ li {
 }
 
 .rogue-boxes-list > .item-num {
-    top: 70%;
+    top: 50%;
 }
 
 .rogue-boxes-list > .item-charge {
-    top: -30%;
+    top: -50%;
 }
 
 #condition-container {
@@ -571,7 +571,13 @@ li {
     margin-top: 10px;
 }
 
+#investigation-item {
+    font-size: .9em;
+    line-height: 1.7em;
+}
+
 #investigation-fighter {
+    font-size: .9em;
     width: 100%;
 }
 
@@ -580,7 +586,6 @@ li {
     flex-wrap: wrap;
     align-items: baseline;
     overflow-y: hidden;
-    font-size: .9em;
     padding: 0 10px 10px;
 }
 
@@ -598,9 +603,9 @@ li {
     display: flex;
 }
 
-.inventory .base-prop > li:first-child,
-.inventory .mod-prop > li:first-child {
-    margin-right: 10px;
+.inventory .base-prop > li:last-child,
+.inventory .mod-prop > li:last-child {
+    margin-left: 10px;
 }
 
 .inventory .base-prop-list,
