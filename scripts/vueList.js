@@ -100,7 +100,7 @@ Vue.component('item-select', {
     props:['item'],
     template: /*html*/`
         <li
-            v-show="item.select"
+            v-show="item.select !== undefined"
             class="item-select"
         >{{ item.select }}</li>
     `

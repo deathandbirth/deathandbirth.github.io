@@ -156,52 +156,60 @@ const rndInt = (i) => Math.floor(Math.random() * (i + 1)); //0~i
 const rndIntBet = (i, j) => Math.floor(Math.random() * (j - i + 1)) + i; //i~j
 const coinToss = () => Math.random() >= 0.5;
 const evalPercentage = (perc) => perc / 100 > Math.random();
-const getAlphabet = (keyCode) => keyCode < 65 || keyCode > 90 ? null : EA[keyCode - 65];
-const getNumber = (keyCode) => keyCode < 48 || keyCode > 57 ? null : keyCode - 48;
-const getAlphabetOrNumber = (keyCode) => {
-    let a = getAlphabet(keyCode);
-    if (!a) a = getNumber(keyCode);
+const getAlphabet = (key) => /^[a-z]$/i.test(key) ? key : null;
+const getNumber = (key) => /^[0-9]$/.test(key) ? key : null;
+const getAlphabetOrNumber = (key) => {
+    let a = getAlphabet(key);
+    if (!a) a = getNumber(key);
     return a;
 }
 
 const getUpperCase = (string) => string.charAt(0).toUpperCase() + string.slice(1);
-const getDirection = (keyCode) => {
+const getDirection = (key) => {
     let id;
-    switch (keyCode) {
-        case 72: //h
-        case 37: //left arrow
-        case 100: //T4
+    switch (key) {
+        case 'h':
+        case 'H':
+        case 'ArrowLeft':
+        case 'Left':
             id = LEFT;
             break;
-        case 74: //j
-        case 40: //down arrow
-        case 98: //T2
+        case 'j':
+        case 'J':
+        case 'ArrowDown':
+        case 'Down':
             id = DOWN;
             break;
-        case 75: //k
-        case 38: //up arrow
-        case 104: //T8
+        case 'k':
+        case 'K':
+        case 'ArrowUp':
+        case 'Up':
             id = UP;
             break;
-        case 76: //l
-        case 39: //right arrow
-        case 102: //T6
+        case 'l':
+        case 'L':
+        case 'ArrowRight':
+        case 'Right':
             id = RIGHT;
             break;
-        case 89: //y
-        case 103: //T7
+        case 'y': 
+        case 'Y':
+        case 'Home':
             id = UPLEFT;
             break;
-        case 66: //b
-        case 97: //T1
+        case 'b':
+        case 'B':
+        case 'End':
             id = DOWNLEFT;
             break;
-        case 85: //u
-        case 105: //T9
+        case 'u':
+        case 'U':
+        case 'PageUp':
             id = UPRIGHT;
             break;
-        case 78: //n
-        case 99: //T3
+        case 'n':
+        case 'N':
+        case 'PageDown':
             id = DOWNRIGHT;
             break;
         default:

@@ -2386,9 +2386,9 @@ const Fighter = class extends Material {
         y1,
         nameSkill,
         ecco,
-        keyCode = null,
+        key = null,
     }) {
-        if (keyCode === 88) { //x
+        if (key === 'x') {
             if (this.blinded) {
                 message.draw(message.get(M_CANT_EXAMINE));
                 return;
@@ -2400,11 +2400,11 @@ const Fighter = class extends Material {
             return;
 		}
 		
-        if (keyCode !== null) {
-            if (keyCode === 84) { //t
+        if (key !== null) {
+            if (key === 't') {
                 [x1, y1] = [this.x, this.y];
 			} else {
-                var dr = getDirection(keyCode);
+                var dr = getDirection(key);
                 if (dr === null) return;
             }
 		}

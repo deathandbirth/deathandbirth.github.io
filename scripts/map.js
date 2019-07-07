@@ -204,47 +204,47 @@ const map = {
         }
     },
 
-    drawMini(keyCode) {
-        if (!(keyCode === 65 || //a all
-            keyCode === 83 || //s self
-            keyCode === 67 || //c close
-            keyCode === 69 || //e enemy
-            keyCode === 73 || //i item
-            keyCode === 77 && input.isShift || //M map
-            keyCode === 188 && input.isShift || //<
-            keyCode === 190 && input.isShift || //>
-            keyCode === 80 || //p portal
-            keyCode === 84)) { //t trap
+    drawMini(key) {
+        if (!(key === 'a' || // all
+            key === 's' || // self
+            key === 'c' || // close
+            key === 'e' || // enemy
+            key === 'i' || // item
+            key === 'M' || // map
+            key === '<' || // <
+            key === '>' || // >
+            key === 'p' || // portal
+            key === 't')) { // trap
             return;
         }
 
-        if (keyCode === 67) { //c
+        if (key === 'c') {
             rogue.cancelCommand();
             return;
         }
 
-        if (keyCode === 65 || rogue.blinded) { //a
+        if (key === 'a' || rogue.blinded) {
             this.drawObjectAll();
         } else {
             display.clearOne(display.ctxes.object);
-            switch (keyCode) {
-                case  69: //e
+            switch (key) {
+                case  'e':
                     this.drawObject(this.enemyList, SYMBOL_FIGHTER);
                     break;
-                case  83: //s
+                case  's':
                     this.drawObject([rogue], SYMBOL_FIGHTER);
                     break;
-                case  73: //i
+                case  'i':
                     this.drawObject(this.itemList, SYMBOL_ITEM);
                     break;
-                case  188: //<
-                case  190: //>
+                case  '<':
+                case  '>':
                     this.drawObject(this.staircaseList, SYMBOL_STAIRS);
                     break;
-                case  80: //p
+                case  'p':
                     if (this.portal) this.drawObject([this.portal], SYMBOL_ENTER);
                     break;
-                case  84: //t
+                case  't':
                     this.drawObject(this.trapList, SYMBOL_TRAP);
                     break;
             }
@@ -472,8 +472,8 @@ const cursor = {
         display.clearOne(display.ctxes.cursor);
     },
 
-    move(keyCode) {
-        let dr = getDirection(keyCode);
+    move(key) {
+        let dr = getDirection(key);
         if (!dr) return;
         let [x, y] = [this.x, this.y];
         let [xinc, yinc] = [dr.x, dr.y];

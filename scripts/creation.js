@@ -1,17 +1,15 @@
 const creation = {
-    input(keyCode) {
-        if (keyCode !== 13) { //Enter
-            if (keyCode >= 48 && keyCode <= 57) {
-                this.string += String(getNumber(keyCode));
-			} else if (keyCode >= 65 && keyCode <= 90) {
-                this.string += getAlphabet(keyCode);
-			} else if (keyCode === 32) {
+    input(key) {
+        if (key !== 'Enter') { 
+            if (getAlphabetOrNumber(key)) {
+                this.string += key;
+			} else if (/^\s$|Spacebar/.test(key)) {
                 this.string += ' ';
-            } else if (keyCode === 8) {
+            } else if (key === 'Backspace') {
                 this.string = this.string.substr(0, this.string.length - 1);
-			} else if (keyCode === 40 && this.stringSave) { //down
+			} else if (key === 'ArrowDown' && this.stringSave) {
                 this.string = this.stringSave;
-            } else if (!keyCode) { //init
+            } else if (!key) { //init
 				this.string = '';
 			}
 

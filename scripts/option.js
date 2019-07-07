@@ -29,10 +29,12 @@ const option = {
         }
     },
 
-    main(keyCode) {
+    main(key) {
         let list = !flag.option2 ? this.list : this[this.name].select;
-        if (keyCode < 65 || keyCode >= Object.keys(list).length + 65) return;
-        let a = getAlphabet(keyCode);
+        let a = getAlphabet(key);
+        if (!a) return;
+        a = a.toLowerCase();
+        if (!list[a]) return;
         if (!flag.option2) this.name = this.list[a]['key'];
         if (this.name === 'language' || this.name === 'BGM' || this.name === 'SE') {
             if (!flag.option2) {
@@ -45,7 +47,7 @@ const option = {
                 vue.isEnglish = this.isEnglish();
             } else if (this.name === 'BGM' || this.name === 'SE') {
                 this[this.name].user = a;
-                let vol = (keyCode - 65) / 10;
+                let vol = EA.indexOf(a.toLowerCase()) / 10;
                 if (this.name === 'BGM') {
                     audio.volBGM = vol
                     audio.music[audio.curTrack].volume = vol;

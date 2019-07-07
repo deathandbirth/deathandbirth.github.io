@@ -64,7 +64,7 @@ const help = {
         { cmd: { a: 'Ctrl+i', b: 'Ctrl+i'}, name: { a: '*create item*', b: '*アイテムを生成する*' }},
     ],
 
-    scroll(keyCode, init) {
+    scroll(key, init) {
         if (init) {
             message.draw(message.get(M_HELP) + message.get(M_SCROLL), true);
             let $refs = vue.$refs.help.$refs;
@@ -72,6 +72,6 @@ const help = {
             this.eleC = $refs.commandList.$el.firstElementChild;
         }
 
-        input.scroll(this.eleP, this.eleC, keyCode, init);
+        input.scroll(this.eleP, this.eleC, key, init);
     }
 };

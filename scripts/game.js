@@ -11,15 +11,14 @@ const game = {
         flag.retry = true;
 	},
 	
-    quit(keyCode, save) {
-        if (keyCode !== 89 && keyCode !== 78) return; //y, n
-        if (keyCode === 78) {
+    quit(key, save) {
+        if (key === 'n') {
             flag.quit = false;
             flag.regular = true;
             inventory.clear();
-            return;
 		}
 		
+        if (key !== 'y') return;
         flag.died = true;
         flag.title = true;
         flag.regular = false;

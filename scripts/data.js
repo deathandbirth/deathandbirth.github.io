@@ -235,7 +235,7 @@ const data = {
 
     exit() {
         this.save();
-        game.quit(89, true);
+        game.quit('y', true);
     },
 
     dontSave() {

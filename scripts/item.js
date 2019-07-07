@@ -326,18 +326,6 @@ const Item = class extends Material {
 		}
     }
 
-    getQuantity(keyCode, num) {
-        let i;
-        if (keyCode === 13) { //Enter
-            i = Number(num);
-            if (i > this.quantity) i = this.quantity;
-        } else {
-			i = this.quantity;
-		}
-
-        return i;
-    }
-
     getName(real, quantity = this.quantity, a = option.getLanguage(), gamble) {
         let type = this.typeHalluc ? this.typeHalluc : this.type;
         let halluc = !!this.typeHalluc;

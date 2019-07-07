@@ -959,19 +959,19 @@ const investigation = {
         }
     },
 
-    scroll(keyCode, init) {
+    scroll(key, init) {
         if (init) {
             this.eleP = vue.$refs.investigationFighter.$refs.fighterPropList;
             this.eleC = this.eleP.firstElementChild;
             message.draw(message.get(M_CHARACTER) + message.get(M_SCROLL), true);
-        } else if (flag.examine && keyCode === 67) { // c
+        } else if (flag.examine && key === 'c') {
             flag.character = false;
             inventory.clear();
             rogue.examineMsg();
             return;
         }
 
-        input.scroll(this.eleP, this.eleC, keyCode, init);
+        input.scroll(this.eleP, this.eleC, key, init);
     },
 
     getAtkTypeName(at) {

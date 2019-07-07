@@ -374,8 +374,8 @@ const msgMap = new Map([
     }],
 
     [M_STASH, {
-        a: '[a-z] to store [A-Z] to take out [,] to previous [.] to next page [alt + a-Z] details',
-        b: '[a-z] 保管 [A-Z] 持参 [,] 前項 [.] 次項 [alt + a-Z] 詳細'
+        a: '[a-z] to store [A-Z] to take out [<] to previous [>] to next page [alt + a-Z] details',
+        b: '[a-z] 保管 [A-Z] 持参 [<] 前項 [>] 次項 [alt + a-Z] 詳細'
     }],
 
     [M_EXAMINE, {
@@ -470,7 +470,7 @@ const msgMap = new Map([
 
     [M_FIRE, {
         a: '[direction] to fire',
-        b: '[方向]　発射'
+        b: '[方向] 発射'
     }],
 
     [M_QUIT, {
@@ -492,7 +492,7 @@ const msgMap = new Map([
 const message = {
     listTemp: [],
     list: [],
-    scroll(keyCode, init) {
+    scroll(key, init) {
         if (init) {
             message.draw(message.get(M_MESSAGE) + message.get(M_SCROLL), true);
             this.eleP = vue.$refs.messagePrevContainer.$refs.messagePrevList;
@@ -502,7 +502,7 @@ const message = {
                 + (option.isEnglish() ? 'Message List' : 'メッセージ一覧'); 
         }
 
-        input.scroll(this.eleP, this.eleC, keyCode, init);
+        input.scroll(this.eleP, this.eleC, key, init);
     },
 
     clear() {

@@ -53,7 +53,7 @@ const Enemy = class extends Fighter {
 		}
 		
         if (evalPercentage(10)) this.dropNum++;
-        if (this.mf) this.dropNum += Math.ceil(this.mf / 220);
+        if (this.mf) this.dropNum += Math.ceil(this.mf / 30);
         // this.calcDmgOne();
         this.gainSynerzyAll();
         if (this.starter) this.getStarterItems();

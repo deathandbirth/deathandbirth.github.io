@@ -43,11 +43,11 @@ const Rogue = class extends Fighter {
 		}
     }
 
-    move(keyCodeDr, dr) {
+    move(key, dr) {
         if (this.confused) {
             dr = DR[rndInt(DR.length - 1)];
-		} else if (keyCodeDr) {
-			dr = getDirection(keyCodeDr);
+		} else if (key) {
+			dr = getDirection(key);
 		}
 
         let loc = map.coords[this.x + dr.x][this.y + dr.y];
@@ -61,7 +61,7 @@ const Rogue = class extends Fighter {
                     this.ci = ammo;
                     flag.arrow = true;
                     this.getShootMsg(ammo);
-                    this.aim({ keyCode: keyCodeDr });
+                    this.aim({ key: key });
                 } else {
                     message.draw(message.get(M_DONT_HAVE_AMMO));
                     return null;
@@ -101,9 +101,9 @@ const Rogue = class extends Fighter {
         }
     }
 
-    dash(keyCodeDr) {
+    dash(key) {
         if (this.confused) return;
-        let dr = getDirection(keyCodeDr);
+        let dr = getDirection(key);
         let loc = map.coords[this.x + dr.x][this.y + dr.y];
         if (loc.isClosedDoor() && !loc.hidden) {
             loc.openOrCloseDoor();
@@ -152,7 +152,7 @@ const Rogue = class extends Fighter {
         } else if (wallLUp && wallRUp) {
             if (count) {
                 dr = map.coords[this.x + dr.x][this.y + dr.y].wall ?
-                    this.dashSearch(dr, drLUp, drRUp) : null;
+                    this.dashSearch(dr) : null;
                 if (!dr) {
                     found = true;
 				} else {
@@ -180,7 +180,7 @@ const Rogue = class extends Fighter {
 		}
     }
 
-    dashSearch(dr, drLUp, drRUp) {
+    dashSearch(dr) {
         let key1 = -1;
         let keyDia = -1;
         for (let key in DR) {
@@ -227,8 +227,8 @@ const Rogue = class extends Fighter {
         return count;
     }
 
-    openOrCloseDoor(keyCode) {
-        let dr = getDirection(keyCode);
+    openOrCloseDoor(key) {
+        let dr = getDirection(key);
         if (!dr) return;
         let loc = map.coords[this.x + dr.x][this.y + dr.y];
         if (loc.door && loc.isClosedDoor() === flag.openDoor &&
@@ -251,21 +251,21 @@ const Rogue = class extends Fighter {
         rogue.done = true;
     }
 
-    attackStationary(keyCodeDr) {
+    attackStationary(key) {
         if (this.bookmarks[0] !== null) {
-            this.castBookmarkedSkill(48, keyCodeDr);
+            this.castBookmarkedSkill('M', key);
 		} else if (this.haveMissile()) {
             let ammo = this.getAmmo(this.equipment['main'].throwType);
             if (ammo) {
                 this.ci = ammo;
                 flag.arrow = true;
                 this.getShootMsg(ammo);
-                this.aim({ keyCode: keyCodeDr });
+                this.aim({ key: key });
             } else {
 				message.draw(message.get(M_DONT_HAVE_AMMO));
 			}
         } else {
-            let dr = getDirection(keyCodeDr);
+            let dr = getDirection(key);
             let loc = map.coords[this.x + dr.x][this.y + dr.y];
             if (loc.wall) {
                 this.dig(loc);
@@ -323,11 +323,11 @@ const Rogue = class extends Fighter {
         map.queue.push(this);
     }
 
-    downOrUpStairs(keyCode, trap) {
+    downOrUpStairs(key, trap) {
         let loc = map.coords[this.x][this.y];
         if (!trap && !loc.stairs || loc.hidden) return;
         let dr = trap ? null : loc.stairs.id;
-        if (trap || dr === DOWN && keyCode === 190) {
+        if (trap || dr === DOWN && key === '>') {
             if (!trap) audio.playSound('staircase');
             if (option.autosave.user) data.save();
             game.clearLevel();
@@ -338,7 +338,7 @@ const Rogue = class extends Fighter {
                 if (rogue.dl < ++rogue.cdl) rogue.dl = rogue.cdl;
                 creation.dungeon(!trap, dr);
             }
-        } else if (dr === UP && keyCode === 188) {
+        } else if (dr === UP && key === '<') {
             audio.playSound('staircase');
             if (option.autosave.user) data.save();
             game.clearLevel();
@@ -454,10 +454,10 @@ const Rogue = class extends Fighter {
         }
     }
 
-    grabItem(keyCode, a) {
+    grabItem(key, a) {
         let loc = map.coords[this.x][this.y];
         if (flag.grab) {
-            if (keyCode) a = getAlphabet(keyCode);
+            if (key) a = getAlphabet(key);
             if (!a || !loc.item[a]) return;
             let item = loc.item[a];
             item = this.inventoryOut(item, item.quantity);
@@ -480,7 +480,7 @@ const Rogue = class extends Fighter {
             if (!loc.item['a']) return;
             flag.grab = true;
             if (!loc.item['b']) {
-                this.grabItem(65);
+                this.grabItem('a');
 			} else {
                 input.switchFlag();
                 let msg = message.get(M_GRAB);
@@ -490,11 +490,12 @@ const Rogue = class extends Fighter {
         }
     }
 
-    drop(keyCode) {
+    drop(key) {
         let item;
         if (!flag.number) {
-            let a = getAlphabetOrNumber(keyCode);
+            let a = getAlphabetOrNumber(key);
             if (!a) return;
+            a = a.toLowerCase();
             item = this.getItem(a);
             if (!item || item.place === P_EQUIPMENT && item.cursed) return;
             if (item.quantity > 1) {
@@ -509,7 +510,8 @@ const Rogue = class extends Fighter {
 			}
         } else {
             item = this.ci;
-            let i = item.getQuantity(keyCode, this.cn);
+            let i = this.cn;
+            if (i > item. quantity) i = item.quantity;
             item = this.inventoryOut(item, i);
             this.ci = null;
 		}
@@ -522,9 +524,9 @@ const Rogue = class extends Fighter {
         rogue.done = true;
     }
 
-    equip(keyCode) {
-        if (this.switchInventory(keyCode, M_EQUIP)) return;
-        let a = getAlphabetOrNumber(keyCode);
+    equip(key) {
+        if (this.switchInventory(key, M_EQUIP)) return;
+        let a = getAlphabetOrNumber(key);
         if (!a || input.isShift) return;
         let item = this.getItem(a, flag.floor);
         if (!item || !item.equipable) return;
@@ -563,10 +565,11 @@ const Rogue = class extends Fighter {
         flag.clearInv = true;
     }
 
-    unequip(keyCode, parts) {
+    unequip(key, parts) {
         if (!parts) {
-            let a = getAlphabet(keyCode);
+            let a = getAlphabet(key);
             if (!a) return;
+            a = a.toLowerCase();
             parts = BP[a];
         }
 
@@ -624,13 +627,13 @@ const Rogue = class extends Fighter {
         return true;
     }
 
-    fuel(keyCode, boxItem) {
-        if (this.switchInventory(keyCode, M_FUEL, true)) return;
+    fuel(key, boxItem) {
+        if (this.switchInventory(key, M_FUEL, true)) return;
         let item;
         if (boxItem) {
             item = boxItem;
 		} else {
-            let a = getAlphabetOrNumber(keyCode);
+            let a = getAlphabetOrNumber(key);
             if (!a || input.isShift) return;
             item = this.getItem(a, flag.floor);
             if (!item || item.type !== 'light' && item.type !== 'oil') return;
@@ -664,13 +667,13 @@ const Rogue = class extends Fighter {
         flag.regular = true;
     }
 
-    eat(keyCode, boxItem) {
-        if (this.switchInventory(keyCode, M_EAT)) return;
+    eat(key, boxItem) {
+        if (this.switchInventory(key, M_EAT)) return;
         let item;
         if (boxItem) {
             item = boxItem;
 		} else {
-            var a = getAlphabetOrNumber(keyCode);
+            var a = getAlphabetOrNumber(key);
             if (!a) return;
             item = this.getItem(a, flag.floor);
             if (!item || item.type !== 'food') return;
@@ -693,13 +696,13 @@ const Rogue = class extends Fighter {
         rogue.done = true;
     }
 
-    quaffPotion(keyCode, boxItem) {
-        if (this.switchInventory(keyCode, M_QUAFF)) return;
+    quaffPotion(key, boxItem) {
+        if (this.switchInventory(key, M_QUAFF)) return;
         let item;
         if (boxItem) {
             item = boxItem;
 		} else {
-            var a = getAlphabetOrNumber(keyCode);
+            var a = getAlphabetOrNumber(key);
             if (!a) return;
             item = this.getItem(a, flag.floor);
             if (!item || item.type !== 'potion') return;
@@ -730,15 +733,15 @@ const Rogue = class extends Fighter {
         rogue.done = true;
     }
 
-    zap(keyCode, boxItem) {
-        if (this.switchInventory(keyCode, M_ZAP)) return;
+    zap(key, boxItem) {
+        if (this.switchInventory(key, M_ZAP)) return;
         let item;
         if (boxItem) {
             input.switchFlag();
             flag.zap = true;
             item = boxItem;
         } else {
-            let a = getAlphabetOrNumber(keyCode);
+            let a = getAlphabetOrNumber(key);
             if (!a) return;
             item = this.getItem(a, flag.floor);
             if (!item || item.type !== 'wand') return;
@@ -752,9 +755,9 @@ const Rogue = class extends Fighter {
         this.examinePlot(true);
     }
 
-    throw (keyCode) {
-        if (this.switchInventory(keyCode, M_THROW)) return;
-        let a = getAlphabetOrNumber(keyCode);
+    throw(key) {
+        if (this.switchInventory(key, M_THROW)) return;
+        let a = getAlphabetOrNumber(key);
         if (!a || input.isShift) return;
         let item = this.getItem(a, flag.floor);
         if (!item) return;
@@ -785,13 +788,13 @@ const Rogue = class extends Fighter {
         }
     }
 
-    read(keyCode, boxItem) {
-        if (this.switchInventory(keyCode, M_READ)) return;
+    read(key, boxItem) {
+        if (this.switchInventory(key, M_READ)) return;
         let item;
         if (boxItem) {
             item = boxItem;
 		} else {
-            var a = getAlphabetOrNumber(keyCode);
+            var a = getAlphabetOrNumber(key);
             if (!a) return;
             item = this.getItem(a, flag.floor);
             if (!item || item.type !== 'scroll' && item.type !== 'recipe' && !item.chargeBook) return;
@@ -844,11 +847,12 @@ const Rogue = class extends Fighter {
         rogue.done = true;
     }
 
-    identify(keyCode, item) {
-        if (this.switchInventory(keyCode, M_IDENTIFY, true)) return;
-        if (keyCode !== null) {
-            var a = getAlphabetOrNumber(keyCode);
+    identify(key, item) {
+        if (this.switchInventory(key, M_IDENTIFY, true)) return;
+        if (key !== null) {
+            var a = getAlphabetOrNumber(key);
             if (!a) return;
+            a = a.toLowerCase();
             item = this.getItem(a, flag.floor);
 		}
 		
@@ -867,7 +871,7 @@ const Rogue = class extends Fighter {
         message.draw(option.isEnglish() ?
             `Identified ${name}` :
             `${name}を判別した`);
-        if (keyCode) {
+        if (key) {
             inventory.clear();
             this.showInventory(item.place, a);
             investigation.main(item, item.place === P_EQUIPMENT || item.place === P_BOX ? RIGHT : LEFT);
@@ -913,12 +917,13 @@ const Rogue = class extends Fighter {
         return priceTotal;
     }
 
-    repair(keyCode) {
-        let blacksmithAll = flag.blacksmith & keyCode === 13; //Enter
+    repair(key) {
+        let blacksmithAll = flag.blacksmith && key === 'Enter'; 
         if (!blacksmithAll) {
-            if (!flag.blacksmith && this.switchInventory(keyCode, M_REPAIR, true)) return;
-            let a = getAlphabetOrNumber(keyCode);
+            if (!flag.blacksmith && this.switchInventory(key, M_REPAIR, true)) return;
+            let a = getAlphabetOrNumber(key);
             if (!a) return;
+            a = a.toLowerCase();
             var item = this.getItem(a, flag.floor);
             if (!item || !item.equipable || item.durab === item.durabMax) return;
             flag.floor = false;
@@ -978,8 +983,9 @@ const Rogue = class extends Fighter {
         item.durab = item.durabMax;
     }
 
-    disintegrate(keyCode) {
-        if (keyCode < 65 || keyCode > 90) return;
+    disintegrate(key) {
+        let symbol = key === '%' ? key : getAlphabet(key);
+        if (!symbol) return;
         let skill = skillMap.get(DISINTEGRATION);
         let lvl;
         if (flag.skill) {
@@ -989,8 +995,6 @@ const Rogue = class extends Fighter {
 		}
 
         let radius = this.calcSkillValue(skill, lvl);
-        let symbol = EA[keyCode - 65];
-        if (input.isShift) symbol = symbol.toUpperCase()
         circleSearch.main({
             x0: this.x,
             y0: this.y,
@@ -1035,12 +1039,13 @@ const Rogue = class extends Fighter {
         cursor.clearAll();
     }
 
-    investigate(keyCode, item, place, direction, msg) {
+    investigate(key, item, place, direction, msg) {
         investigation.clear();
         if (!item) {
-            if (this.switchInventory(keyCode, M_INVESTIGATE, true)) return;
-            let a = getAlphabetOrNumber(keyCode);
+            if (this.switchInventory(key, M_INVESTIGATE, true)) return;
+            let a = getAlphabetOrNumber(key);
             if (!a) return;
+            a = a.toLowerCase();
             item = this.getItem(a, flag.floor);
             if (!item) return;
         }
@@ -1086,32 +1091,34 @@ const Rogue = class extends Fighter {
         return msg;
     }
 
-    synthesize(keyCode) {
+    synthesize(key) {
         if (flag.recipe) {
-            if (keyCode !== 67) return; //c
+            if (key !== 'c') return;
             flag.recipe = false;
             inventory.list.recipe.show = false;
             let msg = message.get(M_SYNTHESIZE) + message.get(flag.floor ? M_PACK : M_FLOOR);
             message.draw(msg, true);
             return;
-        } else if (input.isCtrl && keyCode === 82) { //^r
+        } else if (input.isCtrl && key === 'r') {
             flag.recipe = true;
             message.draw(message.get(M_RECIPE), true);
             inventory.showRecipe();
             return;
         }
         
-        if (this.switchInventory(keyCode, M_SYNTHESIZE)) return;
+        if (this.switchInventory(key, M_SYNTHESIZE)) return;
         let l = Object.keys(this.cube).length;
-        if (keyCode === 13 && l >= 1) { //Enter
+        if (key === 'Enter' && l >= 1) { 
             flag.floor = false;
             this.tryToSynthesize();
             return;
         }
         
-        let a = getAlphabetOrNumber(keyCode);
-        if (!a || !input.isShift && l === MAX_CUBE_COUNT) {
-            if (a) message.draw(message.get(M_CANT_ADD));
+        let a = getAlphabetOrNumber(key);
+        if (!a) return;
+        a = a.toLowerCase();
+        if (!input.isShift && l === MAX_CUBE_COUNT) {
+            message.draw(message.get(M_CANT_ADD));
             return;
         }
         
@@ -1564,11 +1571,12 @@ const Rogue = class extends Fighter {
         }
     }
 
-    packOrUnpack(keyCode) {
+    packOrUnpack(key) {
         if (flag.pack !== P_PACK) {
-            if (this.switchInventory(keyCode, M_PACK_OR_UNPACK) || input.isShift) return;
-            let a = getAlphabetOrNumber(keyCode);
+            if (this.switchInventory(key, M_PACK_OR_UNPACK) || input.isShift) return;
+            let a = getAlphabetOrNumber(key);
             if (!a) return;
+            a = a.toLowerCase();
             let item = this.getItem(a, flag.floor);
             if (!item) return;
             if (item.place === P_BOX) {
@@ -1578,7 +1586,7 @@ const Rogue = class extends Fighter {
                 this.ci = item;
                 flag.pack = P_PACK;
                 if (Object.keys(this.boxes).length === 1) {
-                    this.packOrUnpack(49); //1
+                    this.packOrUnpack('1');
 				} else {
 					message.draw(message.get(M_PACK_INTO), true);
 				}
@@ -1586,7 +1594,7 @@ const Rogue = class extends Fighter {
                 return;
             }
         } else {
-            let a = getNumber(keyCode);
+            let a = getNumber(key);
             if (!a || this.boxes[a] === undefined) return;
             let item = this.inventoryOut(this.ci, this.ci.quantity);
             this.ci = null;
@@ -1601,9 +1609,8 @@ const Rogue = class extends Fighter {
         message.draw(msg, true);
     }
 
-    useBoxItem(keyCode) {
-        let i = keyCode - 48;
-        let item = this.boxes[i];
+    useBoxItem(key) {
+        let item = this.boxes[key];
         if (!item) return;
         if (item.type === 'potion') {
             this.quaffPotion(null, item);
@@ -1647,9 +1654,9 @@ const Rogue = class extends Fighter {
         });
     }
 
-    examine(keyCode) {
+    examine(key) {
         let loc = map.coords[cursor.x][cursor.y];
-		if (keyCode === 88) { //x
+		if (key === 'x') {
             if (loc.item['a'] && this.litMapIds[cursor.x + ',' + cursor.y] &&
                 distanceSq(cursor.x, cursor.y, this.x, this.y) <= FOV_SQ &&
                 lineOfSight(this.x, this.y, cursor.x, cursor.y)) {
@@ -1661,33 +1668,32 @@ const Rogue = class extends Fighter {
                     place: P_FLOOR
                 })
 			}
-        } else if (keyCode === 67 || keyCode === 77 ||
-            keyCode === 69 || keyCode === 73) { //c,m,e,i
+        } else if (key === 'c' || key === 'm' || key === 'e' || key === 'i') {
             let fighter = loc.fighter;
             if (fighter && fighter.isShowing() &&
                 (fighter.id === ROGUE || !rogue.hallucinated)) {
                 if (fighter.mimic && !fighter.identified && !rogue.isWizard) return;
-                if (keyCode === 67) {
+                if (key === 'c') {
                     flag.character = true;
                     investigation.main(fighter ,MIDDLE, true);
                     Vue.nextTick(function(){
                         investigation.scroll(null, true);
                     });
 				} else {
-                    if (keyCode === 77) {
+                    if (key === 'm') {
                         fighter.showSkill(fighter.skill);
-                    } else if (keyCode === 69 && this.isWizard) {
+                    } else if (key === 'e' && this.isWizard) {
                         fighter.equipmentList();
-                    } else if (keyCode === 73 && this.isWizard) {
+                    } else if (key === 'i' && this.isWizard) {
                         fighter.showInventory(P_PACK);
                     }
 
                     flag.clearInv = true;
                 }
 			}
-        } else if (keyCode === 84 || keyCode === 82) { //t,r
+        } else if (key === 't' || key === 'r') { //t
             if (flag.wormhole) {
-                if (keyCode === 82) {
+                if (key === 'r') {
                     flag.wormhole = false;
 				} else {
                     this.wormhole(cursor.x, cursor.y);
@@ -1695,7 +1701,7 @@ const Rogue = class extends Fighter {
                 }
 			}
 			
-            if (keyCode === 82) {
+            if (key === 'r') {
                 this.ce = null;
 			} else if (loc.fighter && loc.fighter.id !== ROGUE && loc.fighter.isShowing()) {
                 this.ce = loc.fighter;
@@ -1704,7 +1710,7 @@ const Rogue = class extends Fighter {
                 return;
 			}
 			
-            if (flag.aim && keyCode !== 82) {
+            if (flag.aim && key === 't') {
                 if (flag.skill || flag.scroll) {
                     let nameSkill = flag.skill ? this.cs.id : this.ci.nameSkill;
                     if (skillMap.get(nameSkill).range === 0) [cursor.x, cursor.y] = [this.x, this.y];
@@ -1718,7 +1724,7 @@ const Rogue = class extends Fighter {
 			
             this.cancelCommand();
 		} else {
-            cursor.move(keyCode);
+            cursor.move(key);
         }
     }
 
@@ -1765,10 +1771,11 @@ const Rogue = class extends Fighter {
         this.ci = null;
     }
 
-    addOrRemoveBookmark(keyCode) {
+    addOrRemoveBookmark(key) {
+        let isFuncKey = /^F\d/.test(key);
         if (flag.bookmark === 1) {
-            if (keyCode >= 112 || input.isShift && keyCode === 77) { //F1~, M
-                let i = keyCode === 77 ? 0 : keyCode - 111;
+            if (key === 'M' || isFuncKey) {
+                let i = key === 'M' ? 0 : key.replace('F', '');
                 if (!this.bookmarks[i]) return;
                 this.bookmarks[i] = null;
                 inventory.clear();
@@ -1776,15 +1783,15 @@ const Rogue = class extends Fighter {
                 this.showSkill(this.bookmarks, true);
                 message.draw(message.get(M_BOOKMARK), true);
             } else {
-                let a = getAlphabet(keyCode);
+                let a = getAlphabet(key);
                 if (!a || !this.skill[a]) return;
                 flag.bookmark = 2;
                 this.ca = a;
                 message.draw(message.get(M_BOOKMARK2), true);
             }
         } else {
-            if (!(input.isShift && keyCode === 77) && (keyCode < 112 || keyCode > 123)) return;
-            let i = keyCode === 77 ? 0 : keyCode - 111;
+            if (key !== 'M' && !isFuncKey) return;
+            let i = key === 'M' ? 0 : key.replace('F', '');
             this.bookmarks[i] = this.skill[this.ca].id;
             flag.bookmark = 1;
             inventory.clear();
@@ -1794,26 +1801,31 @@ const Rogue = class extends Fighter {
         }
     }
 
-    gainStatOrSkill(keyCode) {
+    gainStatOrSkill(key) {
         if (flag.gain === 1 && !flag.number) {
-            let a = getAlphabet(keyCode);
-            if (!a || input.isShift && !statistics.list[a] || !input.isShift && !this.pack[a]) return;
-            if (!input.isShift && (this.pack[a].type !== 'book' || !this.pack[a].skill || !this.canRead(true))) {
+            let gainStat = input.isShift;
+            let a = getAlphabet(key);
+            if (!a) return;
+            a = a.toLowerCase();
+            if (gainStat && !statistics.list[a] || !gainStat && !this.pack[a]) return;
+            if (gainStat) {
+                if (!this.statPoints) {
+                    message.draw(message.get(M_CANT_GAIN_STAT));
+                    return;
+                } else if (this[statistics.list[a].term + 'Max'] >= MAX_STAT_LVL) {
+                    let name = statistics.list[a].name[option.getLanguage()];
+                    message.draw(option.isEnglish() ?
+                        `You can't gain ${name} anymore` :
+                        `これ以上${name}を取得が出来ない`);
+                    return;
+                }
+            } else if (this.pack[a].type !== 'book' || !this.pack[a].skill || !this.canRead(true)) {
                 return;
-			} else if (input.isShift && !this.statPoints) {
-                message.draw(message.get(M_CANT_GAIN_STAT));
-                return;
-            } else if (input.isShift && this[statistics.list[a].term + 'Max'] >= MAX_STAT_LVL) {
-                let name = statistics.list[a].name[option.getLanguage()];
-                message.draw(option.isEnglish() ?
-                    `You can't gain ${name} anymore` :
-                    `これ以上${name}を取得が出来ない`);
-                return;
-			}
+            }
 			
             this.ca = a;
             inventory.clear();
-            if (input.isShift) {
+            if (gainStat) {
                 inventory.showStats(this, a);
                 flag.gain = 3;
                 flag.number = true;
@@ -1824,7 +1836,7 @@ const Rogue = class extends Fighter {
                 message.draw(message.get(M_GAIN_SKILL), true);
             }
         } else if (flag.gain === 2 && !flag.number) { //skill
-            let a = getAlphabet(keyCode);
+            let a = getAlphabet(key);
             if (!a) return;
             let id = this.pack[this.ca].list[a];
             if (!id) return;
@@ -1834,20 +1846,20 @@ const Rogue = class extends Fighter {
                 return;
 			}
 			
-            let key = this.searchSkill(id);
+            let keySkill = this.searchSkill(id);
 
             //TODO
-            let lvl = key ? this.skill[key].lvl : 0;
+            let lvl = keySkill ? this.skill[keySkill].lvl : 0;
             if (this.lvl < skill.reqLvl + lvl ||
                 skill.reqSynerzy && skill.reqSynerzy > this.getSynerzy(skill)) {
 				return;
 			}
 
             if (!this.skillPoints ||
-                !key && Object.keys(this.skill).length >= MAX_SKILL_NUM) {
+                !keySkill && Object.keys(this.skill).length >= MAX_SKILL_NUM) {
                 message.draw(message.get(M_CANT_GAIN_SKILL));
                 return;
-            } else if (key && lvl === MAX_SKILL_LVL) {
+            } else if (keySkill && lvl === MAX_SKILL_LVL) {
                 let nameSkill = skill.name[option.getLanguage()];
                 message.draw(option.isEnglish() ?
                     `You can't study ${nameSkill} anymore` :
@@ -1867,14 +1879,8 @@ const Rogue = class extends Fighter {
                 let gainLvl = this.lvl - (lvl + skill.reqLvl) + 1;
                 if (MAX_SKILL_LVL < lvl + gainLvl) gainLvl = MAX_SKILL_LVL - lvl;
                 let point = this.skillPoints >= gainLvl ? gainLvl : this.skillPoints;
-                let i;
-                if (keyCode === 13) {
-                    i = Number(this.cn);
-                    if (i > point) i = point;
-                } else {
-					i = point;
-				}
-
+                let i = this.cn;
+                if (i > point) i = point;
                 let name = skill.name[option.getLanguage()];
                 if (!key) { //new skill
                     key = EA[Object.keys(this.skill).length];
@@ -1898,14 +1904,8 @@ const Rogue = class extends Fighter {
                 let nameMax = stat.term + 'Max';
                 let lvl = MAX_STAT_LVL - this[nameMax];
                 let point = this.statPoints >= lvl ? lvl : this.statPoints;
-                let i;
-                if (keyCode === 13) {
-                    i = Number(this.cn);
-                    if (i > point) i = point;
-                } else {
-					i = point;
-				}
-
+                let i = this.cn;
+                if (i > point) i = point;
                 let name = stat.name[option.getLanguage()];
                 message.draw(option.isEnglish() ?
                     `You gained ${name}` :
@@ -1923,8 +1923,8 @@ const Rogue = class extends Fighter {
         }
     }
 
-    castSkill(keyCode) {
-        if (input.isCtrl && keyCode === 83 && Object.keys(this.skill).length >= 2) { //S
+    castSkill(key) {
+        if (input.isCtrl && key === 's' && Object.keys(this.skill).length >= 2) {
             flag.skill = false;
             flag.sortSkill = 1;
             inventory.clear();
@@ -1933,7 +1933,7 @@ const Rogue = class extends Fighter {
             return;
 		}
 		
-        let a = getAlphabet(keyCode);
+        let a = getAlphabet(key);
         if (!a || !this.skill[a]) return;
         let skill = skillMap.get(this.skill[a].id);
         if (input.isShift) {
@@ -1962,8 +1962,8 @@ const Rogue = class extends Fighter {
         flag.regular = true;
     }
 
-    castBookmarkedSkill(keyCode, keyCodeDr) {
-        let i = keyCode === 48 ? 0 : keyCode - 111;
+    castBookmarkedSkill(key, keyDr) {
+        let i = key === 'M' ? 0 : key.replace('F', '');
         if (!this.bookmarks[i] || !this.checkToCast()) return;
         let id = this.bookmarks[i];
         let skill = skillMap.get(id);
@@ -1980,9 +1980,9 @@ const Rogue = class extends Fighter {
                 y1: this.y,
                 nameSkill: id,
             });
-        } else if (i === 0) {
+        } else if (key === 'M') {
             this.aim({
-                keyCode: keyCodeDr,
+                key: keyDr,
                 nameSkill: id,
             });
         } else if (skill.wall) {
@@ -2018,14 +2018,14 @@ const Rogue = class extends Fighter {
         }
     }
 
-    sortSkill(keyCode) {
+    sortSkill(key) {
         if (flag.sortSkill === 1) {
-            this.ca = getAlphabet(keyCode);
+            this.ca = getAlphabet(key);
             if (!this.ca || !this.skill[this.ca]) return
             flag.sortSkill = 2;
             message.draw(message.get(M_SORT_SKILL2), true);
         } else {
-            let a = getAlphabet(keyCode);
+            let a = getAlphabet(key);
             if (!a || !this.skill[a] || a === this.ca) return;
             [this.skill[a], this.skill[this.ca]] = [this.skill[this.ca], this.skill[a]];
             inventory.clear();
@@ -2050,17 +2050,17 @@ const Rogue = class extends Fighter {
         return item;
     }
 
-    switchInventory(keyCode, id, equipment) {
-        if (keyCode !== 188 && keyCode !== 190) return false;
+    switchInventory(key, id, equipment) {
+        if (key !== ',' && key !== '.') return false;
         inventory.clear();
         let msg = message.get(id);
         if (flag.synthesize || flag.pack) this.showInventory(flag.pack ? P_BOX : P_CUBE);
-        if (keyCode === 188) { //,
+        if (key === ',') {
             flag.floor = false;
             if (equipment) this.equipmentList();
             msg += message.get(M_FLOOR);
             this.showInventory(P_PACK);
-        } else if (keyCode === 190 || keyCode === 110) { //., T.
+        } else if (key === '.') {
             flag.floor = true;
             msg += message.get(M_PACK);
             this.showInventory(P_FLOOR);
@@ -2070,11 +2070,12 @@ const Rogue = class extends Fighter {
         return true;
     }
 
-    destroy(keyCode) {
+    destroy(key) {
         if (!flag.number) {
-            if (this.switchInventory(keyCode, M_DESTROY, true)) return;
-            let a = getAlphabetOrNumber(keyCode);
+            if (this.switchInventory(key, M_DESTROY, true)) return;
+            let a = getAlphabetOrNumber(key);
             if (!a) return;
+            a = a.toLowerCase();
             let item = this.getItem(a, flag.floor);
             if (!item) return;
             if (item.indestructible || item.cursed && input.isShift && flag.floor) {
@@ -2090,7 +2091,8 @@ const Rogue = class extends Fighter {
             this.ci = item;
         } else {
             let item = this.ci;
-            let i = item.getQuantity(keyCode, this.cn);
+            let i = this.cn;
+            if (i > item.quantity) i = item.quantity;
             this.deleteItem(item, i);
             let name = item.getName(false, i)
             message.draw(option.isEnglish() ?
@@ -2103,26 +2105,28 @@ const Rogue = class extends Fighter {
         }
     }
 
-    shop(keyCode, isAlt) {
+    shop(key, isAlt) {
         let shop = map.coords[this.x][this.y].enter;
         if (!flag.number) {
-            let a = getAlphabet(keyCode);
+            let buy = input.isShift;
+            let a = getAlphabet(key);
             if (!a) return;
-            let item = input.isShift ? shop.list[a] : this.pack[a];
+            a = a.toLowerCase();
+            let item = buy ? shop.list[a] : this.pack[a];
             if (!item) return;
             if (isAlt) {
-                if (flag.gamble && input.isShift) return;
-                let place = input.isShift ? P_SHOP : P_PACK;
-                let direction = input.isShift ? RIGHT : LEFT;
+                if (flag.gamble && buy) return;
+                let place = buy ? P_SHOP : P_PACK;
+                let direction = buy ? RIGHT : LEFT;
                 let msg = message.get(M_SHOP);
                 this.investigate(null, item, place, direction, msg);
                 return;
             }
 
-            if (!input.isShift && Object.keys(shop.list).length === MAX_PACK_COUNT) {
+            if (!buy && Object.keys(shop.list).length === MAX_PACK_COUNT) {
                 message.draw(message.get(M_CANT_SELL));
                 return;
-            } else if (input.isShift && Object.keys(this.pack).length >= MAX_PACK_COUNT &&
+            } else if (buy && Object.keys(this.pack).length >= MAX_PACK_COUNT &&
                 !this.canCarryItem(this.pack, item) &&
                 !this.canCarryItem(this.boxes, item)) {
                 message.draw(message.get(M_CANT_CARRY));
@@ -2138,7 +2142,8 @@ const Rogue = class extends Fighter {
         } else {
             let item = this.ci;
             this.ci = null;
-            let i = item.getQuantity(keyCode, this.cn);
+            let i = this.cn;
+            if (i > item.quantity) i = item.quantity;
             let amount = item.price * i;
             if (item.place === P_PACK) {
                 item = this.inventoryOut(item, i);
@@ -2181,13 +2186,13 @@ const Rogue = class extends Fighter {
         }
     }
 
-    stash(keyCode, isAlt) {
+    stash(key, isAlt) {
         let stash = map.coords[this.x][this.y].enter;
         if (!flag.number) {
-            if (keyCode === 188 || keyCode === 190) { //, .
-                if (keyCode === 190 && stash.page < MAX_STASH_PAGE) {
+            if (key === '<' || key === '>') {
+                if (key === '>' && stash.page < MAX_STASH_PAGE) {
                     stash.page++;
-				} else if (keyCode === 188 && stash.page > 1) {
+				} else if (key === '<' && stash.page > 1) {
 					stash.page--;
 				}
 
@@ -2201,12 +2206,15 @@ const Rogue = class extends Fighter {
 			
             let a, item;
             if (input.isShift) {
-                if (!getAlphabet(keyCode)) return;
-                a = keyCode - 65 + (stash.page - 1) * MAX_PACK_COUNT;
+                if (!getAlphabet(key)) return;
+                let num = EA.indexOf(key.toLowerCase());
+                if (num >= MAX_PACK_COUNT) return;
+                a = num + (stash.page - 1) * MAX_PACK_COUNT;
                 item = stash.list[a];
             } else {
-                a = getAlphabetOrNumber(keyCode);
+                a = getAlphabetOrNumber(key);
                 if (!a) return;
+                a = a.toLowerCase();
                 item = this.getItem(a);
 			}
 			
@@ -2234,7 +2242,7 @@ const Rogue = class extends Fighter {
             flag.number = true;
             if (item.quantity === 1) {
                 this.cn = 1;
-                this.stash(13);
+                this.stash();
             } else {
                 this.ca = a;
                 inventory.clear();
@@ -2244,7 +2252,8 @@ const Rogue = class extends Fighter {
         } else {
             let item = this.ci;
             this.ci = null;
-            let i = item.getQuantity(keyCode, this.cn);
+            let i = this.cn;
+            if (i > item.quantity) i = item.quantity;
             if (item.place === P_STASH) {
                 item = item.split(i, stash.list);
                 this.packAdd(item);
@@ -2271,9 +2280,9 @@ const Rogue = class extends Fighter {
         }
     }
 
-    cureShop(keyCode) {
+    cureShop(key) {
         let cure = map.coords[this.x][this.y].enter;
-        let a = getAlphabet(keyCode);
+        let a = getAlphabet(key);
         if (!a || !cure.list[a]) return;
         let cost = cure.list[a].cost;
         if (cost > this.purse) {
@@ -2383,26 +2392,25 @@ const Rogue = class extends Fighter {
         this.calcCondition();
     }
 
-    inputNumber(keyCode) {
-        if (!keyCode) {
+    inputNumber(key) {
+        if (!key) {
             this.cn = 1;
             message.draw(message.get(M_NUMBER) + this.cn, true);
             return
-		}
-		
-		if ((keyCode < 48 || keyCode > 57) && keyCode !== 65 &&
-			keyCode !== 13 && keyCode !== 8) { //a, Enter, Back space
-			return;
-		}
-
-        if (keyCode === 48 && (this.cn === '' || this.cn === 1) || keyCode === 13 && this.cn === '') {
-            return;
-		} else if (keyCode === 8 || keyCode >= 48 && keyCode <= 57) {
+        }
+        
+        let num = getNumber(key);
+        let all = key === 'a';
+        let isEnter = key === 'Enter';
+        let isBackspace = key === 'Backspace';
+		if (!num && !all && !isEnter && !isBackspace) return;
+        if (num === '0' && (this.cn === '' || this.cn === 1) || isEnter && this.cn === '') return;
+		if (isBackspace || num) {
             if (this.cn === 1) this.cn = '';
-            if (keyCode === 8) {
+            if (isBackspace) {
                 this.cn = this.cn.substr(0, this.cn.length - 1);
 			} else {
-				this.cn += keyCode - 48;
+				this.cn += num;
             }
             
             if (flag.shop) {
@@ -2413,18 +2421,19 @@ const Rogue = class extends Fighter {
             let msg = message.get(M_NUMBER) + this.cn;
             message.draw(msg, true);
             return;
-		}
-		
+        }
+        
+        this.cn = all ? Infinity : Number(this.cn);
         if (flag.drop) {
-            this.drop(keyCode);
+            this.drop();
 		} else if (flag.gain) {
-            this.gainStatOrSkill(keyCode);
+            this.gainStatOrSkill();
         } else if (flag.destroy) {
-            this.destroy(keyCode);
+            this.destroy();
 		} else if (flag.shop) {
-            this.shop(keyCode);
+            this.shop();
         } else if (flag.stash) {
-			this.stash(keyCode);
+			this.stash();
 		}
 
         flag.number = false;

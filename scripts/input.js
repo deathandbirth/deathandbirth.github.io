@@ -5,112 +5,116 @@ const input = {
     },
 
     onkeyup(e) {
-        let keyCode = e.keyCode;
-        if (keyCode === 16) this.isShift = false;
-        if (keyCode === 17) this.isCtrl = false;
+        let key = e.key;
+        if (key === 'Shift') this.isShift = false;
+        if (key === 'Control') this.isCtrl = false;
     },
 
     onkeydown(e) {
+        let key = e.key;
         if (flag.wait) {
             if (!flag.died) map.queue.moveAll();
             return false;
         }
        
-        let keyCode = e.keyCode;
-        if (keyCode === 16) this.isShift = true;
-        if (keyCode === 17) this.isCtrl = true;
-        if ((flag.dash || flag.rest) && keyCode !== 16) {
+        if (key === 'Shift' || key === 'Control') {
+            if (key === 'Shift') this.isShift = true;
+            if (key === 'Control') this.isCtrl = true;
+            return false;
+        }
+
+        if (flag.dash || flag.rest) {
             message.draw(message.get(M_INTERRUPTED));
             flag.dash = flag.rest = false;
             return false;
         }
 
-        if (flag.clearInv && keyCode !== 16 && keyCode !== 17) {
+        if (flag.clearInv) {
             inventory.clear();
             flag.clearInv = false;
         }
         
-        if (keyCode === 27 || !flag.create && keyCode === 32) { //ESC,  Space
+        if (/^Esc/.test(key) || !flag.create && /^\s$|Spacebar/.test(key)) {
             if (!flag.died && !flag.retry && !flag.title && !flag.failed) {
                 message.clear();
                 rogue.cancelCommand();
             }
         } else if (flag.regular) {
-            this.eventFlag(keyCode, e.altKey);
+            this.eventFlag(key, e.altKey);
         } else if (flag.number) {
-            rogue.inputNumber(keyCode);
+            rogue.inputNumber(key);
         } else if (flag.openDoor || flag.closeDoor) {
-            rogue.openOrCloseDoor(keyCode);
+            rogue.openOrCloseDoor(key);
         } else if (flag.investigate) {
-            rogue.investigate(keyCode);
+            rogue.investigate(key);
         } else if (flag.drop) {
-            rogue.drop(keyCode);
+            rogue.drop(key);
         } else if (flag.destroy) {
-            rogue.destroy(keyCode);
+            rogue.destroy(key);
         } else if (flag.equip) {
-            rogue.equip(keyCode);
+            rogue.equip(key);
         } else if (flag.unequip) {
-            rogue.unequip(keyCode);
+            rogue.unequip(key);
         } else if (flag.eat) {
-            rogue.eat(keyCode);
+            rogue.eat(key);
         } else if (flag.quaff) {
-            rogue.quaffPotion(keyCode);
+            rogue.quaffPotion(key);
         } else if (flag.read) {
-            rogue.read(keyCode);
+            rogue.read(key);
         } else if (flag.synthesize) {
-            rogue.synthesize(keyCode);
+            rogue.synthesize(key);
         } else if (flag.grab) {
-            rogue.grabItem(keyCode);
+            rogue.grabItem(key);
         } else if (flag.character) {
-            investigation.scroll(keyCode);
+            investigation.scroll(key);
         } else if (flag.examine) {
-            rogue.examine(keyCode);
+            rogue.examine(key);
         } else if (flag.identify) {
-            rogue.identify(keyCode);
+            rogue.identify(key);
         } else if (flag.repair || flag.blacksmith) {
-            rogue.repair(keyCode);
+            rogue.repair(key);
         } else if (flag.disint) {
-            rogue.disintegrate(keyCode);
+            rogue.disintegrate(key);
         } else if (flag.aim) {
-            rogue.aim({ keyCode: keyCode });
+            rogue.aim({ key: key });
         } else if (flag.zap) {
-            rogue.zap(keyCode);
+            rogue.zap(key);
         } else if (flag.throw) {
-            rogue.throw(keyCode);
+            rogue.throw(key);
         } else if (flag.skill) {
-            rogue.castSkill(keyCode);
+            rogue.castSkill(key);
         } else if (flag.sortSkill) {
-            rogue.sortSkill(keyCode);
+            rogue.sortSkill(key);
         } else if (flag.message) {
-            message.scroll(keyCode);
+            message.scroll(key);
         } else if (flag.pack) {
-            rogue.packOrUnpack(keyCode);
+            rogue.packOrUnpack(key);
         } else if (flag.bookmark) {
-            rogue.addOrRemoveBookmark(keyCode);
+            rogue.addOrRemoveBookmark(key);
         } else if (flag.gain) {
-            rogue.gainStatOrSkill(keyCode);
+            rogue.gainStatOrSkill(key);
         } else if (flag.fuel) {
-            rogue.fuel(keyCode);
+            rogue.fuel(key);
         } else if (flag.shop) {
-            rogue.shop(keyCode, e.altKey);
+            rogue.shop(key, e.altKey);
         } else if (flag.cure) {
-            rogue.cureShop(keyCode);
+            rogue.cureShop(key);
         } else if (flag.stash) {
-            rogue.stash(keyCode, e.altKey);
+            rogue.stash(key, e.altKey);
         } else if (flag.help) {
-            help.scroll(keyCode);
+            help.scroll(key);
         } else if (flag.create) {
-            creation.input(keyCode);
+            creation.input(key);
         } else if (flag.minimap) {
-            map.drawMini(keyCode);
+            map.drawMini(key);
         } else if (flag.option) {
-            option.main(keyCode);
+            option.main(key);
         } else if (flag.quit) {
-            game.quit(keyCode);
+            game.quit(key);
         }
 
         if (flag.failed) {
-            if (keyCode === 89 && this.isShift) { //Y
+            if (key === 'Y') {
                 game.start();
                 data.delete(data.name);
                 message.draw(option.isEnglish() ?
@@ -118,7 +122,7 @@ const input = {
                     'データ消去しました')
             }
         } else if (flag.died) {
-            if (keyCode === 13) { //Enter
+            if (key === 'Enter') {
                 if (flag.retry || flag.title) {
                     data.load();
                 } else if (rogue && rogue.isWizard) {
@@ -136,11 +140,10 @@ const input = {
             }
         }
         
-        //^m
-        if (keyCode === 77 && this.isCtrl) audio.mute();
+        if (key === 'm' && this.isCtrl) audio.mute();
         
         //dev tool shortcut
-        if (this.isShift && this.isCtrl && keyCode === 73) {
+        if (key === 'I' && this.isCtrl) {
             this.isShift = this.isCtrl = false;
         } else {
 
@@ -149,70 +152,66 @@ const input = {
         }
     },
 
-    eventFlag(keyCode, isAlt) {
-        switch (keyCode) {
-            case 66: //b
-            case 72: //h
-            case 74: //j
-            case 75: //k
-            case 76: //l
-            case 78: //n
-            case 85: //u
-            case 89: //y
+    eventFlag(key, isAlt) {
+        switch (key) {
+            case 'b':
+            case 'h':
+            case 'j':
+            case 'k':
+            case 'l':
+            case 'n':
+            case 'u':
+            case 'y':
+            case 'B':
+            case 'H':
+            case 'J':
+            case 'K':
+            case 'L':
+            case 'N':
+            case 'U':
+            case 'Y':
                 if (!option.rogueStyleMove.user) break;
-            case 37: //left arrow
-            case 38: //up arrow
-            case 39: //right arrow
-            case 40: //down arrow
-            case 97: //T1
-            case 98: //T2
-            case 99: //T3
-            case 100: //T4
-            case 102: //T6
-            case 103: //T7
-            case 104: //T8
-            case 105: //T9
+            case 'ArrowLeft':
+            case 'ArrowUp':
+            case 'ArrowRight':
+            case 'ArrowDown':
+            case 'Left':
+            case 'Up':
+            case 'Right':
+            case 'Down':
+            case 'Home':
+            case 'End':
+            case 'PageUp':
+            case 'PageDown':
                 if (this.isCtrl) break;
                 if (isAlt) {
-                    rogue.attackStationary(keyCode);
+                    rogue.attackStationary(key);
                 } else if (this.isShift) {
-                    rogue.dash(keyCode);
+                    rogue.dash(key);
                 } else {
-                    rogue.move(keyCode);
+                    rogue.move(key);
                 }
 
                 break;
-            case 49: //1~9
-            case 50:
-            case 51:
-            case 52:
-            case 53:
-            case 54:
-            case 55:
-            case 56:
-            case 57:
-                if (this.isShift || this.isCtrl) break;
-                rogue.useBoxItem(keyCode);
+            case '1': //1~9
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+                if (this.isCtrl) break;
+                rogue.useBoxItem(key);
                 break;
-            case 65: //a add bookmark, A alchemy, ^a *create monster*
+            case 'a': // add bookmark, *create monster*
                 if (this.isCtrl) {
                     if (!rogue.isWizard) break;
                     this.switchFlag();
                     flag.create = 'fighter';
                     creation.input();
                     message.draw('Input type and tabId', true);
-                } else if (this.isShift) {
-                    if (!Object.keys(rogue.recipes).length) {
-                        message.draw(message.get(M_DONT_KNOW_RECIPE));
-                        break;
-                    }
-
-                    this.switchFlag();
-                    flag.synthesize = true;
-                    rogue.showInventory(P_PACK);
-                    rogue.showInventory(P_CUBE);
-                    let msg = message.get(M_SYNTHESIZE) + message.get(M_FLOOR);
-                    message.draw(msg, true);
                 } else {
                     this.switchFlag();
                     rogue.showSkill(rogue.skill);
@@ -222,20 +221,24 @@ const input = {
 				}
 				
                 break;
-            case 67: //c close door, C character description
-                if (this.isShift) {
-                    this.switchFlag();
-                    flag.character = true;
-                    investigation.main(rogue, MIDDLE, true);
-                    Vue.nextTick(function(){
-                        investigation.scroll(keyCode, true);
-                    });
-
+            case 'A': { // alchemy
+                if (!Object.keys(rogue.recipes).length) {
+                    message.draw(message.get(M_DONT_KNOW_RECIPE));
                     break;
                 }
-            case 79: //o openDoor
-                if (this.isShift || this.isCtrl) break;
-                keyCode === 79 ? flag.openDoor = true : flag.closeDoor = true;
+
+                this.switchFlag();
+                flag.synthesize = true;
+                rogue.showInventory(P_PACK);
+                rogue.showInventory(P_CUBE);
+                let msg = message.get(M_SYNTHESIZE) + message.get(M_FLOOR);
+                message.draw(msg, true);
+                break
+            }
+            case 'c': // close door
+            case 'o': // openDoor
+                if (this.isCtrl) break;
+                key === 'o' ? flag.openDoor = true : flag.closeDoor = true;
                 if (rogue.searchDoor() <= 1) {
                     flag.openDoor = flag.closeDoor = false;
                     break;
@@ -244,8 +247,16 @@ const input = {
                 this.switchFlag();
                 message.draw(message.get(M_OPEN_OR_CLOSE), true);
                 break;
-            case 68: //d drop, ^d destroy, 
-                if (this.isShift) break;
+            case 'C': // character description
+                this.switchFlag();
+                flag.character = true;
+                investigation.main(rogue, MIDDLE, true);
+                Vue.nextTick(function(){
+                    investigation.scroll(key, true);
+                });
+
+                break;
+            case 'd': // drop, destroy, 
                 if (this.isCtrl) {
                     this.switchFlag();
                     let msg = message.get(M_DESTROY) + message.get(M_FLOOR);
@@ -263,17 +274,11 @@ const input = {
 				}
 				
                 break;
-            case 69: //e equipmentList, E eat, ^e *enlightenment*
+            case 'e': // equipmentList, *enlightenment*
                 if (this.isCtrl) {
                     if (!rogue.isWizard) break;
                     map.lighten();
                     map.draw();
-                } else if (this.isShift) {
-                    this.switchFlag();
-                    flag.eat = true;
-                    let msg = message.get(M_EAT) + message.get(M_FLOOR);
-                    rogue.showInventory(P_PACK);
-                    message.draw(msg, true);
                 } else {
                     flag.equipment = !flag.equipment;
                     if (flag.equipment) {
@@ -285,65 +290,63 @@ const input = {
                 }
 
                 break;
-            case 70: //f fire, F fuel
+            case 'E': { // eat
+                this.switchFlag();
+                flag.eat = true;
+                let msg = message.get(M_EAT) + message.get(M_FLOOR);
+                rogue.showInventory(P_PACK);
+                message.draw(msg, true);
+                break
+            }
+            case 'f': // fire 
                 if (this.isCtrl) break;
-                if (this.isShift) {
-                    if (!rogue.equipment['light']) {
-                        message.draw(message.get(M_DONT_EQUIP_LIGHT));
-                        break;
-					}
-					
-                    this.switchFlag();
-                    flag.fuel = true;
-                    let msg = message.get(M_FUEL) + message.get(M_FLOOR);
-                    rogue.showInventory(P_PACK);
-                    rogue.equipmentList();
-                    message.draw(msg, true);
-                } else {
-                    if (!rogue.haveMissile(true)) break;
-                    rogue.ci = rogue.getAmmo(rogue.equipment['main'].throwType);
-                    if (!rogue.ci) {
-                        message.draw(message.get(M_DONT_HAVE_AMMO));
-                        break;
-					}
-					
-                    this.switchFlag();
-                    flag.arrow = true;
-                    flag.aim = true;
-                    message.draw(message.get(M_FIRE) + message.get(M_TO_EXAMINE), true);
-                    rogue.examinePlot(true);
-				}
-				
-                break;
-            case 71: //g grab, G gain
-                if(this.isCtrl) break;
-                if (this.isShift) {
-                    this.switchFlag();
-                    flag.gain = 1;
-                    rogue.showInventory(P_PACK);
-                    inventory.showStats(rogue);
-                    let msg = message.get(M_GAIN);
-                    message.draw(msg, true);
-                } else {
-                    rogue.grabItem();
+                if (!rogue.haveMissile(true)) break;
+                rogue.ci = rogue.getAmmo(rogue.equipment['main'].throwType);
+                if (!rogue.ci) {
+                    message.draw(message.get(M_DONT_HAVE_AMMO));
+                    break;
                 }
-
+                
+                this.switchFlag();
+                flag.arrow = true;
+                flag.aim = true;
+                message.draw(message.get(M_FIRE) + message.get(M_TO_EXAMINE), true);
+                rogue.examinePlot(true);
                 break;
-            case 73: //i inventory, I investigate, ^i *create item*
-                if (this.isCtrl && this.isShift) break;
+            case 'F': { // fuel
+                if (!rogue.equipment['light']) {
+                    message.draw(message.get(M_DONT_EQUIP_LIGHT));
+                    break;
+                }
+                
+                this.switchFlag();
+                flag.fuel = true;
+                let msg = message.get(M_FUEL) + message.get(M_FLOOR);
+                rogue.showInventory(P_PACK);
+                rogue.equipmentList();
+                message.draw(msg, true);
+                break;
+            }
+            case 'g': // grab
+                if(this.isCtrl) break;
+                rogue.grabItem();
+                break;
+            case 'G': { // gain
+                this.switchFlag();
+                flag.gain = 1;
+                rogue.showInventory(P_PACK);
+                inventory.showStats(rogue);
+                let msg = message.get(M_GAIN);
+                message.draw(msg, true);
+                break;
+            }
+            case 'i': // inventory, *create item*
                 if (this.isCtrl) {
                     if (!rogue.isWizard) break;
                     this.switchFlag();
                     flag.create = 'item';
                     creation.input();
                     message.draw('Input type, tabId and quantity', true);
-                } else if (this.isShift) {
-                    this.switchFlag();
-                    flag.investigate = true;
-                    let msg = message.get(M_INVESTIGATE) + message.get(M_FLOOR);
-                    rogue.showInventory(P_PACK);
-                    rogue.equipmentList();
-                    message.draw(msg, true)
                 } else {
                     //TODO
                     flag.inventory = !flag.inventory;
@@ -356,24 +359,31 @@ const input = {
                 }
 				
                 break;
-            case 77: //m skill, M minimap
+            case 'I': { // investigate
                 if (this.isCtrl) break;
-                if (this.isShift) {
-                    this.switchFlag();
-                    flag.minimap = true;
-                    map.drawMini(65); // a
-                    message.draw(message.get(M_MINIMAP), true);
-                } else {
-                    if (!rogue.checkToCast()) break;
-                    this.switchFlag();
-                    flag.skill = true;
-                    rogue.showSkill(rogue.skill);
-                    message.draw(message.get(M_CAST), true);
-				}
-				
+                this.switchFlag();
+                flag.investigate = true;
+                let msg = message.get(M_INVESTIGATE) + message.get(M_FLOOR);
+                rogue.showInventory(P_PACK);
+                rogue.equipmentList();
+                message.draw(msg, true)
                 break;
-            case 80: //p pack sort, ^p previous message
-                if (this.isShift) break;
+            }
+            case 'm': // skill
+                if (this.isCtrl) break;
+                if (!rogue.checkToCast()) break;
+                this.switchFlag();
+                flag.skill = true;
+                rogue.showSkill(rogue.skill);
+                message.draw(message.get(M_CAST), true);
+                break;
+            case 'M': // minimap
+                this.switchFlag();
+                flag.minimap = true;
+                map.drawMini('a');
+                message.draw(message.get(M_MINIMAP), true);
+                break;
+            case 'p': // pack, previous message
                 if (this.isCtrl) {
                     this.switchFlag();
                     flag.message = true;
@@ -390,16 +400,11 @@ const input = {
 				}
 				
                 break;
-            case 81: //q quaff, Q quit, ^q *create trap*
+            case 'q': // quaff, *create trap*
                 if (this.isCtrl) {
                     if (!rogue.isWizard) break;
                     rogue.haveCast(CREATE_TRAP, 10);
                     map.draw();
-                } else if (this.isShift) {
-                    this.switchFlag();
-                    flag.quit = true;
-                    message.draw(message.get(M_ASK_TO_QUIT));
-                    message.draw(message.get(M_QUIT), true);
                 } else {
                     this.switchFlag();
                     flag.quaff = true;
@@ -409,12 +414,15 @@ const input = {
                 }
 
                 break;
-            case 82: //r read, R rest, ^r redraw
+            case 'Q': // quit
+                this.switchFlag();
+                flag.quit = true;
+                message.draw(message.get(M_ASK_TO_QUIT));
+                message.draw(message.get(M_QUIT), true);
+                break;
+            case 'r': // read, redraw
                 if (this.isCtrl) {
                     map.redraw();
-                } else if (this.isShift) {
-                    flag.rest = true;
-                    rogue.rest();
                 } else {
                     if (!rogue.canRead()) break;
                     this.switchFlag();
@@ -425,56 +433,58 @@ const input = {
                 }
 
                 break;
-            case 83: //s searching, S swap, ^s save
+            case 'R': // rest
+                flag.rest = true;
+                rogue.rest();
+                break;
+            case 's': // searching, save
                 if (this.isCtrl) {
                     data.save();
-                } else if (this.isShift) {
-                    //TODO
-                    rogue.swap();
                 } else {
                     rogue.searchHiddenObject();
                 }
 
                 break;
-            case 84: //t throw, T unequip
-                if (this.isCtrl) break;
-                if (this.isShift) {
-                    if (rogue.isNaked()) {
-                        message.draw(message.get(M_DONT_HAVE_EQUIPMENT));
-                        break;
-					}
-                    
-                    this.switchFlag();
-                    let msg = message.get(M_TAKE_OFF);
-                    message.draw(msg, true);
-                    rogue.equipmentList();
-                    rogue.showInventory(P_PACK);
-                    flag.unequip = true;
-                } else {
-                    this.switchFlag();
-                    let msg = message.get(M_THROW) + message.get(M_FLOOR);
-                    rogue.showInventory(P_PACK);
-                    message.draw(msg, true);
-                    flag.throw = true;
-				}
-				
+            case 'S': // swap
+                rogue.swap();
                 break;
-            case 86: //^v version
-                if (this.isShift) break;
+            case 't': { // throw
+                if (this.isCtrl) break;
+                this.switchFlag();
+                let msg = message.get(M_THROW) + message.get(M_FLOOR);
+                rogue.showInventory(P_PACK);
+                message.draw(msg, true);
+                flag.throw = true;
+                break;
+            }
+            case 'T': { // unequip
+                if (rogue.isNaked()) {
+                    message.draw(message.get(M_DONT_HAVE_EQUIPMENT));
+                    break;
+                }
+                
+                this.switchFlag();
+                let msg = message.get(M_TAKE_OFF);
+                message.draw(msg, true);
+                rogue.equipmentList();
+                rogue.showInventory(P_PACK);
+                flag.unequip = true;
+                break;
+            }
+            case 'v': // version
                 if (this.isCtrl) message.draw(`Death and Birth ver ${VERSION.toFixed(3)}`);
                 break;
-            case 87: { //w equip
-                    if (this.isShift || this.isCtrl) break;
-                    this.switchFlag();
-                    flag.equip = true;
-                    let msg = message.get(M_EQUIP) + message.get(M_FLOOR);
-                    rogue.showInventory(P_PACK);
-                    rogue.equipmentList();
-                    message.draw(msg, true);
-                    break;
+            case 'w': { // equip
+                if (this.isCtrl) break;
+                this.switchFlag();
+                flag.equip = true;
+                let msg = message.get(M_EQUIP) + message.get(M_FLOOR);
+                rogue.showInventory(P_PACK);
+                rogue.equipmentList();
+                message.draw(msg, true);
+                break;
             }
-            case 88: //x examine, ^x exit 
-                if (this.isShift) break;
+            case 'x': // examine, exit 
                 if (this.isCtrl) {
                     this.switchFlag();
                     data.exit();
@@ -491,8 +501,7 @@ const input = {
                 }
 
                 break;
-            case 90: //z zap, ^z *indestructible*
-                if (this.isShift) break;
+            case 'z': // zap, *indestructible*
                 if (this.isCtrl) {
                     if (!rogue.isWizard) break;
                     rogue.indestructible = !rogue.indestructible;
@@ -505,24 +514,22 @@ const input = {
                 }
 
                 break;
-            case 112: //F1~F12
-            case 113:
-            case 114:
-            case 115:
-            case 116:
-            case 117:
-            case 118:
-            case 119:
-            case 120:
-            case 121:
-            case 122:
-            case 123:
+            case 'F1': //F1~F12
+            case 'F2':
+            case 'F3':
+            case 'F4':
+            case 'F5':
+            case 'F6':
+            case 'F7':
+            case 'F8':
+            case 'F9':
+            case 'F10':
+            case 'F11':
+            case 'F12':
                 if (this.isCtrl) break;
-                rogue.castBookmarkedSkill(keyCode);
+                rogue.castBookmarkedSkill(key);
                 break;
-            case 187: //= option
-            case 189: //JIS keyboard
-            case 173: //firefox
+            case '=': // option
                 if (this.isCtrl) break;
                 this.switchFlag();
                 flag.option = true;
@@ -533,30 +540,22 @@ const input = {
                 });
 
                 break;
-            case 188: //<
+            case '<': // stairs
+            case '>':
                 if (this.isCtrl) break;
-                if (this.isShift) rogue.downOrUpStairs(keyCode);
+                rogue.downOrUpStairs(key);
                 break;
-            case 190: //. step on, > down stairs
-            case 110: //T. step on
+            case '.': // step on 
                 if (this.isCtrl) break;
-                if (keyCode === 190 && this.isShift) {
-                    rogue.downOrUpStairs(keyCode);
-                } else if (!map.coords[rogue.x][rogue.y].getInfo(true)) {
-                    rogue.done = true;
-                }
-
+                if (!map.coords[rogue.x][rogue.y].getInfo(true)) rogue.done = true;
                 break;
-            case 191: //? help
+            case '?': // help
                 if (this.isCtrl) break;
-                if (this.isShift) {
-                    this.switchFlag();
-                    flag.help = true;
-                    Vue.nextTick(function(){
-                        help.scroll(false, true);
-                    });
-                }
-
+                this.switchFlag();
+                flag.help = true;
+                Vue.nextTick(function(){
+                    help.scroll(false, true);
+                });
                 break;
         }
         
@@ -569,25 +568,26 @@ const input = {
         flag.regular = false;
     },
 
-    scroll(eleP, eleC, keyCode, init) {
-        if (!init && keyCode === 67) { // c
+    scroll(eleP, eleC, key, init) {
+        if (!init && key === 'c') {
             rogue.cancelCommand();
             return;
         }
 
-        let scrollByX, scrollByY, left, down, up, right;
+        let scrollByX, scrollByY, left, down, up, right,
+            dr = getDirection(key);
+        if (!init && !dr) return;
         if (init) {
             scrollByX = -eleP.scrollWidth;
             scrollByY = -eleP.scrollHeight;
-        } else if (keyCode === 72 || keyCode === 37 | keyCode === 100) { // h, left arrow, T4
+        } else if (dr.id === LEFT) {
             left = true;
-        } else if (keyCode === 74 || keyCode === 40 || keyCode === 98) { // j, down arrow, T2
+        } else if (dr.id === DOWN) {
             down = true;
-        } else if (keyCode === 75 || keyCode === 38 || keyCode === 104) { // k, up arrow, T8
+        } else if (dr.id === UP) {
             up = true;
-        } else if (keyCode === 76 || keyCode === 39 || keyCode === 102) { // l, right arrow, T6
+        } else if (dr.id === RIGHT) {
             right = true;
-
         }
 
         if (up || down) {
