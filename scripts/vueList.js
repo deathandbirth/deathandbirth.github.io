@@ -47,13 +47,10 @@ Vue.component('item-symbol', {
         <li
             class="item-symbol"
             v-show="item.symbol"
-            :class="{ 
-                'unique-color': item.stroke,
-            }"
-
             :style="{ 
                 color: item.symbolColor,
-                'text-shadow': item.shadow ? '1px 1px 0 ' + item.shadow : ''
+                'text-shadow': item.shadow ? '1px 1px 0 ' + item.shadow : '',
+                'text-stroke': item.stroke ? '1px ' + item.stroke : '',
             }"
         >{{ item.symbol }}</li>
     `
@@ -64,13 +61,10 @@ Vue.component('item-name', {
     template: /*html*/`
         <li
             class="item-name flex-ellipsis"
-            :class="{ 
-                'unique-color': item.stroke,
-            }"
-
             :style="{ 
                 color: item.nameColor ? item.nameColor : '',
-                'text-shadow': item.shadow ? '1px 1px 0 ' + item.shadow : ''
+                'text-shadow': item.shadow ? '1px 1px 0 ' + item.shadow : '',
+                'text-stroke': item.stroke ? '1px ' + item.stroke : '',
             }"
         >{{ item.name }}</li>
     `
@@ -196,6 +190,64 @@ Vue.component('equipment', {
     `
 })
 
+Vue.component('skill-list', {
+    props:['skills', 'invest'],
+    template: /*html*/`
+        <ul class="skill-list">
+            <li
+                v-for="skill in skills"
+                class="skill"
+                :style="{
+                    color: skill.color ? skill.color : '',
+                    'text-shadow': skill.shadow ? '1px 1px 0 ' + skill.shadow : ''
+                }"
+            >
+                <ul class="skill-prop-list">
+                    <li
+                        v-if="!invest"
+                        class="skill-key"
+                    >{{ skill.key }}</li>
+                    <li
+                        class="skill-name flex-ellipsis"
+                    >{{ skill.name }}</li>
+                    <li 
+                        v-if="!invest"
+                        class="skill-lvl"
+                    >{{ skill.lvl }}</li>
+                    <li
+                        v-if="!invest"
+                        class="skill-value"
+                    >{{ skill.value }}</li>
+                    <li
+                        v-if="invest"
+                        class="skill-element"
+                    >{{ skill.element }}</li>
+                    <li
+                        v-if="!invest"
+                        class="skill-mp"
+                        :style="{
+                            color: skill.mpColor ? skill.mpColor : '',
+                            'text-shadow': skill.mpColor ? 'none' : '',
+                        }"
+                    >{{ skill.mp }}</li>
+                    <li class="skill-reqLv"
+                        :style="{
+                            color: skill.reqLvColor ? skill.reqLvColor : '',
+                            'text-shadow': skill.reqLvColor ? 'none' : '',
+                        }"
+                    >{{ skill.reqLv }}</li>
+                    <li 
+                        class="skill-reqSy"
+                        :style="{
+                            color: skill.reqSyColor ? skill.reqSyColor : '',
+                            'text-shadow': skill.reqSyColor ? 'none' : '',
+                        }"
+                    >{{ skill.reqSy }}</li>
+                </ul>
+            </li>
+        </ul>
+    `
+})
 
 Vue.component('skill', {
     props:['inv'],
@@ -204,44 +256,7 @@ Vue.component('skill', {
             v-if="inv.show"
             class="inventory"
         >
-            <ul class="skill-list">
-                <li
-                    v-for="skill in inv.items"
-                    class="skill"
-                    :style="{
-                        color: skill.color ? skill.color : '',
-                        'text-shadow': skill.shadow ? '1px 1px 0 ' + skill.shadow : ''
-                    }"
-                >
-                    <ul class="skill-prop-list">
-                        <li class="skill-key">{{ skill.key }}</li>
-                        <li class="skill-name flex-ellipsis">{{ skill.name }}</li>
-                        <li class="skill-lvl"
-                        >{{ skill.lvl }}</li>
-                        <li class="skill-value">{{ skill.value }}</li>
-                        <li
-                            class="skill-mp"
-                            :style="{
-                                color: skill.mpColor ? skill.mpColor : '',
-                                'text-shadow': skill.mpColor ? 'none' : '',
-                            }"
-                        >{{ skill.mp }}</li>
-                        <li class="skill-reqLv"
-                            :style="{
-                                color: skill.reqLvColor ? skill.reqLvColor : '',
-                                'text-shadow': skill.reqLvColor ? 'none' : '',
-                            }"
-                        >{{ skill.reqLv }}</li>
-                        <li 
-                            class="skill-reqSy"
-                            :style="{
-                                color: skill.reqSyColor ? skill.reqSyColor : '',
-                                'text-shadow': skill.reqSyColor ? 'none' : '',
-                            }"
-                        >{{ skill.reqSy }}</li>
-                    </ul>
-                </li>
-            </ul>
+            <skill-list :skills="inv.items"></skill-list>
             <inv-bottom
                 :left="inv.left"
                 :right="inv.right"
@@ -387,6 +402,10 @@ Vue.component('investigation-item', {
                     </ul>
                 </li>
             </ul>
+            <skill-list
+                :skills="inv.skills"
+                :invest="true"
+            ></skill-list>
         </div>
     `
 })
@@ -485,12 +504,10 @@ Vue.component('enemy-bar', {
                 class="enemy-bar-box"
             >
                 <p
-                    :class="{ 
-                        'unique-color': enemy.stroke,
-                    }"
                     :style="{ 
                         color: enemy.cursed ? colorList.red : '',
-                        'text-shadow': enemy.shadow ? '1px 1px 0 ' + enemy.shadow : ''
+                        'text-shadow': enemy.shadow ? '1px 1px 0 ' + enemy.shadow : '',
+                        'text-stroke': enemy.stroke ? '1px ' + enemy.stroke : '',
                     }"
                 >{{ 'Lv' + enemy.lvl + ' ' + name }}</p>
                 <div class="enemy-bar">
@@ -516,12 +533,10 @@ Vue.component('enemy-bar', {
             <span
                 v-if="rogue.ce"
                 class="enemy-icon"
-                :class="{ 
-                    'unique-color': rogue.ce.stroke,
-                }"
                 :style="{ 
                     color: rogue.ce.color,
-                    'text-shadow': rogue.ce.shadow ? '1px 1px 0 ' + rogue.ce.shadow : ''
+                    'text-shadow': rogue.ce.shadow ? '1px 1px 0 ' + rogue.ce.shadow : '',
+                    'text-stroke': rogue.ce.stroke ? '1px ' + rogue.ce.stroke : '',
                 }"
             >{{ rogue.ce.symbol }}</span>
         </div>
@@ -531,7 +546,11 @@ Vue.component('enemy-bar', {
 Vue.component('condition', {
     props:['rogue', 'colorList', 'isEnglish'],
     template: /*html*/`
-        <div>
+        <div 
+            :style="{ 
+                'background-color': rogue.hallucinated ? 'rgba(128, 0, 128, 0.15)' : '',
+            }"
+        >
             <ul>
                 <li
                     v-if="rogue.hunger >= 1600"
@@ -663,13 +682,10 @@ Vue.component('stats-fixed', {
                             v-for="(item, key) in rogue.boxes"
                         >
                             <span
-                                :class="{ 
-                                    'unique-color': item && item.stroke,
-                                }"
-
                                 :style="{ 
                                     color: item ? item && item.color : '',
-                                    'text-shadow': item && item.shadow ? '1px 1px 0 ' + item.shadow : ''
+                                    'text-shadow': item && item.shadow ? '1px 1px 0 ' + item.shadow : '',
+                                    'text-stroke': item && item.stroke ? '1px ' + item.stroke : '',
                                 }"
                             >{{ item ? item.symbol : key }}</span>
                             <span 

@@ -12,13 +12,13 @@ const game = {
 	},
 	
     quit(key, save) {
-        if (key === 'n') {
+        if (key === 'N') {
             flag.quit = false;
             flag.regular = true;
             inventory.clear();
 		}
 		
-        if (key !== 'y') return;
+        if (key !== 'Y') return;
         flag.died = true;
         flag.title = true;
         flag.regular = false;

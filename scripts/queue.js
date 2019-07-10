@@ -4,7 +4,7 @@ const Queue = class extends BinaryHeap {
     }
 
     moveAll() {
-        while (this.list[0].energy >= 0 && this.list[0].id !== ROGUE) {
+        while (this.list[0].energy >= 0 && this.list[0].id !== ID_ROGUE) {
             this.list[0].act();
             if (flag.died) return;
 		}
@@ -17,7 +17,7 @@ const Queue = class extends BinaryHeap {
 
         if (rogue.cdl && rogue.turn % SPAWN_FREQ === 0) {
             creation.enemy({
-                position: AWAY,
+                position: POS_AWAY,
                 summon: true,
 			});
 		}

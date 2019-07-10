@@ -1,6 +1,6 @@
 const [
-    IN,
-    OUT
+    AUDIO_IN,
+    AUDIO_OUT
 ] = enums(1, 2);
 
 const audio = {
@@ -65,7 +65,7 @@ const audio = {
     },
 
     fadeIn(track) {
-        if (track.fade !== IN) return;
+        if (track.fade !== AUDIO_IN) return;
         if (track.volume < this.volBGM) {
             track.volume = Math.round((track.volume + 0.1) * 10) / 10;
             setTimeout(this.fadeIn.bind(this, track), 100);
@@ -75,7 +75,7 @@ const audio = {
     },
 
     fadeOut(track, loop) {
-        if (track.fade !== OUT) return;
+        if (track.fade !== AUDIO_OUT) return;
         if (track.volume > 0) {
             track.volume = Math.round((track.volume - 0.1) * 10) / 10;
             setTimeout(this.fadeOut.bind(this, track, loop), 100);
@@ -97,7 +97,7 @@ const audio = {
         let track = this.music[trackName];
         this.curTrack = trackName;
         track.volume = 0;
-        track.fade = IN;
+        track.fade = AUDIO_IN;
         this.fadeIn(track);
         if (!option.mute.user) this.playSafely(track);
     },
@@ -120,7 +120,7 @@ const audio = {
     stop(trackName) {
         if (!trackName) return;
         let track = this.music[trackName];
-        track.fade = OUT;
+        track.fade = AUDIO_OUT;
         this.fadeOut(track);
     },
 
@@ -144,14 +144,14 @@ const audio = {
         let track = audio.music[key];
         track.title = key;
         track.addEventListener('timeupdate', function() {
-            if (this.fade !== OUT && this.currentTime >= this.duration - 0.5) {
-                this.fade = OUT;
+            if (this.fade !== AUDIO_OUT && this.currentTime >= this.duration - 0.5) {
+                this.fade = AUDIO_OUT;
                 audio.fadeOut(this, true);
             }
         }, false);
         track.addEventListener('ended', function() {
             if (audio.curTrack === key) {
-                this.fade = IN;
+                this.fade = AUDIO_IN;
                 audio.fadeIn(this);
                 audio.playSafely(this);
             }

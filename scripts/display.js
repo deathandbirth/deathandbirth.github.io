@@ -30,7 +30,7 @@ const display = {
                 ctx.shadowOffsetX = 1;
                 ctx.shadowOffsetY = 1;
                 ctx.fillStyle = colorList.white;
-                ctx.font = fs + 'px ' + FONT_STYLE[ENG];
+                ctx.font = fs + 'px ' + FONT_STYLE;
                 ctx.textAlign = 'center';
                 if (key === 'cursor') ctx.strokeStyle = colorList.yellow;
             }
@@ -61,28 +61,20 @@ const display = {
         msg,
         x = 0,
         y = 0,
-        limit,
         xPx = 0,
         yPx = 0,
-        limitPx = 0,
         stroke,
         fs = this.fs,
     }) {
-        let limitX = limit ? limit * fs + limitPx : undefined;
         x += .5;
         y += .5;
-        let args = [msg, x * fs + xPx, y * fs + yPx, limitX];
+        let args = [msg, x * fs + xPx, y * fs + yPx];
         if (stroke) {
             ctx.strokeStyle = stroke;
             ctx.strokeText(...args);
         }
 
         ctx.fillText(...args);
-        ctx.font = fs;
-
-        if (ctx.canvas.id === "canvas-main") {
-            
-        }
     },
 
     rect({

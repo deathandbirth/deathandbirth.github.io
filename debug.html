@@ -12,10 +12,12 @@
 	<div id="game-container">
 
 		<!-- Message Fixed -->
-		<p
-			id="message-fixed"
-			:title="msgFixed"
-		>{{ msgFixed }}</p>
+		<div id="message-fixed-container">
+			<p
+				v-if="msgFixed"
+				:title="msgFixed"
+			>{{ msgFixed }}</p>
+		</div>
 
 		<!-- UI -->
 		<div id="ui-container">
@@ -100,11 +102,11 @@
 					:inv="inventoryList.skill"
 				></skill>
 
-				<!-- Bookmark Left -->
+				<!-- Keys Left -->
 				<skill
-					id="bookmark-container"
+					id="keys-container"
 					class="left"
-					:inv="inventoryList.bookmark"
+					:inv="inventoryList.keys"
 				></skill>
 
 				<!-- Message Prev -->
@@ -325,8 +327,10 @@
 	<script src="scripts/utility.js"></script>
 	<script src="scripts/thing.js"></script>
 	<script src="scripts/entrance.js"></script>
+	<script src="scripts/messageList.js"></script>
 	<script src="scripts/message.js"></script>
 	<script src="scripts/skill.js"></script>
+	<script src="scripts/investigationList.js"></script>
 	<script src="scripts/investigation.js"></script>
 	<script src="scripts/data.js"></script>
 	<script src="scripts/audio.js"></script>

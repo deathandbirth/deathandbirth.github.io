@@ -112,7 +112,7 @@ li {
     bottom: 5%;
 }
 
-#message-fixed {
+#message-fixed-container {
     position: absolute;
     top: 0;
     left: 0;
@@ -302,16 +302,6 @@ li {
 
     /* colorList.lime */
     color: lime;
-}
-
-/* TODO */
-.unique-color {
-    /* -webkit-text-stroke: 1px indigo; */
-    -webkit-text-stroke: 1px gold;
-}
-
-.portal-color {
-    -webkit-text-stroke: 1px #0099FF;
 }
 
 #enemy-bar-container {
@@ -511,7 +501,7 @@ li {
     display: flex;
 }
 
-#bookmark-container .skill-key {
+#keys-container .skill-key {
     width: 50px;
     text-align: left;
 }
@@ -574,6 +564,16 @@ li {
 #investigation-item {
     font-size: .9em;
     line-height: 1.7em;
+}
+
+#investigation-item .skill-list {
+    width: 100%;
+    padding: 0 10%;
+}
+
+#investigation-item .skill-element {
+    min-width: 70px;
+    text-align: right;
 }
 
 #investigation-fighter {

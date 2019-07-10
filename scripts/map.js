@@ -80,7 +80,7 @@ const map = {
                         creation.item({
                             type: 'coin',
                             tabId: 1,
-                            position: LOCATION,
+                            position: POS_LOCATION,
                             x: i,
                             y: j,
                         });
@@ -287,7 +287,7 @@ const hallucinate = {
         obj.nameTemp['a'] = obj.name['a'];
         obj.nameTemp['b'] = obj.name['b'];
         if (enemy) {
-            type = FT[rndInt(FT.length - 1)];
+            type = ftList[rndInt(ftList.length - 1)];
             tabId = rndInt(fighterTab[type].length - 1);
             var fighter = fighterTab[type][tabId];
             obj.name['a'] = fighter.name['a'];
@@ -295,7 +295,7 @@ const hallucinate = {
             obj.symbol = fighter.symbol;
             obj.color = fighter.color ? fighter.color : colorList.white;
         } else {
-            type = IT[rndInt(IT.length - 2)];
+            type = itList[rndInt(itList.length - 2)];
             obj.typeHalluc = type;
             tabId = rndIntBet(1, itemTab[type].size);
             var item = itemTab[type].get(tabId);
@@ -317,7 +317,7 @@ const hallucinate = {
             return;
         }
 
-        if (enemy && fighter.mod === UNIQUE ||
+        if (enemy && fighter.mod === MOD_UNIQUE ||
             !enemy && itemUniqueMap[item.type].has(item.tabId) && coinToss()) {
             if (!enemy) {
                 if (type === 'amulet' && evalPercentage(1)) {

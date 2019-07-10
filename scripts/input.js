@@ -89,8 +89,8 @@ const input = {
             message.scroll(key);
         } else if (flag.pack) {
             rogue.packOrUnpack(key);
-        } else if (flag.bookmark) {
-            rogue.addOrRemoveBookmark(key);
+        } else if (flag.assign) {
+            rogue.assginSkills(key);
         } else if (flag.gain) {
             rogue.gainStatOrSkill(key);
         } else if (flag.fuel) {
@@ -133,7 +133,7 @@ const input = {
             }
         } else {
             if (flag.equipment) rogue.equipmentList();
-            if (flag.inventory) rogue.showInventory(P_PACK);
+            if (flag.inventory) rogue.showInventory(PLACE_PACK);
             if (rogue.done) {
                 rogue.decreaseEnergy();
                 map.queue.moveAll();
@@ -205,7 +205,7 @@ const input = {
                 if (this.isCtrl) break;
                 rogue.useBoxItem(key);
                 break;
-            case 'a': // add bookmark, *create monster*
+            case 'a': // assign skill, *create monster*
                 if (this.isCtrl) {
                     if (!rogue.isWizard) break;
                     this.switchFlag();
@@ -215,9 +215,9 @@ const input = {
                 } else {
                     this.switchFlag();
                     rogue.showSkill(rogue.skill);
-                    rogue.showSkill(rogue.bookmarks, true);
-                    message.draw(message.get(M_BOOKMARK), true);
-                    flag.bookmark = 1;
+                    rogue.showSkill(rogue.keysList, true);
+                    message.draw(message.get(M_ASSIGN_SKILL), true);
+                    flag.assign = 1;
 				}
 				
                 break;
@@ -229,8 +229,8 @@ const input = {
 
                 this.switchFlag();
                 flag.synthesize = true;
-                rogue.showInventory(P_PACK);
-                rogue.showInventory(P_CUBE);
+                rogue.showInventory(PLACE_PACK);
+                rogue.showInventory(PLACE_CUBE);
                 let msg = message.get(M_SYNTHESIZE) + message.get(M_FLOOR);
                 message.draw(msg, true);
                 break
@@ -250,7 +250,7 @@ const input = {
             case 'C': // character description
                 this.switchFlag();
                 flag.character = true;
-                investigation.main(rogue, MIDDLE, true);
+                investigation.main(rogue, DR_MIDDLE, true);
                 Vue.nextTick(function(){
                     investigation.scroll(key, true);
                 });
@@ -262,13 +262,13 @@ const input = {
                     let msg = message.get(M_DESTROY) + message.get(M_FLOOR);
                     message.draw(msg, true);
                     flag.destroy = true;
-                    rogue.showInventory(P_PACK);
+                    rogue.showInventory(PLACE_PACK);
                     rogue.equipmentList();
                 } else {
                     this.switchFlag();
                     flag.drop = true;
                     let msg = message.get(M_DROP);
-                    rogue.showInventory(P_PACK);
+                    rogue.showInventory(PLACE_PACK);
                     rogue.equipmentList();
                     message.draw(msg, true);
 				}
@@ -285,7 +285,7 @@ const input = {
                         rogue.equipmentList();
                     } else {
                         inventory.clear();
-                        if (flag.inventory) rogue.showInventory(P_PACK);
+                        if (flag.inventory) rogue.showInventory(PLACE_PACK);
                     }
                 }
 
@@ -294,7 +294,7 @@ const input = {
                 this.switchFlag();
                 flag.eat = true;
                 let msg = message.get(M_EAT) + message.get(M_FLOOR);
-                rogue.showInventory(P_PACK);
+                rogue.showInventory(PLACE_PACK);
                 message.draw(msg, true);
                 break
             }
@@ -322,7 +322,7 @@ const input = {
                 this.switchFlag();
                 flag.fuel = true;
                 let msg = message.get(M_FUEL) + message.get(M_FLOOR);
-                rogue.showInventory(P_PACK);
+                rogue.showInventory(PLACE_PACK);
                 rogue.equipmentList();
                 message.draw(msg, true);
                 break;
@@ -334,7 +334,7 @@ const input = {
             case 'G': { // gain
                 this.switchFlag();
                 flag.gain = 1;
-                rogue.showInventory(P_PACK);
+                rogue.showInventory(PLACE_PACK);
                 inventory.showStats(rogue);
                 let msg = message.get(M_GAIN);
                 message.draw(msg, true);
@@ -351,7 +351,7 @@ const input = {
                     //TODO
                     flag.inventory = !flag.inventory;
                     if (flag.inventory) {
-                        rogue.showInventory(P_PACK);
+                        rogue.showInventory(PLACE_PACK);
                     } else {
                         inventory.clear();
                         if (flag.equipment) rogue.equipmentList();
@@ -364,7 +364,7 @@ const input = {
                 this.switchFlag();
                 flag.investigate = true;
                 let msg = message.get(M_INVESTIGATE) + message.get(M_FLOOR);
-                rogue.showInventory(P_PACK);
+                rogue.showInventory(PLACE_PACK);
                 rogue.equipmentList();
                 message.draw(msg, true)
                 break;
@@ -394,8 +394,8 @@ const input = {
                     this.switchFlag();
                     flag.pack = true;
                     let msg = message.get(M_PACK_OR_UNPACK) + message.get(M_FLOOR);
-                    rogue.showInventory(P_PACK);
-                    rogue.showInventory(P_BOX);
+                    rogue.showInventory(PLACE_PACK);
+                    rogue.showInventory(PLACE_BOX);
                     message.draw(msg, true);
 				}
 				
@@ -409,7 +409,7 @@ const input = {
                     this.switchFlag();
                     flag.quaff = true;
                     let msg = message.get(M_QUAFF) + message.get(M_FLOOR);
-                    rogue.showInventory(P_PACK);
+                    rogue.showInventory(PLACE_PACK);
                     message.draw(msg, true);
                 }
 
@@ -417,7 +417,6 @@ const input = {
             case 'Q': // quit
                 this.switchFlag();
                 flag.quit = true;
-                message.draw(message.get(M_ASK_TO_QUIT));
                 message.draw(message.get(M_QUIT), true);
                 break;
             case 'r': // read, redraw
@@ -428,7 +427,7 @@ const input = {
                     this.switchFlag();
                     flag.read = true;
                     let msg = message.get(M_READ) + message.get(M_FLOOR);
-                    rogue.showInventory(P_PACK);
+                    rogue.showInventory(PLACE_PACK);
                     message.draw(msg, true);
                 }
 
@@ -452,7 +451,7 @@ const input = {
                 if (this.isCtrl) break;
                 this.switchFlag();
                 let msg = message.get(M_THROW) + message.get(M_FLOOR);
-                rogue.showInventory(P_PACK);
+                rogue.showInventory(PLACE_PACK);
                 message.draw(msg, true);
                 flag.throw = true;
                 break;
@@ -467,7 +466,7 @@ const input = {
                 let msg = message.get(M_TAKE_OFF);
                 message.draw(msg, true);
                 rogue.equipmentList();
-                rogue.showInventory(P_PACK);
+                rogue.showInventory(PLACE_PACK);
                 flag.unequip = true;
                 break;
             }
@@ -479,7 +478,7 @@ const input = {
                 this.switchFlag();
                 flag.equip = true;
                 let msg = message.get(M_EQUIP) + message.get(M_FLOOR);
-                rogue.showInventory(P_PACK);
+                rogue.showInventory(PLACE_PACK);
                 rogue.equipmentList();
                 message.draw(msg, true);
                 break;
@@ -509,7 +508,7 @@ const input = {
                     this.switchFlag();
                     flag.zap = true;
                     let msg = message.get(M_ZAP) + message.get(M_FLOOR);
-                    rogue.showInventory(P_PACK);
+                    rogue.showInventory(PLACE_PACK);
                     message.draw(msg, true);
                 }
 
@@ -527,7 +526,7 @@ const input = {
             case 'F11':
             case 'F12':
                 if (this.isCtrl) break;
-                rogue.castBookmarkedSkill(key);
+                rogue.castAssignedSkill(key);
                 break;
             case '=': // option
                 if (this.isCtrl) break;
@@ -536,7 +535,7 @@ const input = {
                 message.draw(message.get(M_OPTION), true);
                 inventory.show({
                     list: option.list,
-                    dr: RIGHT,
+                    dr: DR_RIGHT,
                 });
 
                 break;
@@ -580,13 +579,13 @@ const input = {
         if (init) {
             scrollByX = -eleP.scrollWidth;
             scrollByY = -eleP.scrollHeight;
-        } else if (dr.id === LEFT) {
+        } else if (dr.id === DR_LEFT) {
             left = true;
-        } else if (dr.id === DOWN) {
+        } else if (dr.id === DR_DOWN) {
             down = true;
-        } else if (dr.id === UP) {
+        } else if (dr.id === DR_UP) {
             up = true;
-        } else if (dr.id === RIGHT) {
+        } else if (dr.id === DR_RIGHT) {
             right = true;
         }
 
@@ -613,7 +612,9 @@ const input = {
         }
 
 
-        if (scrollByX !== undefined) eleP.scrollBy(scrollByX, 0);
-        if (scrollByY !== undefined) eleP.scrollBy(0, scrollByY);
+        // if (scrollByX !== undefined) eleP.scrollBy(scrollByX, 0);
+        // if (scrollByY !== undefined) eleP.scrollBy(0, scrollByY);
+        if (scrollByX !== undefined) eleP.scrollLeft += scrollByX;
+        if (scrollByY !== undefined) eleP.scrollTop += scrollByY;
     }
 }

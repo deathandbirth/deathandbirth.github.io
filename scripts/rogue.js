@@ -2,7 +2,7 @@ const Rogue = class extends Fighter {
     constructor() {
         super(fighterTab['misc'][0])
         this.name['a'] = this.name['b'] = data.name;
-        this.id = ROGUE;
+        this.id = ID_ROGUE;
         this.expMax = this.exp = 0;
         this.expGain = this.getExp();
         this.expNext = this.calcNextLvl();
@@ -10,7 +10,7 @@ const Rogue = class extends Fighter {
         this.cubeIndex = {};
         this.hunger = MAX_HUNGER / 2;
         this.purse = 500;
-        this.bookmarks = {};
+        this.keysList = {};
         this.numSteps = 0;
         this.skill = {};
         this.detected = true;
@@ -25,7 +25,7 @@ const Rogue = class extends Fighter {
         this.lethe = 0;
         this.turn = 1;
         this.done = false;
-        this.initBookmarks();
+        this.initKeys();
         this.isWizard = window.location.href.split('/').pop().indexOf('debug') === 0;
     }
 
@@ -37,15 +37,15 @@ const Rogue = class extends Fighter {
         this.energy = this.spd / 100;
     }
 
-    initBookmarks() {
-        for (let i = 0; i < MAX_BOOKMARK_NUM; i++) {
-			this.bookmarks[i] = null;
+    initKeys() {
+        for (let i = 0; i < MAX_ASSIGN_NUM; i++) {
+			this.keysList[i] = null;
 		}
     }
 
     move(key, dr) {
         if (this.confused) {
-            dr = DR[rndInt(DR.length - 1)];
+            dr = drList[rndInt(drList.length - 1)];
 		} else if (key) {
 			dr = getDirection(key);
 		}
@@ -183,9 +183,9 @@ const Rogue = class extends Fighter {
     dashSearch(dr) {
         let key1 = -1;
         let keyDia = -1;
-        for (let key in DR) {
-            if (!map.coords[this.x + DR[key].x][this.y + DR[key].y].wall &&
-               	-DR[key].x !== dr.x && -DR[key].y !== dr.y) {
+        for (let key in drList) {
+            if (!map.coords[this.x + drList[key].x][this.y + drList[key].y].wall &&
+               	-drList[key].x !== dr.x && -drList[key].y !== dr.y) {
                 if (key < 4) {
                     if (key1 !== -1) {
                         return;
@@ -202,15 +202,15 @@ const Rogue = class extends Fighter {
             }
 		}
 		
-        return keyDia !== -1 && DR[keyDia].x !== DR[key1].x &&
-            DR[keyDia].y !== DR[key1].y ? null : DR[key1];
+        return keyDia !== -1 && drList[keyDia].x !== drList[key1].x &&
+            drList[keyDia].y !== drList[key1].y ? null : drList[key1];
     }
 
     searchDoor() {
         let tempX, tempY;
         let count = 0;
-        for (let key in DR) {
-            let [x, y] = [this.x + DR[key].x, this.y + DR[key].y]
+        for (let key in drList) {
+            let [x, y] = [this.x + drList[key].x, this.y + drList[key].y]
             let loc = map.coords[x][y];
             if (loc.door && loc.isClosedDoor() === flag.openDoor &&
                 !loc.fighter && !loc.item['a'] && !loc.hidden) {
@@ -252,8 +252,8 @@ const Rogue = class extends Fighter {
     }
 
     attackStationary(key) {
-        if (this.bookmarks[0] !== null) {
-            this.castBookmarkedSkill('M', key);
+        if (this.keysList[0] !== null) {
+            this.castAssignedSkill('M', key);
 		} else if (this.haveMissile()) {
             let ammo = this.getAmmo(this.equipment['main'].throwType);
             if (ammo) {
@@ -303,9 +303,11 @@ const Rogue = class extends Fighter {
 
     getStartPointInTown() {
         if (!rogue.cdl && rogue.dl) {
-            [this.x, this.y] = [POSITION.hell.x, POSITION.hell.y];
+            let pos = positionFixedList.hell;
+            [this.x, this.y] = [pos.x, pos.y];
 		} else {
-			[this.x, this.y] = [POSITION.start.x, POSITION.start.y];
+            let pos = positionFixedList.start;
+			[this.x, this.y] = [pos.x, pos.y];
 		}
     }
 
@@ -327,7 +329,7 @@ const Rogue = class extends Fighter {
         let loc = map.coords[this.x][this.y];
         if (!trap && !loc.stairs || loc.hidden) return;
         let dr = trap ? null : loc.stairs.id;
-        if (trap || dr === DOWN && key === '>') {
+        if (trap || dr === DR_DOWN && key === '>') {
             if (!trap) audio.playSound('staircase');
             if (option.autosave.user) data.save();
             game.clearLevel();
@@ -338,7 +340,7 @@ const Rogue = class extends Fighter {
                 if (rogue.dl < ++rogue.cdl) rogue.dl = rogue.cdl;
                 creation.dungeon(!trap, dr);
             }
-        } else if (dr === UP && key === '<') {
+        } else if (dr === DR_UP && key === '<') {
             audio.playSound('staircase');
             if (option.autosave.user) data.save();
             game.clearLevel();
@@ -358,7 +360,7 @@ const Rogue = class extends Fighter {
             creation.town();
             this.cdl = 0;
             let portal = new Portal();
-            portal.init(LOCATION, this.x, this.y);
+            portal.init(POS_LOCATION, this.x, this.y);
 		}
 		
         audio.playSound('tplevel');
@@ -372,8 +374,8 @@ const Rogue = class extends Fighter {
             flag.stash = true;
             enter.page = 1;
             let msg = message.get(M_STASH);
-            this.showInventory(P_PACK);
-            this.showInventory(P_STASH);
+            this.showInventory(PLACE_PACK);
+            this.showInventory(PLACE_STASH);
             message.draw(msg, true);
             return;
         } else if (enter.shop) {
@@ -381,15 +383,16 @@ const Rogue = class extends Fighter {
             this.cn = 1;
             flag.gamble = enter.gamble;
             let msg = message.get(M_SHOP);
-            this.showInventory(P_PACK);
+            msg = enter.name[option.getLanguage()] + msg;
+            this.showInventory(PLACE_PACK);
             if (!enter.list['a']) enter.createShopItem();
-            this.showInventory(P_SHOP);
+            this.showInventory(PLACE_SHOP);
             message.draw(msg, true);
         } else if (enter.cure) {
             flag.cure = true;
             inventory.show({
                 list: enter.list,
-                dr: RIGHT,
+                dr: DR_RIGHT,
                 enter: enter,
             });
 
@@ -398,7 +401,7 @@ const Rogue = class extends Fighter {
             flag.blacksmith = true;
             let msg = message.get(M_BLACKSMITH);
             this.equipmentList();
-            this.showInventory(P_PACK);
+            this.showInventory(PLACE_PACK);
             message.draw(msg, true);
 		}
 		
@@ -484,7 +487,7 @@ const Rogue = class extends Fighter {
 			} else {
                 input.switchFlag();
                 let msg = message.get(M_GRAB);
-                this.showInventory(P_FLOOR);
+                this.showInventory(PLACE_FLOOR);
                 message.draw(msg, true);
             }
         }
@@ -497,7 +500,7 @@ const Rogue = class extends Fighter {
             if (!a) return;
             a = a.toLowerCase();
             item = this.getItem(a);
-            if (!item || item.place === P_EQUIPMENT && item.cursed) return;
+            if (!item || item.place === PLACE_EQUIPMENT && item.cursed) return;
             if (item.quantity > 1) {
                 this.ci = item;
                 flag.number = true;
@@ -534,7 +537,7 @@ const Rogue = class extends Fighter {
         let parts = this.getParts(item);
         if (!parts) return;
         item = this.inventoryOut(item, 1);
-        item.place = P_EQUIPMENT;
+        item.place = PLACE_EQUIPMENT;
         this.equipment[parts] = item;
         this.gainOrloseWeight(item, item.quantity, true);
         let name = item.getName();
@@ -570,7 +573,7 @@ const Rogue = class extends Fighter {
             let a = getAlphabet(key);
             if (!a) return;
             a = a.toLowerCase();
-            parts = BP[a];
+            parts = bpList[a];
         }
 
         let item = this.equipment[parts];
@@ -620,8 +623,8 @@ const Rogue = class extends Fighter {
     }
 
     isNaked() {
-        for (let key in BP) {
-            if (this.equipment[BP[key]]) return false;
+        for (let key in bpList) {
+            if (this.equipment[bpList[key]]) return false;
 		}
 		
         return true;
@@ -650,7 +653,7 @@ const Rogue = class extends Fighter {
         light.fuelValue += item.fuelValue;
         if (light.fuelValue > light.fuelMax) light.fuelValue = light.fuelMax;
         light.calcFuelLvl();
-        if (item.mod !== NORMAL) {
+        if (item.mod !== MOD_NORMAL) {
             item.fuelValue = 0;
             item.calcFuelLvl();
         } else {
@@ -711,7 +714,7 @@ const Rogue = class extends Fighter {
 		
         if (!item.identified) {
             item.identifyAll();
-            if (item.place === P_PACK) var sort = true;
+            if (item.place === PLACE_PACK) var sort = true;
 		}
 		
         let name = item.getName(true, true);
@@ -804,7 +807,7 @@ const Rogue = class extends Fighter {
         flag.floor = false;
         if (!item.identified) {
             item.identifyAll();
-            if (item.place === P_PACK) inventory.sort(a, this.pack);
+            if (item.place === PLACE_PACK) inventory.sort(a, this.pack);
 		}
 		
         let name = item.getName(true, 1);
@@ -874,8 +877,8 @@ const Rogue = class extends Fighter {
         if (key) {
             inventory.clear();
             this.showInventory(item.place, a);
-            investigation.main(item, item.place === P_EQUIPMENT || item.place === P_BOX ? RIGHT : LEFT);
-            if (item.place === P_PACK) inventory.sort(a, this.pack);
+            investigation.main(item, item.place === PLACE_EQUIPMENT || item.place === PLACE_BOX ? DR_RIGHT : DR_LEFT);
+            if (item.place === PLACE_PACK) inventory.sort(a, this.pack);
             rogue.done = true;
             flag.identify = false;
             flag.regular = true;
@@ -955,7 +958,7 @@ const Rogue = class extends Fighter {
             this.purse -= price;
             let msg = message.get(M_BLACKSMITH);
             this.equipmentList();
-            this.showInventory(P_PACK);
+            this.showInventory(PLACE_PACK);
             message.draw(msg, true);
             return;
 		}
@@ -1039,7 +1042,7 @@ const Rogue = class extends Fighter {
         cursor.clearAll();
     }
 
-    investigate(key, item, place, direction, msg) {
+    investigate(key, item, place, direction) {
         investigation.clear();
         if (!item) {
             if (this.switchInventory(key, M_INVESTIGATE, true)) return;
@@ -1055,12 +1058,7 @@ const Rogue = class extends Fighter {
             return;
         }
 
-        // inventory.clear();
-        // if (msg === undefined) msg = message.get(M_INVESTIGATE) + message.get(flag.floor ? M_PACK : M_FLOOR);
-        // message.draw(msg, true);
-        // if (place === undefined) place = item.place;
-        // this.showInventory(place);
-        if (direction === undefined) direction = item.place === P_EQUIPMENT || item.place === P_BOX ? RIGHT : LEFT;
+        if (direction === undefined) direction = item.place === PLACE_EQUIPMENT || item.place === PLACE_BOX ? DR_RIGHT : DR_LEFT;
         investigation.main(item, direction);
     }
 
@@ -1130,12 +1128,12 @@ const Rogue = class extends Fighter {
             deleteAndSortItem(this.cubeIndex, a);
         } else {
             let quantity = item.type === 'scroll' ? item.quantity : 1;
-            this.cube[EA[l]] = this.inventoryOut(item, quantity);
-            this.cubeIndex[EA[l]] = a;
+            this.cube[eaList[l]] = this.inventoryOut(item, quantity);
+            this.cubeIndex[eaList[l]] = a;
         }
         
-        this.showInventory(flag.floor ? P_FLOOR : P_PACK);
-        this.showInventory(P_CUBE);
+        this.showInventory(flag.floor ? PLACE_FLOOR : PLACE_PACK);
+        this.showInventory(PLACE_CUBE);
     }
 
     tryToSynthesize() {
@@ -1159,7 +1157,7 @@ const Rogue = class extends Fighter {
             mp = this.mp,
             l = Object.keys(this.cube).length;
         for (let i = 0; i < l; i++) {
-            let item = this.cube[EA[i]];
+            let item = this.cube[eaList[i]];
             if (!item.identified) continue;
             if (item.equipable) {
                 if (!item.embeddedMax) unembeddable++;
@@ -1194,26 +1192,44 @@ const Rogue = class extends Fighter {
         let name, msg;
         let recipes = itemTab['recipe'];
         if (l === potion) {
-            let tabId = RECIPE_EXTRA_HEALING;
-            cost = recipes.get(tabId).cost;
             num = 1;
-            if (l === 3 && this.checkRecipe(tabId, cost)) {
+            if (l === 3) {
+                let countGH = 0,
+                    countGM = 0;
                 let found = true;
                 for (let key in this.cube) {
                     let item = this.cube[key];
-                    if (item.tabId !== P_GREATER_HEALING) {
-                        found = false;
+                    if (item.tabId === P_GREATER_HEALING) {
+                        countGH++;
+                    } else if (item.tabId === P_GREATER_MANA) {
+                        countGM++;
+                    } else {
                         break;
                     }
                 }
 
-                if (found) {
+                let tabIdRecipe, tabIdPotion;
+                if (countGH === l) {
+                    tabIdRecipe = RECIPE_EXTRA_HEALING;
+                    tabIdPotion = P_EXTRA_HEALING;
                     name = option.isEnglish() ? 'Potion of Extra Healing' : '特大回復の薬';
+                } else if (countGM === l) {
+                    tabIdRecipe = RECIPE_EXTRA_MANA;
+                    tabIdPotion = P_EXTRA_MANA;
+                    name = option.isEnglish() ? 'Potion of Extra Mana' : '魔力特大回復の薬';
+                } else {
+                    found = false;
+                }
+
+                if (tabIdRecipe) cost = recipes.get(tabIdRecipe).cost;
+                if (found && this.checkRecipe(tabIdRecipe, cost)) {
                     this.createItemIntoPack({
                         type: 'potion',
-                        tabId: P_EXTRA_HEALING,
+                        tabId: tabIdPotion,
                         quantity: 1,
                     });
+                } else {
+                    name = '';
                 }
             }
         } else if (l === wand) {
@@ -1292,7 +1308,7 @@ const Rogue = class extends Fighter {
 
                     num++;
                     fuelValue += item2.fuelValue;
-                    if (item2.type === 'light' && (item2.mod !== NORMAL || item2.embeddedList.length)) {
+                    if (item2.type === 'light' && (item2.mod !== MOD_NORMAL || item2.embeddedList.length)) {
                         item2.fuelValue = 0;
                         item2.calcFuelLvl();
                         this.packAdd(item2);
@@ -1467,7 +1483,7 @@ const Rogue = class extends Fighter {
                 }
             }
 
-            if (item.mod === NORMAL && this.checkRecipe(tabId, cost)) {
+            if (item.mod === MOD_NORMAL && this.checkRecipe(tabId, cost)) {
                 item.embeddedMax = rndIntBet(1, item.embeddedLimit);
                 this.packAdd(item);
                 name = item.getName();
@@ -1488,7 +1504,7 @@ const Rogue = class extends Fighter {
                 if (item && mat) break;
             }
 
-            if ((item.mod === MAGIC || item.mod === RARE) && item.material === mat.material && this.checkRecipe(tabId, cost)) {
+            if ((item.mod === MOD_MAGIC || item.mod === MOD_RARE) && item.material === mat.material && this.checkRecipe(tabId, cost)) {
                 item = item.makeMaterial();
                 this.packAdd(item);
                 name = item.getName();
@@ -1559,32 +1575,32 @@ const Rogue = class extends Fighter {
 
     returnItem(item, a) {
         switch (item.place) {
-            case P_PACK:
+            case PLACE_PACK:
                 this.packAdd(item);
                 break;
-            case P_BOX:
+            case PLACE_BOX:
                 this.boxAdd(item, this.cubeIndex[a]);
                 break;
-            case P_FLOOR:
+            case PLACE_FLOOR:
                 item.putDown(this.x, this.y, true);
                 break;
         }
     }
 
     packOrUnpack(key) {
-        if (flag.pack !== P_PACK) {
+        if (flag.pack !== PLACE_PACK) {
             if (this.switchInventory(key, M_PACK_OR_UNPACK) || input.isShift) return;
             let a = getAlphabetOrNumber(key);
             if (!a) return;
             a = a.toLowerCase();
             let item = this.getItem(a, flag.floor);
             if (!item) return;
-            if (item.place === P_BOX) {
+            if (item.place === PLACE_BOX) {
                 item = this.inventoryOut(item, item.quantity);
                 if (!this.packAdd(item)) item.dropped();
             } else {
                 this.ci = item;
-                flag.pack = P_PACK;
+                flag.pack = PLACE_PACK;
                 if (Object.keys(this.boxes).length === 1) {
                     this.packOrUnpack('1');
 				} else {
@@ -1604,8 +1620,8 @@ const Rogue = class extends Fighter {
 		
         inventory.clear();
         let msg = message.get(M_PACK_OR_UNPACK) + message.get(flag.floor ? M_PACK : M_FLOOR);
-        this.showInventory(flag.floor ? P_FLOOR : P_PACK);
-        this.showInventory(P_BOX);
+        this.showInventory(flag.floor ? PLACE_FLOOR : PLACE_PACK);
+        this.showInventory(PLACE_BOX);
         message.draw(msg, true);
     }
 
@@ -1664,18 +1680,18 @@ const Rogue = class extends Fighter {
                 flag.clearInv = true;
                 inventory.show({
                     list: loc.item,
-                    dr: RIGHT,
-                    place: P_FLOOR
+                    dr: DR_RIGHT,
+                    place: PLACE_FLOOR
                 })
 			}
         } else if (key === 'c' || key === 'm' || key === 'e' || key === 'i') {
             let fighter = loc.fighter;
             if (fighter && fighter.isShowing() &&
-                (fighter.id === ROGUE || !rogue.hallucinated)) {
+                (fighter.id === ID_ROGUE || !rogue.hallucinated)) {
                 if (fighter.mimic && !fighter.identified && !rogue.isWizard) return;
                 if (key === 'c') {
                     flag.character = true;
-                    investigation.main(fighter ,MIDDLE, true);
+                    investigation.main(fighter ,DR_MIDDLE, true);
                     Vue.nextTick(function(){
                         investigation.scroll(null, true);
                     });
@@ -1685,7 +1701,7 @@ const Rogue = class extends Fighter {
                     } else if (key === 'e' && this.isWizard) {
                         fighter.equipmentList();
                     } else if (key === 'i' && this.isWizard) {
-                        fighter.showInventory(P_PACK);
+                        fighter.showInventory(PLACE_PACK);
                     }
 
                     flag.clearInv = true;
@@ -1703,7 +1719,7 @@ const Rogue = class extends Fighter {
 			
             if (key === 'r') {
                 this.ce = null;
-			} else if (loc.fighter && loc.fighter.id !== ROGUE && loc.fighter.isShowing()) {
+			} else if (loc.fighter && loc.fighter.id !== ID_ROGUE && loc.fighter.isShowing()) {
                 this.ce = loc.fighter;
             } else if (!flag.aim) {
                 loc.getInfo();
@@ -1771,33 +1787,33 @@ const Rogue = class extends Fighter {
         this.ci = null;
     }
 
-    addOrRemoveBookmark(key) {
+    assginSkills(key) {
         let isFuncKey = /^F\d/.test(key);
-        if (flag.bookmark === 1) {
+        if (flag.assign === 1) {
             if (key === 'M' || isFuncKey) {
                 let i = key === 'M' ? 0 : key.replace('F', '');
-                if (!this.bookmarks[i]) return;
-                this.bookmarks[i] = null;
+                if (!this.keysList[i]) return;
+                this.keysList[i] = null;
                 inventory.clear();
                 this.showSkill(this.skill);
-                this.showSkill(this.bookmarks, true);
-                message.draw(message.get(M_BOOKMARK), true);
+                this.showSkill(this.keysList, true);
+                message.draw(message.get(M_ASSIGN_SKILL), true);
             } else {
                 let a = getAlphabet(key);
                 if (!a || !this.skill[a]) return;
-                flag.bookmark = 2;
+                flag.assign = 2;
                 this.ca = a;
-                message.draw(message.get(M_BOOKMARK2), true);
+                message.draw(message.get(M_ASSIGN_SKILL2), true);
             }
         } else {
             if (key !== 'M' && !isFuncKey) return;
             let i = key === 'M' ? 0 : key.replace('F', '');
-            this.bookmarks[i] = this.skill[this.ca].id;
-            flag.bookmark = 1;
+            this.keysList[i] = this.skill[this.ca].id;
+            flag.assign = 1;
             inventory.clear();
             this.showSkill(this.skill);
-            this.showSkill(this.bookmarks, true);
-            message.draw(message.get(M_BOOKMARK), true);
+            this.showSkill(this.keysList, true);
+            message.draw(message.get(M_ASSIGN_SKILL), true);
         }
     }
 
@@ -1838,6 +1854,7 @@ const Rogue = class extends Fighter {
         } else if (flag.gain === 2 && !flag.number) { //skill
             let a = getAlphabet(key);
             if (!a) return;
+            a = a.toLowerCase();
             let id = this.pack[this.ca].list[a];
             if (!id) return;
             let skill = skillMap.get(id);
@@ -1869,6 +1886,7 @@ const Rogue = class extends Fighter {
 			
             this.cs = id;
             flag.number = true;
+            inventory.clear();
             this.showSkill(this.pack[this.ca].list);
             this.inputNumber();
         } else {
@@ -1883,7 +1901,7 @@ const Rogue = class extends Fighter {
                 if (i > point) i = point;
                 let name = skill.name[option.getLanguage()];
                 if (!key) { //new skill
-                    key = EA[Object.keys(this.skill).length];
+                    key = eaList[Object.keys(this.skill).length];
                     this.skill[key] = {}
                     this.skill[key].id = this.cs;
                     this.skill[key].lvl = 0;
@@ -1934,6 +1952,7 @@ const Rogue = class extends Fighter {
 		}
 		
         let a = getAlphabet(key);
+        a = a.toLowerCase();
         if (!a || !this.skill[a]) return;
         let skill = skillMap.get(this.skill[a].id);
         if (input.isShift) {
@@ -1962,10 +1981,10 @@ const Rogue = class extends Fighter {
         flag.regular = true;
     }
 
-    castBookmarkedSkill(key, keyDr) {
+    castAssignedSkill(key, keyDr) {
         let i = key === 'M' ? 0 : key.replace('F', '');
-        if (!this.bookmarks[i] || !this.checkToCast()) return;
-        let id = this.bookmarks[i];
+        if (!this.keysList[i] || !this.checkToCast()) return;
+        let id = this.keysList[i];
         let skill = skillMap.get(id);
         if (!this.checkToCast(skill)) return;
         flag.skill = true;
@@ -2042,7 +2061,7 @@ const Rogue = class extends Fighter {
 		} else if (floor) {
             item = map.coords[this.x][this.y].item[a];
         } else if (input.isShift) {
-            item = this.equipment[BP[a]];
+            item = this.equipment[bpList[a]];
 		} else {
 			item = this.pack[a];
 		}
@@ -2054,16 +2073,16 @@ const Rogue = class extends Fighter {
         if (key !== ',' && key !== '.') return false;
         inventory.clear();
         let msg = message.get(id);
-        if (flag.synthesize || flag.pack) this.showInventory(flag.pack ? P_BOX : P_CUBE);
+        if (flag.synthesize || flag.pack) this.showInventory(flag.pack ? PLACE_BOX : PLACE_CUBE);
         if (key === ',') {
             flag.floor = false;
             if (equipment) this.equipmentList();
             msg += message.get(M_FLOOR);
-            this.showInventory(P_PACK);
+            this.showInventory(PLACE_PACK);
         } else if (key === '.') {
             flag.floor = true;
             msg += message.get(M_PACK);
-            this.showInventory(P_FLOOR);
+            this.showInventory(PLACE_FLOOR);
 		}
 		
         message.draw(msg, true);
@@ -2116,10 +2135,9 @@ const Rogue = class extends Fighter {
             if (!item) return;
             if (isAlt) {
                 if (flag.gamble && buy) return;
-                let place = buy ? P_SHOP : P_PACK;
-                let direction = buy ? RIGHT : LEFT;
-                let msg = message.get(M_SHOP);
-                this.investigate(null, item, place, direction, msg);
+                let place = buy ? PLACE_SHOP : PLACE_PACK;
+                let direction = buy ? DR_RIGHT : DR_LEFT;
+                this.investigate(null, item, place, direction);
                 return;
             }
 
@@ -2145,11 +2163,11 @@ const Rogue = class extends Fighter {
             let i = this.cn;
             if (i > item.quantity) i = item.quantity;
             let amount = item.price * i;
-            if (item.place === P_PACK) {
+            if (item.place === PLACE_PACK) {
                 item = this.inventoryOut(item, i);
                 let l = Object.keys(shop.list).length;
-                shop.list[EA[l]] = item;
-                item.place = P_SHOP;
+                shop.list[eaList[l]] = item;
+                item.place = PLACE_SHOP;
                 this.purse += amount;
                 if (!item.identified) {
                     item.identified = true;
@@ -2180,8 +2198,9 @@ const Rogue = class extends Fighter {
             inventory.clear();
             this.cn = 1;
             let msg = message.get(M_SHOP);
-            this.showInventory(P_PACK);
-            this.showInventory(P_SHOP);
+            msg = shop.name[option.getLanguage()] + msg;
+            this.showInventory(PLACE_PACK);
+            this.showInventory(PLACE_SHOP);
             message.draw(msg, true);
         }
     }
@@ -2198,8 +2217,8 @@ const Rogue = class extends Fighter {
 
                 inventory.clear();
                 let msg = message.get(M_STASH)
-                this.showInventory(P_PACK);
-                this.showInventory(P_STASH);
+                this.showInventory(PLACE_PACK);
+                this.showInventory(PLACE_STASH);
                 message.draw(msg, true);
                 return;
 			}
@@ -2207,7 +2226,7 @@ const Rogue = class extends Fighter {
             let a, item;
             if (input.isShift) {
                 if (!getAlphabet(key)) return;
-                let num = EA.indexOf(key.toLowerCase());
+                let num = eaList.indexOf(key.toLowerCase());
                 if (num >= MAX_PACK_COUNT) return;
                 a = num + (stash.page - 1) * MAX_PACK_COUNT;
                 item = stash.list[a];
@@ -2220,10 +2239,9 @@ const Rogue = class extends Fighter {
 			
             if (!item) return;
             if (isAlt) {
-                let place = input.isShift ? P_STASH : P_PACK;
-                let direction = input.isShift ? RIGHT : LEFT;
-                let msg = message.get(M_STASH);
-                this.investigate(null, item, place, direction, msg);
+                let place = input.isShift ? PLACE_STASH : PLACE_PACK;
+                let direction = input.isShift ? DR_RIGHT : DR_LEFT;
+                this.investigate(null, item, place, direction);
                 return;
             }
 
@@ -2254,7 +2272,7 @@ const Rogue = class extends Fighter {
             this.ci = null;
             let i = this.cn;
             if (i > item.quantity) i = item.quantity;
-            if (item.place === P_STASH) {
+            if (item.place === PLACE_STASH) {
                 item = item.split(i, stash.list);
                 this.packAdd(item);
                 let name = item.getName();
@@ -2274,8 +2292,8 @@ const Rogue = class extends Fighter {
             flag.number = false;
             inventory.clear();
             let msg = message.get(M_STASH);
-            this.showInventory(P_PACK);
-            this.showInventory(P_STASH);
+            this.showInventory(PLACE_PACK);
+            this.showInventory(PLACE_STASH);
             message.draw(msg, true);
         }
     }
@@ -2291,7 +2309,7 @@ const Rogue = class extends Fighter {
 		}
 		
         this.purse -= cost;
-        let name = cure.list[a][ENG];
+        let name = cure.list[a][LETTER_ENG];
         if (name === 'recover completely') {
             this.recovery();
             // message.draw(message.get(M_RECOVER_ALL));
@@ -2338,7 +2356,7 @@ const Rogue = class extends Fighter {
             return;
 		}
 		
-        let name = trap.name[ENG];
+        let name = trap.name[LETTER_ENG];
         if (name === 'Trap Door') {
             if (this.levi && !stepOn) {
                 message.draw(message.get(M_FLOAT));
@@ -2447,7 +2465,7 @@ const Rogue = class extends Fighter {
             this.checkUniqueLoop(enemy.equipment);
             this.checkUniqueLoop(enemy.side);
             this.checkUniqueLoop(enemy.boxes);
-            if (enemy.mod === UNIQUE) delete this.cue[enemy.name[ENG]];
+            if (enemy.mod === MOD_UNIQUE) delete this.cue[enemy.name[LETTER_ENG]];
         }
     }
 
@@ -2455,7 +2473,7 @@ const Rogue = class extends Fighter {
         for (let key in list) {
             let item = list[key];
             if (!item) continue;
-            if (item.mod === UNIQUE && !item.identified) {
+            if (item.mod === MOD_UNIQUE && !item.identified) {
                 let id = item.type + ',' + item.tabId + ',' + item.uniqueId;
                 if (this.cui[id]) delete this.cui[id];
             } else if (item.lethe) {
@@ -2513,7 +2531,7 @@ const Rogue = class extends Fighter {
     }
 
     getCe(fighter, melee) {
-        if (fighter.id !== ROGUE && (melee || !this.ce) && fighter.isShowing()) this.ce = fighter;
+        if (fighter.id !== ID_ROGUE && (melee || !this.ce) && fighter.isShowing()) this.ce = fighter;
     }
 
     getName(subject, proper) {
@@ -2530,7 +2548,7 @@ const Rogue = class extends Fighter {
     }
 
     isOpponent(fighter) {
-        return fighter.id !== ROGUE;
+        return fighter.id !== ID_ROGUE;
     }
 
     isShowing() {

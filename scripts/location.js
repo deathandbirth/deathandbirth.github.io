@@ -2,6 +2,8 @@ const doorIds = {
     close: 1,
     open: 2,
 };
+const DOOR_CLOSE = 1;
+const DOOR_OPEN = 2;
 
 const Location = class extends Position {
     constructor(x, y) {
@@ -21,7 +23,7 @@ const Location = class extends Position {
                 break;
             case SYMBOL_ITEM:
                 let l = Object.keys(this.item).length;
-                let item = this.item[EA[l - 1]];
+                let item = this.item[eaList[l - 1]];
                 let identified = item.identified || rogue.hallucinated;
                 symbol = item.symbol;
                 color = item.color;
@@ -92,7 +94,7 @@ const Location = class extends Position {
         } else if(shadow) {
             ctx.shadowColor = shadow;
         } else if (rogue.hallucinated) {
-            ctx.shadowColor = colorList.purple;
+            // ctx.shadowColor = colorList.purple;
         }
 
         display.text({
@@ -167,7 +169,7 @@ const Location = class extends Position {
     getInfo(stepOn) {
         if (flag.examine) rogue.examineMsg();
         let msg = '';
-        if (flag.examine && this.fighter && this.fighter.id !== ROGUE && this.fighter.isShowing()) {
+        if (flag.examine && this.fighter && this.fighter.id !== ID_ROGUE && this.fighter.isShowing()) {
 			msg = statistics.drawEnemyBar(this.fighter, true);
 		}
 
@@ -182,7 +184,7 @@ const Location = class extends Position {
 		
         if (this.item['a']) {
             let l = Object.keys(this.item).length;
-            let item = this.item[EA[l - 1]];
+            let item = this.item[eaList[l - 1]];
             if (item.isShowing()) {
                 if (this.found && !this.stairs && !this.hidden && msg) {
                     msg = option.isEnglish() ? msg + ' on ' : 'の上に' + msg;
@@ -333,7 +335,7 @@ const Location = class extends Position {
     }
 
     isClosedDoor() {
-        return this.door === doorIds['close'];
+        return this.door === DOOR_CLOSE;
     }
 
     isObstacle() {
@@ -341,6 +343,6 @@ const Location = class extends Position {
     }
 
     getDoor(close) {
-        this.door = doorIds[close ? 'close' : 'open'];;
+        this.door = close ? DOOR_CLOSE : DOOR_OPEN;
     }
 }

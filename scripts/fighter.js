@@ -69,9 +69,9 @@ const Fighter = class extends Material {
         this.acSBaseSum = 0;
         this.acTBaseSum = 0;
         this.acBBaseSum = 0;
-        this.acSBase = this.getAcVar(this.acBase * this.acSRate, AT_S);
-        this.acTBase = this.getAcVar(this.acBase * this.acTRate, AT_T);
-        this.acBBase = this.getAcVar(this.acBase * this.acBRate, AT_B);
+        this.acSBase = this.getAcVar(this.acBase * this.acSRate, AT_SLASH);
+        this.acTBase = this.getAcVar(this.acBase * this.acTRate, AT_THRUST);
+        this.acBBase = this.getAcVar(this.acBase * this.acBRate, AT_BLUNT);
         this.acBuff = 0;
         if (!this.acRed) this.acRed = 0;
         this.iasBase = 0;
@@ -126,9 +126,9 @@ const Fighter = class extends Material {
         this.numBoxes = 0;
         this.initSynerzy();
         this.equipment = {};
-        if (this.race & (HUMAN | GIANT)) {
-            for (let key in BP) {
-				this.equipment[BP[key]] = null;
+        if (this.race & (RACE_HUMAN | RACE_GIANT)) {
+            for (let key in bpList) {
+				this.equipment[bpList[key]] = null;
 			}
 		}
         
@@ -177,14 +177,14 @@ const Fighter = class extends Material {
         this.exp += Math.floor(exp * (potion ? 1 : (1 + this.expBonus / 100)));
         if (this.exp > this.expMax) this.expMax = this.exp;
         let found;
-        while ((this.id === ROGUE && this.lvl < MAX_FIGHTER_LVL || this.id !== ROGUE) &&
+        while ((this.id === ID_ROGUE && this.lvl < MAX_FIGHTER_LVL || this.id !== ID_ROGUE) &&
           	  this.exp >= calcLevel(this.lvl + 1)) {
             if (++this.lvl <= this.lvlMax) continue;
             this.lvlMax = this.lvl;
             found = true;
             audio.playSound('level');
             this.skillPoints++;
-            if (this.id === ROGUE) {
+            if (this.id === ID_ROGUE) {
                 message.draw(option.isEnglish() ?
                     `Welcome to level ${this.lvl}` :
                     `レベル${this.lvl}へようこそ`);
@@ -206,22 +206,22 @@ const Fighter = class extends Material {
 
     getExp() {
         let exp = calcLevel(this.lvl + 1) - calcLevel(this.lvl);
-        if (this.mod === UNIQUE) {
+        if (this.mod === MOD_UNIQUE) {
             exp /= this.boss ? 1 : 2;
 		} else {
 			exp /= 50;
 		}
 
         if (this.group) exp /= 10;
-        if (this.race & DRAGON) {
+        if (this.race & RACE_DRAGON) {
             exp *= 3;
-		} else if (this.race & GIANT) {
+		} else if (this.race & RACE_GIANT) {
 			exp *= 2;
 		}
 
-        if (this.mod === RARE) {
+        if (this.mod === MOD_RARE) {
             exp *= 4;
-		} else if (this.mod === MAGIC) {
+		} else if (this.mod === MOD_MAGIC) {
 			exp *= 2;
 		}
 
@@ -253,9 +253,9 @@ const Fighter = class extends Material {
             dmgBAvg = 0,
             count = 0,
             dmgBase = Math.ceil(this.dmgBase + this.str / 2);
-        this.dmgSBase = this.atkType & AT_S ? minMax.getBase(dmgBase, atVarMap.get(AT_S)) : 0;
-        this.dmgTBase = this.atkType & AT_T ? minMax.getBase(dmgBase, atVarMap.get(AT_T)) : 0;
-        this.dmgBBase = this.atkType & AT_B ? minMax.getBase(dmgBase, atVarMap.get(AT_B)) : 0;
+        this.dmgSBase = this.atkType & AT_SLASH ? minMax.getBase(dmgBase, atVarMap.get(AT_SLASH)) : 0;
+        this.dmgTBase = this.atkType & AT_THRUST ? minMax.getBase(dmgBase, atVarMap.get(AT_THRUST)) : 0;
+        this.dmgBBase = this.atkType & AT_BLUNT ? minMax.getBase(dmgBase, atVarMap.get(AT_BLUNT)) : 0;
         this.dmgSValue = this.dmgTValue = this.dmgBValue = 0;
         if (this.dmgSBase) {
             [this.dmgSValue, dmgSAvg] = this.getDmgMinMax(this.dmgSBase);
@@ -277,7 +277,7 @@ const Fighter = class extends Material {
         // Hit Rate
         let weapon = this.equipment['main'];
         let weight = weapon ? 3 - weapon.weight : 0;
-        if (this.id === ROGUE && weight < 0 && weight * 10 + this.str < 0) {
+        if (this.id === ID_ROGUE && weight < 0 && weight * 10 + this.str < 0) {
             weight = -1000;
             if (equip) message.draw(message.get(M_TOO_HEAVY));
         }
@@ -350,7 +350,7 @@ const Fighter = class extends Material {
         if (!itemThrown) {
             atkType = this.atkType;
         } else {
-            atkType = itemThrown.atkType ? itemThrown.atkType : AT_B;
+            atkType = itemThrown.atkType ? itemThrown.atkType : AT_BLUNT;
 		}
         
         [acEnemy, atCur] = this.getEnemyAc(atkType, e);
@@ -365,9 +365,9 @@ const Fighter = class extends Material {
             if (dmgBase) dmgBase = minMax.getBase(Math.ceil(dmgBase + this.str / 2), atVarMap.get(atCur));
             if (itemThrown.dmgBonus) boost = itemThrown.dmgBonus;
         } else {
-            dmgBase = atCur === AT_S ? this.dmgSBase :
-                atCur === AT_T ? this.dmgTBase :
-                atCur === AT_B ? this.dmgBBase :
+            dmgBase = atCur === AT_SLASH ? this.dmgSBase :
+                atCur === AT_THRUST ? this.dmgTBase :
+                atCur === AT_BLUNT ? this.dmgBBase :
                 null;
             if (ammo && ammo.dmgBonus) boost = ammo.dmgBonus;
         }
@@ -395,19 +395,19 @@ const Fighter = class extends Material {
     getEnemyAc(atkType, enemy) {
         let atCur;
         let ac = NaN;
-        if (atkType & AT_S && !(ac <= enemy.acSValueTotal)) {
+        if (atkType & AT_SLASH && !(ac <= enemy.acSValueTotal)) {
             ac = enemy.acSValueTotal;
-            atCur = AT_S;
+            atCur = AT_SLASH;
         }
 
-        if (atkType & AT_T && !(ac <= enemy.acTValueTotal)) {
+        if (atkType & AT_THRUST && !(ac <= enemy.acTValueTotal)) {
             ac = enemy.acTValueTotal;
-            atCur = AT_T;
+            atCur = AT_THRUST;
         }
 
-        if (atkType & AT_B && !(ac <= enemy.acBValueTotal)) {
+        if (atkType & AT_BLUNT && !(ac <= enemy.acBValueTotal)) {
             ac = enemy.acBValueTotal;
-            atCur = AT_B;
+            atCur = AT_BLUNT;
         }
 
         return [ac, atCur];
@@ -415,14 +415,14 @@ const Fighter = class extends Material {
 
     getRaceBoost(race) {
         let boost = 0;
-        if (race & HUMAN) boost += this.dmgHuman;
-        if (race & ANIMAL) boost += this.dmgAnimal;
-        if (race & DEMON) boost += this.dmgDemon;
-        if (race & UNDEAD) boost += this.dmgUndead;
-        if (race & DRAGON) boost += this.dmgDragon;
-        if (race & GIANT) boost += this.dmgGiant;
-        if (race & SPIRIT) boost += this.dmgSpirit;
-        if (race & GOD) boost += this.dmgGod;
+        if (race & RACE_HUMAN) boost += this.dmgHuman;
+        if (race & RACE_ANIMAL) boost += this.dmgAnimal;
+        if (race & RACE_DEMON) boost += this.dmgDemon;
+        if (race & RACE_UNDEAD) boost += this.dmgUndead;
+        if (race & RACE_DRAGON) boost += this.dmgDragon;
+        if (race & RACE_GIANT) boost += this.dmgGiant;
+        if (race & RACE_SPIRIT) boost += this.dmgSpirit;
+        if (race & RACE_GOD) boost += this.dmgGod;
         return boost;
     }
 
@@ -451,7 +451,7 @@ const Fighter = class extends Material {
             isBasic = true;
 		}
 
-        let third = isEng && (itemThrown || missile || skill || this.id !== ROGUE);
+        let third = isEng && (itemThrown || missile || skill || this.id !== ID_ROGUE);
         do {
             let [dmg, rate, atCur] = skill && skill.type === 'spell' ?
                 [this.calcSkillValue(skill, lvl, enemy), 100, null] :
@@ -459,7 +459,7 @@ const Fighter = class extends Material {
             let msgDmg;
             let msgAT;
             let msgName = name;
-            let miss = !dmg || enemy.indestructible || this.id !== ROGUE && enemy.boss;
+            let miss = !dmg || enemy.indestructible || this.id !== ID_ROGUE && enemy.boss;
             if (isBasic) {
                 msgAT = this.getAttackTypeName(atCur, isEng, third);
                 if (!isEng) msgName += msgAT;
@@ -503,7 +503,7 @@ const Fighter = class extends Material {
                     let percent = this.stealMana > 100 ? 1 : this.stealMana / 100;
                     let mp = Math.ceil(dmg * percent);
                     if (mp > enemy.mp) mp = enemy.mp;
-                    if (enemy.mod !== UNIQUE) enemy.mp -= mp;
+                    if (enemy.mod !== MOD_UNIQUE) enemy.mp -= mp;
                     this.mp += mp;
                     if (this.mp > this.mpMax) this.mp = this.mpMax;
 				}
@@ -520,7 +520,7 @@ const Fighter = class extends Material {
                 if (this.atkBlind && evalPercentage(this.atkBlind)) this.haveCast(BLINDNESS, 1, enemy);
                 if (this.atkRadi && evalPercentage(this.atkRadi)) this.haveCast(RADIATION, 1, enemy);
                 if (this.atkCold && evalPercentage(this.atkCold)) this.haveCast(COLD, 1, enemy);
-                if (this.atkDrain && evalPercentage(this.atkDrain - (enemy.lvl - this.lvl))) enemy.decayOrRestore(EXP, false, this.expGain, this);
+                if (this.atkDrain && evalPercentage(this.atkDrain - (enemy.lvl - this.lvl))) enemy.decayOrRestore(STAT_EXP, false, this.expGain, this);
                 if (!skill && !missile && !this.confused) {
                     if (this.atkStealGold && evalPercentage(this.atkStealGold)) if (this.stealGold(enemy)) count = NaN;
                     if (count && this.atkStealItem && evalPercentage(this.atkStealItem)) if (this.stealItem(enemy)) count = NaN;
@@ -540,7 +540,7 @@ const Fighter = class extends Material {
 			}
 			
             if (enemy.sleeping) enemy.wakeUp();
-            if (this.id === ROGUE) this.getCe(enemy, !missile && !skill);
+            if (this.id === ID_ROGUE) this.getCe(enemy, !missile && !skill);
             if (skill) this.getElementEffect(skill.element, lvl, enemy)
             if (skill || itemThrown) break;
         } while (missile && this.timesMissile > count && ammo.quantity > count ||
@@ -550,11 +550,11 @@ const Fighter = class extends Material {
 
     getAttackTypeName(at, isEng, third) {
         let name;
-        if (at === AT_S) {
+        if (at === AT_SLASH) {
             name = isEng ? 'slash' : '斬撃';
-        } else if (at === AT_T) {
+        } else if (at === AT_THRUST) {
             name = isEng ? 'thrust' : '刺突';
-        } else if (at === AT_B) {
+        } else if (at === AT_BLUNT) {
             name = isEng ? 'beat' : '打撃';
         }
 
@@ -564,11 +564,11 @@ const Fighter = class extends Material {
 
     dig(loc) {
         let digging;
-        if (this.atkType & AT_T) {
+        if (this.atkType & AT_THRUST) {
             digging = 3;
-		} else if (this.atkType & AT_S) {
+		} else if (this.atkType & AT_SLASH) {
             digging = 2;
-		} else if (this.atkType & AT_B) {
+		} else if (this.atkType & AT_BLUNT) {
 			digging = 1;
 		}
 
@@ -792,13 +792,13 @@ const Fighter = class extends Material {
 
     calcCondition() {
         let name = this.getName(true);
-        let dec = this.mod === UNIQUE ? 5 : 1;
+        let dec = this.mod === MOD_UNIQUE ? 5 : 1;
         if (this.poisoned) {
             if (!this.indestructible) this.hp -= Math.floor(this.poisonedVal * (1 - this.poison / 100));
             if (this.hp <= 0) {
                 let fighter;
                 if (this.poisonedId && this.poisonedId !== this.id) {
-                    fighter = this.poisonedId === ROGUE ? rogue : map.enemyList[this.poisonedId];
+                    fighter = this.poisonedId === ID_ROGUE ? rogue : map.enemyList[this.poisonedId];
                 }
 
                 this.poisonedId = 0;
@@ -821,7 +821,7 @@ const Fighter = class extends Material {
             this.confused -= dec;
             if (this.confused <= 0) {
                 this.confused = 0;
-                if (this.id !== ROGUE) this.removeCe();
+                if (this.id !== ID_ROGUE) this.removeCe();
                 message.draw(option.isEnglish() ?
                     `${name} recovered from confusion` :
                     `${name}混乱状態から復帰した`);
@@ -850,7 +850,7 @@ const Fighter = class extends Material {
             this.blinded -= dec;
             if (this.blinded <= 0) {
                 this.blinded = 0;
-                if (this.id === ROGUE) {
+                if (this.id === ID_ROGUE) {
                     this.goBlind(true);
 				} else {
 					this.removeCe();
@@ -877,7 +877,7 @@ const Fighter = class extends Material {
             this.hallucinated -= dec;
             if (this.hallucinated <= 0) {
                 this.hallucinated = 0;
-                if (this.id === ROGUE) {
+                if (this.id === ID_ROGUE) {
                     hallucinate.all(true);
 				} else {
 					this.removeCe();
@@ -1141,7 +1141,7 @@ const Fighter = class extends Material {
     decayOrRestore(stat, restore, exp, enemy) {
         let name = this.getName(true);
         switch (stat >= 0 ? stat : rndInt(3)) {
-            case STR:
+            case STAT_STR:
                 if (restore) {
                     if (this.str < this.strMax) {
                         message.draw(option.isEnglish() ?
@@ -1162,7 +1162,7 @@ const Fighter = class extends Material {
                 this.calcWeightLimit();
                 this.calcDmg();
                 break;
-            case DEX:
+            case STAT_DEX:
                 if (restore) {
                     if (this.dex < this.dexMax) {
                         message.draw(option.isEnglish() ?
@@ -1183,7 +1183,7 @@ const Fighter = class extends Material {
                 this.calcAc();
                 this.calcDmg();
                 break;
-            case CON:
+            case STAT_CON:
                 if (restore) {
                     if (this.con < this.conMax) {
                         message.draw(option.isEnglish() ?
@@ -1203,7 +1203,7 @@ const Fighter = class extends Material {
 				
                 this.calcHP();
                 break;
-            case INT:
+            case STAT_INT:
                 if (restore) {
                     if (this.int < this.intMax) {
                         message.draw(option.isEnglish() ?
@@ -1223,7 +1223,7 @@ const Fighter = class extends Material {
 				
                 this.calcMP();
                 break;
-            case EXP:
+            case STAT_EXP:
                 if (restore) {
                     if (this.exp < this.expMax) {
                         message.draw(option.isEnglish() ?
@@ -1274,7 +1274,7 @@ const Fighter = class extends Material {
     drawOrErase(draw, move) {
         let loc = map.coords[this.x][this.y];
         loc.fighter = draw ? this : null;
-        if (this.id === ROGUE && draw) {
+        if (this.id === ID_ROGUE && draw) {
             this.lightenOrDarken('Lighten', move);
             this.distMap = pathfinding.main({
                 x0: this.x,
@@ -1301,9 +1301,9 @@ const Fighter = class extends Material {
         [this.x, this.y, f.x, f.y] = [f.x, f.y, this.x, this.y];
         this.drawOrErase(true);
         f.drawOrErase(true);
-        if (this.id === ROGUE) {
+        if (this.id === ID_ROGUE) {
             map.coords[this.x][this.y].traces = ++this.numSteps;
-		} else if (f.id === ROGUE) {
+		} else if (f.id === ID_ROGUE) {
 			map.coords[f.x][f.y].traces = ++f.numSteps;
 		}
     }
@@ -1311,30 +1311,30 @@ const Fighter = class extends Material {
     showInventory(place, a) {
         let list, dr, enter;
         switch (place) {
-            case P_PACK:
+            case PLACE_PACK:
                 list = this.pack;
-                dr = RIGHT; 
+                dr = DR_RIGHT; 
                 break;
-            case P_FLOOR:
+            case PLACE_FLOOR:
                 list = map.coords[this.x][this.y].item;
-                dr = RIGHT; 
+                dr = DR_RIGHT; 
                 break;
-            case P_BOX:
+            case PLACE_BOX:
                 list = this.boxes;
-                dr = LEFT;
+                dr = DR_LEFT;
                 break;
-            case P_SHOP:
-            case P_STASH:
+            case PLACE_SHOP:
+            case PLACE_STASH:
                 enter = map.coords[this.x][this.y].enter;
                 list = enter.list
-                dr = LEFT;
+                dr = DR_LEFT;
                 break;
-            case P_CUBE:
+            case PLACE_CUBE:
                 list = this.cube;
-                dr = LEFT;
+                dr = DR_LEFT;
                 break;
-            case P_EQUIPMENT:
-                this.equipmentList(BP[a]);
+            case PLACE_EQUIPMENT:
+                this.equipmentList(bpList[a]);
                 return;
         }
 
@@ -1351,8 +1351,8 @@ const Fighter = class extends Material {
         inventory.showEquipment(this, bp);
     }
 
-    showSkill(list, bookmark) {
-        inventory.showSkill(this, list, bookmark);
+    showSkill(list, assign) {
+        inventory.showSkill(this, list, assign);
     }
 
     findBuffStat(key) {
@@ -1441,22 +1441,22 @@ const Fighter = class extends Material {
     inventoryOut(item, quantity) {
         let list;
         switch (item.place) {
-            case P_PACK:
+            case PLACE_PACK:
                 list = this.pack;
                 break;
-            case P_BOX:
+            case PLACE_BOX:
                 list = this.boxes;
                 break;
-            case P_EQUIPMENT:
+            case PLACE_EQUIPMENT:
                 list = this.equipment;
                 break;
-            case P_FLOOR:
+            case PLACE_FLOOR:
                 list = map.coords[item.x][item.y].item;
                 break;
 		}
 		
         item = item.split(quantity, list);
-        if (item.place === P_FLOOR) {
+        if (item.place === PLACE_FLOOR) {
             item.id = -1;
             item.x = item.y = 0;
             if (rogue.hallucinated) hallucinate.undoOne(item);
@@ -1464,7 +1464,7 @@ const Fighter = class extends Material {
 			this.gainOrloseWeight(item, quantity);
 		}
 
-        if (item.place === P_EQUIPMENT && item.durab) {
+        if (item.place === PLACE_EQUIPMENT && item.durab) {
             this.getOrLooseStats(item);
             this.calcAll();
 		}
@@ -1497,7 +1497,7 @@ const Fighter = class extends Material {
     }
 
     stashAdd(stash, item) {
-        item.place = P_STASH;
+        item.place = PLACE_STASH;
         let key = this.canCarryItem(stash, item);
         if (key >= 0) {
             stash[key].quantity += item.quantity;
@@ -1512,21 +1512,21 @@ const Fighter = class extends Material {
     packAdd(item) {
         if (!flag.pack && this.numBoxes) {
             if (this.listAdd(this.boxes, item)) {
-                item.place = P_BOX;
+                item.place = PLACE_BOX;
                 return true;
             }
 		}
 		
         if (this.listAdd(this.pack, item)) {
-            item.place = P_PACK
+            item.place = PLACE_PACK
             return true;
 		}
 		
         let l = Object.keys(this.pack).length;
         if (l < MAX_PACK_COUNT) {
-            item.place = P_PACK
-            this.pack[EA[l]] = item;
-            inventory.sort(EA[l], this.pack);
+            item.place = PLACE_PACK
+            this.pack[eaList[l]] = item;
+            inventory.sort(eaList[l], this.pack);
             this.gainOrloseWeight(item, item.quantity, true)
             return true;
 		}
@@ -1538,12 +1538,12 @@ const Fighter = class extends Material {
     boxAdd(item, a) {
         let item2 = this.boxes[a];
         if (!item2) {
-            item.place = P_BOX;
+            item.place = PLACE_BOX;
             this.boxes[a] = item;
         } else if (item2.equal(item)) {
             item2.quantity += item.quantity;
 		} else {
-            item.place = P_BOX;
+            item.place = PLACE_BOX;
             item2 = this.inventoryOut(item2, item2.quantity);
             this.packAdd(item2);
             this.boxes[a] = item;
@@ -1590,7 +1590,7 @@ const Fighter = class extends Material {
                     type: type,
                     tabId: tabId,
                     quantity: quantity,
-                    position: LIST,
+                    position: POS_LIST,
                     magic: magic,
                     lvl: lvl,
                     uniqueId: uniqueId,
@@ -1710,7 +1710,7 @@ const Fighter = class extends Material {
         let num = this.numBoxes + 1;
         if (num > MAX_BOX_NUM) return;
         for (let i = num; i <= this.numBoxes + numBoxes && i <= MAX_BOX_NUM; i++) {
-            if (this.id === ROGUE) {
+            if (this.id === ID_ROGUE) {
                 Vue.set(vue.rogue.boxes, i, null)
             } else {
 				this.boxes[i] = null;
@@ -1737,7 +1737,7 @@ const Fighter = class extends Material {
         if (num > MAX_BOX_NUM) return;
         for (let i = num; i <= this.numBoxes && i <= MAX_BOX_NUM; i++) {
             let item = this.boxes[i];
-            if (this.id === ROGUE) {
+            if (this.id === ID_ROGUE) {
                 Vue.delete(vue.rogue.boxes, i)
             } else {
                 delete this.boxes[i];
@@ -1803,13 +1803,14 @@ const Fighter = class extends Material {
                     f.infected = 0;
                     if (f.hallucinated) {
                         f.hallucinated = 0;
-                        if (f.id === ROGUE) hallucinate.all(true);
+                        if (f.id === ID_ROGUE) hallucinate.all(true);
                     }
 				}
 				
                 break;
             }
-            case MANA: {
+            case MANA:
+            case EXTRA_MANA: {
                 let value = this.calcSkillValue(skill, lvl);
                 let limit = f.mpMax - f.mp;
                 if (value > limit) value = limit;
@@ -1848,52 +1849,52 @@ const Fighter = class extends Material {
                 break;
             case WEAKNESS:
                 if (boss || evalPercentage(f.poison)) return;
-                f.decayOrRestore(STR);
+                f.decayOrRestore(STAT_STR);
                 break;
             case CLUMSINESS:
                 if (boss || evalPercentage(f.poison)) return;
-                f.decayOrRestore(DEX);
+                f.decayOrRestore(STAT_DEX);
                 break;
             case SICKLINESS:
                 if (boss || evalPercentage(f.poison)) return;
-                f.decayOrRestore(CON);
+                f.decayOrRestore(STAT_CON);
                 break;
             case STUPIDITY:
                 if (boss || evalPercentage(f.poison)) return;
-                f.decayOrRestore(INT);
+                f.decayOrRestore(STAT_INT);
                 break;
             case RESTORE_STRENGTH:
-                f.decayOrRestore(STR, true);
+                f.decayOrRestore(STAT_STR, true);
                 break;
             case RESTORE_DEXTERITY:
-                f.decayOrRestore(DEX, true);
+                f.decayOrRestore(STAT_DEX, true);
                 break;
             case RESTORE_CONSTITUTION:
-                f.decayOrRestore(CON, true);
+                f.decayOrRestore(STAT_CON, true);
                 break;
             case RESTORE_INTELLIGENCE:
-                f.decayOrRestore(INT, true);
+                f.decayOrRestore(STAT_INT, true);
                 break;
             case RESTORE_EXPERIENCE:
-                f.decayOrRestore(EXP, true);
+                f.decayOrRestore(STAT_EXP, true);
                 break;
             case RESTORE_ALL:
-                f.decayOrRestore(STR, true);
-                f.decayOrRestore(DEX, true);
-                f.decayOrRestore(CON, true);
-                f.decayOrRestore(INT, true);
-                f.decayOrRestore(EXP, true);
+                f.decayOrRestore(STAT_STR, true);
+                f.decayOrRestore(STAT_DEX, true);
+                f.decayOrRestore(STAT_CON, true);
+                f.decayOrRestore(STAT_INT, true);
+                f.decayOrRestore(STAT_EXP, true);
                 break;
             case CURE_ALL:
                 f.confused = f.canceled = f.poisoned = f.infected = f.paralyzed = f.sleeping = 0;
                 if (f.blinded) {
                     f.blinded = 0;
-                    if (f.id === ROGUE) f.goBlind(true);
+                    if (f.id === ID_ROGUE) f.goBlind(true);
 				}
 				
                 if (f.hallucinated) {
                     f.hallucinated = 0;
-                    if (f.id === ROGUE) hallucinate.all(true);
+                    if (f.id === ID_ROGUE) hallucinate.all(true);
 				}
 				
                 if (f.spdNerfDur) {
@@ -1969,7 +1970,7 @@ const Fighter = class extends Material {
                 f.calcResist();
                 break;
             case ENLIGHTENMENT:
-                if (f.id !== ROGUE) return;
+                if (f.id !== ID_ROGUE) return;
                 map.lighten();
                 break;
             case WORMHOLE:
@@ -2000,7 +2001,7 @@ const Fighter = class extends Material {
                 input.switchFlag();
                 flag.identify = true;
                 let msg = message.get(M_IDENTIFY) + message.get(M_FLOOR);
-                this.showInventory(P_PACK);
+                this.showInventory(PLACE_PACK);
                 this.equipmentList();
                 message.draw(msg, true);
                 return null;
@@ -2014,7 +2015,7 @@ const Fighter = class extends Material {
                 input.switchFlag();
                 flag.repair = true;
                 let msg = message.get(M_REPAIR) + message.get(M_FLOOR);
-                this.showInventory(P_PACK);
+                this.showInventory(PLACE_PACK);
                 this.equipmentList();
                 message.draw(msg, true);
                 return null;
@@ -2067,7 +2068,7 @@ const Fighter = class extends Material {
                 break;
             case TOWN_PORTAL: {
                 let portal = new Portal();
-                portal.init(LOCATION, this.x, this.y);
+                portal.init(POS_LOCATION, this.x, this.y);
                 message.draw(option.isEnglish() ?
                     `Created a Town Portal` :
                     `タウン・ポータルを生成した`);
@@ -2177,7 +2178,7 @@ const Fighter = class extends Material {
             case BLINDNESS:
                 if (boss || evalPercentage(f.poison)) return;
                 f.blinded = duration;
-                if (f.id === ROGUE) f.goBlind();
+                if (f.id === ID_ROGUE) f.goBlind();
                 message.draw(option.isEnglish() ?
                     `${name} got blinded` :
                     `${name}盲目になった`);
@@ -2190,13 +2191,13 @@ const Fighter = class extends Material {
                 break;
             case SEE_INVISIBLE:
                 f.seeInvisible = duration;
-                if (f.id === ROGUE) seeInvisible(true);
+                if (f.id === ID_ROGUE) seeInvisible(true);
                 message.draw(option.isEnglish() ?
                     `${name} can see invisible things` :
                     `${name}透明の物体が見えるようになった`);
                 if (f.blinded) {
                     f.blinded = 0;
-                    if (f.id === ROGUE) f.goBlind(true);
+                    if (f.id === ID_ROGUE) f.goBlind(true);
 				}
 				
                 break;
@@ -2211,9 +2212,9 @@ const Fighter = class extends Material {
             case HALLUCINATING_MIST: {
                 if (boss || evalPercentage(f.poison)) return;
                 let found;
-                if (!f.hallucinated && f.id === ROGUE) found = true;
+                if (!f.hallucinated && f.id === ID_ROGUE) found = true;
                 f.hallucinated = duration;
-                if (f.id !== ROGUE) f.removeCe();
+                if (f.id !== ID_ROGUE) f.removeCe();
                 if (found) hallucinate.all();
                 message.draw(option.isEnglish() ?
                     `${name} got hallucinated` :
@@ -2222,11 +2223,11 @@ const Fighter = class extends Material {
                 break;
             }
             case POLYMORPH: {
-                if (f.id === ROGUE || f.mod === UNIQUE || evalPercentage(f.poison)) return;
+                if (f.id === ID_ROGUE || f.mod === MOD_UNIQUE || evalPercentage(f.poison)) return;
                 let [tempX, tempY] = [f.x, f.y];
                 f.died();
                 creation.enemy({
-                    position: LOCATION,
+                    position: POS_LOCATION,
                     x: tempX,
                     y: tempY,
                     summon: true,
@@ -2240,7 +2241,7 @@ const Fighter = class extends Material {
             }
             case CANCELLATION:
                 if (boss || evalPercentage(f.poison)) return;
-                f.canceled = duration * (f.mod !== UNIQUE ? 1 : 2);
+                f.canceled = duration * (f.mod !== MOD_UNIQUE ? 1 : 2);
                 if (f.invisible) {
                     if (f.invisible !== DEFAULT) f.invisibility = 0;
                     f.invisible = false;
@@ -2271,7 +2272,7 @@ const Fighter = class extends Material {
                 creation.enemy({
                     times: rndIntBet(1, 3),
                     type: type,
-                    position: LOCATION,
+                    position: POS_LOCATION,
                     x: this.x,
                     y: this.y,
                     summon: true,
@@ -2282,10 +2283,10 @@ const Fighter = class extends Material {
                 break;
             }
             case CREATE_TRAP:
-                creation.trap(5, RANDOM, LOCATION, this.x, this.y);
+                creation.trap(5, RANDOM, POS_LOCATION, this.x, this.y);
                 break;
             case MAGIC_CIRCLE_OF_PROTECTION:
-                creation.trap(1, 0, LOCATION, this.x, this.y, true);
+                creation.trap(1, 0, POS_LOCATION, this.x, this.y, true);
                 break;
             case MAGIC_FINDING:
                 f.mf -= f.mfBuff;
@@ -2341,14 +2342,14 @@ const Fighter = class extends Material {
                 f.calcAc();
                 break;
             case RESPEC:
-                if (f.mod === UNIQUE) return;
+                if (f.mod === MOD_UNIQUE) return;
                 f.respec();
                 break;
             case COLD:
             case FREEZE: {
                 if (f.cost > COST_REGULAR * 2 || evalPercentage(f.cold)) return;
                 let cost = COST_REGULAR * (skillId === FREEZE ? 2 : 1) - f.cold * 5;
-                if (f.mod === UNIQUE) cost /= 5;
+                if (f.mod === MOD_UNIQUE) cost /= 5;
                 f.cost += cost;
                 break;
             }
@@ -2595,7 +2596,7 @@ const Fighter = class extends Material {
             }
 		}
 		
-        if (this.id !== ROGUE) return;
+        if (this.id !== ID_ROGUE) return;
         if (!flag.examine) {
              cursor.clearAll();
         }
@@ -2619,7 +2620,7 @@ const Fighter = class extends Material {
             } else if (!this.canRead(true)) {
 				check = false;
 			}
-        } else if (this.id === ROGUE && !this.haveBook(skill.id)) {
+        } else if (this.id === ID_ROGUE && !this.haveBook(skill.id)) {
             msgId = M_DONT_HAVE_BOOK;
             check = false;
         } else if (skill.mp > this.mp) {
@@ -2640,14 +2641,14 @@ const Fighter = class extends Material {
             check = false;
 		}
 		
-        if (this.id === ROGUE && msgId) message.draw(message.get(msgId));
+        if (this.id === ID_ROGUE && msgId) message.draw(message.get(msgId));
         return check;
     }
 
     canRead(book) {
         let found = true;
         if (this.blinded || this.confused || !rogue.litMapIds[this.x + ',' + this.y]) {
-            if (this.id === ROGUE) {
+            if (this.id === ID_ROGUE) {
                 let id = book ? M_CANT_READ_BOOK : M_CANT_READ_SCROLL;
                 message.draw(message.get(id));
 			}
@@ -2750,17 +2751,17 @@ const Fighter = class extends Material {
 		}
 		
         switch (item.place) {
-            case P_PACK:
+            case PLACE_PACK:
                 this.deletePackItem(item.indexOf(this.pack), quantity);
                 break;
-            case P_BOX:
+            case PLACE_BOX:
                 this.deleteBoxItem(item.indexOf(this.boxes), quantity);
                 break;
-            case P_FLOOR:
+            case PLACE_FLOOR:
                 let loc = map.coords[item.x][item.y];
                 loc.deleteItem(item.indexOf(loc.item), quantity);
                 break;
-            case P_EQUIPMENT:
+            case PLACE_EQUIPMENT:
                 this.deleteEquipment(item.indexOf(this.equipment), quantity);
                 break;
 		}
@@ -2773,16 +2774,16 @@ const Fighter = class extends Material {
             item = this.inventoryOut(item, 1);
             item.charges--;
             if (item.identified) item.changePrice();
-            if ((item.place === P_PACK || item.place === P_BOX) && !this.packAdd(item)) {
+            if ((item.place === PLACE_PACK || item.place === PLACE_BOX) && !this.packAdd(item)) {
                 item.dropped();
-			} else if (item.place === P_FLOOR) {
+			} else if (item.place === PLACE_FLOOR) {
 				item.putDown(item.x, item.y, true);
 			}
         } else {
             item.charges--;
             if (item.identified) {
                 item.changePrice();
-                if (item.place === P_PACK) inventory.sort(this.getItemIndex(item), this.pack);
+                if (item.place === PLACE_PACK) inventory.sort(this.getItemIndex(item), this.pack);
             }
         }
     }
@@ -2790,17 +2791,17 @@ const Fighter = class extends Material {
     getItemIndex(item) {
         let a;
         switch (item.place) {
-            case P_PACK:
+            case PLACE_PACK:
                 a = item.indexOf(this.pack);
                 break;
-            case P_BOX:
+            case PLACE_BOX:
                 a = item.indexOf(this.boxes);
                 break;
-            case P_FLOOR:
+            case PLACE_FLOOR:
                 let loc = map.coords[item.x][item.y];
                 a = item.indexOf(loc.item);
                 break;
-            case P_EQUIPMENT:
+            case PLACE_EQUIPMENT:
                 a = item.indexOf(this.equipment);
                 break;
 		}
@@ -2840,7 +2841,7 @@ const Fighter = class extends Material {
             `${name} swapped gear` :
             `${name}装備を持ち替えた`);
         audio.playSound('grab');
-        if (this.id !== ROGUE) return;
+        if (this.id !== ID_ROGUE) return;
         rogue.done = true;
         this.equipmentList();
         flag.clearInv = true;
@@ -2882,7 +2883,7 @@ const Fighter = class extends Material {
 		
         let item;
         if (pack) {
-            let a = EA[rndInt(Object.keys(enemy.pack).length - 1)];
+            let a = eaList[rndInt(Object.keys(enemy.pack).length - 1)];
             item = enemy.pack[a];
         } else {
             let nums = enums(1, enemy.numBoxes);
@@ -2920,7 +2921,7 @@ const Fighter = class extends Material {
     }
 
     decreaseDurab(weapon, element) {
-        let item = this.equipment[weapon ? 'main' : BP[EA[rndInt(MAX_EQUIPMENT_NUM - 1)]]];
+        let item = this.equipment[weapon ? 'main' : bpList[eaList[rndInt(MAX_EQUIPMENT_NUM - 1)]]];
         if (!item || !item.durab || item.indestructible) return;
         let value;
         if (element) {
@@ -2957,7 +2958,7 @@ const Fighter = class extends Material {
     }
 
     gotCursed() {
-        let item = this.equipment[BP[EA[rndInt(MAX_EQUIPMENT_NUM - 1)]]];
+        let item = this.equipment[bpList[eaList[rndInt(MAX_EQUIPMENT_NUM - 1)]]];
         if (!item || item.cursed) return;
         let name = item.getName();
         message.draw(option.isEnglish() ?
@@ -3057,7 +3058,7 @@ const Fighter = class extends Material {
             audio.playSound('teleport', distance);
 		}
 		
-        if (this.id === ROGUE) {
+        if (this.id === ID_ROGUE) {
             let loc = map.coords[this.x][this.y];
             loc.traces = ++this.numSteps;
             loc.getInfo();
@@ -3067,7 +3068,7 @@ const Fighter = class extends Material {
 
     wakeUp() {
         this.sleeping = 0;
-        if (this.id !== ROGUE && !this.isShowing()) return;
+        if (this.id !== ID_ROGUE && !this.isShowing()) return;
         let name = this.getName(true);
         message.draw(option.isEnglish() ?
             `${name} woke up` :
@@ -3083,7 +3084,7 @@ const Fighter = class extends Material {
             case 'staff':
                 if (item.twoHanded) {
                     if (this.equipment.main && this.equipment.off) {
-                        if (this.id === ROGUE) message.draw(message.get(M_TWO_HANDED));
+                        if (this.id === ID_ROGUE) message.draw(message.get(M_TWO_HANDED));
                         return;
                     } else if (this.equipment.main) {
                         partsEquipped = 'main';
@@ -3159,7 +3160,7 @@ const Fighter = class extends Material {
                 type: itemInfo.type,
                 tabId: itemInfo.tabId,
                 quantity: quantity,
-                position: LIST,
+                position: POS_LIST,
                 lvl: this.lvl,
                 uniqueId: itemInfo.uniqueId,
                 starter: itemInfo.starter,
@@ -3189,7 +3190,7 @@ const Fighter = class extends Material {
         }
 
         if (equipped) {
-            item.place = P_EQUIPMENT;
+            item.place = PLACE_EQUIPMENT;
             this.gainOrloseWeight(item, item.quantity, true);
             if (!side && item.durab) this.getOrLooseStats(item, true, false, true);
             return true;
@@ -3210,7 +3211,7 @@ const Fighter = class extends Material {
         this.skill = {}
         this.initSynerzy();
         this.calcAll();
-        if (this.id === ROGUE) this.initBookmarks();
+        if (this.id === ID_ROGUE) this.initKeys();
         let name = this.getName(true);
         message.draw(option.isEnglish() ?
             `${name} forgot everything` :

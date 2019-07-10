@@ -10,18 +10,18 @@ const inventory = {
     getMaxNumber(place) {
         let maxNum;
         switch (place) {
-            case P_PACK:
-            case P_FLOOR:
-            case P_SHOP:
+            case PLACE_PACK:
+            case PLACE_FLOOR:
+            case PLACE_SHOP:
                 maxNum = MAX_PACK_COUNT;
                 break;
-            case P_BOX:
+            case PLACE_BOX:
                 maxNum = rogue.numBoxes < MAX_BOX_NUM ? rogue.numBoxes : MAX_BOX_NUM;
                 break;
-            case P_CUBE:
+            case PLACE_CUBE:
                 maxNum = MAX_CUBE_COUNT;
                 break;
-            case P_STASH:
+            case PLACE_STASH:
                 maxNum = MAX_STASH_COUNT;
                 break;
 		}
@@ -33,22 +33,22 @@ const inventory = {
         let name,
             isEnglish = option.isEnglish();
         switch (place) {
-            case P_PACK:
+            case PLACE_PACK:
                 name = isEnglish ? 'Pack' : '持物';
                 break;
-            case P_FLOOR:
+            case PLACE_FLOOR:
                 name = isEnglish ? 'Floor' : '床';
                 break;
-            case P_SHOP:
+            case PLACE_SHOP:
                 name = isEnglish ? 'Shop' : '店';
                 break;
-            case P_BOX:
+            case PLACE_BOX:
                 name = isEnglish ? 'Boxes' : 'ボックス';
                 break;
-            case P_CUBE:
+            case PLACE_CUBE:
                 name = isEnglish ? 'Alchemy' : '錬金術';
                 break;
-            case P_STASH:
+            case PLACE_STASH:
                 name = isEnglish ? 'Stash' : '物置箱';
                 break;
 		}
@@ -59,10 +59,10 @@ const inventory = {
     sort(a, list, array) {
         let found = false;
         let item = list[a];
-        let index = IT.indexOf(list[a].type);
+        let index = itList.indexOf(list[a].type);
         for (let key in list) {
             let item2 = list[key];
-            let index2 = IT.indexOf(item2.type);
+            let index2 = itList.indexOf(item2.type);
             if (!found && index2 < index) continue;
             if (key >= a) break;
             found = true;
@@ -80,10 +80,10 @@ const inventory = {
                 list.splice(key, 0, temp);
                 return key;
             } else {
-                let i = EA.indexOf(a);
-                let j = EA.indexOf(key);
+                let i = eaList.indexOf(a);
+                let j = eaList.indexOf(key);
                 for (let k = i; k > j; k--) {
-					[list[EA[k]], list[EA[k - 1]]] = [list[EA[k - 1]], list[EA[k]]];
+					[list[eaList[k]], list[eaList[k - 1]]] = [list[eaList[k - 1]], list[eaList[k]]];
 				}
 				
                 return;
@@ -100,14 +100,14 @@ const inventory = {
         place,
         enter,
     }) {
-        let inv = this.list[dr === RIGHT ? 'right' : 'left'];
+        let inv = this.list[dr === DR_RIGHT ? 'right' : 'left'];
         inv.show = true;
 
         let items = [];
         if (flag.shop) {
             var quantity2 = !rogue.cn ? 1 : Number(rogue.cn);
             if (a && quantity2 > list[a].quantity) quantity2 = list[a].quantity;
-        } else if (place === P_STASH) {
+        } else if (place === PLACE_STASH) {
 			var l = (enter.page - 1) * MAX_PACK_COUNT;
 		}
 
@@ -116,7 +116,7 @@ const inventory = {
         for (let key in list) {
             let item = list[key];
             if (!flag.pack && !item ||
-                place === P_STASH && key < l ||
+                place === PLACE_STASH && key < l ||
                 flag.drop && flag.number && key != a ||
                 flag.stash && a !== undefined && key != a ||
                 flag.equip && !item.equipable ||
@@ -137,10 +137,10 @@ const inventory = {
             }
             
             let itemVue = {};
-            if (place === P_STASH) {
-                itemVue.key = EA[key - l].toUpperCase();
+            if (place === PLACE_STASH) {
+                itemVue.key = eaList[key - l].toUpperCase();
 			} else {
-				itemVue.key = dr === RIGHT ? key : key.toUpperCase();
+				itemVue.key = dr === DR_RIGHT ? key : key.toUpperCase();
 			}
 
             if (flag.pack && !item || flag.option || flag.cure) {
@@ -182,14 +182,14 @@ const inventory = {
             }
             
             itemVue.nameColor = nameColor;
-            itemVue.name = item.getName(false, item.quantity, option.getLanguage(), flag.gamble && place === P_SHOP);
+            itemVue.name = item.getName(false, item.quantity, option.getLanguage(), flag.gamble && place === PLACE_SHOP);
 
             if (flag.shop || flag.blacksmith) {
                 itemVue.price = flag.shop ? item.price * quantity2 : item.getDurabPrice();
 			}
 			
             let quantity;
-            if (place === P_SHOP || flag.shop && flag.number) {
+            if (place === PLACE_SHOP || flag.shop && flag.number) {
                 quantity = quantity2;
 			} else {
                 quantity = item.quantity;
@@ -210,7 +210,7 @@ const inventory = {
         }
 
         let maxNum = this.getMaxNumber(place);
-        if (place === P_STASH) {
+        if (place === PLACE_STASH) {
             let lenStash = enter.list.length;
             count += (enter.page - 1) * MAX_PACK_COUNT;
             if (count > lenStash) count = lenStash;
@@ -219,10 +219,10 @@ const inventory = {
         inv.left = `[${count}/${maxNum}] ` + this.getInvName(place);
 
         let msgRight = '';
-        if (place === P_SHOP || flag.shop && flag.number) {
+        if (place === PLACE_SHOP || flag.shop && flag.number) {
             let weight = option.isEnglish() ? 'Weight' : '重量';
             msgRight = `${weight} x${quantity2}`;
-        } else if (place === P_STASH) {
+        } else if (place === PLACE_STASH) {
             msgRight = ` [${enter.page}/${MAX_STASH_PAGE}]`;
 		} else {
             if (flag.gain) {
@@ -236,14 +236,14 @@ const inventory = {
 		
         if (flag.shop) {
             let sellOrCost;
-            if (dr === RIGHT) {
+            if (dr === DR_RIGHT) {
                 sellOrCost = option.isEnglish() ? 'Sell Value' : '売値';
 			} else {
 				sellOrCost = option.isEnglish() ? 'Cost' : '買値';
 			}
 
             msgRight = `${sellOrCost} x${quantity2} | ${msgRight}`;
-        } else if (place === P_STASH) {
+        } else if (place === PLACE_STASH) {
             msgRight = (option.isEnglish() ? 'Page ' : 'ページ ') + msgRight;
         }
         
@@ -268,7 +268,7 @@ const inventory = {
             }
             
             let itemVue = {};
-            itemVue.key = EA[keyNum++].toUpperCase();
+            itemVue.key = eaList[keyNum++].toUpperCase();
 
             let parts = option.isEnglish() ? key : translation.bodyParts[key];
             if (key === 'main' || key === 'off') parts += fighter.swapped ? 2 : 1;
@@ -372,8 +372,8 @@ const inventory = {
         inv.right = `${total} ${weight.toFixed(1)}kg`;
     },
 
-    showSkill(fighter, list, bookmark) {
-        let inv = this.list[bookmark ? 'bookmark' : 'skill'];
+    showSkill(fighter, list, assign) {
+        let inv = this.list[assign ? 'keys' : 'skill'];
         inv.show = true;
         let skills = [];
         let count = 0;
@@ -382,7 +382,7 @@ const inventory = {
             let skill,
                 skillVue = {};
             if (list[key]) skill = skillMap.get(list[key].id ? list[key].id : list[key]);
-            if (bookmark) {
+            if (assign) {
                 if (skill) skillVue.shadow = skill.color;
                 let keyName;
                 if (key === '0') {
@@ -473,22 +473,22 @@ const inventory = {
         let maxNum;
         if (flag.gain) {
             maxNum = Object.keys(list).length;
-		} else if (bookmark) {
-            maxNum = MAX_BOOKMARK_NUM;
+		} else if (assign) {
+            maxNum = MAX_ASSIGN_NUM;
 		} else {
 			maxNum = MAX_SKILL_NUM;
 		}
 
         let msgLeft = `[${count}/${maxNum}] `;
-        if (bookmark) {
-            msgLeft += option.isEnglish() ? 'Bookmark List' : 'しおり一覧';
+        if (assign) {
+            msgLeft += option.isEnglish() ? 'Key List' : 'キー一覧';
         } else {
             msgLeft += option.isEnglish() ? 'Skill List' : 'スキル一覧';
         }
 
         inv.left = msgLeft;
 
-        if (!bookmark) {
+        if (!assign) {
             let skillPoints = option.isEnglish() ? 'Skill Points' : 'スキルポイント';
             inv.right = `${skillPoints} ${fighter.skillPoints}`;
         }
@@ -542,7 +542,7 @@ const inventory = {
 
 {
     inventory.list = {};
-    let list = ['right', 'left', 'equipment', 'skill', 'bookmark', 'stats', 'recipe'];
+    let list = ['right', 'left', 'equipment', 'skill', 'keys', 'stats', 'recipe'];
     for (let type of list) {
         inventory.list[type] = {
             items: [],

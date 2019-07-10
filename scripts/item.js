@@ -22,12 +22,12 @@ const Item = class extends Material {
             }
             
             if (!magic) {
-                magic = this.mod === MAGIC ||
-                    !starter && Material.evalMod(MAGIC, rogue.mf, flag.shop);
+                magic = this.mod === MOD_MAGIC ||
+                    !starter && Material.evalMod(MOD_MAGIC, rogue.mf, flag.shop);
 			}
 
             if (magic && !flag.shop && itemUniqueMap[this.type].has(this.tabId) &&
-              	  (uniqueId >= 0 || Material.evalMod(UNIQUE, rogue.mf))) {
+              	  (uniqueId >= 0 || Material.evalMod(MOD_UNIQUE, rogue.mf))) {
                 let array = itemUniqueMap[this.type].get(this.tabId);
                 let found;
                 for (let i = 0, l = array.length; i < l; i++) {
@@ -47,19 +47,19 @@ const Item = class extends Material {
                     }
 				}
 				
-                if (magic) this.mod = RARE;
+                if (magic) this.mod = MOD_RARE;
             }
 
             if (!gem) this.getMaterial(matBase, matId);
             if (magic || this.material === M_GEM) {
                 let bias = this.bias ? this.bias : RANDOM;
-                if (this.mod === RARE || Material.evalMod(RARE, rogue.mf)) {
+                if (this.mod === MOD_RARE || Material.evalMod(MOD_RARE, rogue.mf)) {
                     this.getRare(bias);
 				} else {
 					this.getMagic(bias);
 				}
             } else if (!this.mod) {
-                this.mod = NORMAL;
+                this.mod = MOD_NORMAL;
                 this.cursed = !starter && !flag.shop && evalPercentage(CURSE_PERC);
             }
 
@@ -80,7 +80,7 @@ const Item = class extends Material {
             } else if (this.weapon) {
                 if (!this.dmgBonus) this.dmgBonus = 0;
                 if (!this.rateBonus) this.rateBonus = 0;
-                if (!starter && !flag.shop && (this.cursed || this.mod === NORMAL && rogue.cdl)) {
+                if (!starter && !flag.shop && (this.cursed || this.mod === MOD_NORMAL && rogue.cdl)) {
                     let found;
                     if (this.type === 'staff') {
                         if (!this.acBonus) this.acBonus = 0;
@@ -107,7 +107,7 @@ const Item = class extends Material {
             } else if (this.armor) {
                 if (!this.acBonus) this.acBonus = 0;
                 if (!starter && !flag.shop && (this.cursed ||
-                        this.mod === NORMAL && rogue.cdl && evalPercentage(25))) {
+                        this.mod === MOD_NORMAL && rogue.cdl && evalPercentage(25))) {
                     this.acBonus += (this.cursed ? -1 : 1) * rndIntBet(1, 20);
                     if (!this.cursed) this.getSuperiorName();
 				}
@@ -122,7 +122,7 @@ const Item = class extends Material {
                 this.changeNameAndPrice();
             }
         } else {
-            this.mod = NORMAL;
+            this.mod = MOD_NORMAL;
             if (flag.shop) this.identified = true;
             if (this.type === 'ammo') {
                 if (this.quantity === 1) this.quantity = rndIntBet(80, 100);
@@ -148,9 +148,9 @@ const Item = class extends Material {
             }
         }
 
-        if (!this.weight) this.weight = WEIGHT[this.type];
+        if (!this.weight) this.weight = weightList[this.type];
         if (flag.shop) this.price *= flag.gamble ? 10 : 2;
-        if (position === LIST) return;
+        if (position === POS_LIST) return;
         super.init(position, x, y);
     }
 
@@ -161,11 +161,11 @@ const Item = class extends Material {
 
         this.spiralSearch(x, y, 'item');
         if (this.abort) return;
-        this.place = P_FLOOR;
+        this.place = PLACE_FLOOR;
         map.itemList[this.id] = this;
         let loc = map.coords[this.x][this.y];
         let l = Object.keys(loc.item).length;
-        loc.item[EA[l]] = this;
+        loc.item[eaList[l]] = this;
         if (sound) audio.playSound(this.type);
         if (rogue.hallucinated) hallucinate.one(this);
     }
@@ -233,14 +233,14 @@ const Item = class extends Material {
         itemTab[this.type].get(this.tabId).identified = true;
         this.identified = true;
         this.changeNameAndPrice();
-        searchItemToIdentifiy.main(this.nameReal[ENG], this.type);
+        searchItemToIdentifiy.main(this.nameReal[LETTER_ENG], this.type);
     }
 
     identifyWand() {
         let itemT = itemTab[this.type].get(this.tabId);
         if (!itemT.identified) {
             itemT.identified = true;
-            searchItemToIdentifiy.main(this.nameReal[ENG], this.type);
+            searchItemToIdentifiy.main(this.nameReal[LETTER_ENG], this.type);
         }
     }
 
@@ -275,21 +275,21 @@ const Item = class extends Material {
     }
 
     calcPrice() {
-        this.price = this.priceReal = PRICE[this.type];
+        this.price = this.priceReal = priceList[this.type];
         if (this.priceRate) this.priceReal = Math.round(this.priceReal * this.priceRate);
         if (this.equipable || this.type === 'gem' || this.type === 'material') {
             let times;
             switch (this.mod) {
-                case NORMAL:
+                case MOD_NORMAL:
                     times = 1;
                     break;
-                case MAGIC:
+                case MOD_MAGIC:
                     times = 2;
                     break;
-                case RARE:
+                case MOD_RARE:
                     times = 5;
                     break;
-                case UNIQUE:
+                case MOD_UNIQUE:
                     times = 10;
                     this.priceReal += 1000;
                     break;
@@ -320,7 +320,7 @@ const Item = class extends Material {
 
     changePrice() {
         if (this.type === 'wand') {
-            this.price = Math.round(this.priceReal * (1 + this.charges * WAND_PRICE));
+            this.price = Math.round(this.priceReal * (1 + this.charges * WAND_CHARGE_PRICE_RATE));
 		} else {
 			this.price = this.priceReal;
 		}
@@ -330,7 +330,7 @@ const Item = class extends Material {
         let type = this.typeHalluc ? this.typeHalluc : this.type;
         let halluc = !!this.typeHalluc;
         let name;
-        let isEng = a === ENG;
+        let isEng = a === LETTER_ENG;
         if (gamble) {
             name = isEng ? getUpperCase(type) : translation.item[type];
             if (quantity > 1) name += ` x${quantity}`;
@@ -429,15 +429,15 @@ const Item = class extends Material {
         this.quantity -= quantity;
         if (!this.quantity) {
             let a = this.indexOf(list);
-            if (this.place === P_BOX || this.place === P_EQUIPMENT) {
+            if (this.place === PLACE_BOX || this.place === PLACE_EQUIPMENT) {
                 list[a] = null;
-			} else if (this.place === P_STASH) {
+			} else if (this.place === PLACE_STASH) {
                 list.splice(a, 1);
 			} else {
 				deleteAndSortItem(list, a);
 			}
 
-            if (this.place === P_FLOOR) delete map.itemList[item.id];
+            if (this.place === PLACE_FLOOR) delete map.itemList[item.id];
 		}
 		
         return item;
@@ -445,14 +445,14 @@ const Item = class extends Material {
 
     adjustEmbeddedNum() {
         let limit = this.embeddedLimit;
-        if (this.mod === NORMAL) {
+        if (this.mod === MOD_NORMAL) {
             this.embeddedMax = evalPercentage(50) ? 0 : rndIntBet(1, limit);
         } else {
             let bonus = this.embeddedBonus;
             if (bonus) {
-                if (this.mod === MAGIC) {
+                if (this.mod === MOD_MAGIC) {
                     if (bonus > 4) bonus  = 4;
-                } else if (this.mod === RARE) {
+                } else if (this.mod === MOD_RARE) {
                     if (bonus > 2) bonus = 2;
                 }
 
@@ -476,12 +476,13 @@ const Item = class extends Material {
                 if (evalPercentage(20)) {
                     type = coinToss() ? 'gem' : 'orb';
                 } else {
-                    type = equipmentList[rndInt(equipmentList.length - 1)];
+                    let len = equipmentTypeList.length;
+                    type = equipmentTypeList[rndInt(len - 1)];
                 }
             } else {
-                type = IT[rndInt(IT.length - 2)];
+                type = itList[rndInt(itList.length - 2)];
             }
-        } while (evalPercentage(RARITY[type]) ||
+        } while (evalPercentage(rarityList[type]) ||
         flag.shop && (type === 'coin' || type === 'recipe' || type === 'orb' || type === 'gem'));
         return type;
     }
@@ -591,7 +592,7 @@ const Item = class extends Material {
                   		key === 'cloak' || key === 'belt' || key === 'helm' || key === 'gloves' || key === 'boots' ||
                 	    key === 'light' || key === 'ring' || key === 'amulet') {
                     item.equipable = true;
-                    item.grade = NORMAL;
+                    item.grade = GRADE_NORMAL;
                     if (key === 'melee' || key === 'missile' || key === 'staff') {
                         item.weapon = true;
 					} else if (key === 'light' || key === 'ring' || key === 'amulet') {
@@ -632,7 +633,7 @@ const Item = class extends Material {
                 }
 
                 if (key === 'orb') {
-                    item.mod = NORMAL;
+                    item.mod = MOD_NORMAL;
                     item.shadow = colorList.orange;
                     item.priceRate = (10 + tabId) / 10;
                     item.desc = {
@@ -660,7 +661,7 @@ const searchItemToIdentifiy = {
     loop(list, nameReal, type) {
         for (let key in list) {
             let item = list[key];
-            if (item && item.type === type && item.nameReal[ENG] === nameReal) {
+            if (item && item.type === type && item.nameReal[LETTER_ENG] === nameReal) {
                 if (item.type !== 'wand') item.identified = true;
                 item.changeNameAndPrice()
             }

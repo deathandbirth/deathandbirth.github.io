@@ -47,7 +47,7 @@ const option = {
                 vue.isEnglish = this.isEnglish();
             } else if (this.name === 'BGM' || this.name === 'SE') {
                 this[this.name].user = a;
-                let vol = EA.indexOf(a.toLowerCase()) / 10;
+                let vol = eaList.indexOf(a.toLowerCase()) / 10;
                 if (this.name === 'BGM') {
                     audio.volBGM = vol
                     audio.music[audio.curTrack].volume = vol;
@@ -71,7 +71,7 @@ const option = {
         inventory.clear();
         inventory.show({
             list: this.list,
-            dr: RIGHT,
+            dr: DR_RIGHT,
         });
         
         message.draw(message.get(M_OPTION), true);
@@ -81,21 +81,21 @@ const option = {
         inventory.clear();
         inventory.show({
             list: this.list,
-            dr: RIGHT,
+            dr: DR_RIGHT,
             a: a,
         });
 
         flag.option2 = true;
         inventory.show({
             list: this[this.name].select,
-            dr: LEFT
+            dr: DR_LEFT
         });
 
         message.draw(message.get(M_OPTION), true);
     },
     
     isEnglish() {
-        return this.language.user === ENG;
+        return this.language.user === LETTER_ENG;
     },
 
     getLanguage() {
@@ -109,7 +109,7 @@ const option = {
         option[key2].user = option[key2].defaults;
         if (key2 === 'BGM' || key2 === 'SE') {
             for (let i = 0; i <= 10; i++) {
-                option[key2].select[EA[i]] = { a: i, b: i };
+                option[key2].select[eaList[i]] = { a: i, b: i };
             }
         }
     }

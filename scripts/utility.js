@@ -80,10 +80,10 @@ const getRndName = {
 
     word(item) {
         let msg = '';
-        let l = EA.length;
+        let l = eaList.length;
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
-                msg += EA[rndInt(l - 1)];
+                msg += eaList[rndInt(l - 1)];
             }
 
             if (i !== 2) msg += ' ';
@@ -172,105 +172,105 @@ const getDirection = (key) => {
         case 'H':
         case 'ArrowLeft':
         case 'Left':
-            id = LEFT;
+            id = DR_LEFT;
             break;
         case 'j':
         case 'J':
         case 'ArrowDown':
         case 'Down':
-            id = DOWN;
+            id = DR_DOWN;
             break;
         case 'k':
         case 'K':
         case 'ArrowUp':
         case 'Up':
-            id = UP;
+            id = DR_UP;
             break;
         case 'l':
         case 'L':
         case 'ArrowRight':
         case 'Right':
-            id = RIGHT;
+            id = DR_RIGHT;
             break;
         case 'y': 
         case 'Y':
         case 'Home':
-            id = UPLEFT;
+            id = DR_UPLEFT;
             break;
         case 'b':
         case 'B':
         case 'End':
-            id = DOWNLEFT;
+            id = DR_DOWNLEFT;
             break;
         case 'u':
         case 'U':
         case 'PageUp':
-            id = UPRIGHT;
+            id = DR_UPRIGHT;
             break;
         case 'n':
         case 'N':
         case 'PageDown':
-            id = DOWNRIGHT;
+            id = DR_DOWNRIGHT;
             break;
         default:
             return null;
     }
-    return DR[id];
+    return drList[id];
 }
 
 const getDirectionBetween = (x1, y1, x2, y2) => {
-    return x1 > x2 && y1 === y2 ? DR[LEFT] :
-        x1 === x2 && y1 < y2 ? DR[DOWN] :
-        x1 === x2 && y1 > y2 ? DR[UP] :
-        x1 < x2 && y1 === y2 ? DR[RIGHT] :
-        x1 > x2 && y1 > y2 ? DR[UPLEFT] :
-        x1 > x2 && y1 < y2 ? DR[DOWNLEFT] :
-        x1 < x2 && y1 > y2 ? DR[UPRIGHT] :
-        x1 < x2 && y1 < y2 ? DR[DOWNRIGHT] :
+    return x1 > x2 && y1 === y2 ? drList[DR_LEFT] :
+        x1 === x2 && y1 < y2 ? drList[DR_DOWN] :
+        x1 === x2 && y1 > y2 ? drList[DR_UP] :
+        x1 < x2 && y1 === y2 ? drList[DR_RIGHT] :
+        x1 > x2 && y1 > y2 ? drList[DR_UPLEFT] :
+        x1 > x2 && y1 < y2 ? drList[DR_DOWNLEFT] :
+        x1 < x2 && y1 > y2 ? drList[DR_UPRIGHT] :
+        x1 < x2 && y1 < y2 ? drList[DR_DOWNRIGHT] :
         null;
 }
 
 const getNextDirection = (dr, ccw) => { //counterclockwise
     let id;
     switch (dr.id) {
-        case LEFT:
-            id = ccw ? DOWNLEFT : UPLEFT;
+        case DR_LEFT:
+            id = ccw ? DR_DOWNLEFT : DR_UPLEFT;
             break;
-        case DOWNLEFT:
-            id = ccw ? DOWN : LEFT;
+        case DR_DOWNLEFT:
+            id = ccw ? DR_DOWN : DR_LEFT;
             break;
-        case DOWN:
-            id = ccw ? DOWNRIGHT : DOWNLEFT;
+        case DR_DOWN:
+            id = ccw ? DR_DOWNRIGHT : DR_DOWNLEFT;
             break;
-        case DOWNRIGHT:
-            id = ccw ? RIGHT : DOWN;
+        case DR_DOWNRIGHT:
+            id = ccw ? DR_RIGHT : DR_DOWN;
             break;
-        case RIGHT:
-            id = ccw ? UPRIGHT : DOWNRIGHT;
+        case DR_RIGHT:
+            id = ccw ? DR_UPRIGHT : DR_DOWNRIGHT;
             break;
-        case UPRIGHT:
-            id = ccw ? UP : RIGHT;
+        case DR_UPRIGHT:
+            id = ccw ? DR_UP : DR_RIGHT;
             break;
-        case UP:
-            id = ccw ? UPLEFT : UPRIGHT;
+        case DR_UP:
+            id = ccw ? DR_UPLEFT : DR_UPRIGHT;
             break;
-        case UPLEFT:
-            id = ccw ? LEFT : UP;
+        case DR_UPLEFT:
+            id = ccw ? DR_LEFT : DR_UP;
             break;
         default:
             return null;
     }
-    return DR[id];
+    return drList[id];
 }
 
 const deleteAndSortItem = (list, a) => {
-    let i = EA.indexOf(a);
+    let i = eaList.indexOf(a);
     let j = Object.keys(list).length - 1 - i;
     for (let k = 0; k < j; k++) {
-        list[EA[i]] = list[EA[++i]];
+        list[eaList[i]] = list[eaList[++i]];
     }
     
-    delete list[EA[i]];
+    delete list[eaList[i]];
 }
 
 /* TEMP */

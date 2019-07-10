@@ -45,7 +45,7 @@ const creation = {
                 this.enemy({
                     type: type,
                     tabId: num,
-                    position: LOCATION,
+                    position: POS_LOCATION,
                     x: rogue.x,
                     y: rogue.y,
                     summon: true,
@@ -67,26 +67,25 @@ const creation = {
         map.init();
         dungeon.create();
         let boss = rogue.cdl === 33 && !rogue.inferno;
-        this.stairs(rndIntBet(MIN_STAIRS_NUM, MAX_STAIRS_NUM), boss ? UP : RANDOM, INIT);
-        this.trap(rndIntBet(MIN_TRAP_NUM, MAX_TRAP_NUM, RANDOM, RANDOM), RANDOM, INIT);
-        let [startX, startY] = Object.keys(map.staircaseList)[dr === DOWN ? 0 : 1].split(',');
+        this.stairs(rndIntBet(MIN_STAIRS_NUM, MAX_STAIRS_NUM), boss ? DR_UP : RANDOM, POS_INIT);
+        this.trap(rndIntBet(MIN_TRAP_NUM, MAX_TRAP_NUM), RANDOM, POS_INIT);
+        let [startX, startY] = Object.keys(map.staircaseList)[dr === DR_DOWN ? 0 : 1].split(',');
         rogue.putDown(false, stairs, Number(startX), Number(startY));
         if (boss) {
             this.enemy({
                 type: 'misc',
                 tabId: 2,
-                position: RANDOM
 			});
 		}
 
         this.enemy({
             times: ENEMY_NUM_INIT,
-            position: INIT,
+            position: POS_INIT,
 		});
 		
         this.item({
             times: ITEM_NUM_INIT,
-            position: INIT,
+            position: POS_INIT,
 		});
 		
         map.redraw();
@@ -100,7 +99,8 @@ const creation = {
     town() {
         map.init(true);
         town.createAll();
-        this.stairs(1, DOWN, LOCATION, POSITION.hell.x, POSITION.hell.y, true);
+        let pos = positionFixedList.hell;
+        this.stairs(1, DR_DOWN, POS_LOCATION, pos.x, pos.y, true);
         rogue.putDown(true);
         map.redraw();
         audio.stop(audio.curTrack);
@@ -124,13 +124,13 @@ const creation = {
         let lvl = rogue.cdl + boost;
         for (let i = 0; i < times; i++) {
             let [typeT, tabIdT] = [type, tabId];
-            if (type === undefined || type === RANDOM) {
-                do typeT = FT[rndInt(FT.length - 2)];
+            if (type === RANDOM) {
+                do typeT = ftList[rndInt(ftList.length - 2)];
                 while (fighterTab[typeT][0].lvl > lvl);
             }
 
             let fighter;
-            if (tabId === undefined || tabId === RANDOM) {
+            if (tabId === RANDOM) {
                 let j = 0;
                 let fighterNums = fighterNumsMap.get(typeT);
                 fighterNums.shuffle();
@@ -138,7 +138,7 @@ const creation = {
                     tabIdT = fighterNums[j++];
                     if (tabIdT === undefined) return; //
                     fighter = fighterTab[typeT][tabIdT];
-                } while (fighter.mod === UNIQUE && rogue.cue[fighter.name[ENG]] ||
+                } while (fighter.mod === MOD_UNIQUE && rogue.cue[fighter.name[LETTER_ENG]] ||
                     fighter.lvl > lvl || evalPercentage(fighter.rarity));
             } else {
                 fighter = fighterTab[typeT][tabIdT];
@@ -149,8 +149,8 @@ const creation = {
             for (let j = 0; j < count; j++) {
                 let fighterNew = new Enemy(fighter);
                 fighterNew.init(posT, xT, yT, summon, magic, bias, lvl);
-                if (fighter.group && posT !== LOCATION) {
-                    posT = LOCATION;
+                if (fighter.group && posT !== POS_LOCATION) {
+                    posT = POS_LOCATION;
                     [xT, yT] = [fighterNew.x, fighterNew.y];
                 }
             }
@@ -161,8 +161,8 @@ const creation = {
         this.enemyList = {};
         for (let key in fighterTab) {
             for (let [tabId, f] of fighterTab[key].entries()) {
-                if (key === 'misc' && f.mod !== UNIQUE) continue;
-                if (f.mod === UNIQUE) {
+                if (key === 'misc' && f.mod !== MOD_UNIQUE) continue;
+                if (f.mod === MOD_UNIQUE) {
                     if (!unique) continue;
                 } else {
                     if (!normal) continue;
@@ -214,14 +214,14 @@ const creation = {
         if (uniqueId >= 0) magic = true;
         for (let i = 0; i < times; i++) {
             let [typeT, tabIdT] = [type, tabId];
-            if (type === undefined || type === RANDOM) typeT = Item.getType(magic);
-            if (tabId === undefined || tabId === RANDOM) [typeT, tabIdT] = Item.getTabId(typeT, lvl, magic);
+            if (type === RANDOM) typeT = Item.getType(magic);
+            if (tabId === RANDOM) [typeT, tabIdT] = Item.getTabId(typeT, lvl, magic);
             let item = itemTab[typeT].get(tabIdT);
             if (item.lethe) rogue.lethe++;
             let itemNew = new Item(item, quantity);
             itemNew.init(position, x, y, magic, lvl, uniqueId, starter, matBase, matId);
-            if (position === LIST) {
-                itemNew.place = flag.shop ? P_SHOP : P_PACK;
+            if (position === POS_LIST) {
+                itemNew.place = flag.shop ? PLACE_SHOP : PLACE_PACK;
                 return itemNew;
             }
         }
@@ -230,7 +230,7 @@ const creation = {
     setItemList() {
         this.itemList = {};
         flag.shop = true;
-        for (let type of equipmentList) {
+        for (let type of equipmentTypeList) {
             this.itemList[type] = [];
             for (let [tabId, item] of itemTab[type]) {
                 let i = 0;
@@ -243,7 +243,7 @@ const creation = {
                     let item = this.item({
                         type: type,
                         tabId: tabId,
-                        position: LIST,
+                        position: POS_LIST,
                         lvl: 99,
                         matBase: matBase,
                         matId: i,
@@ -259,10 +259,10 @@ const creation = {
         flag.shop = false;
     },
 
-    trap(times, tabId, position, x, y, show) {
+    trap(times, tabId = RANDOM, position, x, y, show) {
         for (let i = 0; i < times; i++) {
             let tabIdT = tabId;
-            if (tabId === undefined || tabId === RANDOM) tabIdT = rndInt(trapTab.length - 1);
+            if (tabId === RANDOM) tabIdT = rndInt(trapTab.length - 1);
             let trap = new Trap(trapTab[tabIdT], !show);
             trap.init(position, x, y);
         }
@@ -271,18 +271,18 @@ const creation = {
     stairs(times, tabId, position, x, y, show) {
         for (let i = 0; i < times; i++) {
             let tabIdT = tabId;
-            if (position === INIT) {
+            if (position === POS_INIT) {
                 if (tabId === RANDOM) {
                     if (i <= 1) {
-                        tabIdT = i ? DOWN : UP;
+                        tabIdT = i ? DR_DOWN : DR_UP;
                     } else {
-                        tabIdT = i % 2 ? DOWN : UP;
+                        tabIdT = i % 2 ? DR_DOWN : DR_UP;
                     }
                 }
 
                 show = i <= 1 || coinToss();
             } else if (tabId === RANDOM) {
-				tabIdT = coinToss() ? DOWN : UP;
+				tabIdT = coinToss() ? DR_DOWN : DR_UP;
 			}
 
             let staircase = new Staircase(stairsMap.get(tabIdT), !show);

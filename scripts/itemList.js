@@ -1,6 +1,5 @@
 const [ //book
 	B_BLANK_PAPER,
-	B_ALCHEMY_1,
 	B_SPELL_1,
 	B_SPELL_2,
 	B_SPELL_3,
@@ -213,6 +212,7 @@ const C_COIN = 1;
 const [
     RECIPE_WROUGHT_GOLD,
     RECIPE_EXTRA_HEALING,
+    RECIPE_EXTRA_MANA,
     RECIPE_WAND,
     RECIPE_CHARGE_BOOK,
     RECIPE_TORCH,
@@ -221,7 +221,7 @@ const [
     RECIPE_REMOVE,
     RECIPE_EXTEND,
     RECIPE_MATERIALIZE,
-] = enums(1, 10);
+] = enums(1, 11);
 
 const itemTab = {
     coin: new Map([
@@ -330,6 +330,18 @@ const itemTab = {
             }
 		}],
 
+        [RECIPE_EXTRA_MANA, {
+            nameReal: { a: 'Extra Mana', b: '魔力特大回復' },
+            priceRate: 1,
+            lvl: 20,
+            rarity: 30,
+            cost: 20,
+            recipe:{
+                a: 'Potion of Greater Mana [3] -> Potion of Extra Mana',
+                b: '魔力大回復の薬 [3] -> 魔力特大回復の薬'
+            }
+		}],
+
         [RECIPE_EXTEND, {
             nameReal: { a: 'Extend', b: '拡張' },
             priceRate: 1,
@@ -363,16 +375,6 @@ const itemTab = {
             priceRate: 5,
             lvl: 10,
             rarity: 10
-		}],
-		
-        [B_ALCHEMY_1, {
-            nameReal: { a: 'Alchemy for Beginners', b: '初級錬金術' },
-            color: colorList.red,
-            type2: 'recipe',
-            priceRate: 1,
-            lvl: 1,
-            rarity: 0,
-            abort: true
 		}],
 		
         [B_SPELL_1, {
@@ -859,7 +861,7 @@ const itemTab = {
         [P_EXTRA_MANA, {
             nameReal: { a: 'Extra Mana', b: '魔力特大回復' },
             nameSkill: EXTRA_MANA,
-            skillLvl: 30,
+            skillLvl: 10,
             priceRate: 10,
             lvl: 10,
             rarity: 30
@@ -1390,7 +1392,7 @@ const itemTab = {
             iasBase: 50,
             volumeRate: .5,
             embeddedLimit: 2,
-            atkType: AT_S | AT_T,
+            atkType: AT_SLASH | AT_THRUST,
             edge: 1,
             material: M_WOOD | M_BONE
 		}],
@@ -1404,7 +1406,7 @@ const itemTab = {
             iasBase: 30,
             volumeRate: .7,
             embeddedLimit: 3,
-            atkType: AT_S | AT_T,
+            atkType: AT_SLASH | AT_THRUST,
             edge: 2,
             material: M_STONE | M_METAL
 		}],
@@ -1418,7 +1420,7 @@ const itemTab = {
             iasBase: 0,
             volumeRate: 1,
             embeddedLimit: 4,
-            atkType: AT_S,
+            atkType: AT_SLASH,
             edge: 2,
             material: M_METAL | M_STONE
 		}],
@@ -1432,7 +1434,7 @@ const itemTab = {
             iasBase: 0,
             volumeRate: 1,
             embeddedLimit: 4,
-            atkType: AT_T,
+            atkType: AT_THRUST,
             material: M_METAL | M_STONE
 		}],
 		
@@ -1445,7 +1447,7 @@ const itemTab = {
             iasBase: 20,
             volumeRate: .8,
             embeddedLimit: 3,
-            atkType: AT_B,
+            atkType: AT_BLUNT,
             material: M_WOOD | M_BONE
 		}],
 		
@@ -1458,7 +1460,7 @@ const itemTab = {
             iasBase: 0,
             volumeRate: 1,
             embeddedLimit: 4,
-            atkType: AT_B,
+            atkType: AT_BLUNT,
             material: M_METAL | M_STONE
 		}],
 		
@@ -1471,7 +1473,7 @@ const itemTab = {
             iasBase: -10,
             volumeRate: 1.2,
             embeddedLimit: 4,
-            atkType: AT_S,
+            atkType: AT_SLASH,
             edge: 1,
             material: M_METAL
 		}],
@@ -1485,7 +1487,7 @@ const itemTab = {
             iasBase: -20,
             volumeRate: .8,
             embeddedLimit: 3,
-            atkType: AT_T,
+            atkType: AT_THRUST,
             digging: 100,
             material: M_METAL
 		}],
@@ -1498,7 +1500,7 @@ const itemTab = {
             iasBase: -30,
             volumeRate: 1.5,
             embeddedLimit: 5,
-            atkType: AT_S,
+            atkType: AT_SLASH,
             twoHanded: true,
             material: M_METAL
 		}],
@@ -1511,7 +1513,7 @@ const itemTab = {
             iasBase: -40,
             volumeRate: 2,
             embeddedLimit: 5,
-            atkType: AT_B,
+            atkType: AT_BLUNT,
             twoHanded: true,
             material: M_STONE
         }],
@@ -1524,7 +1526,7 @@ const itemTab = {
             iasBase: -50,
             volumeRate: 3,
             embeddedLimit: 6,
-            atkType: AT_B,
+            atkType: AT_BLUNT,
             twoHanded: true,
             material: M_WOOD
 		}],
@@ -1540,7 +1542,7 @@ const itemTab = {
             iasBase: -10,
             volumeRate: .7,
             embeddedLimit: 2,
-            atkType: AT_B,
+            atkType: AT_BLUNT,
             material: M_SKIN
 		}],
 		
@@ -1552,7 +1554,7 @@ const itemTab = {
             iasBase: -20,
             volumeRate: 0.5,
             embeddedLimit: 3,
-            atkType: AT_B,
+            atkType: AT_BLUNT,
             material: M_WOOD
 		}],
 		
@@ -1565,7 +1567,7 @@ const itemTab = {
             iasBase: 0,
             volumeRate: 1,
             embeddedLimit: 4,
-            atkType: AT_T,
+            atkType: AT_THRUST,
             twoHanded: true,
             material: M_WOOD | M_BONE | M_HORN
 		}],
@@ -1579,7 +1581,7 @@ const itemTab = {
             iasBase: -20,
             volumeRate: 1,
             embeddedLimit: 4,
-            atkType: AT_T,
+            atkType: AT_THRUST,
             twoHanded: true,
             material: M_METAL
         }],
@@ -1594,7 +1596,7 @@ const itemTab = {
             fcrBase: 10,
             volumeRate: 0.5,
             embeddedLimit: 2,
-            atkType: AT_B,
+            atkType: AT_BLUNT,
             material: M_WOOD
 		}],
 		
@@ -1606,7 +1608,7 @@ const itemTab = {
             fcrBase: 20,
             volumeRate: 0.7,
             embeddedLimit: 3,
-            atkType: AT_B,
+            atkType: AT_BLUNT,
             material: M_METAL
 		}],
 		
@@ -1618,7 +1620,7 @@ const itemTab = {
             fcrBase: 50,
             volumeRate: 1,
             embeddedLimit: 4,
-            atkType: AT_B,
+            atkType: AT_BLUNT,
             twoHanded: true,
             material: M_WOOD
         }],
@@ -1632,7 +1634,7 @@ const itemTab = {
             weight: 0.1,
             priceRate: 1,
             shop: true,
-            atkType: AT_B,
+            atkType: AT_BLUNT,
             lvl: 1,
             rarity: 0,
             dmgBonus: 100
@@ -1645,7 +1647,7 @@ const itemTab = {
             weight: 0.02,
             priceRate: 2,
             shop: true,
-            atkType: AT_T,
+            atkType: AT_THRUST,
             lvl: 1,
             rarity: 0
 		}],
@@ -1657,7 +1659,7 @@ const itemTab = {
             weight: 0.04,
             priceRate: 3,
             shop: true,
-            atkType: AT_T,
+            atkType: AT_THRUST,
             lvl: 1,
             rarity: 0
         }],
@@ -1990,7 +1992,7 @@ const itemTab = {
         [A_AMULET, {
             nameReal: { a: 'Amulet', b: '首飾り' },
             color: colorList.orange,
-            mod: MAGIC,
+            mod: MOD_MAGIC,
             lvl: 1,
             rarity: 0,
             volumeRate: 1,
@@ -2003,7 +2005,7 @@ const itemTab = {
         [R_RING, {
             nameReal: { a: 'Ring', b: '指輪' },
             color: colorList.red,
-            mod: MAGIC,
+            mod: MOD_MAGIC,
             lvl: 1,
             rarity: 0,
             volumeRate: 1,
@@ -2014,7 +2016,7 @@ const itemTab = {
         [R_RING_GEM, {
             nameReal: { a: 'Ring', b: '指輪' },
             color: colorList.red,
-            mod: MAGIC,
+            mod: MOD_MAGIC,
             lvl: 5,
             rarity: 80,
             volumeRate: 1,
@@ -2027,7 +2029,7 @@ const itemTab = {
         [G_GEM, {
             nameReal: { a: 'Jewel', b: 'ジュエル' },
             color: colorList.white,
-            mod: MAGIC,
+            mod: MOD_MAGIC,
             priceRate: 1,
             lvl: 1,
             rarity: 0,
@@ -2280,10 +2282,9 @@ const itemNumsMap = (() => {
     return nums;
 })();
 
-const IT = Object.keys(itemTab);
-IT.push('material');
+const itList = Object.keys(itemTab);
+itList.push('material');
 
-const AEGIS = -1;
 const itemUniqueMap = {
     melee: new Map([]),
     missile: new Map([

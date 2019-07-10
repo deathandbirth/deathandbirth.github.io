@@ -10,11 +10,11 @@ const Material = class extends Thing {
     }
 
     static evalMod(mod, mf, shop) {
-        if (mod === MAGIC) {
+        if (mod === MOD_MAGIC) {
             mf /= 1;
-        } else if (mod === RARE) {
+        } else if (mod === MOD_RARE) {
             mf /= 4;
-        } else if (mod === UNIQUE) {
+        } else if (mod === MOD_UNIQUE) {
             mf /= 10;
         }
 
@@ -103,7 +103,7 @@ const Material = class extends Thing {
                 durabRate *= 3 / 4;
             }
 
-            if (this.atkType === AT_B) durabRate *= 5 / 4;
+            if (this.atkType === AT_BLUNT) durabRate *= 5 / 4;
             if (this.type === 'staff') dmgBase *= .5;
             this.dmgBase = Math.ceil(dmgBase);
             if (char) this.dmgBare = this.dmgBase;
@@ -115,9 +115,9 @@ const Material = class extends Thing {
             let acSBase = volume * mat.hardness;
             let acBBase = volume * mat.toughness;
             let acTBase = volume * mat.tBase * acTRateBase * this.acTRate;
-            this.acSBase = this.getAcVar(acSBase, AT_S);
-            this.acBBase = this.getAcVar(acBBase, AT_B);
-            this.acTBase = this.getAcVar(acTBase, AT_T);
+            this.acSBase = this.getAcVar(acSBase, AT_SLASH);
+            this.acBBase = this.getAcVar(acBBase, AT_BLUNT);
+            this.acTBase = this.getAcVar(acTBase, AT_THRUST);
             this.acAvg = Math.ceil((this.acSBase + this.acBBase + this.acTBase) / 3);
 		}
         
@@ -127,11 +127,11 @@ const Material = class extends Thing {
     getAcVar(ac, type) {
         if (!ac) return 0;
         let varRate;
-        if (type === AT_S) {
+        if (type === AT_SLASH) {
             varRate = 10;
-        } else if (type === AT_T) {
+        } else if (type === AT_THRUST) {
             varRate = 15;
-        } else if (type === AT_B) {
+        } else if (type === AT_BLUNT) {
             varRate = 5;
         }
 
@@ -200,7 +200,7 @@ const Material = class extends Thing {
             } else {
                 this.nameReal['a'] = nameA + ' ' + this.nameReal['a'];
                 this.nameReal['b'] = nameB + this.nameReal['b'];
-                if (this.mod === UNIQUE) this.getUniqueName();
+                if (this.mod === MOD_UNIQUE) this.getUniqueName();
             }
 		}
 		
@@ -294,7 +294,7 @@ const Material = class extends Thing {
 		}
 		
         this.modList = mods;
-        this.mod = MAGIC;
+        this.mod = MOD_MAGIC;
         this.shadow = this.shadowReal = colorList.aqua;
     }
 
@@ -363,7 +363,7 @@ const Material = class extends Thing {
             }
 		} while (modSufNums[i] !== undefined);
 		
-        this.mod = RARE;
+        this.mod = MOD_RARE;
         this.shadow = this.shadowReal = colorList.yellow;
         let nameAffiA = ` <${affix.name['a']}>`;
         let nameAffiB = `<${affix.name['b']}>`;
@@ -388,10 +388,10 @@ const Material = class extends Thing {
     }
 
     getUnique(unique) {
-        this.shadow = this.shadowReal = colorList.gold;
+        this.shadow = this.shadowReal = !this.boss ? colorList.gold : colorList.indigo;
         this.stroke = this.strokeReal = colorList.gold;
         if (this.type === 'enemy') {
-            rogue.cue[this.name[ENG]] = true;
+            rogue.cue[this.name[LETTER_ENG]] = true;
         } else {
             mergeMod({
                 obj: this,
@@ -401,7 +401,7 @@ const Material = class extends Thing {
             
             let names = unique.name; 
             this.nameUnique = { a: names['a'], b: names['b'], pre: names.pre };
-            this.mod = UNIQUE;
+            this.mod = MOD_UNIQUE;
             this.modList = {};
             copyObj(this.modList, unique.values);
         }
@@ -484,7 +484,7 @@ const Material = class extends Thing {
         item.quantity = 1;
         item.type = 'material';
         item.tabId = materialList.indexOf(material);
-        item.weight = WEIGHT[item.type];
+        item.weight = weightList[item.type];
         item.priceRate = materialMap.get(material).pRate;
         item.__proto__ = Item.prototype;
         item.symbolReal = item.symbol = char ? '\'' : '`';

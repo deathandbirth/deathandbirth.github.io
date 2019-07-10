@@ -109,7 +109,7 @@ const Data = class {
     }
 
     loadFighter(fighter) {
-        if (fighter.id === ROGUE) {
+        if (fighter.id === ID_ROGUE) {
             fighter.__proto__ = Rogue.prototype;
             rogue = fighter;
             if (this.ver < 0.009) {
@@ -169,6 +169,7 @@ const Data = class {
         }
     }
 
+    /* TODO */
     convertCe(save) {
         if (rogue.ce) rogue.ce = save ? rogue.ce.id : map.enemyList[rogue.ce];
         for (let key in map.enemyList) {
@@ -177,7 +178,7 @@ const Data = class {
                 if (save) {
                     enemy.ce = enemy.ce.id;
                 } else {
-                    enemy.ce = enemy.ce === ROGUE ? rogue : map.enemyList[enemy.ce];
+                    enemy.ce = enemy.ce === ID_ROGUE ? rogue : map.enemyList[enemy.ce];
                 }
             }
         }
@@ -235,7 +236,7 @@ const data = {
 
     exit() {
         this.save();
-        game.quit('y', true);
+        game.quit('Y', true);
     },
 
     dontSave() {
