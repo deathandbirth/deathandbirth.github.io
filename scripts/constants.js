@@ -6,6 +6,7 @@ const generateNumber = function*(i, j, bit) {
 const enums = (i, j) => [...generateNumber(i, j)];
 const enumsBit = (i, j) => [...generateNumber(i, j, true)];
 const VERSION = 0.010;
+const DEBUG = window.location.href.split('/').pop().indexOf('debug') === 0;
 const IN_WIDTH = 45;
 const IN_HEIGHT = 25;
 const BUF_SIZE = 2;

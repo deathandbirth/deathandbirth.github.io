@@ -1,25 +1,20 @@
 (function() {
-    var recipeClose = true;
-    document.getElementById("site-recipe-btn").onclick = function() {
-        var style = document.getElementById("site-recipe-container").style;
-        style.display = recipeClose ? 'block' : 'none';
-        recipeClose = !recipeClose;
-        if (!cmdClose) {
-            style = document.getElementById("site-command-container").style;
-            style.display = 'none';
-            cmdClose = true;
-        }
-    };
+    function modalOpen() {
+        var $this = $(this);
+        if ($this.hasClass('modal-open')) return false;
+        if ($('.modal-open').length) modalClose();
+        var href = $this.attr('href');
+        $(href).show();
+        $this.addClass('modal-open');
+        return false;
+    }
 
-    var cmdClose = true;
-    document.getElementById("site-command-btn").onclick = function() {
-        var style = document.getElementById("site-command-container").style;
-        style.display = cmdClose ? 'block' : 'none';
-        cmdClose = !cmdClose;
-        if (!recipeClose) {
-            style = document.getElementById("site-recipe-container").style;
-            style.display = 'none';
-            recipeClose = true;
-        }
-    };
+    function modalClose() {
+        $('.modal-container').hide();
+        $('.modal-link').removeClass('modal-open');
+        return false;
+    }
+
+    $('.modal-link').on('click', modalOpen);
+    $('.modal-overlay').on('click', modalClose);
 })();

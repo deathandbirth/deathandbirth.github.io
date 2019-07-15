@@ -26,7 +26,7 @@ const Rogue = class extends Fighter {
         this.turn = 1;
         this.done = false;
         this.initKeys();
-        this.isWizard = window.location.href.split('/').pop().indexOf('debug') === 0;
+        this.isWizard = DEBUG;
     }
 
     init() {

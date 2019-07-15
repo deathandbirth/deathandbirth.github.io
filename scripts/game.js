@@ -3,7 +3,7 @@ const game = {
         display.clearAll();
         flag.title = true;
         audio.stop(audio.curTrack);
-        if (!init) audio.playMusic('title');
+        if (!init || !DEBUG) audio.playMusic('title');
 	},
 	
     over() {
