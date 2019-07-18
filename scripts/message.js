@@ -2,6 +2,13 @@ const message = {
     listTemp: [],
     list: [],
     scroll(key, init) {
+        if (key === 'D') {
+            vue.msgList.splice(0);
+            vue.msgTotal = `[0/${MAX_MSG_LIST_LEN}] `
+                + (option.isEnglish() ? 'Message List' : 'メッセージ一覧'); 
+            return;
+        }
+
         if (init) {
             message.draw(message.get(M_MESSAGE) + message.get(M_SCROLL), true);
             this.eleP = vue.$refs.messagePrevContainer.$refs.messagePrevList;

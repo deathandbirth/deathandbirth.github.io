@@ -79,7 +79,8 @@ const [
     M_HELP,
     M_CHARACTER,
     M_TOO_HEAVY,
-] = enums(1, 80);
+    M_RETRY,
+] = enums(1, 100);
 
 const msgMap = new Map([
     [M_NUMBER, {
@@ -438,8 +439,8 @@ const msgMap = new Map([
     }],
 
     [M_MESSAGE, {
-        a: 'Previous Massage:',
-        b: 'メッセージ履歴:'
+        a: 'Previous Massage: [D] to delete',
+        b: 'メッセージ履歴: [D] 消去'
     }],
 
     [M_HELP, {
@@ -480,5 +481,10 @@ const msgMap = new Map([
     [M_THROW_DIR, {
         a: 'Trow Item: [direction] [t] to decide',
         b: 'アイテムを投げる: [方向] [t] 決定'
+    }],
+
+    [M_RETRY, {
+        a: 'Retry: [Enter] to decide',
+        b: 'リトライ: [Enter] 決定'
     }],
 ]);

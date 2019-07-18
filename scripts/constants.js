@@ -1,11 +1,13 @@
 'use strict';
-const generateNumber = function*(i, j, bit) {
-    while (i <= j) yield bit ? 1 << i++ : i++;
+const generateNumber = (i, j, bit) => {
+    let nums = [];
+    while (i <= j) nums.push(bit ? 1 << i++ : i++);
+    return nums;
 }
 
-const enums = (i, j) => [...generateNumber(i, j)];
-const enumsBit = (i, j) => [...generateNumber(i, j, true)];
-const VERSION = 0.010;
+const enums = (i, j) => generateNumber(i, j);
+const enumsBit = (i, j) => generateNumber(i, j, true);
+const VERSION = 0.100;
 const DEBUG = window.location.href.split('/').pop().indexOf('debug') === 0;
 const IN_WIDTH = 45;
 const IN_HEIGHT = 25;

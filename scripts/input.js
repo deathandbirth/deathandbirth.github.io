@@ -116,7 +116,7 @@ const input = {
         if (flag.failed) {
             if (key === 'Y') {
                 game.start();
-                data.delete(data.name);
+                data.delete();
                 message.draw(option.isEnglish() ?
                     'Deleted the data' :
                     'データ消去しました')

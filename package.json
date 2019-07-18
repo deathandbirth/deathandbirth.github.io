@@ -1,0 +1,27 @@
+{
+  "name": "deathandbirth.github.io",
+  "version": "1.0.0",
+  "description": "ダンテの神曲やギリシャ神話を題材にしたローグライクゲームです。   現在は地獄層を実装していますが、ある程度形になれば、煉獄、天国層の順に実装していく予定です。",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/deathandbirth/deathandbirth.github.io.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/deathandbirth/deathandbirth.github.io/issues"
+  },
+  "homepage": "https://github.com/deathandbirth/deathandbirth.github.io#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.5.0",
+    "@babel/core": "^7.5.4",
+    "@babel/preset-env": "^7.5.4",
+    "core-js": "^3.1.4",
+    "regenerator-runtime": "^0.13.2"
+  }
+}

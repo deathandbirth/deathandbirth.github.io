@@ -17,12 +17,18 @@ body {
 	top: 50%;
 	right: 1%;
 	z-index: 101;
-	transform: translateY(-50%);
+	-webkit-transform: translateY(-50%);
+	        transform: translateY(-50%);
 }
 
 .modal-link-list {
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
-	flex-direction: column;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	    -ms-flex-direction: column;
+	        flex-direction: column;
 }
 
 .modal-link-list > li {
@@ -72,6 +78,7 @@ body {
 	width: 100%;
 	height: 100%;
 	z-index: 100;
+	overflow: hidden;
 }
 
 .modal-overlay {
@@ -83,8 +90,7 @@ body {
 	background-color: rgba(0, 0, 0,.7);
 }
 
-.modal-overlay::before {
-	content: '×';
+.modal-close {
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -101,7 +107,8 @@ body {
 	position: relative;
 	top: 50%;
 	left: 50%;
-	transform: translate(-50%, -50%);
+	-webkit-transform: translate(-50%, -50%);
+	        transform: translate(-50%, -50%);
 	height: 95%;
 	width: 75%;
 	background-color: #29261e;
@@ -142,6 +149,11 @@ body {
 	margin-bottom: 10px;
 }
 
+.page-back {
+	margin-top: 50px;
+	padding-left: 10px;
+}
+
 footer {
 	text-align: center;
 	position: absolute;
@@ -161,12 +173,15 @@ button:hover {
 }
 
 #site-command-container ul {
-	display: -webkit-flex;
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
-	-webkit-flex-direction: column;
-	flex-direction: column;
-	-webkit-flex-wrap: wrap;
-	flex-wrap: wrap;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	    -ms-flex-direction: column;
+	        flex-direction: column;
+	-ms-flex-wrap: wrap;
+	    flex-wrap: wrap;
 	height: 560px;
 }
 

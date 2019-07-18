@@ -197,6 +197,10 @@ const Data = class {
 
 const data = {
     name: 'Player',
+    getName() {
+        return `dnb_v0.1xx_${this.name}`;
+    },
+
     save(unload) {
         if (unload && audio.curTrack) audio.music[audio.curTrack].pause();
         if (flag.died || flag.retry || flag.title || this.error) {
@@ -208,11 +212,11 @@ const data = {
         cursor.clearAll();
         message.draw(option.isEnglish() ? 'Saved' : '記録した');
         let saveData = new Data();
-        localStorage.setItem(this.name, JSON.stringify(saveData));
+        localStorage.setItem(this.getName(), JSON.stringify(saveData));
     },
 
     load() {
-        let saveData = JSON.parse(localStorage.getItem(this.name));
+        let saveData = JSON.parse(localStorage.getItem(this.getName()));
         if (saveData !== null) {
             saveData.__proto__ = Data.prototype;
             try {
@@ -230,8 +234,8 @@ const data = {
         }
     },
 
-    delete(name) {
-        localStorage.removeItem(name);
+    delete() {
+        localStorage.removeItem(this.getName());
     },
 
     exit() {

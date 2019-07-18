@@ -23,7 +23,7 @@ const game = {
         flag.title = true;
         flag.regular = false;
         this.title();
-        if (!save) data.delete(data.name);
+        if (!save) data.delete();
 	},
 	
     start() {
@@ -34,7 +34,6 @@ const game = {
         rogue.init();
         vue.rogue = rogue;
         map.stashList = [];
-        vue.msgList.splice(0);
         message.clear();
         this.clearLevel();
         creation.town();

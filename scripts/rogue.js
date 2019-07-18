@@ -293,12 +293,13 @@ const Rogue = class extends Fighter {
         audio.stop(audio.curTrack);
         audio.playMusic('gameover');
         message.draw(message.get(M_DIED));
+        message.draw(message.get(M_RETRY), true);
         rogue.done = false;
         initFlag();
         flag.regular = false;
         flag.wait = false;
         flag.died = true;
-        data.delete(data.name);
+        data.delete();
     }
 
     getStartPointInTown() {
