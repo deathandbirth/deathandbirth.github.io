@@ -1,6 +1,6 @@
 $(function() {
 
-    $('.navbar-brand, .nav-link, .nav-back').click(function(event) {
+    $('.navbar-brand, .nav-link:not(.nav-play), .nav-back').click(function(event) {
         event.preventDefault();
         var speed = 1000;
         var href= $(this).attr('href');
