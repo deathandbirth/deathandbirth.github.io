@@ -1,112 +1,70 @@
-const minimap = {
-    shadow() {
-        let ctxMap = display.ctxes.map;
-        ctxMap.save();
-        ctxMap.shadowColor = colorList.clear;
-        ctxMap.globalAlpha = 0.9;
-        ctxMap.fillStyle = colorList.black;
-        display.rect({
-            ctx: ctxMap,
-            widthPx: display.width,
-            height: -SS,
-            heightPx: display.height,
-        });
-
-        ctxMap.restore();
-    },
-
-    draw(keyCode) {
-        if (!(keyCode === 65 || //a all
-            keyCode === 83 || //s self
-            keyCode === 67 || //c char
-            keyCode === 73 || //i item
-            keyCode === 77 && input.isShift || //M map
-            keyCode === 188 && input.isShift || //<
-            keyCode === 190 && input.isShift || //>
-            keyCode === 80 || //p portal
-            keyCode === 84)) { //t trap
-            return;
-        }
-
-        display.clearOne(display.ctxes.map);
-        if (keyCode === 77 && input.isShift) { //M
-            flag.minimap = false;
-            flag.regular = true;
-            return;
-        }
-
-        this.shadow();
-        if (rogue.blinded) return;
-        for (let i = 0, l = map.coords.length; i < l; i++) {
-            for (let loc of map.coords[i]) {
-                let type;
-                switch (keyCode) {
-                    case  83: //s
-                        if (loc.fighter && loc.fighter.id === ROGUE) type = SYMBOL_FIGHTER;
-                        break;
-                    case  67: //c
-                        if (loc.fighter && loc.fighter.isShowing()) type = SYMBOL_FIGHTER;
-                        break;
-                    case  73: //i
-                        if (loc.item['a']) {
-                            let item = loc.item[EA[Object.keys(loc.item).length - 1]];
-                            if (item.isShowing()) type = SYMBOL_ITEM;
-                        }
-
-                        break;
-                    case  188: //<
-                    case  190: //>
-                        if (loc.found && loc.stairs && !loc.hidden) type = SYMBOL_STAIRS;
-                        break;
-                    case  80: //p
-                        if (loc.found && loc.enter && loc.enter.portal) type = SYMBOL_ENTER;
-                        break;
-                    case  84: //t
-                        if (loc.found && loc.trap && !loc.hidden) type = SYMBOL_TRAP;
-                        break;
-                }
-
-                if (!type && keyCode !== 65) { //a
-                    if (!loc.found) {
-                        type = SYMBOL_BLANK;
-                    } else if (loc.wall) {
-                        type = SYMBOL_WALL;
-                    } else if (loc.door && !loc.hidden) {
-                        type = SYMBOL_DOOR;
-                    } else if (loc.enter && !loc.enter.portal && !rogue.cdl) {
-                        type = SYMBOL_ENTER;
-                    } else if (loc.floor) {
-                        type = SYMBOL_BLANK;
-                    }
-                }
-
-                loc.draw(true, type, this.fs);
-            }
-        }
-    },
-};
-
 const map = {
+    coords: [],
     init(town, load) {
-        this.coords = [];
+        this.drawShadow();
         this.queue = new Queue();
         this.enemyList = {};
         this.itemList = {};
+        this.trapList = {};
         this.staircaseList = {};
         this.portal = null;
-        if (load) return;
-        let width = town ? IN_WIDTH : WIDTH;
-        let height = town ? IN_HEIGHT : HEIGHT;
-        for (let i = 0; i < width; i++) {
-            this.coords.push([]);
-            for (let j = 0; j < height; j++) {
-                this.coords[i].push(new Location(i, j));
-                if (i === 0 || i === width - 1 || j === 0 || j === height - 1) {
-                    this.coords[i][j].indestructible = true;
-                    this.coords[i][j].wall = WALL_HP;
+        if (!load) {
+            this.coords = [];
+            let width = town ? IN_WIDTH : WIDTH;
+            let height = town ? IN_HEIGHT : HEIGHT;
+            for (let i = 0; i < width; i++) {
+                this.coords.push([]);
+                for (let j = 0; j < height; j++) {
+                    this.coords[i].push(new Location(i, j));
+                    let loc = this.coords[i][j];
+                    if (i === 0 || i === width - 1 || j === 0 || j === height - 1) {
+                        loc.indestructible = true;
+                        loc.wall = WALL_HP;
+                    }
                 }
             }
         }
+    },
+
+    drawGround() {
+        // display.clearOne(display.ctxes.ground);
+        for (let i = 0, l = this.coords.length; i < l; i++) {
+            for (let loc of this.coords[i]) {
+                loc.drawGround();
+            }
+        }
+    },
+
+    drawObjectAll() {
+        display.clearOne(display.ctxes.object);
+        if (!rogue.blinded) {
+            this.drawObject(this.staircaseList, SYMBOL_STAIRS);
+            this.drawObject(this.trapList, SYMBOL_TRAP);
+            this.drawObject(this.itemList, SYMBOL_ITEM);
+            if (this.portal) this.drawObject([this.portal], SYMBOL_ENTER);
+            this.drawObject(this.enemyList, SYMBOL_FIGHTER);
+        }
+
+        this.drawObject([rogue], SYMBOL_FIGHTER);
+    },
+
+    drawObject(list, type) {
+        for (let key in list) {
+            let obj = list[key];
+            let loc = this.coords[obj.x][obj.y];
+            loc.drawObject(type);
+        }
+    }, 
+
+    drawShadow() {
+        display.clearOne(display.ctxes.shadow);
+        let ctx = display.ctxes.shadow;
+        let canvas = ctx.canvas;
+        display.rect({
+            ctx: ctx,
+            widthPx: canvas.width,
+            heightPx: canvas.height,
+        });
     },
 
     fill(town) {
@@ -122,7 +80,7 @@ const map = {
                         creation.item({
                             type: 'coin',
                             tabId: 1,
-                            position: LOCATION,
+                            position: POS_LOCATION,
                             x: i,
                             y: j,
                         });
@@ -134,33 +92,95 @@ const map = {
         }
     },
 
-    draw(cX, cY) {
-        let ctxMain = display.ctxes.main;
-        display.clearOne(ctxMain);
-        display.image({
-            ctx: ctxMain,
-            img: display.canvases.buf,
-            sx: cX - (IN_WIDTH - 1) / 2,
-            sy: cY - IN_HEIGHT / 2,
-            sWidth: IN_WIDTH,
-            sHeight: IN_HEIGHT,
-            dx: -IN_WIDTH / 2, 
-            dxPx: display.width / 2,
-            dy: 0,
-            dWidth: IN_WIDTH,
-            dHeight: IN_HEIGHT,
-        });
-    },
+    draw(cX=rogue.x, cY=rogue.y, examine, minimap) {
+        let dwidth = display.width;
+        let dheight = display.height;
+        let sx, sy, sxPx, syPx, swidth, sheight, dxPx, dyPx;
+        if (minimap) {
+            sx = sy = sxPx = syPx = 0;
+            let lenX = this.coords.length;
+            let lenY = this.coords[0].length;
+            swidth = lenX * display.fs;
+            sheight = lenY * display.fs;
+            dwidth = swidth / 2;
+            dheight = sheight / 2;
+            /*
+            dwidth = Math.floor(dwidth / lenX) * lenX;
+            dheight = Math.floor(dheight / lenY) * lenY;
+            if (dwidth > swidth) dwidth = swidth;
+            if (dheight > sheight) dheight = sheight;
+            let ratioX = dwidth / swidth;
+            let ratioY = dheight / sheight;
+            if (ratioX < 1 || ratioY < 1) {
+                if (ratioX < ratioY) {
+                    if (ratioX < MINIMAP_MIN_RATIO) {
+                        ratioX = MINIMAP_MIN_RATIO;
+                        dwidth = swidth * ratioX;
+                    }
 
-    redraw(cX, cY) {
-        display.clearOne(display.ctxes.buf, true)
-        for (let i = 0, l = this.coords.length; i < l; i++) {
-            for (let loc of this.coords[i]) {
-                loc.draw();
+                    dheight = sheight * ratioX;
+                } else {
+                    if (ratioY < MINIMAP_MIN_RATIO) {
+                        ratioY = MINIMAP_MIN_RATIO;
+                        dheight = sheight * ratioY;
+                    }
+
+                    dwidth = swidth * ratioY;
+                }
             }
+            */
+
+            dxPx = Math.floor((display.width - dwidth) / 2);
+            dyPx = Math.floor((display.height - dheight) / 2);
+        } else {
+            dxPx = dyPx = 0;
+            sx = cX + .5;
+            sy = cY + .5;
+            sxPx = -Math.floor(dwidth / 2);
+            syPx = -Math.floor(dheight / 2);
+            swidth = dwidth;
+            sheight = dheight;
         }
 
-        rogue.drawStats();
+        let ctxMain = display.ctxes.main;
+        let obj = {
+            ctx: ctxMain,
+            sx: sx,
+            sxPx: sxPx,
+            sy: sy,
+            syPx: syPx,
+            sWidthPx: swidth,
+            sHeightPx: sheight,
+            dxPx: dxPx,
+            dyPx: dyPx,
+            dWidthPx: dwidth,
+            dHeightPx: dheight,
+        };
+
+        display.clearOne(ctxMain);
+        if (!rogue.blinded) {
+            obj.img = display.canvases.ground;
+            display.image(obj);
+        }
+
+        obj.img = display.canvases.object;
+        display.image(obj);
+
+        if (!rogue.blinded && !minimap) {
+            obj.img = display.canvases.shadow;
+            display.image(obj);
+        }
+
+        if (examine) {
+            obj.img = display.canvases.cursor;
+            display.image(obj);
+        }
+    },
+
+    redraw() {
+        this.drawGround();
+        this.drawObjectAll();
+        this.draw();
     },
 
     lighten(init) {
@@ -169,17 +189,68 @@ const map = {
                 if (loc.hidden) {
                     loc.hidden = false;
                     loc.wall = false;
-                } else if (loc.lighten && loc.found) {
-                    continue;
                 }
 
                 loc.lighten = true;
                 loc.found = true;
-                loc.draw();
+                if (!init) loc.drawGround();
             }
         }
 
-        if (!init) rogue.lightenOrDarken('Lighten');
+        if (!init) {
+            this.drawShadow();
+            rogue.litMapIds = {};
+            rogue.lightenOrDarken('Lighten');
+        }
+    },
+
+    drawMini(key) {
+        if (!(key === 'a' || // all
+            key === 's' || // self
+            key === 'c' || // close
+            key === 'e' || // enemy
+            key === 'i' || // item
+            key === 'M' || // map
+            key === '<' || // <
+            key === '>' || // >
+            key === 'p' || // portal
+            key === 't')) { // trap
+            return;
+        }
+
+        if (key === 'c') {
+            rogue.cancelCommand();
+            return;
+        }
+
+        if (key === 'a' || rogue.blinded) {
+            this.drawObjectAll();
+        } else {
+            display.clearOne(display.ctxes.object);
+            switch (key) {
+                case  'e':
+                    this.drawObject(this.enemyList, SYMBOL_FIGHTER);
+                    break;
+                case  's':
+                    this.drawObject([rogue], SYMBOL_FIGHTER);
+                    break;
+                case  'i':
+                    this.drawObject(this.itemList, SYMBOL_ITEM);
+                    break;
+                case  '<':
+                case  '>':
+                    this.drawObject(this.staircaseList, SYMBOL_STAIRS);
+                    break;
+                case  'p':
+                    if (this.portal) this.drawObject([this.portal], SYMBOL_ENTER);
+                    break;
+                case  't':
+                    this.drawObject(this.trapList, SYMBOL_TRAP);
+                    break;
+            }
+        }
+
+        this.draw(false, false, false, true);
     },
 };
 
@@ -187,19 +258,16 @@ const seeInvisible = (see) => {
     for (let key in map.enemyList) {
         let enemy = map.enemyList[key];
         if (enemy.invisible) {
-            map.coords[enemy.x][enemy.y].draw();
             if (!see && rogue.ce && rogue.ce.id === enemy.id) rogue.removeCe();
         }
     }
-
-    map.draw(rogue.x, rogue.y);
 }
 
 const hallucinate = {
     all(undo) {
         this.search(map.enemyList, true, undo);
         this.search(map.itemList, false, undo);
-        map.redraw(rogue.x, rogue.y);
+        map.redraw();
     },
 
     search(list, enemy, undo) {
@@ -210,8 +278,6 @@ const hallucinate = {
             } else {
                 this.undoOne(list[key]);
             }
-
-            map.coords[list[key].x][list[key].y].getSymbol();
         }
     },
 
@@ -221,22 +287,22 @@ const hallucinate = {
         obj.nameTemp['a'] = obj.name['a'];
         obj.nameTemp['b'] = obj.name['b'];
         if (enemy) {
-            type = FT[rndInt(FT.length - 1)];
+            type = ftList[rndInt(ftList.length - 1)];
             tabId = rndInt(fighterTab[type].length - 1);
             var fighter = fighterTab[type][tabId];
             obj.name['a'] = fighter.name['a'];
             obj.name['b'] = fighter.name['b'];
             obj.symbol = fighter.symbol;
-            obj.color = fighter.color;
+            obj.color = fighter.color ? fighter.color : colorList.white;
         } else {
-            type = IT[rndInt(IT.length - 2)];
+            type = itList[rndInt(itList.length - 2)];
             obj.typeHalluc = type;
             tabId = rndIntBet(1, itemTab[type].size);
             var item = itemTab[type].get(tabId);
             obj.name['a'] = item.nameReal['a'];
             obj.name['b'] = item.nameReal['b'];
             obj.symbol = item.symbol;
-            obj.color = item.color;
+            obj.color = item.color ? item.color : colorList.white;
             if (mimic) {
                 obj.__proto__ = Item.prototype;
                 obj.name['a'] = obj.getName(false, false, 'a');
@@ -251,7 +317,7 @@ const hallucinate = {
             return;
         }
 
-        if (enemy && fighter.mod === UNIQUE ||
+        if (enemy && fighter.mod === MOD_UNIQUE ||
             !enemy && itemUniqueMap[item.type].has(item.tabId) && coinToss()) {
             if (!enemy) {
                 if (type === 'amulet' && evalPercentage(1)) {
@@ -260,12 +326,12 @@ const hallucinate = {
                 } else {
                     let array = itemUniqueMap[item.type].get(item.tabId);
                     let unique = array[rndInt(array.length - 1)];
-                    [obj.name['a'], obj.name['b']] = obj.getUniqueName(unique.name);
+                    obj.getUniqueName(unique.name, true);
                 }
             }
 
             obj.shadow = colorList.gold;
-            obj.stroke = colorList.indigo;
+            obj.stroke = colorList.gold;
         } else if (coinToss()) {
             obj.stroke = 0;
             let bias = rndIntBet(1, MAX_BIAS_NUMS);
@@ -323,203 +389,59 @@ const statistics = {
         },
     },
 
-    draw({
-        msg,
-        x,
-        xPx,
-        y,
-        color,
-        shadow,
-        right,
-        limit,
-    }) {
-        let ctxStats = display.ctxes.stats;
-        ctxStats.save();
-        if (color) ctxStats.fillStyle = color;
-        if (shadow) ctxStats.shadowColor = shadow;
-        if (right) ctxStats.textAlign = 'right';
-        display.text({
-            ctx: ctxStats,
-            msg: msg,
-            x: x,
-            y: y,
-            limit: limit,
-            xPx: xPx,
-            yPx: display.height + 5,
-        });
-
-        ctxStats.restore();
-    },
-
-    clear() {
-        display.rect({
-            ctx: display.ctxes.stats,
-            y: -SS,
-            yPx: display.height,
-            widthPx: display.width,
-            height: SS,
-            clear: true,
-        });
-    },
-
-    clearCondition() {
-        display.rect({
-            ctx: display.ctxes.stats,
-            y: -SS - 2,
-            yPx: display.height,
-            widthPx: display.width,
-            height: 2,
-            clear: true,
-        });
-    },
-
-    ShadowAndBar(e) {
-        let ctxStats = display.ctxes.stats;
-        let width = ctxStats.measureText(e.name).width;
-        ctxStats.save();
-        ctxStats.shadowColor = colorList.clear;
-        ctxStats.fillStyle = colorList.black;
-        ctxStats.globalAlpha = 0.5;
-        display.rect({
-            ctx: ctxStats,
-            xPx: display.width / 2 - width / 2 - 3,
-            y: MS,
-            widthPx: width + 6,
-            height: 2,
-        });
-
-        ctxStats.fillStyle = e.getConditionColor();
-        display.rect({
-            ctx: ctxStats,
-            xPx: display.width / 2 - width / 2 - 3,
-            y: MS + 1,
-            widthPx: e.hp / e.hpMax * width + 6,
-            height: 1,
-        });
-
-        ctxStats.restore();
-    },
-
     drawEnemyBar(e, examine) {
         if (!e) return;
-        this.clearEnemyBar();
         if (!(e.isShowing() &&
             (examine || distanceSq(e.x, e.y, rogue.x, rogue.y) <= FOV_SQ &&
             lineOfSight(e.x, e.y, rogue.x, rogue.y)))) {
+            vue.barEnemy = null;
             return '';
         }
             
-        this.ShadowAndBar(e);
-        let ctxStats = display.ctxes.stats;
-        ctxStats.save();
-        ctxStats.textAlign = 'center';
-        if (e.shadow) ctxStats.shadowColor = e.shadow;
         let name = e.getName(false, true);
-        if (e.cursed) ctxStats.fillStyle = colorList.red;
-        display.text({
-            ctx: ctxStats,
-            msg: `Lv${e.lvl} ${name}`,
-            x: 0,
-            y: MS + 0.5,
-            xPx: display.width / 2,
-            stroke: e.stroke,
-        });
-
-        ctxStats.restore();
+        vue.barEnemy = e;
+        vue.barName = name;
         if (examine) return name;
     },
 
     clearEnemyBar() {
-        display.rect({
-            ctx: display.ctxes.stats,
-            y: MS,
-            yPx: -5,
-            widthPx: display.width,
-            height: 2,
-            heightPx: 5,
-            clear: true,
-        });
-    },
-
-    drawCurrentEnemy(enemy) {
-        let ctxStats = display.ctxes.stats;
-        if (!enemy) return;
-        ctxStats.save();
-        ctxStats.textAlign = 'center';
-        ctxStats.strokeStyle = colorList.gray;
-        display.rect({
-            ctx: ctxStats,
-            x: -1.95,
-            xPx: display.width,
-            y: -4.45,
-            yPx: display.height,
-            width: 1,
-            height: 1,
-            stroke: true,
-        });
-
-        let symbol = enemy.symbol;
-        ctxStats.fillStyle = enemy.color;
-        if (enemy.shadow) ctxStats.shadowColor = enemy.shadow;
-        display.text({
-            ctx: ctxStats,
-            msg: symbol,
-            x: -1.5,
-            y: -4,
-            xPx: display.width,
-            yPx: display.height,
-            stroke: enemy.stroke,
-        });
-
-        ctxStats.restore();
+        vue.barEnemy = null;
     },
 };
 
-const cursol = {
+const cursor = {
     init() {
-        this.x = this.cX = rogue.x;
-        this.y = this.cY = rogue.y;
+        let [x, y] = [rogue.x, rogue.y];
+        this.x = this.cX = x;
+        this.y = this.cY = y;
+        this.draw();
+        map.draw(x, y, true);
     },
 
-    draw(x, y) {
+    draw() {
         display.rect({
-            ctx: display.ctxes.cur,
-            x: x - IN_WIDTH / 2,
-            xPx: display.width / 2,
-            y: y,
+            ctx: display.ctxes.cursor,
+            x: this.x,
+            xPx: 1,
+            y: this.y,
+            yPx: 1,
             width: 1,
+            widthPx: -2,
             height: 1,
+            heightPx: -2,
             stroke: true,
         });
     },
 
-    clear(x, y) {
-        display.rect({
-            ctx: display.ctxes.cur,
-            x: x - IN_WIDTH / 2, 
-            xPx: display.width / 2 -1,
-            y: y,
-            yPx: -1,
-            width: 1,
-            widthPx: 3,
-            height: 1,
-            heightPx: 3,
-            clear: true,
-        });
-    },
-
-    plot(x, y, color) {
-        let X = x - this.cX;
-        let Y = y - this.cY + (IN_HEIGHT) / 2;
-        let ctxCur = display.ctxes.cur;
+    drawPlot(x, y, color) {
+        let ctxCur = display.ctxes.cursor;
         ctxCur.save();
         ctxCur.fillStyle = color;
-        ctxCur.globalAlpha = 0.3;
+        ctxCur.globalAlpha = 0.5;
         display.rect({
             ctx: ctxCur,
-            x: X - 0.5,
-            xPx: display.width / 2,
-            y: Y,
+            x: x,
+            y: y,
             width: 1,
             height: 1,
             clear: true,
@@ -528,11 +450,78 @@ const cursol = {
         display.text({
             ctx: ctxCur,
             msg: '＊',
-            x: X,
-            y: Y + 0.5,
-            xPx: display.width / 2,
+            x: x,
+            y: y,
         });
 
         ctxCur.restore();
+    },
+
+    clear() {
+        display.rect({
+            ctx: display.ctxes.cursor,
+            x: this.x, 
+            y: this.y,
+            width: 1,
+            height: 1,
+            clear: true,
+        });
+    },
+
+    clearAll() {
+        display.clearOne(display.ctxes.cursor);
+    },
+
+    move(key) {
+        let dr = getDirection(key);
+        if (!dr) return;
+        let [x, y] = [this.x, this.y];
+        let [xinc, yinc] = [dr.x, dr.y];
+        let [xDest, yDest] = [x + xinc, y + yinc];
+        let width = map.coords.length - 1;
+        let height = map.coords[0].length - 1;
+        if (xDest < 0 || xDest > width || yDest < 0 || yDest > height) return;
+        if (input.isShift) {
+            xinc *= 10;
+            yinc *= 10;
+            xDest = x + xinc;
+            if (xDest < 0 || xDest > width) {
+                xinc = (xDest < 0 ? 0 : width) - x;
+                if (yinc) yinc = (yinc > 0 ? 1 : -1) * Math.abs(xinc);
+            }
+
+            yDest = y + yinc;
+            if (yDest < 0 || yDest > height) {
+                yinc = (yDest < 0 ? 0 : height) - y;
+                if (xinc) xinc = (xinc > 0 ? 1 : -1) * Math.abs(yinc);
+            }
+        }
+
+        this.clear();
+        this.x += xinc;
+        this.y += yinc;
+        [x, y] = [this.x, this.y];
+        let offsetX = Math.floor(display.width / 2 / display.fs - .5);
+        let offsetY = Math.floor(display.height / 2 / display.fs - .5);
+        let X = x - this.cX;
+        let Y = y - this.cY;
+        let setCX, setCY;
+        if (Math.abs(X) > offsetX) {
+            setCX = true
+            if (yinc > 0 && Y > 0 || yinc < 0 && Y < 0) setCY = true;
+        }
+        
+        if (Math.abs(Y) > offsetY) {
+            setCY = true;
+            if (xinc > 0 && X > 0 || xinc < 0 && X < 0) setCX = true;
+        }
+        
+        if (setCX) this.cX = x;
+        if (setCY) this.cY = y;
+        if (flag.aim) rogue.examinePlot();
+        this.draw();
+        map.draw(this.cX, this.cY, true);
+        let loc = map.coords[x][y];
+        loc.getInfo();
     }
 };

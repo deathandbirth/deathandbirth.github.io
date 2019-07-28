@@ -272,7 +272,7 @@ const Trap = class extends Thing {
 		let loc = map.coords[this.x][this.y];
 		loc.trap = this;
 		loc.hidden = this.hidden;
-		if (!this.hidden) loc.draw();
+        map.trapList[this.x + ',' + this.y] = this;
 	}
 
 	getName() {

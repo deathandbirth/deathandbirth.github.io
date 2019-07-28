@@ -12,11 +12,13 @@ const Data = class {
     }
 
     loadInit() {
+        display.clearAll();
         this.loadOption();
         getRndName.init();
         this.loadItemTab();
         this.loadCoords();
         message.list = this.messageList;
+        vue.msgList = message.list;
         if(this.ver < 0.003) {
             rogue.litMapIds = this.litMapIds;
             rogue.inferno = this.difficulty.inferno;
@@ -28,10 +30,14 @@ const Data = class {
         }
 
         this.convertCe();
-        display.clearAll();
-        display.change(option.display.user, true);
+        vue.rogue = rogue;
+        vue.isEnglish = option.isEnglish();
         initFlag();
+        rogue.litMapIds = {};
+        rogue.lightenOrDarken('Lighten');
+        map.redraw();
         this.loadAudio();
+        creation.setList();
     }
 
     saveItemTab() {
@@ -45,7 +51,7 @@ const Data = class {
                 thisItem.name = {};
                 thisItem.name['a'] = item.name['a'];
                 thisItem.name['b'] = item.name['b'];
-                if (key === 'potion') thisItem.color = item.color;
+                if (key === 'potion' || key === 'wand') thisItem.color = item.color;
                 this.itemTab[key][tabId] = thisItem;
             }
         }
@@ -75,21 +81,25 @@ const Data = class {
                 item.identified = thisItem.identified;
                 item.name['a'] = thisItem.name['a'];
                 item.name['b'] = thisItem.name['b'];
-                if (key === 'potion') item.color = thisItem.color;
+                if (key === 'potion' || key === 'wand') item.color = thisItem.color;
             }
         }
     }
 
     loadCoords() {
-        map.init(false, true);
         map.coords = this.coords;
+        map.init(false, true);
         for (let locs of map.coords) {
             for (let loc of locs) {
                 loc.__proto__ = Location.prototype;
                 if (loc.fighter) this.loadFighter(loc.fighter);
                 if (loc.item['a']) this.loadItem(loc.item, true);
                 if (loc.enter) this.loadEntrance(loc.enter);
-                if (loc.trap) loc.trap.__proto__ = Trap.prototype;
+                if (loc.trap) { 
+                    loc.trap.__proto__ = Trap.prototype;
+                    map.trapList[loc.x + ',' + loc.y] = loc.trap;
+                }
+
                 if (loc.stairs) {
                     loc.stairs.__proto__ = Staircase.prototype;
                     map.staircaseList[loc.x + ',' + loc.y] = loc.stairs;
@@ -99,7 +109,7 @@ const Data = class {
     }
 
     loadFighter(fighter) {
-        if (fighter.id === ROGUE) {
+        if (fighter.id === ID_ROGUE) {
             fighter.__proto__ = Rogue.prototype;
             rogue = fighter;
             if (this.ver < 0.009) {
@@ -159,6 +169,7 @@ const Data = class {
         }
     }
 
+    /* TODO */
     convertCe(save) {
         if (rogue.ce) rogue.ce = save ? rogue.ce.id : map.enemyList[rogue.ce];
         for (let key in map.enemyList) {
@@ -167,7 +178,7 @@ const Data = class {
                 if (save) {
                     enemy.ce = enemy.ce.id;
                 } else {
-                    enemy.ce = enemy.ce === ROGUE ? rogue : map.enemyList[enemy.ce];
+                    enemy.ce = enemy.ce === ID_ROGUE ? rogue : map.enemyList[enemy.ce];
                 }
             }
         }
@@ -177,60 +188,59 @@ const Data = class {
         audio.stop(audio.curTrack);
         audio.curTrack = this.track;
         let a = this.option['BGM'].user;
-        audio.volBGM = option['BGM'].choise[a].a / 10;
+        audio.volBGM = option['BGM'].select[a].a / 10;
         a = this.option['SE'].user;
-        audio.volSE = option['SE'].choise[a].a / 10;
+        audio.volSE = option['SE'].select[a].a / 10;
         audio.playMusic(audio.curTrack);
     }
 }
 
 const data = {
     name: 'Player',
+    getName() {
+        return `dnb_v0.1xx_${this.name}`;
+    },
+
     save(unload) {
         if (unload && audio.curTrack) audio.music[audio.curTrack].pause();
-        if (flag.died || flag.retry || this.error) {
+        if (flag.died || flag.retry || flag.title || this.error) {
             return;
         } else if (flag.synthesize) {
             rogue.returnCubeItem();
         }
 
+        cursor.clearAll();
         message.draw(option.isEnglish() ? 'Saved' : '記録した');
         let saveData = new Data();
-        localStorage.setItem(this.name, JSON.stringify(saveData));
+        localStorage.setItem(this.getName(), JSON.stringify(saveData));
     },
 
     load() {
-        let found;
-        let saveData = JSON.parse(localStorage.getItem(this.name));
+        let saveData = JSON.parse(localStorage.getItem(this.getName()));
         if (saveData !== null) {
             saveData.__proto__ = Data.prototype;
             try {
                 saveData.loadInit();
                 message.draw(option.isEnglish() ? 'Loaded' : '記録を読み込んだ');
             } catch (e) {
-                this.failed = true;
+                console.log(e);
                 let ver = saveData.ver;
-                display.text({
-                    ctx: display.ctxes.inv,
-                    msg: option.isEnglish() ?
-                        `Failed to load. In order to delete your save data and continue, please push 'Y'.(ver ${ver})` :
-                        `読み込みに失敗しました。セーブデータを消去してゲームを続けるには、'Y'を押してください。(ver ${ver})`,
-                    x: 1,
-                    y: 1,
-                });
+                vue.verData = ver;
+                flag.regular = false;
+                flag.failed = true;
             }
         } else {
             game.start();
         }
     },
 
-    delete(name) {
-        localStorage.removeItem(name);
+    delete() {
+        localStorage.removeItem(this.getName());
     },
 
     exit() {
         this.save();
-        game.quit(89, true);
+        game.quit('Y', true);
     },
 
     dontSave() {

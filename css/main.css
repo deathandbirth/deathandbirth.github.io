@@ -233,7 +233,7 @@ ul {
 }
 
 .bg-container::before {
-    background-image: url(../img/bg_inferno.jpg);
+    background-image: url(../img/bg_inferno_comp.jpg);
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
@@ -262,7 +262,7 @@ header {
 }
 
 .header-bg {
-    background: url(../img/dnb_header.png) no-repeat center center / cover;
+    background: url(../img/dnb_header_comp.png) no-repeat center center / cover;
     content: "";
     position: fixed;
     top: 0;
@@ -308,7 +308,7 @@ header .link-box {
 /* Story Section */
 
 .section-story {
-    background-image: url(../img/bg_story.jpg);
+    background-image: url(../img/bg_story_comp.jpg);
     background-position: 50% 70%;
 }
 

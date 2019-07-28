@@ -7,24 +7,26 @@ const Enemy = class extends Fighter {
     }
 
     gainStats() {
-        switch (this.grow && coinToss() ? this.grow : rndInt(3)) {
-            case STR:
-                this.str = ++this.strMax;
-                break;
-            case DEX:
-                this.dex = ++this.dexMax;
-                break;
-            case CON:
-                this.con = ++this.conMax;
-                break;
-            case INT:
-                this.int = ++this.intMax;
-                break;
+        for (let i = 0; i < 5; i++ ) {
+            switch (this.grow && coinToss() ? this.grow : rndInt(3)) {
+                case STAT_STR:
+                    this.str = ++this.strMax;
+                    break;
+                case STAT_DEX:
+                    this.dex = ++this.dexMax;
+                    break;
+                case STAT_CON:
+                    this.con = ++this.conMax;
+                    break;
+                case STAT_INT:
+                    this.int = ++this.intMax;
+                    break;
+            }
         }
     }
 
     init(position, x, y, summon, magic, bias, lvl) {
-        if (this.mod !== UNIQUE && lvl > this.lvl) {
+        if (this.mod !== MOD_UNIQUE && lvl > this.lvl) {
             let boost = rndInt(lvl - this.lvl);
             for (let i = 0; i < boost; i++) {
 				this.gainStats();
@@ -37,17 +39,13 @@ const Enemy = class extends Fighter {
         this.exp = this.expMax = calcLevel(this.lvl);
         this.expGain = this.getExp();
         this.expNext = this.calcNextLvl();
-        if (this.volumeRate) {
-            this.getMaterial();
-            this.getBaseandWeight();
-		}
-		
-        if (this.mod === UNIQUE) {
+        if (this.piece) this.getMaterial();
+        if (this.mod === MOD_UNIQUE) {
             this.getUnique();
-		} else if (this.mod === MAGIC || magic || this.material === M_GEM ||
-            evalPercentage(10 + rogue.mf)) {
+        } else if (this.mod !== MOD_NORMAL || magic ||
+            this.material === M_GEM || Material.evalMod(MOD_MAGIC, rogue.mf)) {
             if (this.bias) bias = this.bias;
-            if (evalPercentage((10 + rogue.mf) / 4)) {
+            if (this.mod === MOD_RARE || Material.evalMod(MOD_RARE, rogue.mf)) {
                 this.getRare(bias);
 			} else {
 				this.getMagic(bias);
@@ -55,25 +53,25 @@ const Enemy = class extends Fighter {
 		}
 		
         if (evalPercentage(10)) this.dropNum++;
-        if (this.mf) this.dropNum += Math.ceil(this.mf / 10);
-        this.calcDmgOne();
+        if (this.mf) this.dropNum += Math.ceil(this.mf / 30);
+        // this.calcDmgOne();
         this.gainSynerzyAll();
         if (this.starter) this.getStarterItems();
-        if (this.mod !== NORMAL) this.getOrLooseStats(modBonusMap.get(this.mod), true);
+        if (this.mod !== MOD_NORMAL) this.getOrLooseStats(modBonusMap.get(this.mod), true);
         this.calcAll();
         this.sleeping = this.awake || this.aggravating || summon ? 0 : DEFAULT;
         if (this.mimic) hallucinate.one(this, false, true);
         if (this.dropNum) {
             this.createItemIntoPack({
                 times: this.dropNum,
-                magic: this.mf || this.mod === UNIQUE,
+                magic: this.mf || this.mod === MOD_UNIQUE,
                 lvl: this.lvl,
             });
         }
 
         if (this.gf) {
             this.createItemIntoPack({
-                times: rndIntBet(1, Math.ceil(this.gf / 20)),
+                times: rndIntBet(1, Math.ceil(this.gf / 40)),
                 type: 'coin',
                 tabId: C_COIN,
             });
@@ -81,7 +79,7 @@ const Enemy = class extends Fighter {
 
         this.hp = this.hpMax;
         this.mp = this.mpMax;
-        this.energy = summon ? -COST_REGULAR : this.spd;
+        this.energy = COST_REGULAR * (summon ? -1 : this.spd / 100);
         super.init(position, x, y);
     }
 
@@ -100,7 +98,7 @@ const Enemy = class extends Fighter {
 
     act() {
         let dr = null;
-        if (this.calcCondition(true) === null) return;
+        if (this.calcCondition() === null) return;
         this.heal()
         if (!this.ce) {
             if (this.hallucinated) this.searchCe();
@@ -113,8 +111,9 @@ const Enemy = class extends Fighter {
                 this.wakeUp();
 			} else {
                 this.decreaseEnergy();
-                return;
             }
+
+            return;
 		}
 		
         let los = l <= FOV_SQ ? lineOfSight(this.x, this.y, this.ce.x, this.ce.y) : false;
@@ -169,7 +168,7 @@ const Enemy = class extends Fighter {
             this.drawOrErase(false);
             this.x += dr.x, this.y += dr.y;
             this.drawOrErase(true);
-            this.cost -= this.frw >= 100 ? 5 : Math.floor(this.frw / 20);
+            this.cost -= this.spdMove;
         }
     }
 
@@ -178,7 +177,7 @@ const Enemy = class extends Fighter {
         if (betw) {
             dr = getDirectionBetween(this.x, this.y, this.ce.x, this.ce.y);
 		} else if (rand) {
-			dr = this.blinded && this.dr ? this.dr : DR[rndInt(DR.length - 1)];
+			dr = this.blinded && this.dr ? this.dr : drList[rndInt(drList.length - 1)];
 		}
 
         if (!this.canMove(dr)) dr = this.getDrAround(dr, los); ///
@@ -223,11 +222,11 @@ const Enemy = class extends Fighter {
     }
 
     getDrToMinDistance() {
-        if (this.ce.id !== ROGUE) return this.getDirection(true, true);
+        if (this.ce.id !== ID_ROGUE) return this.getDirection(true, true);
         let drT;
         let dist = FOV + 1;
         let distCur = rogue.distMap[this.x + ',' + this.y];
-        for (let dr of DR) {
+        for (let dr of drList) {
             let [x, y] = [this.x + dr.x, this.y + dr.y];
             if (dist > rogue.distMap[x + ',' + y]) {
                 if (!this.canMove(dr)) continue;
@@ -265,8 +264,7 @@ const Enemy = class extends Fighter {
             let enemy = map.enemyList[key];
             if (enemy.ce && enemy.ce.id === this.id) enemy.removeCe();
 		}
-		
-        loc.draw();
+        
         audio.playSound('kill', distanceSq(rogue.x, rogue.y, this.x, this.y));
         if (!f) return;
         if (rogue.hallucinated || this.mimic && !this.identified) hallucinate.undoOne(this);
@@ -276,7 +274,7 @@ const Enemy = class extends Fighter {
             `${nameE} defeated ${name}` :
             `${nameE}${name}を倒した`);
         f.gainExp(this.expGain);
-        if (f.id !== ROGUE) return;
+        if (f.id !== ID_ROGUE) return;
         if (this.material && this.probMaterial()) this.makeMaterial(true);
         this.dropEquipment(this.equipment);
         this.dropEquipment(this.side);
@@ -285,12 +283,12 @@ const Enemy = class extends Fighter {
 		}
 
         if (this.boss && rogue.cdl === 33) {
-            creation.stairs(1, DOWN, LOCATION, this.x, this.y, true);
+            creation.stairs(1, DR_DOWN, POS_LOCATION, this.x, this.y, true);
             if (rogue.cdl === 33 && !rogue.lethe) {
                 creation.item({
                     type: 'potion',
                     tabId: P_LETHE,
-                    position: LOCATION,
+                    position: POS_LOCATION,
                     x: this.x,
                     y: this.y,
                 });
@@ -303,19 +301,19 @@ const Enemy = class extends Fighter {
     probMaterial() {
         let perc;
         switch (this.mod) {
-            case NORMAL:
-            case UNIQUE:
+            case MOD_NORMAL:
+            case MOD_UNIQUE:
                 perc = 0;
                 break;
-            case MAGIC:
+            case MOD_MAGIC:
                 perc = 20;
                 break;
-            case RARE:
+            case MOD_RARE:
                 perc = 10;
                 break;
 		}
 		
-        return perc && this.matRedTimes ? evalPercentage(perc / this.matRedTimes) : false;
+        return perc && this.matDropRate ? evalPercentage(perc / this.matDropRate) : false;
     }
 
     dropEquipment(list) {
@@ -328,19 +326,16 @@ const Enemy = class extends Fighter {
     }
 
     decide(distance) {
-        if (this.skillProb && evalPercentage(this.skillProb * 100) && this.checkToCast()) {
+        if (this.skill && this.skill['a'] && evalPercentage(this.skillProb * 100) && this.checkToCast()) {
             if (this.castSkill(distance)) return;
 		}
 		
         if (this.haveMissile()) {
-            this.ci = this.getAmmo(this.equipment['main'].throwType);
-            if (this.ci) {
+            let ammo = this.getAmmo(this.equipment['main'].throwType);
+            if (ammo) {
+                this.ci = ammo;
                 flag.arrow = true;
-                let name = this.getName(true);
-                let arrow = this.timesMissile === 1 ? 'an arrow' : 'arrows';
-                message.draw(option.isEnglish() ?
-                    `${name} shot ${arrow}` :
-                    `${name}矢を放った`);
+                this.getShootMsg(ammo);
                 this.aim({
                     x1: this.ce.x,
                     y1: this.ce.y,
@@ -357,30 +352,50 @@ const Enemy = class extends Fighter {
     }
 
     castSkill(distance) {
-        let a = EA[rndInt(Object.keys(this.skill).length - 1)];
-        let id = this.skill[a].id;
-        let skill = skillMap.get(id);
-        if (!this.checkToCast(skill)) return;
-        if (skill.kind !== 'self' && skill.range >= 0) {
-            let l = skill.range;
-            l += skill.radius ? skill.radius : 0;
-            if (l ** 2 < distance) return;
-		}
-		
-        this.cs = this.skill[a];
-        if (skill.kind === 'self') {
-            if (this.castSelfSpell(skill) === null) return;
-        } else {
-            flag.skill = true;
-            let [x, y] = skill.range === 0 ? [this.x, this.y] : [this.ce.x, this.ce.y];
-            this.aim({
-                x1: x,
-                y1: y,
-                nameSkill: id,
-            });
-		}
-		
-        return true;
+        let cast;
+        let array = Object.keys(this.skill);
+        array.shuffle();
+        for (let a of array) {
+            let id = this.skill[a].id;
+            let skill = skillMap.get(id);
+            if (!this.checkToCast(skill)) continue;
+            if (skill.kind !== 'self' && skill.range >= 0) {
+                let l = skill.range;
+                l += skill.radius ? skill.radius : 0;
+                if (l ** 2 < distance) continue;
+            }
+            
+            if (id === TELEPORT_TO || id === RAID) {
+                if (1 > distance) continue;
+            } else if (id === HEAL) {
+                if (this.hp >= this.hpMax) continue;
+            } else if (id === ENCOURAGEMENT) {
+                if (this.dmgBuffDur) continue;
+            } else if (id === BLESSING) {
+                if (this.acBuffDur) continue;
+            } else if (id === SPEED) {
+                if (this.spdBuffDur) continue;
+            }
+            
+            this.cs = this.skill[a];
+            if (skill.kind === 'self') {
+                cast = this.castSelfSpell(skill) !== null;
+                if (cast) break;
+            } else {
+                cast = true;
+                flag.skill = true;
+                let [x, y] = skill.range === 0 ? [this.x, this.y] : [this.ce.x, this.ce.y];
+                this.aim({
+                    x1: x,
+                    y1: y,
+                    nameSkill: id,
+                });
+
+                break;
+            }
+        }
+
+        return cast;
     }
 
     probWakeUp(distanceSq) {
@@ -445,21 +460,21 @@ const Enemy = class extends Fighter {
     getSkill(id) {
         if (!this.skillPoints) return;
         let skill = skillMap.get(id);
-        if (skill.kind === 'breath' && this.race === HUMAN ||
-            skill.kind !== 'breath' && skill.type === 'spell' && this.int < 10) {
+        if (skill.kind === 'breath' && this.race === RACE_HUMAN ||
+            skill.kind !== 'breath' && skill.type === 'spell' && this.int < 50) {
 			return;
 		}
 
         if (!this.skill) {
-            this.skillProb = 1 / ((skill.kind === 'breath' && this.race & DRAGON ? 7 : 10) - Math.floor(this.lvl / 20));
+            this.skillProb = 1 / ((skill.kind === 'breath' && this.race & RACE_DRAGON ? 7 : 10) - Math.floor(this.lvl / 20));
             this.skill = {};
 		}
 		
         let i = 0;
-        while (this.skill[EA[i]] && this.skill[EA[i]].id !== id) i++;
+        while (this.skill[eaList[i]] && this.skill[eaList[i]].id !== id) i++;
         if (i >= MAX_SKILL_NUM) return;
-        if (!this.skill[EA[i]]) this.skill[EA[i]] = {};
-        skill = this.skill[EA[i]];
+        if (!this.skill[eaList[i]]) this.skill[eaList[i]] = {};
+        skill = this.skill[eaList[i]];
         skill.id = id;
         if (!skill.lvl) skill.lvl = 0;
         let gainLvl = MAX_SKILL_LVL - skill.lvl;
@@ -478,7 +493,7 @@ const Enemy = class extends Fighter {
         let name;
         if (this.isShowing()) {
             name = this.name[option.getLanguage()];
-            if (this.cursed && this.mod !== UNIQUE)
+            if (this.cursed && this.mod !== MOD_UNIQUE)
                 name = (option.isEnglish() ? 'Cursed ' : '呪われた') + name;
         } else {
 			name = option.isEnglish() ? 'Something' : '何か';
@@ -489,7 +504,7 @@ const Enemy = class extends Fighter {
     }
 
     isOpponent(fighter) {
-        return /*fighter.id===ROGUE||*/ this.ce && this.ce.id === fighter.id ||
+        return /*fighter.id===ID_ROGUE||*/ this.ce && this.ce.id === fighter.id ||
             this.confused || this.blinded;
     }
 

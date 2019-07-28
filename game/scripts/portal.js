@@ -12,7 +12,6 @@ const Portal = class extends Thing {
         if (map.portal) {
             let loc = map.coords[map.portal.x][map.portal.y];
             loc.enter = null;
-            loc.draw();
             map.portal = null;
 		}
 
@@ -20,6 +19,5 @@ const Portal = class extends Thing {
         if (this.abort) return;
         let loc = map.coords[this.x][this.y];
         loc.enter = map.portal = this;
-        loc.draw();
     }
 }

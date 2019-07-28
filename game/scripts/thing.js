@@ -1,11 +1,13 @@
 const Thing = class {
     constructor(obj) {
         copyObj(this, obj);
+        this.x = 0;
+        this.y = 0;
     }
 
     init(position, x, y) {
-        if (position !== LOCATION) {
-            this.getPositionRandomly(position === INIT, position === AWAY);
+        if (position !== POS_LOCATION) {
+            this.getPositionRandomly(position === POS_INIT, position === POS_AWAY);
             [x, y] = [this.x, this.y];
 		}
 
@@ -53,7 +55,7 @@ const Thing = class {
 		
         if (count < 100) {
             [this.x, this.y] = [x, y];
-		} else if (!tele && this.id !== ROGUE) {
+		} else if (!tele && this.id !== ID_ROGUE) {
 			this.dissapear();
 		}
     }
@@ -87,7 +89,7 @@ const Thing = class {
 		
         if (type === 'item' && ++count < MAX_PACK_COUNT) {
             this.spiralSearch(x0, y0, type, count);
-		} else if (this.id !== ROGUE) {
+		} else if (this.id !== ID_ROGUE) {
 			this.dissapear();
 		}
     }
@@ -97,7 +99,7 @@ const Thing = class {
         if (!loc.isObstacle() && !loc.enter) {
             if ((type === 'fighter' && !loc.fighter ||
                     type === 'item' && !loc.trap && !loc.door &&
-                    !loc.item[EA[count]] ||
+                    !loc.item[eaList[count]] ||
                     type === 'trap' && !loc.item['a'] &&
                     !loc.door && !loc.trap && !loc.stairs ||
                     type === 'staircase' && !loc.door &&

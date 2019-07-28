@@ -1,16 +1,16 @@
 const stairsMap = new Map([
-	[DOWN, {
+	[DR_DOWN, {
         name: { a: 'down staircase', b: '下り階段' },
         symbol: '>',
         color: colorList.white,
-        id: DOWN,
+        id: DR_DOWN,
 	}],
 	
-	[UP, {
+	[DR_UP, {
         name: { a: 'up staircase', b: '上り階段' },
         symbol: '<',
         color: colorList.white,
-        id: UP,
+        id: DR_UP,
     }],
 ]);
 
@@ -26,7 +26,6 @@ const Staircase = class extends Thing {
         let loc = map.coords[this.x][this.y];
         loc.stairs = this;
         loc.hidden = this.hidden;
-        if (!this.hidden) loc.draw();
         map.staircaseList[this.x + ',' + this.y] = this;
     }
 }

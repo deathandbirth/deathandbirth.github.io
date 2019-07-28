@@ -8,16 +8,16 @@ const Door = class extends Position {
     getPosInFrontOf() {
         let [x, y] = [this.x, this.y];
         switch (this.dr) {
-            case LEFT:
+            case DR_LEFT:
                 x--;
                 break;
-            case DOWN:
+            case DR_DOWN:
                 y++;
                 break;
-            case UP:
+            case DR_UP:
                 y--;
                 break;
-            case RIGHT:
+            case DR_RIGHT:
                 x++;
                 break;
 		}
@@ -72,19 +72,19 @@ const Cave = class extends Room {
     getDoor(i) {
         let x, y;
         let found = true;
-        if (i === LEFT) { //0
+        if (i === DR_LEFT) { //0
             if (this.id % CAVE_NUM_COL === 0) return null;
             x = this.x;
             y = rndIntBet(this.y + 1, this.y + this.height - 2);
-        } else if (i === DOWN) { //1
+        } else if (i === DR_DOWN) { //1
             if (Math.floor(this.id / CAVE_NUM_COL) === CAVE_NUM_ROW - 1) return null;
             x = rndIntBet(this.x + 1, this.x + this.width - 2);
             y = this.y + this.height - 1;
-        } else if (i === UP) { //2
+        } else if (i === DR_UP) { //2
             if (Math.floor(this.id / CAVE_NUM_COL) === 0) return null;
             x = rndIntBet(this.x + 1, this.x + this.width - 2);
             y = this.y;
-        } else { //3 RIGHT
+        } else { //3 DR_RIGHT
             if (this.id % CAVE_NUM_COL === CAVE_NUM_COL - 1) return null;
             x = this.x + this.width - 1;
             y = rndIntBet(this.y + 1, this.y + this.height - 2);
@@ -121,7 +121,7 @@ const Cave = class extends Room {
         let type = RANDOM;
         if (rogue.cdl >= 10 && evalPercentage(5)) {
             do {
-                type = FT[rndInt(FT.length - 2)];
+                type = ftList[rndInt(ftList.length - 2)];
             } while (fighterTab[type][0].lvl > rogue.cdl + boost);
 		}
 		
@@ -145,21 +145,21 @@ const Cave = class extends Room {
                 if (coinToss()) {
                     if (coinToss()) {
                         creation.item({
-                            position: LOCATION,
+                            position: POS_LOCATION,
                             x: i,
                             y: j,
                             magic: magic,
                             boost: boost,
                         });
                     } else {
-                        creation.trap(1, RANDOM, LOCATION, i, j);
+                        creation.trap(1, RANDOM, POS_LOCATION, i, j);
                     }
 				}
 				
                 if ((!loc.trap || !loc.trap.protection) && evalPercentage(25)) {
                     creation.enemy({
                         type: type,
-                        position: LOCATION,
+                        position: POS_LOCATION,
                         x: i,
                         y: j,
                         magic: magic,

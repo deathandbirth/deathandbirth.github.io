@@ -8,7 +8,7 @@ Object.defineProperty(Array.prototype, 'shuffle', {
     value() {
         let i = this.length;
         while (i-- > 1) {
-            let j = rndInt(i - 1);
+            let j = rndInt(i);
             this.swap(i, j);
         }
     },
@@ -21,6 +21,13 @@ const copyObj = (obj, obj2) => {
     }
 }
 
+const numberPadding = (num, digit, zero) => {
+    if (!num) num = 0;
+    let padding = '';
+    for (let i = 0; i < digit; i++) padding += zero ? '0' : '*';
+    return (padding + num).slice(-digit);
+}
+
 const lightenProb = () => !evalPercentage((rogue.cdl - 1) * 5);
 const searchProb = () => evalPercentage(10 + rogue.searching);
 const calcLevel = x => (x - 1) ** 4 + 10 * (x - 1);
@@ -28,10 +35,10 @@ const calcLevel = x => (x - 1) ** 4 + 10 * (x - 1);
 const initTab = () => {
     getRndName.init();
     for (let key in itemTab) {
-        if (key !== 'potion' && key !== 'wand' && key !== 'scroll' && key !== 'recipe') continue;
+        if (key !== 'potion' && key !== 'wand' && key !== 'scroll' && key !== 'recipe' && key !== 'orb') continue;
         for (let item of itemTab[key].values()) {
             item.identified = false;
-            getRndName[key](item);
+            if (key !== 'orb') getRndName[key](item);
         }
     }
 }
@@ -73,10 +80,10 @@ const getRndName = {
 
     word(item) {
         let msg = '';
-        let l = EA.length;
+        let l = eaList.length;
         for (let i = 0; i < 3; i++) {
             for (let j = 0; j < 3; j++) {
-                msg += EA[rndInt(l - 1)];
+                msg += eaList[rndInt(l - 1)];
             }
 
             if (i !== 2) msg += ' ';
@@ -86,31 +93,44 @@ const getRndName = {
     }
 }
 
-const dice = {
-    get(dmgBase, numBonus = 0, sidesBonus = 0) {
-        let num = '';
-        let sides = '';
+const minMax = {
+    getBase(base, varRate) {
+        let value = base * varRate / 100;
+        let min = Math.ceil(base - value);
+        let max = Math.floor(base + value);
+        return min + '-' + max;
+    },
+
+    getNums(base, leftBonus = 0, rightBonus = 0, dice) {
+        let left = '';
+        let right = '';
         let i = 0;
         do {
-            num += dmgBase.charAt(i++);
-        } while (dmgBase.charAt(i) !== 'd');
+            left += base.charAt(i++);
+        } while (isFinite(base.charAt(i)));
 
-        while (dmgBase.charAt(++i) !== '') {
-            sides += dmgBase.charAt(i);
+        while (base.charAt(++i) !== '') {
+            right += base.charAt(i);
         }
 
-        num = Number(num) + numBonus;
-        sides = Number(sides) + sidesBonus;
-        return { num, sides };
+        left = Number(left) + leftBonus;
+        right = Number(right) + rightBonus;
+        if (!dice && left >= right) right = left + 1;
+        return [left, right];
     },
 
     getAvg() {
-        let { num, sides } = this.get(...arguments);
-        return Math.ceil((1 + sides) / 2 * num);
+        let [min, max] = this.getNums(...arguments);
+        return Math.ceil((min + max) / 2);
     },
 
     roll() {
-        let { num, sides } = this.get(...arguments);
+        let [min, max] = this.getNums(...arguments);
+        return rndIntBet(min, max);
+    },
+
+    dice(base) {
+        let [num, sides] = this.getNums(base, 0, 0, true);
         let value = 0;
         if (sides === 1) {
             value = num;
@@ -136,113 +156,146 @@ const rndInt = (i) => Math.floor(Math.random() * (i + 1)); //0~i
 const rndIntBet = (i, j) => Math.floor(Math.random() * (j - i + 1)) + i; //i~j
 const coinToss = () => Math.random() >= 0.5;
 const evalPercentage = (perc) => perc / 100 > Math.random();
-const getAlphabet = (keyCode) => keyCode < 65 || keyCode > 90 ? null : EA[keyCode - 65];
-const getNumber = (keyCode) => keyCode < 48 || keyCode > 57 ? null : keyCode - 48;
-const getAlphabetOrNumber = (keyCode) => {
-    let a = getAlphabet(keyCode);
-    if (!a) a = getNumber(keyCode);
+const getAlphabet = (key) => /^[a-z]$/i.test(key) ? key : null;
+const getNumber = (key) => /^[0-9]$/.test(key) ? key : null;
+const getAlphabetOrNumber = (key) => {
+    let a = getAlphabet(key);
+    if (!a) a = getNumber(key);
     return a;
 }
 
 const getUpperCase = (string) => string.charAt(0).toUpperCase() + string.slice(1);
-const getDirection = (keyCode) => {
+const getDirection = (key) => {
     let id;
-    switch (keyCode) {
-        case 72: //h
-        case 37: //left arrow
-        case 100: //T4
-            id = LEFT;
+    switch (key) {
+        case 'h':
+        case 'H':
+        case 'ArrowLeft':
+        case 'Left':
+            id = DR_LEFT;
             break;
-        case 74: //j
-        case 40: //down arrow
-        case 98: //T2
-            id = DOWN;
+        case 'j':
+        case 'J':
+        case 'ArrowDown':
+        case 'Down':
+            id = DR_DOWN;
             break;
-        case 75: //k
-        case 38: //up arrow
-        case 104: //T8
-            id = UP;
+        case 'k':
+        case 'K':
+        case 'ArrowUp':
+        case 'Up':
+            id = DR_UP;
             break;
-        case 76: //l
-        case 39: //right arrow
-        case 102: //T6
-            id = RIGHT;
+        case 'l':
+        case 'L':
+        case 'ArrowRight':
+        case 'Right':
+            id = DR_RIGHT;
             break;
-        case 89: //y
-        case 103: //T7
-            id = UPLEFT;
+        case 'y': 
+        case 'Y':
+        case 'Home':
+            id = DR_UPLEFT;
             break;
-        case 66: //b
-        case 97: //T1
-            id = DOWNLEFT;
+        case 'b':
+        case 'B':
+        case 'End':
+            id = DR_DOWNLEFT;
             break;
-        case 85: //u
-        case 105: //T9
-            id = UPRIGHT;
+        case 'u':
+        case 'U':
+        case 'PageUp':
+            id = DR_UPRIGHT;
             break;
-        case 78: //n
-        case 99: //T3
-            id = DOWNRIGHT;
+        case 'n':
+        case 'N':
+        case 'PageDown':
+            id = DR_DOWNRIGHT;
             break;
         default:
             return null;
     }
-    return DR[id];
+    return drList[id];
 }
 
 const getDirectionBetween = (x1, y1, x2, y2) => {
-    return x1 > x2 && y1 === y2 ? DR[LEFT] :
-        x1 === x2 && y1 < y2 ? DR[DOWN] :
-        x1 === x2 && y1 > y2 ? DR[UP] :
-        x1 < x2 && y1 === y2 ? DR[RIGHT] :
-        x1 > x2 && y1 > y2 ? DR[UPLEFT] :
-        x1 > x2 && y1 < y2 ? DR[DOWNLEFT] :
-        x1 < x2 && y1 > y2 ? DR[UPRIGHT] :
-        x1 < x2 && y1 < y2 ? DR[DOWNRIGHT] :
+    return x1 > x2 && y1 === y2 ? drList[DR_LEFT] :
+        x1 === x2 && y1 < y2 ? drList[DR_DOWN] :
+        x1 === x2 && y1 > y2 ? drList[DR_UP] :
+        x1 < x2 && y1 === y2 ? drList[DR_RIGHT] :
+        x1 > x2 && y1 > y2 ? drList[DR_UPLEFT] :
+        x1 > x2 && y1 < y2 ? drList[DR_DOWNLEFT] :
+        x1 < x2 && y1 > y2 ? drList[DR_UPRIGHT] :
+        x1 < x2 && y1 < y2 ? drList[DR_DOWNRIGHT] :
         null;
 }
 
 const getNextDirection = (dr, ccw) => { //counterclockwise
     let id;
     switch (dr.id) {
-        case LEFT:
-            id = ccw ? DOWNLEFT : UPLEFT;
+        case DR_LEFT:
+            id = ccw ? DR_DOWNLEFT : DR_UPLEFT;
             break;
-        case DOWNLEFT:
-            id = ccw ? DOWN : LEFT;
+        case DR_DOWNLEFT:
+            id = ccw ? DR_DOWN : DR_LEFT;
             break;
-        case DOWN:
-            id = ccw ? DOWNRIGHT : DOWNLEFT;
+        case DR_DOWN:
+            id = ccw ? DR_DOWNRIGHT : DR_DOWNLEFT;
             break;
-        case DOWNRIGHT:
-            id = ccw ? RIGHT : DOWN;
+        case DR_DOWNRIGHT:
+            id = ccw ? DR_RIGHT : DR_DOWN;
             break;
-        case RIGHT:
-            id = ccw ? UPRIGHT : DOWNRIGHT;
+        case DR_RIGHT:
+            id = ccw ? DR_UPRIGHT : DR_DOWNRIGHT;
             break;
-        case UPRIGHT:
-            id = ccw ? UP : RIGHT;
+        case DR_UPRIGHT:
+            id = ccw ? DR_UP : DR_RIGHT;
             break;
-        case UP:
-            id = ccw ? UPLEFT : UPRIGHT;
+        case DR_UP:
+            id = ccw ? DR_UPLEFT : DR_UPRIGHT;
             break;
-        case UPLEFT:
-            id = ccw ? LEFT : UP;
+        case DR_UPLEFT:
+            id = ccw ? DR_LEFT : DR_UP;
             break;
         default:
             return null;
     }
-    return DR[id];
+    return drList[id];
 }
 
 const deleteAndSortItem = (list, a) => {
-    let i = EA.indexOf(a);
+    let i = eaList.indexOf(a);
     let j = Object.keys(list).length - 1 - i;
     for (let k = 0; k < j; k++) {
-        list[EA[i]] = list[EA[++i]];
+        list[eaList[i]] = list[eaList[++i]];
     }
     
-    delete list[EA[i]];
+    delete list[eaList[i]];
+}
+
+/* TEMP */
+const getArticleAndPlural = (name, verb, noun, quantity, upperCase) => {
+    if (noun && quantity === 1) {
+        let article = /^[aeiou]/i.test(name) ? 'an ' : 'a ';
+        name = article + name;
+    }
+    
+    if (verb || quantity > 1) {
+        let plural;
+        if (/[bcdfghjklmnpqrstvwxz]y$/.test(name)) {
+            name = name.slice(0, -1);
+            plural =  'ies';
+        } else if (/[sxo]$|sh$|ch$/.test(name)) {
+            plural =  'es';
+        } else {
+            plural =  's';
+        }
+
+        name += plural;
+    }
+
+    if (upperCase) name = getUpperCase(name);
+    return name;
 }
 
 const Position = class {

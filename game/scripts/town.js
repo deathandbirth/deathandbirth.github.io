@@ -25,7 +25,7 @@ const Build = class extends Room {
             if (this.id === 1) {
 				[x, y] = [this.x + BUILD_WIDTH - 1, this.y];
                 let entrance = new Entrance('cure');
-                entrance.init(LOCATION, x, y);
+                entrance.init(POS_LOCATION, x, y);
 			}
 			
             [x, y] = [this.x + BUILD_WIDTH - 1, this.y + BUILD_HEIGHT - 1];
@@ -34,7 +34,7 @@ const Build = class extends Room {
             if (this.id === 2) {
 				[x, y] = [this.x, this.y];
                 let entrance = new Entrance('blacksmith');
-                entrance.init(LOCATION, x, y);
+                entrance.init(POS_LOCATION, x, y);
 			}
 			
 			[x, y] = [this.x, this.y + BUILD_HEIGHT - 1];
@@ -48,7 +48,7 @@ const Build = class extends Room {
 		}
 
         let entrance = new Entrance(name);
-        entrance.init(LOCATION, x, y);
+        entrance.init(POS_LOCATION, x, y);
     }
 }
 
@@ -64,7 +64,8 @@ const town = {
 		}
 		
         let entrance = new Entrance('stash');
-        entrance.init(LOCATION, POSITION.stash.x, POSITION.stash.y);
+        let pos = positionFixedList.stash;
+        entrance.init(POS_LOCATION, pos.x, pos.y);
         map.fill(true);
         map.lighten(true);
 	},

@@ -115,7 +115,7 @@ const Entrance  = class extends Thing {
         let k = 0;
         if (this.gamble) {
             for (let i = 0; i < 10; i++) {
-                this.list[EA[k++]] = creation.item({ position: LIST });
+                this.list[eaList[k++]] = creation.item({ position: POS_LIST });
             }
 
             return;
@@ -141,14 +141,14 @@ const Entrance  = class extends Thing {
                 }
 
                 let quantity = item.equipable ? 1 : rndIntBet(10, 99);
-                this.list[EA[k]] = creation.item({
+                this.list[eaList[k]] = creation.item({
                     type: type,
                     tabId: tabId,
                     quantity: quantity,
-                    position: LIST,
+                    position: POS_LIST,
                 });
                 
-                inventory.sort(EA[k++], this.list);
+                inventory.sort(eaList[k++], this.list);
                 if (k === MAX_PACK_COUNT) return;
                 count++;
             } while (count < max);

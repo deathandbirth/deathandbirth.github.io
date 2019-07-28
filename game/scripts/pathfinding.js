@@ -49,7 +49,7 @@ const circleSearch = {
             case MAGIC_MAPPING:
                 if (loc.found) return;
                 loc.found = true;
-                loc.draw();
+                loc.drawGround();
                 break;
             case ITEM_DETECTION:
                 if(!loc.item['a']) return;
@@ -61,12 +61,10 @@ const circleSearch = {
                     }
                 } 
 
-                loc.draw();
                 break;
             case MONSTER_DETECTION:
-                if (!loc.fighter || loc.fighter.id === ROGUE || loc.fighter.detected) return;
+                if (!loc.fighter || loc.fighter.id === ID_ROGUE || loc.fighter.detected) return;
                 loc.fighter.detected = true;
-                loc.draw();
                 this.count++;
                 break;
             case SCREAM:
@@ -74,8 +72,8 @@ const circleSearch = {
                 loc.fighter.wakeUp();
                 break;
             case DISINTEGRATION:
-                if (!loc.fighter || loc.fighter.id === ROGUE || loc.fighter.symbol !== this.symbol) return;
-                if (loc.fighter.mod !== UNIQUE &&
+                if (!loc.fighter || loc.fighter.id === ID_ROGUE || loc.fighter.symbol !== this.symbol) return;
+                if (loc.fighter.mod !== MOD_UNIQUE &&
                     !evalPercentage(loc.fighter.lvl)) {
                     if (rogue.ce && rogue.ce.id === loc.fighter.id) rogue.removeCe();
                     loc.fighter.died();
@@ -87,7 +85,7 @@ const circleSearch = {
                 break;
             case EARTHQUAKE:
                 if (!evalPercentage(this.perc) || loc.indestructible || loc.enter && !loc.enter.portal ||
-                loc.fighter && loc.fighter.id === ROGUE) return;
+                loc.fighter && loc.fighter.id === ID_ROGUE) return;
                 loc.found = false;
                 loc.lighten = false;
                 loc.wall = WALL_HP * coinToss();
@@ -103,12 +101,12 @@ const circleSearch = {
                     for (let key in loc.item) {
                         let item = loc.item[key];
                         if (item.indestructible || evalPercentage(item.earth)) {
-                            items[EA[i++]] = item;
+                            items[eaList[i++]] = item;
                             found = true;
                             continue;
                         }
 
-                        if (item.mod === UNIQUE && !item.identified) {
+                        if (item.mod === MOD_UNIQUE && !item.identified) {
                             let id = item.type + ',' + item.tabId + ',' + item.uniqueId;
                             if (this.cui[id]) delete this.cui[id];
                         }
@@ -123,20 +121,21 @@ const circleSearch = {
                         if (loc.fighter.sleeping) loc.fighter.wakeUp();
                         found = true;
                     } else {
-                        if (loc.fighter.mod === UNIQUE) delete rogue.cue[loc.fighter.name[ENG]];
+                        if (loc.fighter.mod === MOD_UNIQUE) delete rogue.cue[loc.fighter.name[LETTER_ENG]];
                         loc.fighter.died();
                     }
                 }
 
                 loc.wall = WALL_HP * (!found && coinToss());
                 loc.floor = !loc.wall;
-                loc.draw();
+                loc.drawGround();
                 break;
         }
     }
 };
 
 const lineOfSight = (x0, y0, x1, y1, color, skill) => {
+    if (color) cursor.drawPlot(x0, y0, color);
     let parabora = flag.arrow || flag.throw || skill && skill.parabora;
     let rangeSq = skill && skill.range >= 0 ? skill.range ** 2 : FOV_SQ;
     let radius = skill && skill.radius ? skill.radius : 0;
@@ -164,7 +163,7 @@ const lineOfSight = (x0, y0, x1, y1, color, skill) => {
                 break;
             }
 
-            cursol.plot(xS, yS, color);
+            cursor.drawPlot(xS, yS, color);
             if (radius && (skill.each || loc.fighter && skill.penetrate)) {
                 if (!loc.isObstacle()) {
                     shadowcasting.main({
@@ -250,14 +249,15 @@ const shadowcasting = {
         if (this.type === 'Lighten') {
             for (let key in this.oldLitMap) {
                 let [x, y] = key.split(',');
-                map.coords[x][y].draw();
+                let loc = map.coords[x][y];
+                loc.drawShadow();
             }
         }
     },
 
     line(i, x0, y0, radius, search) {
         for (let j = 1; j <= radius; j++) {
-            let [x1, y1] = [DR[i].x * j, DR[i].y * j];
+            let [x1, y1] = [drList[i].x * j, drList[i].y * j];
             let l = distanceSq(x1, y1, 0, 0);
             if (l > this.radiusSq) break;
             let [x, y] = [x0 + x1, y0 + y1];
@@ -307,29 +307,37 @@ const shadowcasting = {
     do(x, y, distance) {
         let loc = map.coords[x][y];
         if (this.color) {
-            cursol.plot(x, y, this.color);
+            cursor.drawPlot(x, y, this.color);
         } else if (this.type === 'Lighten') {
-            if ((!this.lightRadSq || distance > this.lightRadSq) &&
-                !loc.lighten) return;
+            if ((!this.lightRadSq || distance > this.lightRadSq) && !loc.lighten) return;
+            let goldmine = loc.wall && loc.item['a'];
             let id = x + ',' + y;
-            rogue.litMapIds[id] = true;
+            if (!goldmine) rogue.litMapIds[id] = true;
             if (this.oldLitMap[id]) {
                 delete this.oldLitMap[id];
             } else {
                 loc.found = true;
-                loc.draw();
+                loc.drawGround();
+                if (!goldmine) loc.drawShadow(true);
             }
         } else if (this.type === 'Light') {
+            let goldmine = loc.wall && loc.item['a'];
+            if (!goldmine) {
+                let id = x + ',' + y;
+                rogue.litMapIds[id] = true;
+                loc.drawShadow(true);
+            }
+
             if (!loc.lighten) {
                 loc.lighten = true;
                 loc.found = true;
-                loc.draw();
+                loc.drawGround();
             }
-        } else if (this.type === 'Dark') {
-            if (loc.lighten) {
-                loc.lighten = false;
-                loc.draw();
-            }
+        // } else if (this.type === 'Dark') {
+        //     if (loc.lighten) {
+        //         loc.lighten = false;
+        //         loc.drawShadow();
+        //     }
         } else if (this.type === 'Aim') {
             let self = this.fighter;
             let enemy = loc.fighter;
@@ -514,10 +522,10 @@ const pathfinding = {
         let newNode = null;
         let gScore = node.gScore + 1;
         let count = 0;
-        for (let key in DR) {
+        for (let key in drList) {
             if (this.map && gScore > FOV || this.pas && ++count > 4) break;
-            let x = node.x + DR[key].x;
-            let y = node.y + DR[key].y;
+            let x = node.x + drList[key].x;
+            let y = node.y + drList[key].y;
             let loc = map.coords[x][y];
             if (!loc.wall && (!this.pas || !loc.isClosedDoor())) {
                 let id = x + ',' + y;

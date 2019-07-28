@@ -1,2241 +1,11 @@
-const fighterTab = {
-    ants: [
-		{
-			name: { a: 'Giant Ant', b: '巨蟻' },
-			symbol: 'a',
-			color: colorList.acid,
-			race: ANIMAL,
-			mod: NORMAL,
-			grade: NORMAL,
-			lvl: 8,
-			rarity: 0,
-			hpRate: -2,
-			mpRate: 0,
-			str: 3,
-			dex: 2,
-			con: 3,
-			int: 1,
-			spd: 0,
-			dmgBase: '1d2',
-			acBase: 5,
-			dropNum: 0,
-			matRedTimes: 3,
-			fire: 0,
-			water: 0,
-			air: 0,
-			earth: 0,
-			poison: 0,
-			material: M_SHELL,
-			atkType: AT_T,
-			group: true,
-			dmgAcid: 20
-		},
-	],
-
-    bats: [
-		{
-			name: { a: 'Giant Bat', b: '大蝙蝠' },
-			symbol: 'b',
-			color: colorList.gray,
-			race: ANIMAL,
-			mod: NORMAL,
-			grade: NORMAL,
-			lvl: 4,
-			rarity: 0,
-			hpRate: -3,
-			mpRate: 0,
-			str: 1,
-			dex: 2,
-			con: 1,
-			int: 1,
-			spd: 5,
-			dmgBase: '1d2',
-			acBase: 5,
-			dropNum: 0,
-			matRedTimes: 3,
-			fire: 0,
-			water: 0,
-			air: 0,
-			earth: 0,
-			poison: 0,
-			material: M_FEATHER,
-			atkType: AT_T,
-			grow: DEX,
-			stealLife: 10
-		},
-	],
-
-    canines: [
-		{
-            name: { a: 'She-wolf', b: '雌狼' },
-            symbol: 'c',
-            color: colorList.brown,
-            race: ANIMAL,
-            mod: NORMAL,
-            grade: NORMAL,
-            lvl: 1,
-            rarity: 0,
-            hpRate: -2,
-            mpRate: 0,
-            str: 1,
-            dex: 2,
-            con: 1,
-            int: 1,
-            spd: 0,
-            dmgBase: '1d3',
-            acBase: 5,
-            dropNum: 0,
-            matRedTimes: 2,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 0,
-            material: M_FUR,
-            atkType: AT_S | AT_T,
-            grow: DEX,
-            frw: 20
-		},
-		
-        {
-            name: { a: 'Laelaps, the Hound of Cephalus', b: '狩人ケパロスの猟犬ラエラプス' },
-            symbol: 'c',
-            color: colorList.brown,
-            race: ANIMAL,
-            mod: UNIQUE,
-            grade: NORMAL,
-            lvl: 20,
-            rarity: 30,
-            hpRate: -2,
-            mpRate: 0,
-            str: 10,
-            dex: 10,
-            con: 5,
-            int: 5,
-            spd: 20,
-            dmgBase: '2d6',
-            acBase: 10,
-            dropNum: 2,
-            matRedTimes: 0,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 0,
-            material: M_FUR,
-            atkType: AT_S | AT_T,
-            desc: {
-                a:'',
-                b:'女神アルテミスより授与された、どんな獲物も逃がさないとされる猟犬。同じく、どんな追手にも捕まらないという狐と膠着状態となり、ゼウスにより両者は石に変えられる。',
-            }
-        },
-	],
-	
-    felines: [
-		{
-            name: { a: 'Lion', b: '獅子' },
-            symbol: 'f',
-            color: colorList.yellow,
-            race: ANIMAL,
-            mod: NORMAL,
-            grade: NORMAL,
-            lvl: 10,
-            rarity: 0,
-            hpRate: 0,
-            mpRate: 0,
-            str: 10,
-            dex: 5,
-            con: 5,
-            int: 1,
-            spd: 5,
-            dmgBase: '2d3',
-            acBase: 10,
-            dropNum: 0,
-            matRedTimes: 2,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 0,
-            material: M_FUR,
-            atkType: AT_S | AT_T,
-            grow: STR
-		},
-		
-        {
-            name: { a: 'Nemean lion', b: 'ネメアの獅子' },
-            symbol: 'f',
-            color: colorList.yellow,
-            race: ANIMAL,
-            mod: UNIQUE,
-            grade: NORMAL,
-            lvl: 20,
-            rarity: 30,
-            hpRate: 0,
-            mpRate: 0,
-            str: 15,
-            dex: 10,
-            con: 10,
-            int: 5,
-            spd: 10,
-            dmgBase: '5d3',
-            acBase: 20,
-            dropNum: 2,
-            matRedTimes: 0,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 0,
-            material: M_FUR,
-            atkType: AT_S | AT_T,
-            desc: {
-                a:'',
-                b:'ネメアの谷に住む獅子。その毛皮は棍棒や矢では傷付かないが、ヘラクレスに手づかみにされ絞殺される。',
-            }
-        },
-	],
-	
-    golems: [
-		{
-            name: { a: 'Golem', b: 'ゴーレム' },
-            symbol: 'g',
-            color: null,
-            race: GIANT,
-            mod: NORMAL,
-            grade: NORMAL,
-            lvl: 10,
-            rarity: 0,
-            hpRate: 2,
-            mpRate: 0,
-            str: 10,
-            dex: 3,
-            con: 10,
-            int: 1,
-            spd: -10,
-            dmgBase: null,
-            acBase: null,
-            dropNum: 0,
-            matRedTimes: 2,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 0,
-            material: M_STONE,
-            atkType: AT_B,
-            grow: CON,
-            volumeRate: 1
-		},
-		
-        {
-            name: { a: 'Golem', b: 'ゴーレム' },
-            symbol: 'g',
-            color: null,
-            race: GIANT,
-            mod: NORMAL,
-            grade: NORMAL,
-            lvl: 20,
-            rarity: 10,
-            hpRate: 2,
-            mpRate: 0,
-            str: 10,
-            dex: 3,
-            con: 10,
-            int: 1,
-            spd: 0,
-            dmgBase: null,
-            acBase: null,
-            dropNum: 0,
-            matRedTimes: 2,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 0,
-            material: M_METAL,
-            atkType: AT_T,
-            grow: CON,
-            volumeRate: 2
-		},
-		
-        {
-            name: { a: 'Golem', b: 'ゴーレム' },
-            symbol: 'g',
-            color: null,
-            race: GIANT,
-            mod: NORMAL,
-            grade: NORMAL,
-            lvl: 30,
-            rarity: 20,
-            hpRate: 2,
-            mpRate: 0,
-            str: 10,
-            dex: 3,
-            con: 10,
-            int: 1,
-            spd: 10,
-            dmgBase: null,
-            acBase: null,
-            dropNum: 0,
-            matRedTimes: 2,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 0,
-            material: M_GEM,
-            atkType: AT_S,
-            grow: CON,
-            volumeRate: 3
-        },
-	],
-	
-    humanoids: [
-		{
-            name: { a: 'Snake Woman', b: '蛇女' },
-            symbol: 'h',
-            color: colorList.green,
-            mod: NORMAL,
-            grade: NORMAL,
-            lvl: 8,
-            rarity: 0,
-            hpRate: 0,
-            mpRate: 0,
-            str: 3,
-            dex: 2,
-            con: 4,
-            int: 2,
-            spd: 0,
-            dmgBase: '1d3',
-            acBase: 5,
-            dropNum: 1,
-            matRedTimes: 2,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 30,
-            atkType: AT_B,
-            atkCon: 20
-		},
-		
-        {
-            name: { a: 'Calypso, the Sea Goddess', b: '海の女神カリュプソ' },
-            symbol: 'h',
-            color: colorList.blue,
-            mod: UNIQUE,
-            grade: NORMAL,
-            lvl: 30,
-            rarity: 30,
-            hpRate: 0,
-            mpRate: 0,
-            str: 20,
-            dex: 20,
-            con: 15,
-            int: 20,
-            spd: 15,
-            dmgBase: '4d6',
-            acBase: 20,
-            dropNum: 4,
-            matRedTimes: 0,
-            fire: 0,
-            water: 50,
-            air: 0,
-            earth: 0,
-            poison: 0,
-            atkType: AT_B,
-            strSus: true,
-            dexSus: true,
-            conSus: true,
-            intSus: true,
-            skillProb: 1 / 4,
-            skill: { 
-				a: { id: ICE_BOLT, lvl: 10 },
-				b: { id: HEAL, lvl: 10 },
-				c: { id: AQUA_BREATH, lvl: 10 }
-            },
-
-            desc: {
-                a:'',
-                b:'巨人アトラスの娘、仙女。海に漂流したオデュッセウスを救護し、7年間孤島で共に暮す。',
-            }
-        },
-	],
-	
-    incubuses: [
-		{
-			name: { a: 'Incubuses', b: '夢魔' },
-			symbol: 'i',
-			color: colorList.gray,
-			race: DEMON,
-			mod: NORMAL,
-			grade: NORMAL,
-			lvl: 25,
-			rarity: 0,
-			hpRate: 0,
-			mpRate: 0,
-			str: 15,
-			dex: 15,
-			con: 10,
-			int: 15,
-			spd: 10,
-			dmgBase: '2d6',
-			acBase: 20,
-			dropNum: 2,
-			matRedTimes: 2,
-			fire: 0,
-			water: 0,
-			air: 0,
-			earth: 0,
-			poison: 0,
-			material: M_SKIN,
-			atkType: AT_S,
-			awake: true,
-			levi: true,
-			stealMana: 50
-		},
-	],
-
-    mimics: [
-		{
-			name: { a: 'Mimic', b: 'ミミック' },
-			symbol: 'm',
-			color: colorList.brown,
-			mod: NORMAL,
-			grade: NORMAL,
-			lvl: 10,
-			rarity: 0,
-			hpRate: 0,
-			mpRate: 0,
-			str: 5,
-			dex: 5,
-			con: 1,
-			int: 1,
-			spd: 0,
-			dmgBase: '3d4',
-			acBase: 10,
-			dropNum: 1,
-			matRedTimes: 1,
-			fire: 0,
-			water: 0,
-			air: 0,
-			earth: 0,
-			poison: 0,
-			atkType: AT_B,
-			mimic: true,
-			stillness: true,
-            canAttack: true,
-			awake: true,
-		},
-	],
-
-    persons: [
-		{
-            name: { a: 'Warrior', b: '戦士' },
-            symbol: 'p',
-            color: colorList.brown,
-            race: HUMAN,
-            mod: NORMAL,
-            grade: NORMAL,
-            lvl: 6,
-            rarity: 0,
-            hpRate: 1,
-            mpRate: 0,
-            str: 3,
-            dex: 3,
-            con: 3,
-            int: 1,
-            spd: 0,
-            dmgBase: '1d1',
-            acBase: 0,
-            dropNum: 1,
-            matRedTimes: 2,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 0,
-            material: M_BONE,
-            atkType: AT_B,
-            grow: STR,
-            starter: [
-				{ type: 'melee', tabId: M_CLUB },
-				{ type: 'armor', tabId: A_ARMOR }
-			]
-		},
-		
-        {
-            name: { a: 'Hunter', b: '狩人' },
-            symbol: 'p',
-            color: colorList.red,
-            race: HUMAN,
-            mod: NORMAL,
-            grade: NORMAL,
-            lvl: 10,
-            rarity: 0,
-            hpRate: 0,
-            mpRate: 0,
-            str: 2,
-            dex: 5,
-            con: 1,
-            int: 3,
-            spd: 0,
-            dmgBase: '1d1',
-            acBase: 0,
-            dropNum: 1,
-            matRedTimes: 2,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 0,
-            material: M_BONE,
-            atkType: AT_B,
-            grow: DEX,
-            starter: [
-				{ type: 'missile', tabId: M_BOW },
-				{ type: 'ammo', tabId: A_ARROW },
-				{ type: 'armor', tabId: A_VEST },
-				{ type: 'melee', tabId: M_KNIFE, side: 'a' }
-			]
-		},
-		
-        {
-            name: { a: 'Magus', b: '魔術師' },
-            symbol: 'p',
-            color: colorList.purple,
-            race: HUMAN,
-            mod: NORMAL,
-            grade: NORMAL,
-            lvl: 15,
-            rarity: 0,
-            hpRate: -2,
-            mpRate: 2,
-            str: 1,
-            dex: 1,
-            con: 1,
-            int: 10,
-            spd: 0,
-            dmgBase: '1d1',
-            acBase: 0,
-            dropNum: 2,
-            matRedTimes: 2,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 0,
-            skillProb: 1 / 5,
-            skill: { 
-				a: { id: FIRE_BOLT, lvl: 10 },
-				b: { id: SHORT_TELEPORTATION, lvl: 1 }
-			},
-
-            material: M_BONE,
-            atkType: AT_B,
-            grow: INT,
-            starter: [
-				{ type: 'staff', tabId: S_STAFF },
-				{ type: 'armor', tabId: A_ROBE }
-			]
-		},
-		
-        {
-            name: { a: 'Thief', b: '盗賊' },
-            symbol: 'p',
-            color: colorList.gray,
-            race: HUMAN,
-            mod: NORMAL,
-            grade: NORMAL,
-            lvl: 20,
-            rarity: 0,
-            hpRate: 0,
-            mpRate: 0,
-            str: 5,
-            dex: 10,
-            con: 5,
-            int: 5,
-            spd: 5,
-            dmgBase: '1d1',
-            acBase: 0,
-            dropNum: 2,
-            matRedTimes: 2,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 0,
-            material: M_BONE,
-            atkType: AT_B,
-            atkStealItem: 20,
-            atkStealGold: 20,
-            stealth: 25,
-            grow: DEX,
-            starter: [
-				{ type: 'melee', tabId: M_DAGGER },
-				{ type: 'armor', tabId: A_VEST }
-			]
-		},
-		
-        {
-            name: { a: 'Iros, the Beggar', b: '乞食イロス' },
-            symbol: 'p',
-            color: colorList.brown,
-            race: HUMAN,
-            mod: UNIQUE,
-            grade: NORMAL,
-            lvl: 5,
-            rarity: 30,
-            hpRate: -2,
-            mpRate: 0,
-            str: 5,
-            dex: 5,
-            con: 5,
-            int: 5,
-            spd: 0,
-            dmgBase: '1d1',
-            acBase: 0,
-            dropNum: 1,
-            matRedTimes: 0,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 0,
-            material: M_BONE,
-            atkType: AT_B,
-            atkStealItem: 20,
-            starter: [
-                { type: 'staff', tabId: S_STICK, matBase: M_WOOD, matId: WOOD_CYPRESS },
-                { type: 'armor', tabId: A_ROBE, matBase: M_CLOTH, matId: CLOTH_LINEN }
-            ],
-
-            desc: {
-                a:'',
-                b:'イタケの町を徘徊する土着の乞食。同業に対して頭面をしていたが、乞食に扮したオデュッセウスと格闘の末打ち据えられる。',
-            }
-		},
-		
-        {
-            name: { a: 'Dolon, the Spy', b: '偵察者ドロン' },
-            symbol: 'p',
-            color: colorList.bronze,
-            race: HUMAN,
-            mod: UNIQUE,
-            grade: NORMAL,
-            lvl: 10,
-            rarity: 30,
-            hpRate: -1,
-            mpRate: 0,
-            str: 5,
-            dex: 5,
-            con: 5,
-            int: 5,
-            spd: 10,
-            dmgBase: '1d1',
-            acBase: 0,
-            dropNum: 1,
-            matRedTimes: 0,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 0,
-            material: M_BONE,
-            atkType: AT_B,
-            skillProb: 1 / 10,
-            skill: {
-				a: { id: SHORT_TELEPORTATION, lvl: 1 },
-				b: { id: TELEPORTATION, lvl: 1 }
-            },
-
-            starter: [
-                { type: 'missile', tabId: M_BOW, matBase: M_WOOD, matId: WOOD_CYPRESS },
-                { type: 'melee', tabId: M_SPEAR, matBase: M_METAL, matId: METAL_BRONZE, side: 'a' },
-                { type: 'cloak', tabId: C_COAT, matBase: M_FUR, matId: FUR_WOLF },
-                { type: 'helm', tabId: H_CAP, matBase: M_FUR, matId: FUR_FERRET },
-                { type: 'ammo', tabId: A_ARROW },
-            ],
-
-            desc: {
-                a:'',
-                b:'伝令使エウメデスの子、トロイア人。ギリシャ軍の偵察任務を買って出たが捕らわれる。尋問の後、懇願するもディオメデスにより殺される。',
-            }
-		},
-		
-        {
-            name: { a: 'Pandarus, the Archer of Troy', b: 'トロイアの射手パンダロス' },
-            symbol: 'p',
-            color: colorList.bronze,
-            race: HUMAN,
-            mod: UNIQUE,
-            grade: NORMAL,
-            lvl: 20,
-            rarity: 30,
-            hpRate: 0,
-            mpRate: 0,
-            str: 20,
-            dex: 20,
-            con: 20,
-            int: 10,
-            spd: 10,
-            dmgBase: '1d1',
-            acBase: 0,
-            dropNum: 2,
-            matRedTimes: 0,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 0,
-            material: M_BONE,
-            atkType: AT_B,
-            dexSus: true,
-            starter: [
-				{ type: 'missile', tabId: M_BOW, uniqueId: 0 },
-				{ type: 'ammo', tabId: A_ARROW },
-				{ type: 'melee', tabId: M_SPEAR, matBase: M_METAL, matId: METAL_BRONZE, side: 'a' },
-				{ type: 'armor', tabId: A_ARMOR, matBase: M_METAL, matId: METAL_BRONZE },
-			],
-
-            skillProb: 1 / 8,
-            skill: {
-				a: { id: SHORT_TELEPORTATION, lvl: 1 },
-				b: { id: ENCOURAGEMENT, lvl: 1 }
-			},
-
-            desc: {
-                a:'',
-                b:'ゼレイア王リュカオンの子。メネラウスに急所を射る矢を放つも、アテネにより防がれ、同じく庇護を受けたディオメデスの槍で息絶える。',
-            }
-		},
-		
-        {
-            name: { a: 'Nestor, the Knight of Gerenia', b: 'ゲレニアの騎士ネストル' },
-            symbol: 'p',
-            color: colorList.bronze,
-            race: HUMAN,
-            mod: UNIQUE,
-            grade: NORMAL,
-            lvl: 30,
-            rarity: 30,
-            hpRate: 1,
-            mpRate: 0,
-            str: 15,
-            dex: 20,
-            con: 15,
-            int: 25,
-            spd: 0,
-            dmgBase: '1d1',
-            acBase: 0,
-            dropNum: 2,
-            matRedTimes: 0,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 0,
-            material: M_BONE,
-            atkType: AT_B,
-            strSus: true,
-            dexSus: true,
-            conSus: true,
-            skillProb: 1 / 6,
-            skill: {
-				a: { id: TELEPORT_TO, lvl: 1 },
-				b: { id: SPEED, lvl: 5 }
-            },
-
-            starter: [
-				{ type: 'melee', tabId: M_SWORD, matBase: M_METAL, matId: METAL_BRONZE },
-				{ type: 'melee', tabId: M_SPEAR, matBase: M_METAL, matId: METAL_BRONZE, side: 'a' },
-				{ type: 'shield', tabId: S_SHIELD, matBase: M_METAL, matId: METAL_GOLD, magic: true },
-				{ type: 'armor', tabId: A_ARMOR, matBase: M_METAL, matId: METAL_BRONZE },
-				{ type: 'cloak', tabId: C_CLOAK, matBase: M_CLOTH, matId: CLOTH_WOOL },
-				{ type: 'belt', tabId: B_SASH, matBase: M_CLOTH, matId: CLOTH_WOOL },
-				{ type: 'helm', tabId: H_HELM, matBase: M_METAL, matId: METAL_BRONZE },
-				{ type: 'boots', tabId: B_SHOES, matBase: M_CLOTH, matId: CLOTH_WOOL },
-            ],
-
-            desc: {
-                a:'',
-                b:'ネレウスの子、ピュロスの王、ギリシャ軍の武将。老齢期にトロイア戦争に参加、助言・相談役を果たす。',
-            }
-		},
-		
-        {
-            name: { a: 'Orlando, the Frenzy', b: '狂乱のオルランド' },
-            symbol: 'p',
-            color: colorList.orange,
-            race: HUMAN,
-            mod: UNIQUE,
-            grade: NORMAL,
-            lvl: 32,
-            rarity: 30,
-            hpRate: 3,
-            mpRate: 0,
-            str: 25,
-            dex: 20,
-            con: 25,
-            int: 1,
-            spd: 10,
-            dmgBase: '4d4',
-            acBase: 10,
-            dropNum: 4,
-            matRedTimes: 0,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 0,
-            material: M_BONE,
-            atkType: AT_B,
-            strSus: true,
-            dexSus: true,
-            conSus: true,
-            awake: true,
-            ias: 50,
-            frw: 50,
-            desc: {
-                a:'',
-                b:'シャルルマーニュの甥、聖騎士。思い人のアンジェリカが他妻となり発狂。その怪力で自身の鎧ごと衣服を引き裂き、分別なく暴れ狂う。',
-            }
-        },
-	],
-	
-    quadrupeds: [
-		{
-            name: { a: 'Horse', b: '馬' },
-            symbol: 'q',
-            color: colorList.orange,
-            race: ANIMAL,
-            mod: NORMAL,
-            grade: NORMAL,
-            lvl: 3,
-            rarity: 0,
-            hpRate: 0,
-            mpRate: 0,
-            str: 2,
-            dex: 3,
-            con: 1,
-            int: 1,
-            spd: 10,
-            dmgBase: '1d4',
-            acBase: 5,
-            dropNum: 0,
-            matRedTimes: 2,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 0,
-            material: M_SKIN,
-            atkType: AT_B,
-            frw: 60,
-            grow: DEX
-		},
-		
-        {
-            name: { a: 'Rays of the Sun, the Horse of Rhesus', b: 'トラキア王レソスの馬 `陽光の矢`' },
-            symbol: 'q',
-            color: colorList.white,
-            race: ANIMAL,
-            mod: UNIQUE,
-            grade: NORMAL,
-            lvl: 10,
-            rarity: 30,
-            hpRate: 0,
-            mpRate: 0,
-            str: 5,
-            dex: 5,
-            con: 5,
-            int: 5,
-            spd: 10,
-            dmgBase: '1d5',
-            acBase: 10,
-            dropNum: 2,
-            matRedTimes: 0,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 0,
-            material: M_SKIN,
-            atkType: AT_B,
-            frw: 60,
-            desc: {
-                a:'',
-                b:'トラキア産の駿馬。大型で、雪よりも白く、走る速さは風にも劣らない。トロイア軍から奪った際、ネストルはこの馬を見て感嘆し、陽光の矢と評する。',
-            }
-		},
-		
-        {
-            name: { a: 'Boar', b: '猪' },
-            symbol: 'q',
-            color: colorList.brown,
-            race: ANIMAL,
-            mod: NORMAL,
-            grade: NORMAL,
-            lvl: 2,
-            rarity: 0,
-            hpRate: 1,
-            mpRate: 0,
-            str: 2,
-            dex: 2,
-            con: 3,
-            int: 1,
-            spd: 5,
-            dmgBase: '1d3',
-            acBase: 5,
-            dropNum: 0,
-            matRedTimes: 2,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 0,
-            material: M_FUR,
-            atkType: AT_B,
-            grow: CON
-		},
-		
-        {
-            name: { a: 'Calydonian Boar', b: 'カリュドーンの大猪' },
-            symbol: 'q',
-            color: colorList.brown,
-            race: ANIMAL,
-            mod: UNIQUE,
-            grade: NORMAL,
-            lvl: 20,
-            rarity: 30,
-            hpRate: 1,
-            mpRate: 0,
-            str: 20,
-            dex: 10,
-            con: 20,
-            int: 10,
-            spd: 10,
-            dmgBase: '2d5',
-            acBase: 20,
-            matRedTimes: 0,
-            dropNum: 2,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 0,
-            material: M_FUR,
-            atkType: AT_B,
-            desc: {
-                a:'',
-                b:'女神アルテミスがカリュドーンの町に放った大猪。辺り一帯を荒すが、青年期のネストルを含む勇士達により討伐される。',
-            }
-        },
-	],
-	
-    skeletons: [
-		{
-			name: { a: 'Skeleton', b: 'スケルトン' },
-			symbol: 's',
-			color: null,
-			race: UNDEAD,
-			mod: NORMAL,
-			grade: NORMAL,
-			lvl: 3,
-			rarity: 0,
-			hpRate: -2,
-			mpRate: 0,
-			str: 1,
-			dex: 1,
-			con: 1,
-			int: 1,
-			spd: 0,
-			dmgBase: null,
-			acBase: null,
-			dropNum: 0,
-			matRedTimes: 3,
-			fire: 0,
-			water: 0,
-			air: 0,
-			earth: 0,
-			poison: 0,
-			material: M_BONE,
-			atkType: AT_B,
-			volumeRate: 1
-		},
-	],
-
-    worms: [
-		{
-			name: { a: 'Giant Worm', b: '大芋虫' },
-			symbol: 'w',
-			color: colorList.white,
-			race: ANIMAL,
-			mod: NORMAL,
-			grade: NORMAL,
-			lvl: 1,
-			rarity: 0,
-			hpRate: -2,
-			mpRate: 0,
-			str: 1,
-			dex: 1,
-			con: 1,
-			int: 1,
-			spd: -10,
-			dmgBase: null,
-			acBase: null,
-			dropNum: 0,
-			matRedTimes: 3,
-			fire: 0,
-			water: 0,
-			air: 0,
-			earth: 0,
-			poison: 0,
-			material: M_CLOTH,
-			atkType: AT_B,
-			group: true,
-			atkSlow: 5,
-			volumeRate: 0.5
-		},
-	],
-
-    zombies: [
-		{
-			name: { a: 'Living Bush', b: '生ける繁み' },
-			symbol: 'z',
-			color: colorList.gray,
-			race: UNDEAD,
-			mod: NORMAL,
-			grade: NORMAL,
-			lvl: 5,
-			rarity: 0,
-			hpRate: -4,
-			mpRate: 0,
-			str: 1,
-			dex: 1,
-			con: 1,
-			int: 1,
-			spd: -10,
-			dmgBase: null,
-			acBase: null,
-			dropNum: 0,
-			matRedTimes: 3,
-			fire: 0,
-			water: 0,
-			air: 0,
-			earth: 0,
-			poison: 0,
-			material: M_WOOD,
-			atkType: AT_B,
-			group: true,
-			atkInf: 5,
-			volumeRate: 0.5
-		},
-	],
-
-    angels: [
-		{
-			name: { a: 'Fallen Angel', b: '堕天使' },
-			symbol: 'A',
-			color: colorList.shadow,
-			race: DEMON,
-			mod: NORMAL,
-			grade: NORMAL,
-			lvl: 25,
-			rarity: 0,
-			hpRate: 1,
-			mpRate: 2,
-			str: 10,
-			dex: 10,
-			con: 10,
-			int: 20,
-			spd: 10,
-			dmgBase: '3d5',
-			acBase: 30,
-			dropNum: 2,
-			matRedTimes: 1,
-			fire: 50,
-			water: 0,
-			air: 30,
-			earth: 0,
-			poison: 0,
-			material: M_FEATHER,
-			atkType: AT_B,
-			levi: true,
-			skillProb: 1 / 5,
-			skill: {
-				a: { id: HEAL, lvl: 10 },
-				b: { id: SPEED, lvl: 10 },
-				c: { id: BLESSING, lvl: 10 }
-			}
-		},
-	],
-
-    birds: [
-		{
-            name: { a: 'Eagle', b: '鷲' },
-            symbol: 'B',
-            color: colorList.shadow,
-            race: ANIMAL,
-            mod: NORMAL,
-            grade: NORMAL,
-            lvl: 1,
-            rarity: 0,
-            hpRate: -3,
-            mpRate: 0,
-            str: 1,
-            dex: 5,
-            con: 1,
-            int: 1,
-            spd: 5,
-            dmgBase: '1d2',
-            acBase: 1,
-            dropNum: 0,
-            matRedTimes: 2,
-            fire: 0,
-            water: 0,
-            air: 30,
-            earth: 0,
-            poison: 0,
-            material: M_FEATHER,
-            atkType: AT_S | AT_T,
-            levi: true,
-            grow: DEX
-		},
-		
-        {
-            name: { a: 'Aedon, the Nightingale', b: '夜鶯アエドン' },
-            symbol: 'B',
-            color: colorList.yellowgreen,
-            race: ANIMAL,
-            mod: UNIQUE,
-            grade: NORMAL,
-            lvl: 15,
-            rarity: 30,
-            hpRate: -3,
-            mpRate: 0,
-            str: 8,
-            dex: 10,
-            con: 8,
-            int: 5,
-            spd: 10,
-            dmgBase: '2d5',
-            acBase: 10,
-            dropNum: 3,
-            matRedTimes: 0,
-            fire: 0,
-            water: 0,
-            air: 30,
-            earth: 0,
-            poison: 0,
-            material: M_FEATHER,
-            atkType: AT_S | AT_T,
-            levi: true,
-            awake: true,
-            skillProb: 1 / 8,
-            skill: {
-				a: { id: WIND_BREATH, lvl: 5 },
-				b: { id: SCREAM, lvl: 5 }
-            },
-
-            desc: {
-                a:'',
-                b:'パンダレオスの娘。ニオベに多くの子がいる事を妬み、子の殺害を試みるが、自身の子を誤って殺害。悲しみに泣き暮れる様をゼウスが夜鶯の姿に変化させる。',
-            }
-		},
-		
-        {
-            name: { a: 'Nisos, the White-tailed Eagle', b: '尾白鷲ニソス' },
-            symbol: 'B',
-            color: colorList.shadow,
-            race: ANIMAL,
-            mod: UNIQUE,
-            grade: NORMAL,
-            lvl: 25,
-            rarity: 30,
-            hpRate: -3,
-            mpRate: 0,
-            str: 10,
-            dex: 20,
-            con: 10,
-            int: 10,
-            spd: 20,
-            dmgBase: '2d5',
-            acBase: 10,
-            dropNum: 4,
-            matRedTimes: 0,
-            fire: 0,
-            water: 0,
-            air: 30,
-            earth: 0,
-            poison: 0,
-            material: M_FEATHER,
-            atkType: AT_S | AT_T,
-            levi: true,
-            ias: 25,
-            frw: 50,
-            desc: {
-                a:'',
-                b:'メガラの王。娘スキュラが敵将に恋慕し、父を殺し国を差し出すも拒まれ、海に飛び込む。その後鳥の姿となるが、同じく大鷲と化した父ニソスが復讐を狙う。',
-            }
-        },
-	],
-	
-    chimeras: [
-		{
-            name: { a: 'Chimera', b: 'キメラ' },
-            symbol: 'C',
-            color: null,
-            race: ANIMAL,
-            mod: NORMAL,
-            grade: NORMAL,
-            lvl: 10,
-            rarity: 0,
-            hpRate: -1,
-            mpRate: 0,
-            str: 2,
-            dex: 5,
-            con: 2,
-            int: 2,
-            spd: 10,
-            dmgBase: null,
-            acBase: null,
-            dropNum: 1,
-            matRedTimes: 2,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 0,
-            material: M_SKIN,
-            atkType: AT_T,
-            volumeRate: 1
-		},
-		
-        {
-            name: { a: 'Chimera', b: 'キメラ' },
-            symbol: 'C',
-            color: null,
-            race: ANIMAL,
-            mod: NORMAL,
-            grade: NORMAL,
-            lvl: 20,
-            rarity: 10,
-            hpRate: -1,
-            mpRate: 0,
-            str: 2,
-            dex: 5,
-            con: 2,
-            int: 2,
-            spd: 10,
-            dmgBase: null,
-            acBase: null,
-            dropNum: 1,
-            matRedTimes: 2,
-            fire: 0,
-            water: 20,
-            air: 0,
-            earth: 0,
-            poison: 0,
-            material: M_FUR,
-            atkType: AT_B,
-            volumeRate: 1.5
-		},
-		
-        {
-            name: { a: 'Chimera', b: 'キメラ' },
-            symbol: 'C',
-            color: null,
-            race: ANIMAL,
-            mod: NORMAL,
-            grade: NORMAL,
-            lvl: 30,
-            rarity: 20,
-            hpRate: -1,
-            mpRate: 0,
-            str: 2,
-            dex: 5,
-            con: 2,
-            int: 2,
-            spd: 20,
-            dmgBase: null,
-            acBase: null,
-            dropNum: 1,
-            matRedTimes: 2,
-            fire: 0,
-            water: 0,
-            air: 20,
-            earth: 0,
-            poison: 0,
-            levi: true,
-            material: M_FEATHER,
-            atkType: AT_S,
-            volumeRate: 2
-        },
-	],
-	
-    dragons: [
-		{
-            name: { a: 'Dragon', b: '竜' },
-            symbol: 'D',
-            color: colorList.green,
-            race: DRAGON,
-            mod: MAGIC,
-            grade: NORMAL,
-            lvl: 20,
-            rarity: 0,
-            hpRate: 2,
-            mpRate: 1,
-            str: 15,
-            dex: 10,
-            con: 15,
-            int: 15,
-            spd: 5,
-            dmgBase: '2d5',
-            acBase: 40,
-            dropNum: 4,
-            matRedTimes: 1,
-            fire: 20,
-            water: 20,
-            air: 20,
-            earth: 20,
-            poison: 20,
-            material: M_SCALE | M_BONE | M_HORN,
-            atkType: AT_S | AT_T | AT_B,
-            grow: CON
-		},
-		
-        {
-            name: { a: 'Dragon, the Never-sleeping', b: '眠らずの竜' },
-            symbol: 'D',
-            color: colorList.green,
-            race: DRAGON,
-            mod: UNIQUE,
-            grade: NORMAL,
-            lvl: 30,
-            rarity: 30,
-            hpRate: 2,
-            mpRate: 1,
-            str: 15,
-            dex: 15,
-            con: 20,
-            int: 10,
-            spd: 10,
-            dmgBase: '5d5',
-            acBase: 50,
-            dropNum: 6,
-            matRedTimes: 0,
-            fire: 10,
-            water: 10,
-            air: 10,
-            earth: 10,
-            poison: 100,
-            material: M_SCALE,
-            atkType: AT_S | AT_T | AT_B,
-            conSus: true,
-            awake: true,
-            skillProb: 1 / 5,
-            skill: {
-				a: { id: POISON_BREATH, lvl: 10 }
-            },
-
-            desc: {
-                a:'',
-                b:'神ヘルメスがもたらした金羊毛を守護する。メデイアの魔法薬により、眠らないとされるこの竜が昏睡し、その間にイアソンは金羊毛を奪取する。',
-            }
-        },
-	],
-	
-    elementals: [
-		{
-			name: { a: 'Elemental', b: '精霊' },
-			symbol: 'E',
-			color: colorList.white,
-			race: SPIRIT,
-			mod: MAGIC,
-			grade: NORMAL,
-			lvl: 5,
-			rarity: 0,
-			hpRate: -4,
-			mpRate: 1,
-			str: 1,
-			dex: 1,
-			con: 1,
-			int: 5,
-			spd: 0,
-			dmgBase: '1d4',
-			acBase: 5,
-			dropNum: 0,
-			matRedTimes: 2,
-			fire: 30,
-			water: 30,
-			air: 30,
-			earth: 30,
-			poison: 30,
-			atkType: AT_S,
-			moveRnd: true
-		},
-	],
-
-    fairies: [
-		{
-			name: { a: 'Fairy', b: '妖精' },
-			symbol: 'F',
-			color: colorList.lime,
-			race: SPIRIT,
-			mod: NORMAL,
-			grade: NORMAL,
-			lvl: 6,
-			rarity: 0,
-			hpRate: -3,
-			mpRate: 0,
-			str: 1,
-			dex: 5,
-			con: 1,
-			int: 3,
-			spd: 10,
-			dmgBase: '1d1',
-			acBase: 5,
-			dropNum: 0,
-			matRedTimes: 2,
-			fire: 0,
-			water: 0,
-			air: 0,
-			earth: 0,
-			poison: 0,
-			material: M_FEATHER,
-			atkType: AT_S,
-			levi: true,
-			moveRnd: true,
-			atkStealGold: 25,
-			grow: DEX
-		},
-	],
-
-    ghosts: [
-		{
-			name: { a: 'Phantom', b: '亡者' },
-			symbol: 'G',
-			color: colorList.skyblue,
-			race: UNDEAD,
-			mod: NORMAL,
-			grade: NORMAL,
-			lvl: 15,
-			rarity: 0,
-			hpRate: -3,
-			mpRate: 0,
-			str: 3,
-			dex: 5,
-			con: 2,
-			int: 3,
-			spd: 0,
-			dmgBase: '1d3',
-			acBase: 1,
-			dropNum: 0,
-			matRedTimes: 2,
-			fire: 0,
-			water: 0,
-			air: 0,
-			earth: 0,
-			poison: 0,
-			atkType: AT_B,
-			invisible: true,
-			levi: true,
-			moveRnd: true
-		},
-	],
-
-    hybrids: [
-		{
-            name: { a: 'Harpy', b: 'ハーピー' },
-            symbol: 'H',
-            color: colorList.skyblue,
-            race: HUMAN | ANIMAL,
-            mod: NORMAL,
-            grade: NORMAL,
-            lvl: 9,
-            rarity: 0,
-            hpRate: -1,
-            mpRate: 0,
-            str: 2,
-            dex: 5,
-            con: 2,
-            int: 2,
-            spd: 10,
-            dmgBase: '2d2',
-            acBase: 10,
-            dropNum: 1,
-            matRedTimes: 2,
-            fire: 0,
-            water: 0,
-            air: 30,
-            earth: 0,
-            poison: 0,
-            material: M_FEATHER,
-            atkType: AT_S | AT_T,
-            levi: true,
-            grow: DEX,
-            skillProb: 1 / 10,
-            skill: {
-				a: { id: SCREAM, lvl: 5 }
-			}
-		},
-		
-        {
-            name: { a: 'Centaur', b: 'ケンタウロス' },
-            symbol: 'H',
-            color: colorList.yellow,
-            race: HUMAN | ANIMAL,
-            mod: NORMAL,
-            grade: NORMAL,
-            lvl: 20,
-            rarity: 0,
-            hpRate: 1,
-            mpRate: 0,
-            str: 10,
-            dex: 15,
-            con: 10,
-            int: 5,
-            spd: 10,
-            dmgBase: '3d5',
-            acBase: 20,
-            dropNum: 3,
-            matRedTimes: 1,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 0,
-            material: M_BONE,
-            atkType: AT_B,
-            dexSus: true,
-            grow: DEX,
-            starter: [
-				{ type: 'missile', tabId: M_BOW },
-				{ type: 'ammo', tabId: A_ARROW }
-			]
-		},
-		
-        {
-            name: { a: 'Minotaur', b: 'ミノタウロス' },
-            symbol: 'H',
-            color: colorList.orange,
-            race: HUMAN | ANIMAL,
-            mod: NORMAL,
-            grade: NORMAL,
-            lvl: 25,
-            rarity: 0,
-            hpRate: 2,
-            mpRate: 0,
-            str: 20,
-            dex: 10,
-            con: 15,
-            int: 3,
-            spd: 10,
-            dmgBase: '4d5',
-            acBase: 20,
-            dropNum: 3,
-            matRedTimes: 1,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 0,
-            material: M_BONE | M_HORN,
-            atkType: AT_B,
-            strSus: true,
-            grow: STR,
-            starter: [{ type: 'melee', tabId: M_TWO_HANDED_AXE }]
-        },
-	],
-	
-    nymphs: [
-		{
-			name: { a: 'Nymph', b: 'ニンフ' },
-			symbol: 'N',
-			color: colorList.olive,
-			race: SPIRIT,
-			mod: NORMAL,
-			grade: NORMAL,
-			lvl: 15,
-			rarity: 0,
-			hpRate: -2,
-			mpRate: 1,
-			str: 2,
-			dex: 5,
-			con: 3,
-			int: 3,
-			spd: 5,
-			dmgBase: '1d2',
-			acBase: 1,
-			dropNum: 1,
-			matRedTimes: 2,
-			fire: 1,
-			water: 0,
-			air: 0,
-			earth: 0,
-			poison: 0,
-			atkType: AT_S,
-			moveRnd: true,
-			atkStealItem: 25
-		},
-	],
-
-    snakes: [
-		{
-            name: { a: 'Serpent', b: '大蛇' },
-            symbol: 'J',
-            color: colorList.purple,
-            race: ANIMAL,
-            mod: NORMAL,
-            grade: NORMAL,
-            lvl: 3,
-            rarity: 0,
-            hpRate: -2,
-            mpRate: 0,
-            str: 1,
-            dex: 2,
-            con: 1,
-            int: 1,
-            spd: 0,
-            dmgBase: '1d2',
-            acBase: 5,
-            dropNum: 0,
-            matRedTimes: 2,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 30,
-            material: M_SCALE,
-            atkType: AT_T,
-            dmgPoison: 10
-		},
-		
-        {
-            name: { a: 'Amphisbaena,the Serpent of the Two-headed', b: '双頭の大蛇`アンフィスバエナ`' },
-            symbol: 'J',
-            color: colorList.purple,
-            race: ANIMAL,
-            mod: UNIQUE,
-            grade: NORMAL,
-            lvl: 20,
-            rarity: 30,
-            hpRate: -2,
-            mpRate: 0,
-            str: 10,
-            dex: 10,
-            con: 5,
-            int: 5,
-            spd: 10,
-            dmgBase: '2d8',
-            acBase: 10,
-            dropNum: 2,
-            matRedTimes: 0,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 50,
-            material: M_SCALE,
-            atkType: AT_T,
-            dmgPoison: 50,
-            skillProb: 1 / 6,
-            skill: {
-				a: { id: POISON_BREATH, lvl: 5 }
-            },
-
-            desc: {
-                a:'',
-                b:'リビアの砂漠に住むという双頭の毒蛇。ペルセウスが切り落とした、メデューサの首から落ちた血液により、この蛇は生まれたという。',
-            }
-        },
-	],
-	
-    multiheads: [
-		{
-            name: { a: 'Hydra', b: 'ヒュドラ' },
-            symbol: 'M',
-            color: colorList.green,
-            mod: NORMAL,
-            grade: NORMAL,
-            lvl: 28,
-            rarity: 0,
-            hpRate: 2,
-            mpRate: 0,
-            str: 15,
-            dex: 15,
-            con: 25,
-            int: 10,
-            spd: 0,
-            dmgBase: '2d5',
-            acBase: 20,
-            dropNum: 2,
-            matRedTimes: 1,
-            fire: -30,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 50,
-            material: M_SCALE,
-            atkType: AT_T | AT_B,
-            hpReg: 100,
-            ias: 25,
-            dmgPoison: 25,
-            grow: CON,
-            skillProb: 1 / 8,
-            skill: {
-				a: { id: POISON_BREATH, lvl: 10 }
-			}
-		},
-		
-        {
-            name: { a: 'Scylla, the Sea-monster', b: '海の怪物スキュラ' },
-            symbol: 'M',
-            olor: colorList.green,
-            mod: UNIQUE,
-            grade: NORMAL,
-            lvl: 30,
-            rarity: 80,
-            hpRate: 5,
-            mpRate: 0,
-            str: 20,
-            dex: 20,
-            con: 30,
-            int: 10,
-            spd: 0,
-            dmgBase: '2d10',
-            acBase: 20,
-            dropNum: 4,
-            matRedTimes: 0,
-            fire: 0,
-            water: 50,
-            air: 0,
-            earth: 50,
-            poison: 50,
-            atkType: AT_T | AT_B,
-            hpReg: 100,
-            ias: 25,
-            dmgPoison: 25,
-            skillProb: 1 / 10,
-            skill: {
-				a: { id: AQUA_BREATH, lvl: 10 }
-            },
-
-            desc: {
-                a:'',
-                b:'12本の足、6つの頭、3列に並んだ歯を持つ。元は女性であったが、グラウコスの求愛を拒み続け、それを妬んだキルケの毒により怪物に変貌する。',
-            }
-        },
-	],
-	
-    giants: [
-		{
-            name: { a: 'Giant', b: '巨人' },
-            symbol: 'P',
-            color: colorList.yellow,
-            race: GIANT,
-            mod: NORMAL,
-            grade: NORMAL,
-            lvl: 15,
-            rarity: 0,
-            hpRate: 3,
-            mpRate: 0,
-            str: 20,
-            dex: 5,
-            con: 10,
-            int: 5,
-            spd: 0,
-            dmgBase: '5d5',
-            acBase: 30,
-            dropNum: 0,
-            matRedTimes: 1,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 50,
-            poison: 0,
-            material: M_BONE,
-            atkType: AT_B,
-            grow: CON
-		},
-		
-        {
-            name: { a: 'Cyclopes', b: 'サイクロプス' },
-            symbol: 'P',
-            color: colorList.orange,
-            race: GIANT,
-            mod: NORMAL,
-            grade: NORMAL,
-            lvl: 20,
-            rarity: 0,
-            hpRate: 3,
-            mpRate: 0,
-            str: 15,
-            dex: 10,
-            con: 15,
-            int: 5,
-            spd: 5,
-            dmgBase: '4d4',
-            acBase: 30,
-            dropNum: 0,
-            matRedTimes: 1,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 50,
-            poison: 0,
-            material: M_BONE,
-            atkType: AT_B,
-            grow: CON,
-            starter: [
-				{ type: 'missile', tabId: M_SLING },
-				{ type: 'ammo', tabId: A_ROCK }
-			]
-		},
-		
-        {
-            name: { a: 'Polyphemus,the One Eyed Giant', b: '隻眼の巨人ポリュペモス' },
-            symbol: 'P',
-            color: colorList.orange,
-            race: GIANT,
-            mod: UNIQUE,
-            grade: NORMAL,
-            lvl: 25,
-            rarity: 30,
-            hpRate: 3,
-            mpRate: 0,
-            str: 20,
-            dex: 15,
-            con: 25,
-            int: 5,
-            spd: 5,
-            dmgBase: '6d6',
-            acBase: 30,
-            dropNum: 4,
-            matRedTimes: 0,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 50,
-            poison: 0,
-            material: M_BONE,
-            atkType: AT_B,
-            conSus: true,
-            skillProb: 1 / 10,
-            skill: {
-				a: { id: CREATE_GIANT, lvl: 1 }
-            },
-
-            desc: {
-                a:'',
-                b:'神ポセイドンの子、一つ目の巨人。洞窟内に閉じ込められたオデュッセウスは、この巨人が泥酔し寝ている間に、丸太を目に突き立て盲いにし脱出する。',
-            }
-        },
-	],
-	
-    spiders: [
-		{
-            name: { a: 'Giant Spider', b: '大蜘蛛' },
-            symbol: 'S',
-            color: colorList.gray,
-            race: ANIMAL,
-            mod: NORMAL,
-            grade: NORMAL,
-            lvl: 10,
-            rarity: 0,
-            hpRate: -3,
-            mpRate: 0,
-            str: 3,
-            dex: 3,
-            con: 1,
-            int: 1,
-            spd: 0,
-            dmgBase: '2d2',
-            acBase: 10,
-            dropNum: 0,
-            matRedTimes: 2,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 0,
-            material: M_CLOTH,
-            atkType: AT_T,
-            atkSlow: 20
-		},
-		
-        {
-            name: { a: 'Giant Scorpion', b: '大サソリ' },
-            symbol: 'S',
-            color: colorList.brown,
-            race: ANIMAL,
-            mod: NORMAL,
-            grade: NORMAL,
-            lvl: 15,
-            rarity: 0,
-            hpRate: -3,
-            mpRate: 0,
-            str: 3,
-            dex: 3,
-            con: 1,
-            int: 1,
-            spd: 5,
-            dmgBase: '3d1',
-            acBase: 20,
-            dropNum: 0,
-            matRedTimes: 2,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 0,
-            material: M_SHELL,
-            atkType: AT_T,
-            atkPara: 10
-        },
-	],
-	
-    demons: [
-		{
-			name: { a: 'Demon', b: '悪魔' },
-			symbol: 'U',
-			color: colorList.gray,
-			race: DEMON,
-			mod: NORMAL,
-			grade: NORMAL,
-			lvl: 20,
-			rarity: 0,
-			hpRate: 2,
-			mpRate: 1,
-			str: 10,
-			dex: 10,
-			con: 15,
-			int: 10,
-			spd: 10,
-			dmgBase: '3d5',
-			acBase: 30,
-			dropNum: 2,
-			matRedTimes: 1,
-			fire: 50,
-			water: 0,
-			air: 0,
-			earth: 0,
-			poison: 0,
-			material: M_SKIN | M_HORN,
-			atkType: AT_S | AT_B,
-			skillProb: 1 / 8,
-			skill: {
-				a: { id: FIRE_BREATH, lvl: 10 },
-				b: { id: ENCOURAGEMENT, lvl: 10 }
-			}
-		},
-	],
-
-    vampires: [
-		{
-			name: { a: 'Vampire', b: '吸血鬼' },
-			symbol: 'V',
-			color: colorList.gray,
-			race: UNDEAD,
-			mod: NORMAL,
-			grade: NORMAL,
-			lvl: 15,
-			rarity: 0,
-			hpRate: 1,
-			mpRate: 1,
-			str: 8,
-			dex: 8,
-			con: 8,
-			int: 8,
-			spd: 0,
-			dmgBase: '2d5',
-			acBase: 20,
-			dropNum: 2,
-			matRedTimes: 2,
-			fire: -50,
-			water: 0,
-			air: 0,
-			earth: 0,
-			poison: 0,
-			material: M_BONE,
-			atkType: AT_T | AT_B,
-			stealLife: 50
-		},
-	],
-
-    wraiths: [
-		{
-			name: { a: 'Wraith', b: '生霊' },
-			symbol: 'W',
-			color: colorList.gray,
-			race: UNDEAD,
-			mod: NORMAL,
-			grade: NORMAL,
-			lvl: 25,
-			rarity: 0,
-			hpRate: -1,
-			mpRate: 0,
-			str: 10,
-			dex: 10,
-			con: 5,
-			int: 10,
-			spd: 0,
-			dmgBase: '1d6',
-			acBase: 20,
-			dropNum: 2,
-			matRedTimes: 2,
-			fire: 0,
-			water: 0,
-			air: 0,
-			earth: 0,
-			poison: 0,
-			atkType: AT_T,
-			atkDrain: 20
-		},
-	],
-
-    statues: [
-		{
-            name: { a: 'Trap Statue ', b: '罠像' },
-            symbol: '%',
-            color: null,
-            mod: NORMAL,
-            grade: NORMAL,
-            lvl: 10,
-            rarity: 0,
-            hpRate: 0,
-            mpRate: 0,
-            str: 1,
-            dex: 1,
-            con: 1,
-            int: 1,
-            spd: 0,
-            dmgBase: null,
-            acBase: null,
-            dropNum: 0,
-            matRedTimes: 3,
-            fire: 50,
-            water: 50,
-            air: 50,
-            earth: 50,
-            poison: 50,
-            material: M_STONE | M_PLATING,
-            atkType: AT_B,
-            stillness: true,
-            awake: true,
-            volumeRate: 1,
-            skillProb: 1 / 8,
-            skill: {
-				a: { id: CREATE_TRAP, lvl: 1 }
-			}
-		},
-		
-        {
-            name: { a: 'Summon Statue', b: '召喚像' },
-            symbol: '%',
-            color: null,
-            mod: NORMAL,
-            grade: NORMAL,
-            lvl: 20,
-            rarity: 0,
-            hpRate: 0,
-            mpRate: 0,
-            str: 1,
-            dex: 1,
-            con: 1,
-            int: 1,
-            spd: 0,
-            dmgBase: null,
-            acBase: null,
-            dropNum: 0,
-            matRedTimes: 3,
-            fire: 50,
-            water: 50,
-            air: 50,
-            earth: 50,
-            poison: 50,
-            material: M_STONE | M_PLATING,
-            atkType: AT_B,
-            stillness: true,
-            awake: true,
-            volumeRate: 1,
-            skillProb: 1 / 8,
-            skill: {
-				a: { id: CREATE_MONSTER, lvl: 1 }
-			}
-		},
-		
-        {
-            name: { a: 'Gargoyle Statue', b: 'ガーゴイル像' },
-            symbol: '%',
-            color: null,
-            race: DEMON,
-            mod: MAGIC,
-            grade: NORMAL,
-            lvl: 30,
-            rarity: 30,
-            hpRate: 2,
-            mpRate: 1,
-            str: 10,
-            dex: 10,
-            con: 10,
-            int: 10,
-            spd: 0,
-            dmgBase: null,
-            acBase: null,
-            matRedTimes: 2,
-            dropNum: 0,
-            fire: 50,
-            water: 50,
-            air: 50,
-            earth: 50,
-            poison: 50,
-            material: M_STONE | M_PLATING,
-            atkType: AT_S,
-            stillness: true,
-            canAttack: true,
-            awake: true,
-            volumeRate: 1
-        },
-	],
-	
-    misc: [
-		{
-            name: { a: 'Rogue', b: 'ローグ' },
-            symbol: '@',
-            color: colorList.white,
-            race: HUMAN,
-            mod: NORMAL,
-            grade: NORMAL,
-            lvl: 1,
-            rarity: 0,
-            hpRate: 0,
-            mpRate: 0,
-            str: 1,
-            dex: 1,
-            con: 1,
-            int: 1,
-            spd: 0,
-            dmgBase: '1d1',
-            acBase: 0,
-            dropNum: 0,
-            matRedTimes: 0,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 0,
-            atkType: AT_B,
-            awake: true,
-            starter: [
-                { type: 'melee', tabId: M_DAGGER, starter: true },
-                { type: 'armor', tabId: A_VEST, starter: true },
-                { type: 'book', tabId: B_SPELL_1 },
-                { type: 'book', tabId: B_SKILL_1 },
-                { type: 'food', tabId: F_RATION, quantity: 5 },
-                { type: 'light', tabId: L_TORCH, starter: true },
-                { type: 'light', tabId: L_TORCH, starter: true, pack: true},
-            ],
-		},
-		
-        {
-            name: { a: 'Yeti', b: 'イエティ' },
-            symbol: 'Y',
-            color: colorList.white,
-            mod: NORMAL,
-            grade: NORMAL,
-            lvl: 1,
-            rarity: 0,
-            hpRate: 0,
-            mpRate: 0,
-            str: 1,
-            dex: 1,
-            con: 1,
-            int: 1,
-            spd: 0,
-            dmgBase: '1d6',
-            acBase: 6,
-            dropNum: 0,
-            matRedTimes: 0,
-            fire: 0,
-            water: 0,
-            air: 0,
-            earth: 0,
-            poison: 0,
-            atkType: AT_B,
-		},
-		
-        {
-            name: { a: 'Beelzebub, the Lord of the Flies', b: '蝿の王ベルゼブブ' },
-            symbol: 'U',
-            color: colorList.gray,
-            race: DEMON,
-            mod: UNIQUE,
-            grade: NORMAL,
-            boss: true,
-            lvl: 33,
-            rarity: 0,
-            hpRate: 5,
-            mpRate: 5,
-            str: 30,
-            dex: 30,
-            con: 30,
-            int: 30,
-            spd: 10,
-            dmgBase: '5d5',
-            acBase: 40,
-            dropNum: 8,
-            matRedTimes: 0,
-            fire: 50,
-            water: 50,
-            air: 50,
-            earth: 50,
-            poison: 50,
-            atkType: AT_S | AT_T | AT_B,
-            levi: true,
-            awake: true,
-            dmgPoison: 50,
-            strSus: true,
-            dexSus: true,
-            conSus: true,
-            intSus: true,
-            skillProb: 1 / 6,
-            skill: {
-				a: { id: COCYTUS, lvl: 10 },
-				b: { id: POISON_BREATH, lvl: 10 },
-				c: { id: INFECTION_BREATH, lvl: 10 },
-				d: { id: CREATE_MAGIC_MONSTER, lvl: 1 }
-            },
-
-            desc: {
-                a:'',
-                b:'地獄の君主、十六の悪魔の指揮官、悪魔達の皇帝。人間を誘惑し嫉妬心を生み出す。しばしばサタンと同一視される。',
-            }
-        },
-    ],
-};
-
-const fighterNumsMap = (() => {
-    let nums = new Map();
-    for (let key in fighterTab)
-        nums.set(key, enums(0, fighterTab[key].length - 1));
-    return nums;
-})();
-
-const FT = Object.keys(fighterTab);
-
 const Fighter = class extends Material {
     constructor(obj) {
         super(obj);
         this.lvlMax = this.lvl;
         this.levi = !!this.levi;
-        this.hpRate += HP_RATE;
         this.hpSum = 0;
         if (!this.hpReg) this.hpReg = 0;
         this.hpRegBuff = 0;
-        this.mpRate += MP_RATE;
         this.mpSum = 0;
         this.mpReg = 0;
         this.mpRegBuff = 0;
@@ -2254,14 +24,15 @@ const Fighter = class extends Material {
         this.spdMax = this.spd;
         this.spdBuff = 0;
         this.spdNerf = 0;
-        this.speeded = 0;
-        this.slowed = 0;
+        this.spdBuffDur = 0;
+        this.spdNerfDur = 0;
         this.mf = 0;
         this.mfBuff = 0;
         this.gf = 0;
         this.gfBuff = 0;
         this.expBonus = 0;
-        this.atBare = this.atkType;
+        this.atkBare = this.atkType;
+        this.dmgBare = this.dmgBase;
         this.dmgBonus = 0;
         this.dmgBuff = 0;
         this.digging = 0;
@@ -2272,12 +43,13 @@ const Fighter = class extends Material {
         this.dmgUndead = 0;
         this.dmgGiant = 0;
         this.dmgSpirit = 0;
+        this.dmgGod = 0;
         this.dmgFire = 0;
         this.dmgLightning = 0;
         if (!this.dmgPoison) this.dmgPoison = 0;
         if (!this.dmgAcid) this.dmgAcid = 0;
-        this.dmgDiceNum = 0;
-        this.dmgDiceSides = 0;
+        this.dmgMinBonus = 0;
+        this.dmgMaxBonus = 0;
         if (!this.atkCon) this.atkCon = 0;
         if (!this.atkPara) this.atkPara = 0;
         if (!this.atkSlow) this.atkSlow = 0;
@@ -2290,15 +62,18 @@ const Fighter = class extends Material {
         if (!this.atkStealItem) this.atkStealItem = 0;
         this.rateBonus = 0;
         this.rateBuff = 0;
-        this.acBonus = 0;
+        if (!this.acBonus) this.acBonus = 0;
         this.acSValueSum = 0;
         this.acTValueSum = 0;
         this.acBValueSum = 0;
         this.acSBaseSum = 0;
         this.acTBaseSum = 0;
         this.acBBaseSum = 0;
-        this.acSBase = this.acTBase = this.acBBase = this.acBase;
+        this.acSBase = this.getAcVar(this.acBase * this.acSRate, AT_SLASH);
+        this.acTBase = this.getAcVar(this.acBase * this.acTRate, AT_THRUST);
+        this.acBBase = this.getAcVar(this.acBase * this.acBRate, AT_BLUNT);
         this.acBuff = 0;
+        if (!this.acRed) this.acRed = 0;
         this.iasBase = 0;
         this.fcrBase = 0;
         this.frwBase = 0;
@@ -2306,6 +81,11 @@ const Fighter = class extends Material {
         if (!this.fcr) this.fcr = 0;
         if (!this.frw) this.frw = 0;
         this.pack = {};
+        if (!this.fire) this.fire = 0;
+        if (!this.water) this.water = 0;
+        if (!this.air) this.air = 0;
+        if (!this.earth) this.earth = 0;
+        if (!this.poison) this.poison = 0;
         this.fireMax = this.fire;
         this.fireBuff = 0;
         this.waterMax = this.water;
@@ -2317,6 +97,10 @@ const Fighter = class extends Material {
         this.poisonMax = this.poison;
         this.poisonBuff = 0;
         this.lowerRes = 0;
+        this.physicalBuff = 0;
+        this.physicalBuffDur = 0;
+        this.physicalNerf = 0;
+        this.physicalNerfDur = 0;
         this.statPoints = 0;
         this.skillPoints = 0;
         this.skillFire = 0;
@@ -2342,9 +126,9 @@ const Fighter = class extends Material {
         this.numBoxes = 0;
         this.initSynerzy();
         this.equipment = {};
-        if (this.race & (HUMAN | GIANT)) {
-            for (let key in BP) {
-				this.equipment[BP[key]] = null;
+        if (this.race & (RACE_HUMAN | RACE_GIANT)) {
+            for (let key in bpList) {
+				this.equipment[bpList[key]] = null;
 			}
 		}
         
@@ -2356,6 +140,27 @@ const Fighter = class extends Material {
                 this.boxes[i] = null;
             }
         }
+
+        //HP Bar Color
+        this.sleeping = 0;
+        this.paralyzed = 0;
+        this.confused = 0;
+        this.blinded = 0;
+        this.hallucinated = 0;
+        this.canceled = 0;
+        this.infected = 0;
+        this.poisoned = 0;
+
+        //Stats Color
+        this.expBuff = 0;
+
+        //Condition Display
+        this.seeInvisible = 0;
+        this.invisibility = 0;
+        this.ecco = 0;
+        this.enchantSelfDur = 0;
+        this.venomDur = 0;
+        this.confusing = 0;
     }
 
     initSynerzy() {
@@ -2372,18 +177,18 @@ const Fighter = class extends Material {
         this.exp += Math.floor(exp * (potion ? 1 : (1 + this.expBonus / 100)));
         if (this.exp > this.expMax) this.expMax = this.exp;
         let found;
-        while ((this.id === ROGUE && this.lvl < MAX_FIGHTER_LVL || this.id !== ROGUE) &&
+        while ((this.id === ID_ROGUE && this.lvl < MAX_FIGHTER_LVL || this.id !== ID_ROGUE) &&
           	  this.exp >= calcLevel(this.lvl + 1)) {
             if (++this.lvl <= this.lvlMax) continue;
             this.lvlMax = this.lvl;
             found = true;
             audio.playSound('level');
             this.skillPoints++;
-            if (this.id === ROGUE) {
+            if (this.id === ID_ROGUE) {
                 message.draw(option.isEnglish() ?
                     `Welcome to level ${this.lvl}` :
                     `レベル${this.lvl}へようこそ`);
-                this.statPoints++;
+                this.statPoints += 5;
             } else {
 				this.gainStats();
 			}
@@ -2401,22 +206,22 @@ const Fighter = class extends Material {
 
     getExp() {
         let exp = calcLevel(this.lvl + 1) - calcLevel(this.lvl);
-        if (this.mod === UNIQUE) {
+        if (this.mod === MOD_UNIQUE) {
             exp /= this.boss ? 1 : 2;
 		} else {
 			exp /= 50;
 		}
 
         if (this.group) exp /= 10;
-        if (this.race & DRAGON) {
+        if (this.race & RACE_DRAGON) {
             exp *= 3;
-		} else if (this.race & GIANT) {
+		} else if (this.race & RACE_GIANT) {
 			exp *= 2;
 		}
 
-        if (this.mod === RARE) {
+        if (this.mod === MOD_RARE) {
             exp *= 4;
-		} else if (this.mod === MAGIC) {
+		} else if (this.mod === MOD_MAGIC) {
 			exp *= 2;
 		}
 
@@ -2429,132 +234,195 @@ const Fighter = class extends Material {
     }
 
     calcHP() {
-        this.hpMax = (this.lvl + this.con * 2 + 1) * this.hpRate + this.hpSum;
+        this.hpMax = (this.lvl - 1 + this.con) * (this.hpRate + HP_BASE_RATE) + this.hpSum;
         if (this.hpMax < 1) this.hpMax = 1;
         if (this.hp > this.hpMax) this.hp = this.hpMax;
     }
 
     calcMP() {
-        this.mpMax = (this.lvl + this.int * 4 + 1) * this.mpRate + this.mpSum;
+        this.mpMax = (this.lvl - 1 + this.int) * (this.mpRate + MP_BASE_RATE) + this.mpSum;
         if (this.mpMax < 1) this.mpMax = 1;
         if (this.mp > this.mpMax) this.mp = this.mpMax;
     }
 
-    calcDmg() {
-        let dmgAvg = dice.getAvg(this.dmgBase);
-        let dmgBonus = 1 + this.dmgBonus / 100;
-        let dmgBuff = 1 + this.dmgBuff / 100;
-        this.dmgAvg = Math.floor((this.str / 2 + dmgAvg) * dmgBonus * dmgBuff);
-        if (this.dmgAvg < 1) this.dmgAvg = 1;
+    calcDmg(equip) {
+
+        // Damage
+        let dmgSAvg = 0,
+            dmgTAvg = 0,
+            dmgBAvg = 0,
+            count = 0,
+            dmgBase = Math.ceil(this.dmgBase + this.str / 2);
+        this.dmgSBase = this.atkType & AT_SLASH ? minMax.getBase(dmgBase, atVarMap.get(AT_SLASH)) : 0;
+        this.dmgTBase = this.atkType & AT_THRUST ? minMax.getBase(dmgBase, atVarMap.get(AT_THRUST)) : 0;
+        this.dmgBBase = this.atkType & AT_BLUNT ? minMax.getBase(dmgBase, atVarMap.get(AT_BLUNT)) : 0;
+        this.dmgSValue = this.dmgTValue = this.dmgBValue = 0;
+        if (this.dmgSBase) {
+            [this.dmgSValue, dmgSAvg] = this.getDmgMinMax(this.dmgSBase);
+            count++;
+        }
+
+        if (this.dmgTBase) {
+            [this.dmgTValue, dmgTAvg] = this.getDmgMinMax(this.dmgTBase);
+            count++;
+        }
+
+        if (this.dmgBBase) {
+            [this.dmgBValue, dmgBAvg] = this.getDmgMinMax(this.dmgBBase);
+            count++;
+        }
+
+        this.dmgAvg = Math.floor((dmgSAvg + dmgTAvg + dmgBAvg) / count);
+
+        // Hit Rate
         let weapon = this.equipment['main'];
         let weight = weapon ? 3 - weapon.weight : 0;
-        if (weight < 0) weight = /*weight+this.str/5<0? weight+this.str/5:*/ 0;
-        this.rateValue = Math.floor(((this.dex + weight) * 10 *
+        if (this.id === ID_ROGUE && weight < 0 && weight * 10 + this.str < 0) {
+            weight = -1000;
+            if (equip) message.draw(message.get(M_TOO_HEAVY));
+        }
+
+        this.rateValue = Math.floor(((this.dex * 20 + weight * 100) *
             (1 + this.rateBonus / 100)) * (1 + this.rateBuff / 100));
         if (this.rateValue < 1) this.rateValue = 1;
-        let ias = Math.floor(this.ias / (25 + this.iasBase)) + 1;
-        if (ias > 5) ias = 5;
-        let fcr = Math.floor(this.fcr / (25 + this.fcrBase)) + 1;
-        if (fcr > 5) fcr = 5;
-        let str = this.str >= 40 ? 5 : Math.floor(this.str / 10) + 1;
-        let dex = this.dex >= 40 ? 5 : Math.floor(this.dex / 10) + 1;
-        let int = this.int >= 40 ? 5 : Math.floor(this.int / 10) + 1;
-        this.timesMelee = ias < str ? ias : str;
-        this.timesMissile = ias < dex ? ias : dex;
-        this.timesSpell = fcr < int ? fcr : int;
+
+        // Speed
+        let ias = Math.floor((1 + this.iasBase / 100) * 5 * this.ias);
+        let fcr = Math.floor((1 + this.fcrBase / 100) * 5 * this.fcr);
+        let str = this.str * 2;
+        let dex = this.dex * 2;
+        let int = this.int * 2;
+        this.spdMelee = ias < str ? ias : str;
+        this.spdMissile = ias < dex ? ias : dex;
+        this.spdSpell = fcr < int ? fcr : int;
+        let limit = COST_REGULAR / 2;
+        if (this.spdMelee > limit) this.spdMelee = limit;
+        if (this.spdMissile > limit) this.spdMissile = limit;
+        if (this.spdSpell > limit) this.spdSpell = limit;
+        this.spdMeleeRate = Math.floor(this.spdMelee / COST_REGULAR * 100);
+        this.spdMissileRate = Math.floor(this.spdMissile / COST_REGULAR * 100);
+        this.spdSpellRate = Math.floor(this.spdSpell / COST_REGULAR * 100);
+        this.timesMelee = Math.floor(this.spdMelee / 100) + 1;
+        this.timesMissile = Math.floor(this.spdMissile / 100) + 1;
+        if (this.timesMelee > 5) this.timesMelee = 5;
+        if (this.timesMissile > 5) this.timesMissile = 5;
+    }
+
+    getDmgMinMax(base) {
+        let [min, max] =  minMax.getNums(base, this.dmgMinBonus, this.dmgMaxBonus);
+        let bonus = 1 + this.dmgBonus / 100;
+        let buff = 1 + this.dmgBuff / 100;
+        min *= bonus * buff;
+        max *= bonus * buff;
+        let value = Math.floor(min) + '-' + Math.floor(max);
+        let avg = (min + max) / 2;
+        return [value, avg];
     }
 
     calcMoveTimes() {
-        this.timesMove = Math.floor(this.frw / (20 + this.frwBase))
-        if (this.timesMove > 5) this.timesMove = 5;
-    }
-
-    calcDmgOne() {
-        let { num, sides } = dice.get(this.dmgBase, this.dmgDiceNum, this.dmgDiceSides);
-        this.dmgBare = this.dmgBase = num + 'd' + sides;
+        this.spdMove = Math.floor((1 + this.frwBase / 100) * 5 * this.frw);
+        let limit = COST_REGULAR / 2;
+        if (this.spdMove > limit) this.spdMove = limit;
+        this.spdMoveRate = Math.floor(this.spdMove / COST_REGULAR * 100);
     }
 
     calcAc() {
         let percBonus = 1 + this.acBonus / 100;
+        let percBonusSum = this.acBonus / 100/* / 7*/;
         let percBuff = 1 + this.acBuff / 100;
-        this.acSValue = this.acSBase * percBonus + this.dex / 2; //bare
-        this.acSBonusValue = this.acSBaseSum * this.acBonus / 100; //weapon, ornament
+        this.acSValue = this.acSBase * percBonus + this.dex; //bare
+        this.acSBonusValue = this.acSBaseSum * percBonusSum; //weapon, ornament
         this.acSValueTotal = Math.floor((this.acSValue + this.acSBonusValue + this.acSValueSum) * percBuff);
         if (this.acSValueTotal < 0) this.acSValueTotal = 0;
-        this.acTValue = this.acTBase * percBonus + this.dex / 2;
-        this.acTBonusValue = this.acTBaseSum * this.acBonus / 100;
+        this.acTValue = this.acTBase * percBonus + this.dex;
+        this.acTBonusValue = this.acTBaseSum * percBonusSum;
         this.acTValueTotal = Math.floor((this.acTValue + this.acTBonusValue + this.acTValueSum) * percBuff);
         if (this.acTValueTotal < 0) this.acTValueTotal = 0;
-        this.acBValue = this.acBBase * percBonus + this.dex / 2;
-        this.acBBonusValue = this.acBBaseSum * this.acBonus / 100;
+        this.acBValue = this.acBBase * percBonus + this.dex;
+        this.acBBonusValue = this.acBBaseSum * percBonusSum;
         this.acBValueTotal = Math.floor((this.acBValue + this.acBBonusValue + this.acBValueSum) * percBuff);
         if (this.acBValueTotal < 0) this.acBValueTotal = 0;
+        this.acAvgValueTotal = Math.floor((this.acSValueTotal + this.acTValueTotal + this.acBValueTotal) / 3);
     }
 
-    calcAttack(e, skill, lvl, itemThrow) {
-        let dmgBase, atkType;
-        if (!itemThrow) {
-            dmgBase = this.dmgBase;
+    calcAttack(e, skill, lvl, itemThrown, ammo) {
+        let dmgBase, atkType, acEnemy, atCur;
+        if (!itemThrown) {
             atkType = this.atkType;
         } else {
-            dmgBase = itemThrow.dmgBase ? itemThrow.dmgBase : '1d1';
-            atkType = itemThrow.atkType ? itemThrow.atkType : AT_B;
+            atkType = itemThrown.atkType ? itemThrown.atkType : AT_BLUNT;
 		}
-
-        let rate = Math.floor((this.rateValue / (this.rateValue + this.getEnemyAc(atkType, e))) * 100);
-        if (rate > 95) {
-            rate = 95;
-		} else if (rate < 5) {
-			rate = 5;
-		}
-
+        
+        [acEnemy, atCur] = this.getEnemyAc(atkType, e);
+        let rate = Math.floor((this.rateValue / (this.rateValue + acEnemy)) * 100);
+        if (rate > 95) rate = 95;
+		if (rate < 5) rate = 5;
         let dmg = 0;
-        if (skill && skill.element !== 'physical' || evalPercentage(rate)) {
-            let weight;
-            if (itemThrow) {
-                weight = itemThrow.weight;
-			} else {
-				weight = this.equipment['main'] ? this.equipment['main'].weight : 1;
-			}
+        if (!evalPercentage(rate)) return [dmg, rate, atCur];
+        let boost = 0;
+        if (itemThrown) {
+            dmgBase = itemThrown.dmgBase;
+            if (dmgBase) dmgBase = minMax.getBase(Math.ceil(dmgBase + this.str / 2), atVarMap.get(atCur));
+            if (itemThrown.dmgBonus) boost = itemThrown.dmgBonus;
+        } else {
+            dmgBase = atCur === AT_SLASH ? this.dmgSBase :
+                atCur === AT_THRUST ? this.dmgTBase :
+                atCur === AT_BLUNT ? this.dmgBBase :
+                null;
+            if (ammo && ammo.dmgBonus) boost = ammo.dmgBonus;
+        }
 
-            let boost = evalPercentage(weight);
-            if (e.race) boost += this.getRaceBoost(e.race);
-            if (e.material === M_STONE && !itemThrow) boost += this.digging;
-            dmg = (this.str / 2 + dice.roll(dmgBase, boost) * (1 + this.dmgBonus / 100)) *
-                (1 + this.dmgBuff / 100);
-            if (skill) dmg *= 1 + this.calcSkillValue(skill, lvl) / 100;
-            let add = dmg;
-            dmg *= 1 - e.physical / 100;
-            if (!itemThrow && (!skill || skill.element === 'physical')) {
-                if (this.dmgFire) dmg += add * (this.dmgFire / 100) * (1 - e.fire / 100);
-                if (this.dmgLightning) dmg += add * (this.dmgLightning / 100) * (1 - e.lightning / 100);
-                if (this.dmgPoison) dmg += add * (this.dmgPoison / 100) * (1 - e.poison / 100);
-                if (this.dmgAcid) dmg += add * (this.dmgAcid / 100) * (1 - e.acid / 100);
-			}
-			
-            dmg = dmg < 1 ? 1 : Math.floor(dmg);
-		}
-		
-        return [dmg, rate];
+        if (!dmgBase) dmgBase = '1-2';
+        if (e.race) boost += this.getRaceBoost(e.race);
+        if (e.material === M_STONE) boost += this.digging;
+        if (skill) boost += this.calcSkillValue(skill, lvl);
+        dmg = this.getDmg(dmgBase, this.dmgMinBonus, this.dmgMaxBonus, this.dmgBonus, this.dmgBuff, boost);
+        let add = dmg;
+        let element = skill ? skill.element : 'physical';
+        dmg *= 1 - e[element] / 100;
+        if (this.dmgFire) dmg += add * (this.dmgFire / 100) * (1 - e.fire / 100);
+        if (this.dmgLightning) dmg += add * (this.dmgLightning / 100) * (1 - e.lightning / 100);
+        if (this.dmgPoison) dmg += add * (this.dmgPoison / 100) * (1 - e.poison / 100);
+        if (this.dmgAcid) dmg += add * (this.dmgAcid / 100) * (1 - e.acid / 100);
+        dmg = dmg < 1 ? 1 : Math.floor(dmg);
+        return [dmg, rate, atCur];
     }
 
-    getEnemyAc(atkType, e) {
+    getDmg(base, min=0, max=0, bonus=0, buff=0, boost=0) {
+        return minMax.roll(base, min, max) * (1 + bonus / 100) * (1 + buff / 100) * (1 + boost / 100);
+    }
+
+    getEnemyAc(atkType, enemy) {
+        let atCur;
         let ac = NaN;
-        if (atkType & AT_S && !(ac <= e.acSValueTotal)) ac = e.acSValueTotal;
-        if (atkType & AT_T && !(ac <= e.acTValueTotal)) ac = e.acTValueTotal;
-        if (atkType & AT_B && !(ac <= e.acBValueTotal)) ac = e.acBValueTotal;
-        return ac;
+        if (atkType & AT_SLASH && !(ac <= enemy.acSValueTotal)) {
+            ac = enemy.acSValueTotal;
+            atCur = AT_SLASH;
+        }
+
+        if (atkType & AT_THRUST && !(ac <= enemy.acTValueTotal)) {
+            ac = enemy.acTValueTotal;
+            atCur = AT_THRUST;
+        }
+
+        if (atkType & AT_BLUNT && !(ac <= enemy.acBValueTotal)) {
+            ac = enemy.acBValueTotal;
+            atCur = AT_BLUNT;
+        }
+
+        return [ac, atCur];
     }
 
     getRaceBoost(race) {
         let boost = 0;
-        if (race & HUMAN && boost < this.dmgHuman) boost = this.dmgHuman;
-        if (race & ANIMAL && boost < this.dmgAnimal) boost = this.dmgAnimal;
-        if (race & DEMON && boost < this.dmgDemon) boost = this.dmgDemon;
-        if (race & UNDEAD && boost < this.dmgUndead) boost = this.dmgUndead;
-        if (race & DRAGON && boost < this.dmgDragon) boost = this.dmgDragon;
-        if (race & GIANT && boost < this.dmgGiant) boost = this.dmgGiant;
-        if (race & SPIRIT && boost < this.dmgSpirit) boost = this.dmgSpirit;
+        if (race & RACE_HUMAN) boost += this.dmgHuman;
+        if (race & RACE_ANIMAL) boost += this.dmgAnimal;
+        if (race & RACE_DEMON) boost += this.dmgDemon;
+        if (race & RACE_UNDEAD) boost += this.dmgUndead;
+        if (race & RACE_DRAGON) boost += this.dmgDragon;
+        if (race & RACE_GIANT) boost += this.dmgGiant;
+        if (race & RACE_SPIRIT) boost += this.dmgSpirit;
+        if (race & RACE_GOD) boost += this.dmgGod;
         return boost;
     }
 
@@ -2563,51 +431,67 @@ const Fighter = class extends Material {
         missile,
         skill,
         lvl,
-        itemThrow,
+        itemThrown,
     }) {
+        let name, isBasic, ammo;
+        let nameE = enemy.getName();
+        let isEng = option.isEnglish();
         let count = 0;
-        let name;
-        if (itemThrow) {
-            name = itemThrow.getName(true);
+        if (itemThrown) {
+            name = itemThrown.getName(false, 1);
 		} else if (missile) {
-            name = option.isEnglish() ? 'An arrow' : '矢';
-            var ammo = this.ci;
+            ammo = this.ci;
+            name = ammo.getName(false, 1);
+            // if (isEng) name = getArticleAndPlural(name, false, true, 1, true);
         } else if (skill) {
             name = skill.name[option.getLanguage()];
+            if (skill.type === 'missile') ammo = this.ci;
 		} else {
-			name = option.isEnglish() ? this.getName(true) : this.getName() + 'の攻撃';
+            name = isEng ? this.getName(true) : this.getName() + 'の';
+            isBasic = true;
 		}
 
-        let nameE = enemy.getName();
-        let third = option.isEnglish() && (itemThrow || missile || skill || this.id !== ROGUE);
+        let third = isEng && (itemThrown || missile || skill || this.id !== ID_ROGUE);
         do {
-            let [dmg, rate] = skill && skill.type === 'spell' ? [this.calcSkillValue(skill, lvl, enemy), 100] :
-                this.calcAttack(enemy, skill, lvl, itemThrow);
-            let msg;
-            let miss = !dmg || enemy.indestructible || this.id !== ROGUE && enemy.boss;
+            let [dmg, rate, atCur] = skill && skill.type === 'spell' ?
+                [this.calcSkillValue(skill, lvl, enemy), 100, null] :
+                this.calcAttack(enemy, skill, lvl, itemThrown, ammo);
+            let msgDmg;
+            let msgAT;
+            let msgName = name;
+            let miss = !dmg || enemy.indestructible || this.id !== ID_ROGUE && enemy.boss;
+            if (isBasic) {
+                msgAT = this.getAttackTypeName(atCur, isEng, third);
+                if (!isEng) msgName += msgAT;
+            } else if (isEng) {
+                msgAT = 'hit' + (third ? 's' : '');
+            }
+
             if (miss) {
-                msg = option.isEnglish() ? 'missed' : '外れた';
+                msgDmg = isEng ? 'miss' : '外れた';
+                if (third) msgDmg += 'es';
             } else {
-                msg = option.isEnglish() ? 'hit' : `${dmg}のダメージを与えた`;
-                if (third) msg += 's';
+                msgDmg = isEng ? msgAT : `${dmg}のダメージを与えた`;
                 enemy.hp -= dmg;
 			}
 			
-            if (missile || itemThrow) {
-                let item = ammo || itemThrow;
-                if (miss || item.indestructible || evalPercentage(50)) {
-                    this.deleteAmmo(item, true, enemy.x, enemy.y);
-				} else { 
-					this.deleteAmmo(item);
-				}
+            if (missile || itemThrown) {
+                let item = ammo || itemThrown;
+                let drop = miss || item.indestructible || evalPercentage(50);
+                this.deleteAmmo(item, drop, enemy.x, enemy.y);
 			}
-			
-            message.draw(option.isEnglish() ?
-                `${name} ${msg} ${nameE}${!miss? ' by '+dmg:''} (hit rating ${rate})` :
-                `${name}は${nameE}に${msg} (命中率 ${rate})`);
+            
+            let msg = isEng ?
+                `${msgName} ${msgDmg} ${nameE}` + (!miss ? ' by '+ dmg : '') :
+                `${msgName}は${nameE}に${msgDmg}`;
+            if (rogue.isWizard) {
+                msg += isEng ? ` (hit rating ${rate})` : ` (命中率 ${rate})`;
+            }
+
+            message.draw(msg);
             count++;
             if (flag.dash || flag.rest) flag.dash = flag.rest = false;
-            if (!itemThrow && (!skill || skill.element === 'physical')) {
+            if (!skill || skill.type !== 'spell') {
                 if (!dmg) continue;
                 if (this.stealLife) {
                     let percent = this.stealLife > 100 ? 1 : this.stealLife / 100;
@@ -2619,7 +503,7 @@ const Fighter = class extends Material {
                     let percent = this.stealMana > 100 ? 1 : this.stealMana / 100;
                     let mp = Math.ceil(dmg * percent);
                     if (mp > enemy.mp) mp = enemy.mp;
-                    enemy.mp -= mp;
+                    if (enemy.mod !== MOD_UNIQUE) enemy.mp -= mp;
                     this.mp += mp;
                     if (this.mp > this.mpMax) this.mp = this.mpMax;
 				}
@@ -2629,64 +513,76 @@ const Fighter = class extends Material {
                 if (this.dmgPoison) this.getElementEffect('poison', 1, enemy);
                 if (this.dmgAcid) this.getElementEffect('acid', 1, enemy);
                 if (this.cursed && evalPercentage(50 - (enemy.lvl - this.lvl))) enemy.gotCursed();
-                if (!missile) {
-                    if (this.atkCon && evalPercentage(this.atkCon)) this.haveCast(CONFUSION, 1, enemy);
-                    if (this.atkPara && evalPercentage(this.atkPara)) this.haveCast(PARALYSIS, 1, enemy);
-                    if (this.atkSlow && evalPercentage(this.atkSlow)) this.haveCast(SLOW, 10, enemy);
-                    if (this.atkInf && evalPercentage(this.atkInf)) this.haveCast(INFECTION, 1, enemy);
-                    if (this.atkBlind && evalPercentage(this.atkBlind)) this.haveCast(BLINDNESS, 1, enemy);
-                    if (this.atkRadi && evalPercentage(this.atkRadi)) this.haveCast(RADIATION, 1, enemy);
-                    if (this.atkCold && evalPercentage(this.atkCold)) this.haveCast(COLD, 1, enemy);
-                    if (this.atkDrain && evalPercentage(this.atkDrain)) enemy.decayOrRestore(EXP, false, this.expGain, this);
-                    if (!skill && !this.confused) {
-                        if (this.atkStealGold && evalPercentage(this.atkStealGold)) if (this.stealGold(enemy)) count = NaN;
-                        if (count && this.atkStealItem && evalPercentage(this.atkStealItem)) if (this.stealItem(enemy)) count = NaN;
-                    }
+                if (this.atkCon && evalPercentage(this.atkCon)) this.haveCast(CONFUSION, 1, enemy);
+                if (this.atkPara && evalPercentage(this.atkPara)) this.haveCast(PARALYSIS, 1, enemy);
+                if (this.atkSlow && evalPercentage(this.atkSlow)) this.haveCast(SLOW, 10, enemy);
+                if (this.atkInf && evalPercentage(this.atkInf)) this.haveCast(INFECTION, 1, enemy);
+                if (this.atkBlind && evalPercentage(this.atkBlind)) this.haveCast(BLINDNESS, 1, enemy);
+                if (this.atkRadi && evalPercentage(this.atkRadi)) this.haveCast(RADIATION, 1, enemy);
+                if (this.atkCold && evalPercentage(this.atkCold)) this.haveCast(COLD, 1, enemy);
+                if (this.atkDrain && evalPercentage(this.atkDrain - (enemy.lvl - this.lvl))) enemy.decayOrRestore(STAT_EXP, false, this.expGain, this);
+                if (!skill && !missile && !this.confused) {
+                    if (this.atkStealGold && evalPercentage(this.atkStealGold)) if (this.stealGold(enemy)) count = NaN;
+                    if (count && this.atkStealItem && evalPercentage(this.atkStealItem)) if (this.stealItem(enemy)) count = NaN;
                 }
 			}
 			
-            if (!itemThrow && (!skill || skill.type !== 'spell')) {
+            if (!itemThrown && (!skill || skill.type !== 'spell')) {
                 if (this.decreaseDurab(true)) count = NaN;
 			}
 			
             enemy.decreaseDurab();
+            if (skill && skill.effect && (enemy.hp > 0 && !miss || skill.effect.self)
+                && evalPercentage(skill.effect.prob)) this.haveCast(skill.effect.id, lvl, enemy);
             if (enemy.hp <= 0) {
                 enemy.died(this);
-                return;
+                break;
 			}
 			
             if (enemy.sleeping) enemy.wakeUp();
-            if (this.id === ROGUE) this.getCe(enemy, !missile && !skill);
-            if (skill) {
-                this.getElementEffect(skill.element, lvl, enemy)
-                return;
-            } else if (itemThrow) {
-				return;
-			}
+            if (this.id === ID_ROGUE) this.getCe(enemy, !missile && !skill);
+            if (skill) this.getElementEffect(skill.element, lvl, enemy)
+            if (skill || itemThrown) break;
         } while (missile && this.timesMissile > count && ammo.quantity > count ||
 			!missile && this.timesMelee > count
 		);
     }
 
+    getAttackTypeName(at, isEng, third) {
+        let name;
+        if (at === AT_SLASH) {
+            name = isEng ? 'slash' : '斬撃';
+        } else if (at === AT_THRUST) {
+            name = isEng ? 'thrust' : '刺突';
+        } else if (at === AT_BLUNT) {
+            name = isEng ? 'beat' : '打撃';
+        }
+
+        if (third) name = getArticleAndPlural(name, true);
+        return name;
+    }
+
     dig(loc) {
         let digging;
-        if (this.atkType & AT_T) {
+        if (this.atkType & AT_THRUST) {
             digging = 3;
-		} else if (this.atkType & AT_S) {
+		} else if (this.atkType & AT_SLASH) {
             digging = 2;
-		} else if (this.atkType & AT_B) {
+		} else if (this.atkType & AT_BLUNT) {
 			digging = 1;
 		}
 
-        if (this.digging) digging *= 10 * this.digging;
+        if (this.digging) digging *= 10 * (1 + this.digging / 100);
         if (!loc.indestructible) loc.wall -= digging;
         this.decreaseDurab(true);
         audio.playSound('dig');
-        if (loc.wall <= 0) loc.deleteWall(true);
+        if (loc.wall <= 0) {
+            loc.deleteWall(true);
+            rogue.lightenOrDarken('Lighten');
+        }
     }
 
     getElementEffect(element, lvl, e) {
-        if (evalPercentage(e[element])) return;
         let id;
         switch (element) {
             case 'fire':
@@ -2729,15 +625,17 @@ const Fighter = class extends Material {
 		} else if (isFinite(skill.base)) {
             value = skill.base + rate;
         } else {
-            let base = avg ? dice.getAvg(skill.base) : dice.roll(skill.base);
+            let base = avg ? minMax.getAvg(skill.base) : minMax.roll(skill.base);
             value = base * (1 + rate / 100);
 		}
-		
+        
+        let limit = skill.limit;
+        if (limit && value > limit) value = limit;
         return Math.ceil(value * (1 - resist / 100));
     }
 
     calcSkillDur(skill, lvl, avg) {
-        let base = avg ? dice.getAvg(skill.durBase) : dice.roll(skill.durBase);
+        let base = avg ? minMax.getAvg(skill.durBase) : minMax.roll(skill.durBase);
         return base + skill.durRate * lvl;
     }
 
@@ -2762,13 +660,15 @@ const Fighter = class extends Material {
         this.cold = Math.floor(water / 2);
         this.lightning = Math.floor(air / 2);
         this.gravity = Math.floor(earth / 2);
-        this.physical = Math.floor(earth / 4);
         this.infection = Math.floor(poison / 2);
         this.sand = Math.floor(earth / 4 + air / 4);
         this.blizzard = Math.floor(water / 4 + air / 4);
         this.acid = Math.floor(water / 4 + poison / 4);
         this.magma = Math.floor(fire / 4 + earth / 4);
         this.radiation = Math.floor(fire / 4 + poison / 4);
+        this.physicalMax = Math.floor(earth / 4 + this.acRed);
+        this.physical = Math.floor(this.physicalMax + this.physicalBuff + this.physicalNerf);
+        if (this.physical > limit) this.physical = limit;
     }
 
     getSkillBoost(skill) {
@@ -2795,19 +695,19 @@ const Fighter = class extends Material {
                 boost = this.skillPoison;
                 break;
             case 'sand':
-                boost = (this.skillEarth + this.skillAir) / 2;
+                boost = this.skillEarth + this.skillAir;
                 break;
             case 'blizzard':
-                boost = (this.skillWater + this.skillAir) / 2;
+                boost = this.skillWater + this.skillAir;
                 break;
             case 'acid':
-                boost = (this.skillWater + this.skillPoison) / 2;
+                boost = this.skillWater + this.skillPoison;
                 break;
             case 'magma':
-                boost = (this.skillFire + this.skillEarth) / 2;
+                boost = this.skillFire + this.skillEarth;
                 break;
             case 'radiation':
-                boost = (this.skillFire + this.skillPoison) / 2;
+                boost = this.skillFire + this.skillPoison;
                 break;
 		}
 		
@@ -2865,161 +765,93 @@ const Fighter = class extends Material {
     }
 
     calcWeightLimit() {
-        this.weightLimit = 25 + this.str * 2;
+        this.weightLimit = 25 + this.str * 3 / 5;
+        if (this.weightLimit > MAX_WEIGHT_LIMIT) this.weightLimit = MAX_WEIGHT_LIMIT;
         this.calcSpeed();
     }
 
     calcSpeed() {
         this.totalWeight = Math.round(this.totalWeight * 100) / 100;
-        this.spd = this.spdMax + this.spdBuff - this.spdNerf -
+        this.spd = this.spdMax + this.spdBuff + this.spdNerf -
             (this.totalWeight > this.weightLimit ?
-                Math.ceil(this.totalWeight - this.weightLimit) : 0);
+                Math.ceil(this.totalWeight - this.weightLimit) * 10 : 0);
+        if (this.spd > 100) this.spd = 100;
     }
 
-    getConditionColor() {
-        return this.sleeping ? colorList.royalblue :
-            this.paralyzed ? colorList.orange :
-            this.confused ? colorList.yellow :
-            this.blinded ? colorList.gray :
-            this.hallucinated ? colorList.purple :
-            this.canceled ? colorList.white :
-            this.infected ? colorList.infection :
-            this.poisoned ? colorList.poison :
-            colorList.red;
-    }
+    // getConditionColor() {
+    //     return this.sleeping ? colorList.royalblue :
+    //         this.paralyzed ? colorList.orange :
+    //         this.confused ? colorList.yellow :
+    //         this.blinded ? colorList.gray :
+    //         this.hallucinated ? colorList.purple :
+    //         this.canceled ? colorList.white :
+    //         this.infected ? colorList.infection :
+    //         this.poisoned ? colorList.poison :
+    //         colorList.red;
+    // }
 
-    calcCondition(calc, draw) {
-        var j = -4;
+    calcCondition() {
         let name = this.getName(true);
-        if (draw) {
-            statistics.clearCondition();
-            var len = display.fs;
-            if (this.hunger >= 800) {
-                let condition = option.isEnglish() ? 'full' : textLenList.names['full'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.lime,
-				});
-				
-                len += textLenList['full'][option.getLanguage()];
-            } else if (this.hunger > 0 && this.hunger <= 200) {
-                let condition = option.isEnglish() ? 'hungry' : textLenList.names['hungry'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.yellow,
-				});
-				
-                len += textLenList['hungry'][option.getLanguage()];
-            } else if (this.hunger === 0) {
-                let condition = option.isEnglish() ? 'starved' : textLenList.names['starved'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.red,
-				});
-				
-                len += textLenList['starved'][option.getLanguage()];
-            }
-		}
-		
+        let dec = this.mod === MOD_UNIQUE ? 5 : 1;
         if (this.poisoned) {
-            if (calc) {
-                if (!this.indestructible && --this.hp <= 0) {
-                    let fighter;
-                    if (this.poisonedId && this.poisonedId !== this.id) {
-						fighter = this.poisonedId === ROGUE ? rogue : map.enemyList[this.poisonedId];
-					}
+            if (!this.indestructible) this.hp -= Math.floor(this.poisonedVal * (1 - this.poison / 100));
+            if (this.hp <= 0) {
+                let fighter;
+                if (this.poisonedId && this.poisonedId !== this.id) {
+                    fighter = this.poisonedId === ID_ROGUE ? rogue : map.enemyList[this.poisonedId];
+                }
 
-                    this.poisonedId = 0;
-                    this.died(fighter);
-                    return null;
-                } else if (--this.poisoned === 0) {
-                    message.draw(option.isEnglish() ?
-                        `${name} recovered from poison` :
-                        `${name}毒状態から復帰した`);
-				}
-				
-                if (flag.dash || flag.rest) flag.dash = flag.rest = false;
-			}
-			
-            if (draw) {
-                let condition = option.isEnglish() ? 'poisoned' : textLenList.names['poisoned'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.poison,
-				});
-				
-                len += textLenList['poisoned'][option.getLanguage()];
+                this.poisonedId = 0;
+                this.died(fighter);
+                return null;
             }
+            
+            this.poisoned -= dec;
+            if (this.poisoned <= 0) {
+                this.poisoned = 0;
+                message.draw(option.isEnglish() ?
+                    `${name} recovered from poison` :
+                    `${name}毒状態から復帰した`);
+            }
+            
+            if (flag.dash || flag.rest) flag.dash = flag.rest = false;
 		}
 		
         if (this.confused) {
-            if (calc && --this.confused === 0) {
-                if (this.id !== ROGUE) this.removeCe();
+            this.confused -= dec;
+            if (this.confused <= 0) {
+                this.confused = 0;
+                if (this.id !== ID_ROGUE) this.removeCe();
                 message.draw(option.isEnglish() ?
                     `${name} recovered from confusion` :
                     `${name}混乱状態から復帰した`);
 			}
-			
-            if (draw) {
-                let condition = option.isEnglish() ? 'confused' : textLenList.names['confused'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.yellow,
-				});
-				
-                len += textLenList['confused'][option.getLanguage()];
-            }
 		}
 		
         if (this.paralyzed) {
-            if (calc && --this.paralyzed === 0) {
+            this.paralyzed -= dec;
+            if (this.paralyzed <= 0) {
+                this.paralyzed = 0;
                 message.draw(option.isEnglish() ?
                     `${name} recovered from paralysis` :
                     `${name}麻痺状態から復帰した`);
 			}
-			
-            if (draw) {
-                let condition = option.isEnglish() ? 'paralyzed' : textLenList.names['paralyzed'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.orange,
-				});
-				
-                len += textLenList['paralyzed'][option.getLanguage()];
-            }
 		}
 		
         if (this.sleeping > 0) {
-            if (calc && --this.sleeping === 0) this.wakeUp();
-            if (draw) {
-                let condition = option.isEnglish() ? 'sleeping' : textLenList.names['sleeping'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.royalblue,
-				});
-				
-                len += textLenList['sleeping'][option.getLanguage()];
+            this.sleeping -= dec;
+            if (this.sleeping <= 0) {
+                this.sleeping = 0;
+                this.wakeUp();
             }
 		}
 		
         if (this.blinded) {
-            if (calc && --this.blinded === 0) {
-                if (this.id === ROGUE) {
-                    map.redraw(rogue.x, rogue.y);
+            this.blinded -= dec;
+            if (this.blinded <= 0) {
+                this.blinded = 0;
+                if (this.id === ID_ROGUE) {
+                    this.goBlind(true);
 				} else {
 					this.removeCe();
 				}
@@ -3028,44 +860,24 @@ const Fighter = class extends Material {
                     `${name} recovered from blindness` :
                     `${name}盲目状態から復帰した`);
 			}
-			
-            if (draw) {
-                let condition = option.isEnglish() ? 'blinded' : textLenList.names['blinded'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.gray,
-				});
-				
-                len += textLenList['blinded'][option.getLanguage()];
-            }
 		}
 		
         if (this.infected > 0) {
-            if (calc && coinToss()) this.decayOrRestore();
-            if (calc && --this.infected === 0) {
+            this.infected -= dec;
+            if (coinToss()) this.decayOrRestore();
+            if (this.infected <= 0) {
+                this.infected = 0;
                 message.draw(option.isEnglish() ?
                     `${name} recovered from infection` :
                     `${name}感染状態から復帰した`);
 			}
-			
-            if (draw) {
-                let condition = option.isEnglish() ? 'infected' : textLenList.names['infected'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.infection,
-				});
-				
-                len += textLenList['infected'][option.getLanguage()];
-            }
 		}
 		
         if (this.hallucinated) {
-            if (calc && --this.hallucinated === 0) {
-                if (this.id === ROGUE) {
+            this.hallucinated -= dec;
+            if (this.hallucinated <= 0) {
+                this.hallucinated = 0;
+                if (this.id === ID_ROGUE) {
                     hallucinate.all(true);
 				} else {
 					this.removeCe();
@@ -3075,101 +887,39 @@ const Fighter = class extends Material {
                     `${name} recovered from hallucination` :
                     `${name}幻覚状態から復帰した`);
 			}
-			
-            if (draw) {
-                let condition = option.isEnglish() ? 'hallucinated' : textLenList.names['hallucinated'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.purple,
-				});
-				
-                len += textLenList['hallucinated'][option.getLanguage()];
-            }
 		}
 		
         if (this.canceled) {
-            if (calc && --this.canceled === 0) {
+            this.canceled -= dec;
+            if (this.canceled <= 0) {
+                this.canceled = 0;
                 message.draw(option.isEnglish() ?
                     `${name} recovered from cancellation` :
                     `${name}封印状態から復帰した`);
 			}
-			
-            if (draw) {
-                let condition = option.isEnglish() ? 'canceled' : textLenList.names['canceled'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.white,
-				});
-				
-                len += textLenList['canceled'][option.getLanguage()];
-            }
 		}
 		
         if (this.seeInvisible > 0) {
-            if (calc && --this.seeInvisible === 0) {
+            if (--this.seeInvisible === 0) {
                 message.draw(option.isEnglish() ?
                     `${name} can no longer see invisible things` :
                     `${name}もう透明な物体を見ることが出来なくなった`);
                 seeInvisible(false);
 			}
-			
-            if (draw) {
-                let condition = option.isEnglish() ? 'see invisible' : textLenList.names['see invisible'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.light,
-                    shadow: colorList.light,
-				});
-				
-                len += textLenList['see invisible'][option.getLanguage()];
-            }
 		}
 		
         if (this.invisibility) {
-            if (calc && --this.invisibility === 0) {
+            if (--this.invisibility === 0) {
                 this.invisible = false;
-                map.coords[this.x][this.y].draw();
-                //message.draw();
 			}
-			
-            if (draw) {
-                let condition = option.isEnglish() ? 'invisible' : textLenList.names['invisible'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.light,
-                    shadow: colorList.light,
-				});
-				
-                len += textLenList['invisible'][option.getLanguage()];
-            }
 		}
 		
         if (this.ecco) {
-            if (calc && --this.ecco === 0) {
+            if (--this.ecco === 0) {
                 message.draw(option.isEnglish() ?
                     `${name} lost the effect of Ecco` :
                     `${name}エコーの効果を失った`);
 			}
-			
-            if (draw) {
-                let condition = option.isEnglish() ? 'ecco' : textLenList.names['ecco'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.air,
-				});
-				
-                len += textLenList['ecco'][option.getLanguage()];
-            }
 		}
 		
         if (this.enchantSelfDur) {
@@ -3177,6 +927,7 @@ const Fighter = class extends Material {
                 this.dmgBonus -= this.enchantSelf;
                 this.rateBonus -= this.enchantSelf;
                 this.acBonus -= this.enchantSelf;
+                this.ias -= this.enchantSelf;
                 this.enchantSelf = 0;
                 this.calcDmg();
                 this.calcAc();
@@ -3184,18 +935,6 @@ const Fighter = class extends Material {
                     `${name} lost the effect of Enchant Self` :
                     `${name}自己強化の効果を失った`);
 			}
-			
-            if (draw) {
-                let condition = option.isEnglish() ? 'enchant self' : textLenList.names['enchant self'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.earth,
-				});
-				
-                len += textLenList['enchant self'][option.getLanguage()];
-            }
 		}
 		
         if (this.venomDur) {
@@ -3206,18 +945,6 @@ const Fighter = class extends Material {
                     `${name} lost the effect of Venom Hands` :
                     `${name}猛毒の手の効果を失った`);
 			}
-			
-            if (draw) {
-                let condition = option.isEnglish() ? 'venom hands' : textLenList.names['venom hands'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.poison,
-				});
-				
-                len += textLenList['venom hands'][option.getLanguage()];
-            }
 		}
 		
         if (this.confusing) {
@@ -3228,30 +955,19 @@ const Fighter = class extends Material {
                     `${name} lost the effect of Touch of Confusion` :
                     `${name}混乱の手の効果を失った`);
 			}
-			
-            if (draw) {
-                let condition = option.isEnglish() ? 'confusing hands' : textLenList.names['confusing hands'];
-                statistics.draw({
-                    msg: condition,
-                    xPx: len,
-                    y: j,
-                    color: colorList.poison,
-				});
-				
-                len += textLenList['confusing hands'][option.getLanguage()];
-            }
 		}
 		
-        if (!calc) return;
-        if (this.speeded) {
-            if (--this.speeded === 0) {
+        if (this.spdBuffDur) {
+            this.spdBuffDur -= dec;
+            if (this.spdBuffDur <= 0) {
+                this.spdBuffDur = 0;
                 this.spdBuff = 0;
                 this.calcSpeed();
             }
 		}
 		
-        if (this.slowed) {
-            if (--this.slowed === 0) {
+        if (this.spdNerfDur) {
+            if (--this.spdNerfDur === 0) {
                 this.spdNerf = 0;
                 this.calcSpeed();
             }
@@ -3368,8 +1084,20 @@ const Fighter = class extends Material {
             }
 		}
 		
+        if (this.physicalBuffDur) {
+            if (--this.physicalBuffDur === 0) {
+                this.physicalBuff = 0;
+                message.draw(option.isEnglish() ?
+                    `${name} lost the effect of Resist Physical` :
+                    `${name}耐物の効果を失った`);
+                resist = true;
+            }
+		}
+		
         if (this.lowerResDur) {
-            if (--this.lowerResDur === 0) {
+            this.lowerResDur -= dec;
+            if (this.lowerResDur <= 0) {
+                this.lowerResDur = 0;
                 this.lowerRes = 0;
                 message.draw(option.isEnglish() ?
                     `${name} recovered from the effect of Lower Resist` :
@@ -3413,7 +1141,7 @@ const Fighter = class extends Material {
     decayOrRestore(stat, restore, exp, enemy) {
         let name = this.getName(true);
         switch (stat >= 0 ? stat : rndInt(3)) {
-            case STR:
+            case STAT_STR:
                 if (restore) {
                     if (this.str < this.strMax) {
                         message.draw(option.isEnglish() ?
@@ -3424,7 +1152,8 @@ const Fighter = class extends Material {
                 } else if (this.strSus || !(this.str - this.strBonus)) {
                     return;
 				} else {
-                    this.str--;
+                    this.str -= rndIntBet(1, 5);
+                    if (this.str - this.strBonus < 0) this.str = this.strBonus;
                     message.draw(option.isEnglish() ?
                         `${name} got weak` :
                         `${name}薄弱になった`);
@@ -3433,7 +1162,7 @@ const Fighter = class extends Material {
                 this.calcWeightLimit();
                 this.calcDmg();
                 break;
-            case DEX:
+            case STAT_DEX:
                 if (restore) {
                     if (this.dex < this.dexMax) {
                         message.draw(option.isEnglish() ?
@@ -3444,7 +1173,8 @@ const Fighter = class extends Material {
                 } else if (this.dexSus || !(this.dex - this.dexBonus)) {
                     return;
 				} else {
-                    this.dex--;
+                    this.dex -= rndIntBet(1, 5);
+                    if (this.dex - this.dexBonus < 0) this.dex = this.dexBonus;
                     message.draw(option.isEnglish() ?
                         `${name} got clumsy` :
                         `${name}不器用になった`);
@@ -3453,7 +1183,7 @@ const Fighter = class extends Material {
                 this.calcAc();
                 this.calcDmg();
                 break;
-            case CON:
+            case STAT_CON:
                 if (restore) {
                     if (this.con < this.conMax) {
                         message.draw(option.isEnglish() ?
@@ -3464,7 +1194,8 @@ const Fighter = class extends Material {
                 } else if (this.conSus || !(this.con - this.conBonus)) {
                     return;
 				} else {
-                    this.con--;
+                    this.con -= rndIntBet(1, 5);
+                    if (this.con - this.conBonus < 0) this.con = this.conBonus;
                     message.draw(option.isEnglish() ?
                         `${name} got sick` :
                         `${name}病弱になった`);
@@ -3472,7 +1203,7 @@ const Fighter = class extends Material {
 				
                 this.calcHP();
                 break;
-            case INT:
+            case STAT_INT:
                 if (restore) {
                     if (this.int < this.intMax) {
                         message.draw(option.isEnglish() ?
@@ -3483,7 +1214,8 @@ const Fighter = class extends Material {
                 } else if (this.intSus || !(this.int - this.intBonus)) {
                     return;
 				} else {
-                    this.int--;
+                    this.int -= rndIntBet(1, 5);
+                    if (this.int - this.intBonus < 0) this.int = this.intBonus;
                     message.draw(option.isEnglish() ?
                         `${name} got stupid` :
                         `${name}愚鈍になった`);
@@ -3491,7 +1223,7 @@ const Fighter = class extends Material {
 				
                 this.calcMP();
                 break;
-            case EXP:
+            case STAT_EXP:
                 if (restore) {
                     if (this.exp < this.expMax) {
                         message.draw(option.isEnglish() ?
@@ -3500,7 +1232,7 @@ const Fighter = class extends Material {
                         this.exp = this.expMax;
                         this.lvl = this.lvlMax;
                     }
-                } else if (!this.exp || evalPercentage(this.con * 2)) {
+                } else if (!this.exp || evalPercentage(this.con * 2 / 5)) {
                     return;
 				} else {
                     if (exp > this.exp) exp = this.exp;
@@ -3527,11 +1259,11 @@ const Fighter = class extends Material {
     heal() {
         if (this.healCount++ !== 5) return;
         if (!this.poisoned && this.hp < this.hpMax) {
-            this.hp += Math.ceil(this.hpMax * (this.con + this.hpReg) / 1000);
+            this.hp += Math.ceil(this.hpMax * (this.con / 10 + this.hpReg) / 1000);
             if (this.hp > this.hpMax) this.hp = this.hpMax;
         }
         if (this.mp < this.mpMax) {
-            this.mp += Math.ceil(this.mpMax * (this.int + this.mpReg) / 1000);
+            this.mp += Math.ceil(this.mpMax * (this.int / 10 + this.mpReg) / 1000);
             if (this.mp > this.mpMax) this.mp = this.mpMax;
 		}
 		
@@ -3542,24 +1274,17 @@ const Fighter = class extends Material {
     drawOrErase(draw, move) {
         let loc = map.coords[this.x][this.y];
         loc.fighter = draw ? this : null;
-        if (!draw && this.mod !== NORMAL && option.shadow.user) {
-            map.coords[this.x][this.y + 1].draw();
-            map.coords[this.x + 1][this.y].draw();
-		}
-		
-        loc.draw();
-        if (this.id === ROGUE && draw) {
+        if (this.id === ID_ROGUE && draw) {
+            this.lightenOrDarken('Lighten', move);
             this.distMap = pathfinding.main({
                 x0: this.x,
                 y0: this.y,
                 map: true,
 			});
-			
-            this.lightenOrDarken('Lighten', move);
         }
     }
 
-    lightenOrDarken(type, search) {
+    lightenOrDarken(type, search, init) {
         shadowcasting.main({
             x0: this.x,
             y0: this.y,
@@ -3576,459 +1301,73 @@ const Fighter = class extends Material {
         [this.x, this.y, f.x, f.y] = [f.x, f.y, this.x, this.y];
         this.drawOrErase(true);
         f.drawOrErase(true);
-        if (this.id === ROGUE) {
+        if (this.id === ID_ROGUE) {
             map.coords[this.x][this.y].traces = ++this.numSteps;
-		} else if (f.id === ROGUE) {
+		} else if (f.id === ID_ROGUE) {
 			map.coords[f.x][f.y].traces = ++f.numSteps;
 		}
     }
 
     showInventory(place, a) {
+        let list, dr, enter;
         switch (place) {
-            case P_PACK:
-                inventory.show(this.pack, RIGHT, a, place);
+            case PLACE_PACK:
+                list = this.pack;
+                dr = DR_RIGHT; 
                 break;
-            case P_EQUIPMENT:
-                this.equipmentList(BP[a]);
+            case PLACE_FLOOR:
+                list = map.coords[this.x][this.y].item;
+                dr = DR_RIGHT; 
                 break;
-            case P_FLOOR:
-                inventory.show(map.coords[this.x][this.y].item, RIGHT, a, place);
+            case PLACE_BOX:
+                list = this.boxes;
+                dr = DR_LEFT;
                 break;
-            case P_BOX:
-                inventory.show(this.boxes, LEFT, a, place);
+            case PLACE_SHOP:
+            case PLACE_STASH:
+                enter = map.coords[this.x][this.y].enter;
+                list = enter.list
+                dr = DR_LEFT;
                 break;
-            case P_SHOP:
-            case P_STASH:
-                let enter = map.coords[this.x][this.y].enter;
-                inventory.show(enter.list, LEFT, a, place, enter);
+            case PLACE_CUBE:
+                list = this.cube;
+                dr = DR_LEFT;
                 break;
-            case P_CUBE:
-                inventory.show(this.cube, LEFT, a, place);
-                break;
+            case PLACE_EQUIPMENT:
+                this.equipmentList(bpList[a]);
+                return;
         }
+
+        inventory.show({
+            list: list,
+            dr: dr,
+            a: a,
+            place: place,
+            enter: enter,
+        });
     }
 
     equipmentList(bp) {
-        inventory.shadow(LEFT);
-        let i = 1;
-        let j = MS + 0.5;
-        let k = 0;
-        let weight = 0;
-        let count = 0;
-        let ctxInv = display.ctxes.inv;
-        if (flag.blacksmith) var priceAll = 0;
-        for (let key in this.equipment) {
-            let item = this.equipment[key];
-            if (flag.destroy && flag.number && key !== bp ||
-              	  (flag.repair || flag.blacksmith) && (!item || item.durab === item.durabMax)) {
-                k++;
-                continue;
-			}
-            ctxInv.save();
-            ctxInv.textAlign = 'center';
-            display.text({
-                ctx: ctxInv,
-                msg: EA[k++].toUpperCase(),
-                x: i,
-                y: j,
-            });
-
-            ctxInv.textAlign = 'left';
-            let parts = option.isEnglish() ? key : translation.bodyParts[key];
-            if (key === 'main' || key === 'off') parts += this.swapped ? 2 : 1;
-            display.text({
-                ctx: ctxInv,
-                msg: parts,
-                x: i + 0.5,
-                y: j,
-            });
-
-            if (!item) {
-                if (key === 'off' && this.equipment['main'] && this.equipment['main'].twoHanded) {
-                    display.text({
-                        ctx: ctxInv,
-                        msg: option.isEnglish() ?
-                            `(two-handed)` :
-                            `(両手持ち)`,
-                        x: i + 5,
-                        y: j,
-                        limit: 14,
-                    });
-				}
-				
-                j++;
-                ctxInv.restore();
-                continue;
-			}
-			
-            ctxInv.textAlign = 'center';
-            if (item.shadow) ctxInv.shadowColor = item.shadow;
-            ctxInv.fillStyle = item.color;
-            display.text({
-                ctx: ctxInv,
-                msg: item.symbol,
-                x: i + 4.5,
-                y: j,
-                stroke: item.stroke,
-            });
-
-            if (item.cursed) {
-                ctxInv.fillStyle = colorList.red;
-			} else if (!item.durab) {
-                ctxInv.fillStyle = colorList.gray;
-			} else {
-				ctxInv.fillStyle = colorList.white;
-			}
-
-            ctxInv.textAlign = 'left';
-            let name = item.getName();
-            let limit = flag.blacksmith ? 12 : 15;
-            display.text({
-                ctx: ctxInv,
-                msg: name,
-                x: i + 5,
-                y: j,
-                limit: limit,
-                stroke: item.stroke,
-            });
-
-            ctxInv.fillStyle = colorList.white;
-            ctxInv.shadowColor = colorList.clear;
-            ctxInv.textAlign = 'right';
-            if (flag.blacksmith) {
-                let price = item.getDurabPrice();
-                display.text({
-                    ctx: ctxInv,
-                    msg: `$${price}`,
-                    x: -2.5,
-                    y: j,
-                    xPx: display.width / 2,
-                    limit: 3.5,
-                });
-
-                priceAll += price;
-			}
-			
-            display.text({
-                ctx: ctxInv,
-                msg: (item.weight * item.quantity).toFixed(1),
-                x: -0.5,
-                y: j,
-                xPx: display.width / 2,
-                limit: 1.8,
-            });
-
-            weight += item.weight * item.quantity;
-            count++;
-            j++;
-            ctxInv.restore();
-		}
-		
-        if (!flag.destroy && !flag.number && !flag.repair && !flag.blacksmith) {
-            j += 0.5;
-            let xPx = 0;
-            let row = j;
-            let count2 = 0;
-            for (let [key, term] of investigationMap.entries()) {
-                if (!term || !term.equipList) {
-                    if (key === 'end') break;
-                    continue;
-				}
-				
-                ctxInv.save();
-                if (this.findBuffStat(key)) ctxInv.shadowColor = colorList.buff;
-				if (this.lowerRes && (key === 'fire' || key === 'water' ||
-						key === 'air' || key === 'earth' || key === 'poison')) {
-					ctxInv.fillStyle = colorList.red;
-				}
-
-                display.text({
-                    ctx: ctxInv,
-                    msg: term.name[option.getLanguage()],
-                    x: i,
-                    y: j,
-                    xPx: xPx,
-                    limit: 7,
-                });
-
-                ctxInv.textAlign = 'right';
-                let value = this[key];
-                if (term.perc) value += '%';
-                if (term.max) {
-                    let max = this[term.max];
-                    if (term.perc) max += '%';
-                    value += ` (${max})`;
-				}
-				
-                display.text({
-                    ctx: ctxInv,
-                    msg: value,
-                    x: -0.5,
-                    y: j++,
-                    xPx: xPx + display.width / 4,
-                    limit: 3.5,
-                });
-
-                ctxInv.restore();
-                if (!(++count2 % 8)) {
-                    xPx += display.width / 4;
-                    j = row;
-                }
-            }
-		}
-		
-        let maxNum = MAX_EQUIPMENT_NUM;
-        display.text({
-            ctx: ctxInv,
-            msg: `[${count}/${maxNum}]`,
-            x: i,
-            y: -SS - .9,
-            yPx: display.height,
-        });
-
-        ctxInv.textAlign = 'right';
-        let total = option.isEnglish() ? 'Total' : '計';
-        if (flag.blacksmith) {
-            let cost = option.isEnglish() ? 'Total Cost' : '全費用';
-            total = `${cost} $${priceAll} ${total}`;
-		}
-		
-        display.text({
-            ctx: ctxInv,
-            msg: `${total} ${weight.toFixed(1)}kg`,
-            x: -0.5,
-            y: -SS - .9,
-            xPx: display.width / 2,
-            yPx: display.height,
-        });
-
-        ctxInv.textAlign = 'left';
+        inventory.showEquipment(this, bp);
     }
 
-    showSkill(list, bookmark) {
-        inventory.shadow(bookmark ? LEFT : RIGHT);
-        let i = 1;
-        let j = MS + 1.7;
-        let right = bookmark ? 0 : display.width / 2;
-        let count = 0;
-        let main = option.isEnglish() ? 'Main' : 'メイン';
-        let ctxInv = display.ctxes.inv;
-        for (let key in list) {
-            if (flag.number && list[key] !== this.cs) continue;
-            let skill;
-            if (list[key]) skill = skillMap.get(list[key].id ? list[key].id : list[key]);
-            ctxInv.save();
-            if (bookmark) {
-                if (skill) ctxInv.shadowColor = skill.color;
-                display.text({
-                    ctx: ctxInv,
-                    msg: key === '0' ? main : `F${key}`,
-                    x: i - 0.5,
-                    y: j,
-                    limit: 2,
-                    xPx: right,
-                });
-
-                if (!skill) {
-                    j++;
-                    ctxInv.restore();
-                    continue;
-                }
-            } else {
-                if (skill.reqLvl > this.lvl) {
-                    ctxInv.fillStyle = colorList.gray;
-				} else {
-					ctxInv.shadowColor = skill.color;
-				}
-
-                ctxInv.textAlign = 'center';
-                display.text({
-                    ctx: ctxInv,
-                    msg: key,
-                    x: i,
-                    y: j,
-                    xPx: right,
-                });
-			}
-			
-            ctxInv.textAlign = 'left';
-            let name = skill.name[option.getLanguage()];
-            display.text({
-                ctx: ctxInv,
-                msg: name,
-                x: i + 0.75 + (bookmark ? 1 : 0),
-                y: j,
-                limit: 8,
-                xPx: right,
-            });
-
-            ctxInv.textAlign = 'right';
-            let lvl = 0;
-            if (list[key].lvl) {
-                lvl = list[key].lvl
-			} else {
-                let a = this.searchSkill(list[key]);
-                if (a) lvl = this.skill[a].lvl;
-			}
-			
-            let boost = this.getSkillBoost(skill);
-            display.text({
-                ctx: ctxInv,
-                msg: `${lvl}+${boost}`,
-                x: -10,
-                y: j,
-                xPx: display.width / 2 + right,
-                limit: 3,
-            });
-
-            if (skill.rate) {
-                let value;
-                let bonus = skill.rate * (lvl + boost) + (skill.synerzy ? skill.synerzy * this.getSynerzy(skill) : 0);
-                if (skill.kind === 'breath') {
-                    value = Math.ceil(this.hp * BREATH_RATE * (1 + bonus / 100));
-                } else if (isFinite(skill.base)) {
-                    value = skill.base + bonus;
-                    if (skill.limit && value > skill.limit) value = skill.limit;
-                    if (skill.radiusRate) {
-                        let radius = option.isEnglish() ? 'radius ' : '半径';
-                        value = `${radius}${value}`;
-                    } else if (value > 0) {
-						 value = `+${value}`;
-					}
-
-                    if (skill.perc) value = `${value}%`;
-                } else {
-                    let avg = Math.ceil(dice.getAvg(skill.base) * (1 + bonus / 100));
-                    value = `Avg ${avg}`;
-				}
-				
-                display.text({
-                    ctx: ctxInv,
-                    msg: value,
-                    x: -5.5,
-                    y: j,
-                    xPx: display.width / 2 + right,
-                    limit: 4,
-                });
-			}
-			
-            if (skill.reqLvl <= this.lvl && skill.mp > this.mp) {
-                ctxInv.shadowColor = colorList.clear;
-                ctxInv.fillStyle = colorList.red;
-			}
-			
-            display.text({
-                ctx: ctxInv,
-                msg: skill.mp,
-                x: -3.5,
-                y: j,
-                xPx: display.width / 2 + right,
-            });
-
-            if (skill.reqLvl <= this.lvl) {
-                ctxInv.shadowColor = skill.color;
-                ctxInv.fillStyle = colorList.white;
-			}
-			
-            display.text({
-                ctx: ctxInv,
-                msg: skill.reqLvl,
-                x: -2,
-                y: j,
-                xPx: display.width / 2 + right,
-            });
-
-            if (skill.reqSynerzy){
-                display.text({
-                    ctx: ctxInv,
-                    msg: skill.reqSynerzy,
-                    x: -0.5,
-                    y: j,
-                    xPx: display.width / 2 + right,
-                });
-            }
-
-            ctxInv.restore();
-            count++;
-            j++;
-		}
-		
-        ctxInv.save();
-        j = MS + 0.5;
-        let maxNum;
-        if (flag.gain) {
-            maxNum = Object.keys(list).length;
-		} else if (bookmark) {
-            maxNum = MAX_BOOKMARK_NUM;
-		} else {
-			maxNum = MAX_SKILL_NUM;
-		}
-
-        display.text({
-            ctx: ctxInv,
-            msg: `[${count}/${maxNum}]`,
-            x: i,
-            y: j,
-            xPx: right,
-        });
-
-        ctxInv.textAlign = 'right';
-        let [lvl, value, mp, reqLv, reqSy] = option.isEnglish() ? ['Lv', 'Value', 'MP', 'RLv', 'RSy'] :
-            ['レベル', '値', 'MP', '必レ', '必シ'];
-        display.text({
-            ctx: ctxInv,
-            msg: lvl,
-            x: -10,
-            y: j,
-            xPx: display.width / 2 + right,
-        });
-
-        display.text({
-            ctx: ctxInv,
-            msg: value,
-            x: -5.5,
-            y: j,
-            xPx: display.width / 2 + right,
-        });
-
-        display.text({
-            ctx: ctxInv,
-            msg: mp,
-            x: -3.5,
-            y: j,
-            xPx: display.width / 2 + right,
-        });
-
-        display.text({
-            ctx: ctxInv,
-            msg: reqLv,
-            x: -2,
-            y: j,
-            xPx: display.width / 2 + right,
-            limit: 1.3,
-        });
-
-        display.text({
-            ctx: ctxInv,
-            msg: reqSy,
-            x: -0.5,
-            y: j,
-            xPx: display.width / 2 + right,
-            limit: 1.3,
-        });
-
-        ctxInv.restore();
+    showSkill(list, assign) {
+        inventory.showSkill(this, list, assign);
     }
 
     findBuffStat(key) {
         let found;
         switch (key) {
             case 'dmgAvg':
+            case 'dmgSValue':
+            case 'dmgTValue':
+            case 'dmgBValue':
                 if (this.dmgBuff) found = true;
                 break;
             case 'rateValue':
                 if (this.rateBuff) found = true;
                 break;
+            case 'acAvgValueTotal':
             case 'acSValueTotal':
             case 'acTValueTotal':
             case 'acBValueTotal':
@@ -4048,6 +1387,9 @@ const Fighter = class extends Material {
                 break;
             case 'poison':
                 if (this.poisonBuff) found = true;
+                break;
+            case 'physical':
+                if (this.physicalBuff) found = true;
                 break;
             case 'spd':
                 if (this.spdBuff) found = true;
@@ -4081,6 +1423,7 @@ const Fighter = class extends Material {
             case 'dmgBonus':
             case 'rateBonus':
             case 'acBonus':
+            case 'ias':
                 if (this.enchantSelf) found = true;
                 break;
 		}
@@ -4098,22 +1441,22 @@ const Fighter = class extends Material {
     inventoryOut(item, quantity) {
         let list;
         switch (item.place) {
-            case P_PACK:
+            case PLACE_PACK:
                 list = this.pack;
                 break;
-            case P_BOX:
+            case PLACE_BOX:
                 list = this.boxes;
                 break;
-            case P_EQUIPMENT:
+            case PLACE_EQUIPMENT:
                 list = this.equipment;
                 break;
-            case P_FLOOR:
+            case PLACE_FLOOR:
                 list = map.coords[item.x][item.y].item;
                 break;
 		}
 		
         item = item.split(quantity, list);
-        if (item.place === P_FLOOR) {
+        if (item.place === PLACE_FLOOR) {
             item.id = -1;
             item.x = item.y = 0;
             if (rogue.hallucinated) hallucinate.undoOne(item);
@@ -4121,7 +1464,7 @@ const Fighter = class extends Material {
 			this.gainOrloseWeight(item, quantity);
 		}
 
-        if (item.place === P_EQUIPMENT && item.durab) {
+        if (item.place === PLACE_EQUIPMENT && item.durab) {
             this.getOrLooseStats(item);
             this.calcAll();
 		}
@@ -4154,7 +1497,7 @@ const Fighter = class extends Material {
     }
 
     stashAdd(stash, item) {
-        item.place = P_STASH;
+        item.place = PLACE_STASH;
         let key = this.canCarryItem(stash, item);
         if (key >= 0) {
             stash[key].quantity += item.quantity;
@@ -4169,21 +1512,21 @@ const Fighter = class extends Material {
     packAdd(item) {
         if (!flag.pack && this.numBoxes) {
             if (this.listAdd(this.boxes, item)) {
-                item.place = P_BOX;
+                item.place = PLACE_BOX;
                 return true;
             }
 		}
 		
         if (this.listAdd(this.pack, item)) {
-            item.place = P_PACK
+            item.place = PLACE_PACK
             return true;
 		}
 		
         let l = Object.keys(this.pack).length;
         if (l < MAX_PACK_COUNT) {
-            item.place = P_PACK
-            this.pack[EA[l]] = item;
-            inventory.sort(EA[l], this.pack);
+            item.place = PLACE_PACK
+            this.pack[eaList[l]] = item;
+            inventory.sort(eaList[l], this.pack);
             this.gainOrloseWeight(item, item.quantity, true)
             return true;
 		}
@@ -4195,12 +1538,12 @@ const Fighter = class extends Material {
     boxAdd(item, a) {
         let item2 = this.boxes[a];
         if (!item2) {
-            item.place = P_BOX;
+            item.place = PLACE_BOX;
             this.boxes[a] = item;
         } else if (item2.equal(item)) {
             item2.quantity += item.quantity;
 		} else {
-            item.place = P_BOX;
+            item.place = PLACE_BOX;
             item2 = this.inventoryOut(item2, item2.quantity);
             this.packAdd(item2);
             this.boxes[a] = item;
@@ -4247,7 +1590,7 @@ const Fighter = class extends Material {
                     type: type,
                     tabId: tabId,
                     quantity: quantity,
-                    position: LIST,
+                    position: POS_LIST,
                     magic: magic,
                     lvl: lvl,
                     uniqueId: uniqueId,
@@ -4260,14 +1603,14 @@ const Fighter = class extends Material {
     getOrLooseStats(s, get, mod, starter) {
         let num = get ? 1 : -1;
         if (mod) { //enemy mod
-            if (s.dmgDiceNum) this.dmgDiceNum += num * s.dmgDiceNum;
-            if (s.dmgDiceSides) this.dmgDiceSides += num * s.dmgDiceSides;
             if (s.cursed) this.cursed = s.cursed;
             if (s.invisible) this.invisible = s.invisible;
 		}
 		
+        if (s.dmgMinBonus) this.dmgMinBonus += num * s.dmgMinBonus;
+        if (s.dmgMaxBonus) this.dmgMaxBonus += num * s.dmgMaxBonus;
         if (s.acBonus && (mod || !s.armor)) this.acBonus += num * s.acBonus;
-        if (s.atkType) this.atkType = get ? s.atkType : this.atBare;
+        if (s.atkType) this.atkType = get ? s.atkType : this.atkBare;
         if (s.dmgBase) this.dmgBase = get ? s.dmgBase : this.dmgBare;
         if (s.acSBase) this.acSBaseSum += num * s.acSBase;
         if (s.acTBase) this.acTBaseSum += num * s.acTBase;
@@ -4277,6 +1620,7 @@ const Fighter = class extends Material {
         if (s.acSValue) this.acSValueSum += num * s.acSValue;
         if (s.acTValue) this.acTValueSum += num * s.acTValue;
         if (s.acBValue) this.acBValueSum += num * s.acBValue;
+        if (s.acRed) this.acRed += num * s.acRed;
         if (s.str) this.str += num * s.str, this.strMax += num * s.str, this.strBonus += num * s.str;
         if (s.dex) this.dex += num * s.dex, this.dexMax += num * s.dex, this.dexBonus += num * s.dex;
         if (s.con) this.con += num * s.con, this.conMax += num * s.con, this.conBonus += num * s.con;
@@ -4286,6 +1630,8 @@ const Fighter = class extends Material {
         if (s.gf) this.gf += num * s.gf;
         if (s.hp) this.hpSum += num * s.hp;
         if (s.mp) this.mpSum += num * s.mp;
+        if (s.hpRate) this.hpRate += num * s.hpRate;
+        if (s.mpRate) this.mpRate += num * s.mpRate;
         if (s.fire) this.fireMax += num * s.fire;
         if (s.water) this.waterMax += num * s.water;
         if (s.air) this.airMax += num * s.air;
@@ -4331,6 +1677,7 @@ const Fighter = class extends Material {
         if (s.dmgUndead) this.dmgUndead += num * s.dmgUndead;
         if (s.dmgGiant) this.dmgGiant += num * s.dmgGiant;
         if (s.dmgSpirit) this.dmgSpirit += num * s.dmgSpirit;
+        if (s.dmgGod) this.dmgGod += num * s.dmgGod;
         if (s.dmgFire) this.dmgFire += num * s.dmgFire;
         if (s.dmgLightning) this.dmgLightning += num * s.dmgLightning;
         if (s.dmgPoison) this.dmgPoison += num * s.dmgPoison;
@@ -4348,7 +1695,7 @@ const Fighter = class extends Material {
         if (s.atkStealGold) this.atkStealGold += num * s.atkStealGold;
         if (s.atkStealItem) this.atkStealItem += num * s.atkStealItem;
         if (s.expBonus) this.expBonus += num * s.expBonus;
-        if (s.lighten && (!mod && s.duration || mod)) {
+        if (s.lighten && (!mod && s.fuelValue || mod)) {
             this.lighten += num * s.lighten;
             if (!mod && !starter) this.lightenOrDarken('Lighten');
 		}
@@ -4363,13 +1710,16 @@ const Fighter = class extends Material {
         let num = this.numBoxes + 1;
         if (num > MAX_BOX_NUM) return;
         for (let i = num; i <= this.numBoxes + numBoxes && i <= MAX_BOX_NUM; i++) {
+            if (this.id === ID_ROGUE) {
+                Vue.set(vue.rogue.boxes, i, null)
+            } else {
+				this.boxes[i] = null;
+            }
             let item = this.eqt[i];
             if (item) {
                 this.boxAdd(item, i);
                 delete this.eqt[i];
-            } else {
-				this.boxes[i] = null;
-			}
+            }
         }
 
         if (Object.keys(this.eqt).length) {
@@ -4387,7 +1737,12 @@ const Fighter = class extends Material {
         if (num > MAX_BOX_NUM) return;
         for (let i = num; i <= this.numBoxes && i <= MAX_BOX_NUM; i++) {
             let item = this.boxes[i];
-            delete this.boxes[i];
+            if (this.id === ID_ROGUE) {
+                Vue.delete(vue.rogue.boxes, i)
+            } else {
+                delete this.boxes[i];
+            }
+
             if (!item) continue;
             this.gainOrloseWeight(item, item.quantity);
             if (flag.equip) {
@@ -4398,61 +1753,82 @@ const Fighter = class extends Material {
         }
     }
 
-    calcAll() {
+    calcAll(equip) {
         this.calcHP();
         this.calcMP();
         this.calcWeightLimit();
-        this.calcDmg();
+        this.calcDmg(equip);
         this.calcAc();
         this.calcResist();
         this.calcMoveTimes();
     }
 
     haveCast(skillId, lvl, f = this, x, y) {
-        let skill = skillMap.get(skillId);
-        if (skill.kind === 'attack' || skill.kind === 'breath') {
-            this.attack({
-                enemy: f,
-                skill: skill,
-                lvl: lvl,
-			});
-			
-            if (skill.effect && f.hp > 0 && evalPercentage(skill.effect.prob)) this.haveCast(skill.effect.id, lvl, f, x, y);
-            if (!skill.effectSelf && f.hp > 0) return;
-		}
-		
-        let name = f.getName(true);
-        let boss = f.boss;
-        if (skill.durBase) var duration = this.calcSkillDur(skill, lvl);
+        let duration,
+            name = f.getName(true),
+            boss = f.boss,
+            skill = skillMap.get(skillId);
+        if (skill) {
+            if (skill.kind === 'attack' || skill.kind === 'breath') {
+                this.attack({
+                    enemy: f,
+                    skill: skill,
+                    lvl: lvl,
+                });
+                
+                return;
+            }
+            
+            if (skill.durBase) duration = this.calcSkillDur(skill, lvl);
+        }
+
         switch (skillId) {
             case HEAL:
-            case EXTRA_HEAL:
-                let amount = this.calcSkillValue(skill, lvl);
-                f.hp += amount;
+            case EXTRA_HEAL: {
+                let value = this.calcSkillValue(skill, lvl);
+                let limit = f.hpMax - f.hp;
+                if (value > limit) value = limit;
+                f.hp += value;
                 message.draw(option.isEnglish() ?
-                    `${name} got well (+${amount})` :
-                    `${name}傷が癒えた(+${amount})`);
-                if (f.hp > f.hpMax) f.hp = f.hpMax;
+                    `${name} got well (+${value})` :
+                    `${name}傷が癒えた(+${value})`);
                 f.poisoned = 0;
                 f.confused = 0;
                 if (f.blinded) {
                     f.blinded = 0;
-                    map.redraw(rogue.x, rogue.y);
+                    this.goBlind(true);
 				}
 				
                 if (skillId === EXTRA_HEAL) {
                     f.infected = 0;
                     if (f.hallucinated) {
                         f.hallucinated = 0;
-                        if (f.id === ROGUE) hallucinate.all(true);
+                        if (f.id === ID_ROGUE) hallucinate.all(true);
                     }
 				}
 				
                 break;
+            }
             case MANA:
-                f.mp += this.calcSkillValue(skill, lvl);
-                if (f.mp >= f.mpMax) f.mp = f.mpMax;
+            case EXTRA_MANA: {
+                let value = this.calcSkillValue(skill, lvl);
+                let limit = f.mpMax - f.mp;
+                if (value > limit) value = limit;
+                f.mp += value;
                 break;
+            }
+            case REJUVENATION: {
+                let perc = this.calcSkillValue(skill, lvl);
+                let hpValue = Math.ceil(f.hpMax * perc / 100);
+                let mpValue = Math.ceil(f.mpMax * perc / 100);
+                let hpLimit = f.hpMax - f.hp;
+                let mpLimit = f.mpMax - f.mp;
+                if (hpValue > hpLimit) hpValue = hpLimit;
+                if (mpValue > mpLimit) mpValue = mpLimit;
+                f.hp += hpValue;
+                f.mp += mpValue;
+                break;
+            }
             case LIFE_REGENERATION:
                 f.hpReg -= f.hpRegBuff;
                 f.hpRegBuff = this.calcSkillValue(skill, lvl);
@@ -4473,56 +1849,56 @@ const Fighter = class extends Material {
                 break;
             case WEAKNESS:
                 if (boss || evalPercentage(f.poison)) return;
-                f.decayOrRestore(STR);
+                f.decayOrRestore(STAT_STR);
                 break;
             case CLUMSINESS:
                 if (boss || evalPercentage(f.poison)) return;
-                f.decayOrRestore(DEX);
+                f.decayOrRestore(STAT_DEX);
                 break;
             case SICKLINESS:
                 if (boss || evalPercentage(f.poison)) return;
-                f.decayOrRestore(CON);
+                f.decayOrRestore(STAT_CON);
                 break;
             case STUPIDITY:
                 if (boss || evalPercentage(f.poison)) return;
-                f.decayOrRestore(INT);
+                f.decayOrRestore(STAT_INT);
                 break;
             case RESTORE_STRENGTH:
-                f.decayOrRestore(STR, true);
+                f.decayOrRestore(STAT_STR, true);
                 break;
             case RESTORE_DEXTERITY:
-                f.decayOrRestore(DEX, true);
+                f.decayOrRestore(STAT_DEX, true);
                 break;
             case RESTORE_CONSTITUTION:
-                f.decayOrRestore(CON, true);
+                f.decayOrRestore(STAT_CON, true);
                 break;
             case RESTORE_INTELLIGENCE:
-                f.decayOrRestore(INT, true);
+                f.decayOrRestore(STAT_INT, true);
                 break;
             case RESTORE_EXPERIENCE:
-                f.decayOrRestore(EXP, true);
+                f.decayOrRestore(STAT_EXP, true);
                 break;
             case RESTORE_ALL:
-                f.decayOrRestore(STR, true);
-                f.decayOrRestore(DEX, true);
-                f.decayOrRestore(CON, true);
-                f.decayOrRestore(INT, true);
-                f.decayOrRestore(EXP, true);
+                f.decayOrRestore(STAT_STR, true);
+                f.decayOrRestore(STAT_DEX, true);
+                f.decayOrRestore(STAT_CON, true);
+                f.decayOrRestore(STAT_INT, true);
+                f.decayOrRestore(STAT_EXP, true);
                 break;
             case CURE_ALL:
                 f.confused = f.canceled = f.poisoned = f.infected = f.paralyzed = f.sleeping = 0;
                 if (f.blinded) {
                     f.blinded = 0;
-                    if (f.id === ROGUE) map.redraw(rogue.x, rogue.y);
+                    if (f.id === ID_ROGUE) f.goBlind(true);
 				}
 				
                 if (f.hallucinated) {
                     f.hallucinated = 0;
-                    if (f.id === ROGUE) hallucinate.all(true);
+                    if (f.id === ID_ROGUE) hallucinate.all(true);
 				}
 				
-                if (f.slowed) {
-                    f.slowed = 0;
+                if (f.spdNerfDur) {
+                    f.spdNerfDur = 0;
                     f.spdNerf = 0;
                     f.calcSpeed();
                 }
@@ -4576,6 +1952,14 @@ const Fighter = class extends Material {
                     `${name}全耐性の効果を得た`);
                 f.calcResist();
                 break;
+            case RESIST_PHYSICAL:
+                f.physicalBuff = this.calcSkillValue(skill, lvl);
+                f.physicalBuffDur = duration;
+                message.draw(option.isEnglish() ?
+                    `${name} got an effect of Resist Physical` :
+                    `${name}耐物の効果を得た`);
+                f.calcResist();
+                break;
             case LOWER_RESIST:
                 if (evalPercentage(f.poison)) return;
                 f.lowerRes = this.calcSkillValue(skill, lvl);
@@ -4586,7 +1970,7 @@ const Fighter = class extends Material {
                 f.calcResist();
                 break;
             case ENLIGHTENMENT:
-                if (f.id !== ROGUE) return;
+                if (f.id !== ID_ROGUE) return;
                 map.lighten();
                 break;
             case WORMHOLE:
@@ -4613,28 +1997,29 @@ const Fighter = class extends Material {
 				}
 				
                 break;
-            case IDENTIFY:
+            case IDENTIFY: {
+                input.switchFlag();
                 flag.identify = true;
-                flag.regular = false;
-                inventory.clear();
-                this.showInventory(P_PACK);
+                let msg = message.get(M_IDENTIFY) + message.get(M_FLOOR);
+                this.showInventory(PLACE_PACK);
                 this.equipmentList();
-                message.draw(message.get(M_IDENTIFY) + message.get(M_FLOOR), true);
+                message.draw(msg, true);
                 return null;
+            }
             case DISINTEGRATION:
-                inventory.clear();
+                input.switchFlag();
                 flag.disint = true;
-                flag.regular = false;
                 message.draw(message.get(M_DISINTEGRATION), true);
                 return null;
-            case RESTORE_DURABILITY:
-                inventory.clear();
+            case RESTORE_DURABILITY: {
+                input.switchFlag();
                 flag.repair = true;
-                this.showInventory(P_PACK);
+                let msg = message.get(M_REPAIR) + message.get(M_FLOOR);
+                this.showInventory(PLACE_PACK);
                 this.equipmentList();
-                message.draw(message.get(M_REPAIR) + message.get(M_FLOOR), true);
-                flag.regular = false;
+                message.draw(msg, true);
                 return null;
+            }
             case REPAIR_ALL:
                 this.repairAll();
                 break;
@@ -4662,33 +2047,36 @@ const Fighter = class extends Material {
 
                 if (skillId === ITEM_DETECTION) audio.playSound('probe2');
                 break;
-            case EARTHQUAKE:
-                let percEQ = this.calcSkillValue(skill, lvl);
+            case EARTHQUAKE: {
+                let perc = this.calcSkillValue(skill, lvl);
                 circleSearch.main({
                     x0: this.x,
                     y0: this.y,
                     type: skillId,
                     radius: skill.radius,
-                    perc: percEQ < skill.limit ? percEQ : skill.limit,
+                    perc: perc,
 				});
-				
+                
+                map.drawShadow();
                 rogue.litMapIds = {};
                 rogue.lightenOrDarken('Lighten');
                 break;
+            }
             case SATISFY_HUNGER:
                 f.hunger += MAX_HUNGER * this.calcSkillValue(skill, lvl) / 100;
                 if (f.hunger > MAX_HUNGER) f.hunger = MAX_HUNGER;
                 break;
-            case TOWN_PORTAL:
+            case TOWN_PORTAL: {
                 let portal = new Portal();
-                portal.init(LOCATION, this.x, this.y);
+                portal.init(POS_LOCATION, this.x, this.y);
                 message.draw(option.isEnglish() ?
                     `Created a Town Portal` :
                     `タウン・ポータルを生成した`);
                 break;
+            }
             case SPEED:
                 f.spdBuff = this.calcSkillValue(skill, lvl);
-                f.speeded = duration;
+                f.spdBuffDur = duration;
                 f.calcSpeed();
                 message.draw(option.isEnglish() ?
                     `${name} speeded up` :
@@ -4701,14 +2089,17 @@ const Fighter = class extends Material {
                     `${name} got an effect of Ecco` :
                     `${name}エコーの効果を得た`);
                 break;
-            case POISON:
+            case POISON: {
                 if (evalPercentage(f.poison)) return;
+                let value = this.calcSkillValue(skill, lvl);
+                f.poisonedVal = value;
                 f.poisoned = duration;
                 f.poisonedId = this.id;
                 message.draw(option.isEnglish() ?
-                    `${name} got poisoned` :
-                    `${name}毒を受けた`);
+                    `${name} got poisoned(-${value})` :
+                    `${name}毒を受けた(-${value})`);
                 break;
+            }
             case RADIATION:
                 if (boss || evalPercentage(f.radiation)) return;
                 f.decayOrRestore();
@@ -4717,7 +2108,7 @@ const Fighter = class extends Material {
             case GRAVITATIONAL_FIELD:
                 if (boss || evalPercentage(f.gravity)) return;
                 f.spdNerf = this.calcSkillValue(skill, lvl);
-                f.slowed = duration;
+                f.spdNerfDur = duration;
                 f.calcSpeed();
                 message.draw(option.isEnglish() ?
                     `${name} slowed down` :
@@ -4733,7 +2124,6 @@ const Fighter = class extends Material {
                 break;
             case TOUCH_OF_CONFUSION:
                 f.atkCon = this.calcSkillValue(skill, lvl);
-                if (f.atkCon > skill.limit) f.atkCon = skill.limit;
                 f.confusing = duration;
                 message.draw(option.isEnglish() ?
                     `${name} got an effect of Touch of Confusion` :
@@ -4753,6 +2143,7 @@ const Fighter = class extends Material {
                     f.dmgBonus -= f.enchantSelf;
                     f.rateBonus -= f.enchantSelf;
                     f.acBonus -= f.enchantSelf;
+                    f.ias -= f.enchantSelf;
 				}
 				
                 f.enchantSelf = this.calcSkillValue(skill, lvl);
@@ -4760,6 +2151,7 @@ const Fighter = class extends Material {
                 f.dmgBonus += f.enchantSelf;
                 f.rateBonus += f.enchantSelf;
                 f.acBonus += f.enchantSelf;
+                f.ias += f.enchantSelf;
                 f.calcDmg();
                 f.calcAc();
                 message.draw(option.isEnglish() ?
@@ -4786,7 +2178,7 @@ const Fighter = class extends Material {
             case BLINDNESS:
                 if (boss || evalPercentage(f.poison)) return;
                 f.blinded = duration;
-                if (f.id === ROGUE) f.goBlind();
+                if (f.id === ID_ROGUE) f.goBlind();
                 message.draw(option.isEnglish() ?
                     `${name} got blinded` :
                     `${name}盲目になった`);
@@ -4796,17 +2188,16 @@ const Fighter = class extends Material {
                 if (boss || f.invisible) return;
                 f.invisibility = duration;
                 f.invisible = true;
-                map.coords[f.x][f.y].draw();
                 break;
             case SEE_INVISIBLE:
                 f.seeInvisible = duration;
-                if (f.id === ROGUE) seeInvisible(true);
+                if (f.id === ID_ROGUE) seeInvisible(true);
                 message.draw(option.isEnglish() ?
                     `${name} can see invisible things` :
                     `${name}透明の物体が見えるようになった`);
                 if (f.blinded) {
                     f.blinded = 0;
-                    if (f.id === ROGUE) map.redraw(rogue.x, rogue.y);
+                    if (f.id === ID_ROGUE) f.goBlind(true);
 				}
 				
                 break;
@@ -4818,46 +2209,47 @@ const Fighter = class extends Material {
                     `${name}感染した`);
                 break;
             case HALLUCINATION:
-            case HALLUCINATING_MIST:
+            case HALLUCINATING_MIST: {
                 if (boss || evalPercentage(f.poison)) return;
-                let found2;
-                if (!f.hallucinated && f.id === ROGUE) found2 = true;
+                let found;
+                if (!f.hallucinated && f.id === ID_ROGUE) found = true;
                 f.hallucinated = duration;
-                if (f.id !== ROGUE) f.removeCe();
-                if (found2) hallucinate.all();
+                if (f.id !== ID_ROGUE) f.removeCe();
+                if (found) hallucinate.all();
                 message.draw(option.isEnglish() ?
                     `${name} got hallucinated` :
                     `${name}幻覚状態になった`);
                 audio.playSound('hallucinate');
                 break;
-            case POLYMORPH:
-                if (f.id === ROGUE || f.mod === UNIQUE || evalPercentage(f.poison)) return;
+            }
+            case POLYMORPH: {
+                if (f.id === ID_ROGUE || f.mod === MOD_UNIQUE || evalPercentage(f.poison)) return;
                 let [tempX, tempY] = [f.x, f.y];
                 f.died();
                 creation.enemy({
-                    position: LOCATION,
+                    position: POS_LOCATION,
                     x: tempX,
                     y: tempY,
                     summon: true,
+                    noGroup: true,
 				});
 				
                 message.draw(option.isEnglish() ?
                     `${name} got polymorphed` :
                     `${name}変容した`);
                 break;
+            }
             case CANCELLATION:
                 if (boss || evalPercentage(f.poison)) return;
-                f.canceled = duration * (f.mod !== UNIQUE ? 1 : 2);
+                f.canceled = duration * (f.mod !== MOD_UNIQUE ? 1 : 2);
                 if (f.invisible) {
                     if (f.invisible !== DEFAULT) f.invisibility = 0;
                     f.invisible = false;
-                    map.coords[x][y].draw();
 				}
 				
                 if (f.mimic && !f.identified) {
                     hallucinate.undoOne(f);
                     f.identified = true;
-                    map.coords[f.x][f.y].draw();
 				}
 				
                 message.draw(option.isEnglish() ?
@@ -4869,7 +2261,7 @@ const Fighter = class extends Material {
                 break;
             case CREATE_MONSTER:
             case CREATE_MAGIC_MONSTER:
-            case CREATE_GIANT:
+            case CREATE_GIANT: {
                 let type;
                 if (skillId === CREATE_MONSTER || skillId === CREATE_MAGIC_MONSTER) {
                     type = RANDOM;
@@ -4880,7 +2272,7 @@ const Fighter = class extends Material {
                 creation.enemy({
                     times: rndIntBet(1, 3),
                     type: type,
-                    position: LOCATION,
+                    position: POS_LOCATION,
                     x: this.x,
                     y: this.y,
                     summon: true,
@@ -4889,11 +2281,12 @@ const Fighter = class extends Material {
 				
                 audio.playSound('summon');
                 break;
+            }
             case CREATE_TRAP:
-                creation.trap(5, RANDOM, LOCATION, this.x, this.y);
+                creation.trap(5, RANDOM, POS_LOCATION, this.x, this.y);
                 break;
             case MAGIC_CIRCLE_OF_PROTECTION:
-                creation.trap(1, 0, LOCATION, this.x, this.y, true);
+                creation.trap(1, 0, POS_LOCATION, this.x, this.y, true);
                 break;
             case MAGIC_FINDING:
                 f.mf -= f.mfBuff;
@@ -4949,18 +2342,21 @@ const Fighter = class extends Material {
                 f.calcAc();
                 break;
             case RESPEC:
-                if (f.mod === UNIQUE) return;
+                if (f.mod === MOD_UNIQUE) return;
                 f.respec();
                 break;
             case COLD:
-            case FREEZING_ARROW:
-                if (evalPercentage(f.cold)) return;
-                f.cost += COLD_DELAY + (skillId === COLD ? 0 : COLD_DELAY * 5 - f.cold);
+            case FREEZE: {
+                if (f.cost > COST_REGULAR * 2 || evalPercentage(f.cold)) return;
+                let cost = COST_REGULAR * (skillId === FREEZE ? 2 : 1) - f.cold * 5;
+                if (f.mod === MOD_UNIQUE) cost /= 5;
+                f.cost += cost;
                 break;
-            case PHOTON_ARROW:
-                this.cost -= 3;
+            }
+            case ACCELERATION:
+                this.cost -= rndIntBet(100, 300);
                 break;
-            case STONE_TO_MUD:
+            case STONE_TO_MUD: {
                 if (map.coords[x][y].isObstacle()) {
                     let loc = map.coords[x][y];
                     if (loc.wall) {
@@ -4969,10 +2365,10 @@ const Fighter = class extends Material {
 						loc.deleteDoor(true);
 					}
 
+                    rogue.lightenOrDarken('Lighten');
                     audio.playSound('dig', distanceSq(this.x, this.y, x, y));
 				}
 				
-                if (rogue.litMapIds[x + ',' + y]) rogue.lightenOrDarken('Lighten');
                 if (f.material === M_STONE) {
                     this.attack({
                         enemy: f,
@@ -4982,6 +2378,7 @@ const Fighter = class extends Material {
 				}
 				
                 break;
+            }
         }
     }
 
@@ -4990,25 +2387,25 @@ const Fighter = class extends Material {
         y1,
         nameSkill,
         ecco,
-        keyCode = null,
+        key = null,
     }) {
-        if (keyCode === 88) { //x
+        if (key === 'x') {
             if (this.blinded) {
                 message.draw(message.get(M_CANT_EXAMINE));
                 return;
 			}
 			
             flag.examine = true;
-            cursol.init();
-            this.examine();
+            cursor.init();
+            map.coords[rogue.x][rogue.y].getInfo();
             return;
 		}
 		
-        if (keyCode !== null) {
-            if (keyCode === 190 || keyCode === 110) { //., T.
+        if (key !== null) {
+            if (key === 't') {
                 [x1, y1] = [this.x, this.y];
 			} else {
-                var dr = getDirection(keyCode);
+                var dr = getDirection(key);
                 if (dr === null) return;
             }
 		}
@@ -5036,6 +2433,7 @@ const Fighter = class extends Material {
                 skill.type === 'spell' ?
                 `${nameChar}${name}を唱えた` :
                 `${nameChar}${name}を放った`);
+            if (skill.type === 'missile') audio.playSound('shoot');
             audio.playSound(skill.element);
         } else if (flag.scroll) {
             nameSkill = this.ci.nameSkill;
@@ -5047,7 +2445,9 @@ const Fighter = class extends Material {
                 `Threw ${name}` :
                 `${name}を投げた`);
                 audio.playSound('throw');
-		}
+		} else if (flag.arrow) {
+            audio.playSound('shoot');
+        }
 		
         let thrown = flag.arrow || flag.throw;
         if (flag.zap && !w.charges) {
@@ -5196,8 +2596,11 @@ const Fighter = class extends Material {
             }
 		}
 		
-        if (this.id !== ROGUE) return;
-        if (!flag.examine) display.clearOne(display.ctxes.cur);
+        if (this.id !== ID_ROGUE) return;
+        if (!flag.examine) {
+             cursor.clearAll();
+        }
+
         inventory.clear();
         rogue.done = true;
         flag.aim = false;
@@ -5217,7 +2620,7 @@ const Fighter = class extends Material {
             } else if (!this.canRead(true)) {
 				check = false;
 			}
-        } else if (this.id === ROGUE && !this.haveBook(skill.id)) {
+        } else if (this.id === ID_ROGUE && !this.haveBook(skill.id)) {
             msgId = M_DONT_HAVE_BOOK;
             check = false;
         } else if (skill.mp > this.mp) {
@@ -5238,14 +2641,14 @@ const Fighter = class extends Material {
             check = false;
 		}
 		
-        if (this.id === ROGUE && msgId) message.draw(message.get(msgId));
+        if (this.id === ID_ROGUE && msgId) message.draw(message.get(msgId));
         return check;
     }
 
     canRead(book) {
         let found = true;
         if (this.blinded || this.confused || !rogue.litMapIds[this.x + ',' + this.y]) {
-            if (this.id === ROGUE) {
+            if (this.id === ID_ROGUE) {
                 let id = book ? M_CANT_READ_BOOK : M_CANT_READ_SCROLL;
                 message.draw(message.get(id));
 			}
@@ -5298,7 +2701,7 @@ const Fighter = class extends Material {
     }
 
     consumeMana(skill) {
-        this.cost -= this['times' + getUpperCase(skill.type)] - 1;
+        this.cost -= this['spd' + getUpperCase(skill.type)];
         this.mp -= skill.mp;
     }
 
@@ -5348,17 +2751,17 @@ const Fighter = class extends Material {
 		}
 		
         switch (item.place) {
-            case P_PACK:
+            case PLACE_PACK:
                 this.deletePackItem(item.indexOf(this.pack), quantity);
                 break;
-            case P_BOX:
+            case PLACE_BOX:
                 this.deleteBoxItem(item.indexOf(this.boxes), quantity);
                 break;
-            case P_FLOOR:
+            case PLACE_FLOOR:
                 let loc = map.coords[item.x][item.y];
                 loc.deleteItem(item.indexOf(loc.item), quantity);
                 break;
-            case P_EQUIPMENT:
+            case PLACE_EQUIPMENT:
                 this.deleteEquipment(item.indexOf(this.equipment), quantity);
                 break;
 		}
@@ -5371,16 +2774,16 @@ const Fighter = class extends Material {
             item = this.inventoryOut(item, 1);
             item.charges--;
             if (item.identified) item.changePrice();
-            if ((item.place === P_PACK || item.place === P_BOX) && !this.packAdd(item)) {
+            if ((item.place === PLACE_PACK || item.place === PLACE_BOX) && !this.packAdd(item)) {
                 item.dropped();
-			} else if (item.place === P_FLOOR) {
+			} else if (item.place === PLACE_FLOOR) {
 				item.putDown(item.x, item.y, true);
 			}
         } else {
             item.charges--;
             if (item.identified) {
                 item.changePrice();
-                if (item.place === P_PACK) inventory.sort(this.getItemIndex(item), this.pack);
+                if (item.place === PLACE_PACK) inventory.sort(this.getItemIndex(item), this.pack);
             }
         }
     }
@@ -5388,17 +2791,17 @@ const Fighter = class extends Material {
     getItemIndex(item) {
         let a;
         switch (item.place) {
-            case P_PACK:
+            case PLACE_PACK:
                 a = item.indexOf(this.pack);
                 break;
-            case P_BOX:
+            case PLACE_BOX:
                 a = item.indexOf(this.boxes);
                 break;
-            case P_FLOOR:
+            case PLACE_FLOOR:
                 let loc = map.coords[item.x][item.y];
                 a = item.indexOf(loc.item);
                 break;
-            case P_EQUIPMENT:
+            case PLACE_EQUIPMENT:
                 a = item.indexOf(this.equipment);
                 break;
 		}
@@ -5437,16 +2840,15 @@ const Fighter = class extends Material {
         message.draw(option.isEnglish() ?
             `${name} swapped gear` :
             `${name}装備を持ち替えた`);
-        if (this.id !== ROGUE) return;
+        audio.playSound('grab');
+        if (this.id !== ID_ROGUE) return;
         rogue.done = true;
-        if (!flag.equipment) {
-            this.equipmentList();
-            flag.clearInv = true;
-        }
+        this.equipmentList();
+        flag.clearInv = true;
     }
 
     stealGold(enemy) {
-        if (!enemy.purse || evalPercentage(enemy.dex * 2)) return;
+        if (!enemy.purse || evalPercentage(enemy.dex * 2 / 5)) return;
         let amount = Item.goldAmount(this.lvl);
         if (amount < enemy.purse / 50) {
             amount = enemy.purse / 50;
@@ -5471,7 +2873,7 @@ const Fighter = class extends Material {
     }
 
     stealItem(enemy) {
-        if (evalPercentage(enemy.dex * 2)) return;
+        if (evalPercentage(enemy.dex * 2 / 5)) return;
         let { pack, box } = enemy.haveItem();
         if (!pack && !box) return;
         if (pack && box) {
@@ -5481,7 +2883,7 @@ const Fighter = class extends Material {
 		
         let item;
         if (pack) {
-            let a = EA[rndInt(Object.keys(enemy.pack).length - 1)];
+            let a = eaList[rndInt(Object.keys(enemy.pack).length - 1)];
             item = enemy.pack[a];
         } else {
             let nums = enums(1, enemy.numBoxes);
@@ -5519,8 +2921,9 @@ const Fighter = class extends Material {
     }
 
     decreaseDurab(weapon, element) {
-        let item = this.equipment[weapon ? 'main' : BP[EA[rndInt(MAX_EQUIPMENT_NUM - 1)]]];
+        let item = this.equipment[weapon ? 'main' : bpList[eaList[rndInt(MAX_EQUIPMENT_NUM - 1)]]];
         if (!item || !item.durab || item.indestructible) return;
+        let value;
         if (element) {
             let mat;
             switch (element) {
@@ -5534,25 +2937,28 @@ const Fighter = class extends Material {
                     mat = M_BONE | M_SHELL | M_GEM | M_STONE | M_HORN;
                     break;
             }
-            if (!(item.material & mat)) return;
-        } else if (evalPercentage(95)) {
-			return
+
+            if (item.material & mat) value = rndIntBet(1, 5);
+        } else if (evalPercentage(5)) {
+            value = 1;
 		}
 
-        if (!--item.durab) {
-            this.getOrLooseStats(item);
-            this.calcAll();
-            let name = item.getName();
-            audio.playSound('broken');
-            message.draw(option.isEnglish() ?
-                `${name} broke` :
-                `${name}は壊れた`);
-            return true;
-        }
+        if (!value) return;
+        item.durab -= value;
+        if (item.durab < 0) item.durab = 0;
+        if (item.durab) return;
+        this.getOrLooseStats(item);
+        this.calcAll();
+        let name = item.getName();
+        audio.playSound('broken');
+        message.draw(option.isEnglish() ?
+            `${name} broke` :
+            `${name}は壊れた`);
+        return true;
     }
 
     gotCursed() {
-        let item = this.equipment[BP[EA[rndInt(MAX_EQUIPMENT_NUM - 1)]]];
+        let item = this.equipment[bpList[eaList[rndInt(MAX_EQUIPMENT_NUM - 1)]]];
         if (!item || item.cursed) return;
         let name = item.getName();
         message.draw(option.isEnglish() ?
@@ -5613,13 +3019,13 @@ const Fighter = class extends Material {
     }
 
     decreaseEnergy() {
-        this.energy -= (this.spd < 0 ? -this.spd : 0) + this.cost + rndIntBet(-1, 1);
+        this.energy -= this.cost * (1 + (this.spd < 0 ? -this.spd / 100 : 0)) + rndIntBet(-100, 100);
         if (this.cost !== COST_REGULAR) this.cost = COST_REGULAR;
         map.queue.update(this);
     }
 
     increaseEnergy() {
-        this.energy += (this.spd > 0 ? this.spd : 0) + COST_REGULAR + rndIntBet(-1, 1);
+        this.energy += COST_REGULAR * (1 + (this.spd > 0 ? this.spd / 100 : 0)) + rndIntBet(-100, 100);
     }
 
     teleport(short, radiusSq, x, y, mute) {
@@ -5652,7 +3058,7 @@ const Fighter = class extends Material {
             audio.playSound('teleport', distance);
 		}
 		
-        if (this.id === ROGUE) {
+        if (this.id === ID_ROGUE) {
             let loc = map.coords[this.x][this.y];
             loc.traces = ++this.numSteps;
             loc.getInfo();
@@ -5662,7 +3068,7 @@ const Fighter = class extends Material {
 
     wakeUp() {
         this.sleeping = 0;
-        if (this.id !== ROGUE && !this.isShowing()) return;
+        if (this.id !== ID_ROGUE && !this.isShowing()) return;
         let name = this.getName(true);
         message.draw(option.isEnglish() ?
             `${name} woke up` :
@@ -5678,7 +3084,7 @@ const Fighter = class extends Material {
             case 'staff':
                 if (item.twoHanded) {
                     if (this.equipment.main && this.equipment.off) {
-                        if (this.id === ROGUE) message.draw(message.get(M_TWO_HANDED));
+                        if (this.id === ID_ROGUE) message.draw(message.get(M_TWO_HANDED));
                         return;
                     } else if (this.equipment.main) {
                         partsEquipped = 'main';
@@ -5754,7 +3160,7 @@ const Fighter = class extends Material {
                 type: itemInfo.type,
                 tabId: itemInfo.tabId,
                 quantity: quantity,
-                position: LIST,
+                position: POS_LIST,
                 lvl: this.lvl,
                 uniqueId: itemInfo.uniqueId,
                 starter: itemInfo.starter,
@@ -5784,7 +3190,7 @@ const Fighter = class extends Material {
         }
 
         if (equipped) {
-            item.place = P_EQUIPMENT;
+            item.place = PLACE_EQUIPMENT;
             this.gainOrloseWeight(item, item.quantity, true);
             if (!side && item.durab) this.getOrLooseStats(item, true, false, true);
             return true;
@@ -5793,6 +3199,7 @@ const Fighter = class extends Material {
 
     respec() {
         this.statPoints = this.skillPoints = this.lvl - 1;
+        this.statPoints *= 5;
         this.strMax = 1 + this.strBonus;
         this.dexMax = 1 + this.dexBonus;
         this.conMax = 1 + this.conBonus;
@@ -5804,7 +3211,7 @@ const Fighter = class extends Material {
         this.skill = {}
         this.initSynerzy();
         this.calcAll();
-        if (this.id === ROGUE) this.initBookmarks();
+        if (this.id === ID_ROGUE) this.initKeys();
         let name = this.getName(true);
         message.draw(option.isEnglish() ?
             `${name} forgot everything` :
@@ -5819,5 +3226,14 @@ const Fighter = class extends Material {
             type: 'Aim',
             fighter: this,
         });
+    }
+
+    getShootMsg(ammo) {
+        let name = this.getName(true);
+        let nameArrow = ammo.getName(false, 1);
+        // if (option.isEnglish()) nameArrow = getArticleAndPlural(nameArrow, false, true, this.timesMissile);
+        message.draw(option.isEnglish() ?
+            `${name} shot ${nameArrow}` :
+            `${name}${nameArrow}を放った`);
     }
 }

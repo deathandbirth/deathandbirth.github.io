@@ -1,5 +1,8 @@
 window.onload = () => {
-    display.change(option.display.user);
-    game.title(true);
-    input.init();
+    vueInit();
+    Vue.nextTick(function(){
+        display.init();
+        game.title(true);
+        input.init();
+    });
 }

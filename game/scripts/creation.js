@@ -1,17 +1,15 @@
 const creation = {
-    input(keyCode) {
-        if (keyCode !== 13) { //Enter
-            if (keyCode >= 48 && keyCode <= 57) {
-                this.string += String(getNumber(keyCode));
-			} else if (keyCode >= 65 && keyCode <= 90) {
-                this.string += getAlphabet(keyCode);
-			} else if (keyCode === 32) {
+    input(key) {
+        if (key !== 'Enter') { 
+            if (getAlphabetOrNumber(key)) {
+                this.string += key;
+			} else if (/^\s$|Spacebar/.test(key)) {
                 this.string += ' ';
-            } else if (keyCode === 8) {
+            } else if (key === 'Backspace') {
                 this.string = this.string.substr(0, this.string.length - 1);
-			} else if (keyCode === 40 && this.stringSave) { //down
+			} else if (key === 'ArrowDown' && this.stringSave) {
                 this.string = this.stringSave;
-            } else if (!keyCode) { //init
+            } else if (!key) { //init
 				this.string = '';
 			}
 
@@ -26,7 +24,6 @@ const creation = {
             if (type === 'coin') {
                 if (num > 0) {
                     rogue.purse += num;
-                    rogue.drawStats();
                 } else {
                     message.draw('Incorrect syntax');
                 }
@@ -37,6 +34,9 @@ const creation = {
                     quantity: num2,
                     uniqueId: num3,
                 });
+
+                map.drawObjectAll();
+                map.draw();
             } else {
 				message.draw('Incorrect syntax');
 			}
@@ -45,13 +45,14 @@ const creation = {
                 this.enemy({
                     type: type,
                     tabId: num,
-                    position: LOCATION,
+                    position: POS_LOCATION,
                     x: rogue.x,
                     y: rogue.y,
                     summon: true,
-				});
-				
-                map.draw(rogue.x, rogue.y);
+                });
+                
+                map.drawObjectAll();
+                map.draw();
             } else {
 				message.draw('Incorrect syntax');
 			}
@@ -66,29 +67,28 @@ const creation = {
         map.init();
         dungeon.create();
         let boss = rogue.cdl === 33 && !rogue.inferno;
-        this.stairs(rndIntBet(MIN_STAIRS_NUM, MAX_STAIRS_NUM), boss ? UP : RANDOM, INIT);
-        this.trap(rndIntBet(MIN_TRAP_NUM, MAX_TRAP_NUM, RANDOM, RANDOM), RANDOM, INIT);
-        let [startX, startY] = Object.keys(map.staircaseList)[dr === DOWN ? 0 : 1].split(',');
+        this.stairs(rndIntBet(MIN_STAIRS_NUM, MAX_STAIRS_NUM), boss ? DR_UP : RANDOM, POS_INIT);
+        this.trap(rndIntBet(MIN_TRAP_NUM, MAX_TRAP_NUM), RANDOM, POS_INIT);
+        let [startX, startY] = Object.keys(map.staircaseList)[dr === DR_DOWN ? 0 : 1].split(',');
         rogue.putDown(false, stairs, Number(startX), Number(startY));
         if (boss) {
             this.enemy({
                 type: 'misc',
                 tabId: 2,
-                position: RANDOM
 			});
 		}
 
         this.enemy({
-            times: 10,
-            position: INIT,
+            times: ENEMY_NUM_INIT,
+            position: POS_INIT,
 		});
 		
         this.item({
-            times: 10,
-            position: INIT,
+            times: ITEM_NUM_INIT,
+            position: POS_INIT,
 		});
 		
-        map.draw(rogue.x, rogue.y);
+        map.redraw();
         let track = audio.getDungeonTrack(rogue.cdl, boss);
         if (audio.curTrack !== track) {
             audio.stop(audio.curTrack);
@@ -99,9 +99,10 @@ const creation = {
     town() {
         map.init(true);
         town.createAll();
-        this.stairs(1, DOWN, LOCATION, POSITION.hell.x, POSITION.hell.y, true);
+        let pos = positionFixedList.hell;
+        this.stairs(1, DR_DOWN, POS_LOCATION, pos.x, pos.y, true);
         rogue.putDown(true);
-        map.draw(rogue.x, rogue.y);
+        map.redraw();
         audio.stop(audio.curTrack);
         audio.playMusic(!rogue.inferno ? 'town' : 'town2');
     },
@@ -111,6 +112,7 @@ const creation = {
         x,
         y,
         summon,
+        noGroup,
         magic,
         boost,
         times = 1,
@@ -122,13 +124,13 @@ const creation = {
         let lvl = rogue.cdl + boost;
         for (let i = 0; i < times; i++) {
             let [typeT, tabIdT] = [type, tabId];
-            if (type === undefined || type === RANDOM) {
-                do typeT = FT[rndInt(FT.length - 2)];
+            if (type === RANDOM) {
+                do typeT = ftList[rndInt(ftList.length - 2)];
                 while (fighterTab[typeT][0].lvl > lvl);
             }
 
             let fighter;
-            if (tabId === undefined || tabId === RANDOM) {
+            if (tabId === RANDOM) {
                 let j = 0;
                 let fighterNums = fighterNumsMap.get(typeT);
                 fighterNums.shuffle();
@@ -136,30 +138,57 @@ const creation = {
                     tabIdT = fighterNums[j++];
                     if (tabIdT === undefined) return; //
                     fighter = fighterTab[typeT][tabIdT];
-                } while (fighter.mod === UNIQUE && rogue.cue[fighter.name[ENG]] ||
+                } while (fighter.mod === MOD_UNIQUE && rogue.cue[fighter.name[LETTER_ENG]] ||
                     fighter.lvl > lvl || evalPercentage(fighter.rarity));
             } else {
                 fighter = fighterTab[typeT][tabIdT];
             }
 
-            let count = fighter.group ? rndIntBet(2, 4) : 1;
+            let count = !noGroup && fighter.group ? rndIntBet(2, 4) : 1;
             let [posT, xT, yT] = [position, x, y];
             for (let j = 0; j < count; j++) {
                 let fighterNew = new Enemy(fighter);
                 fighterNew.init(posT, xT, yT, summon, magic, bias, lvl);
-                if (fighter.group && posT !== LOCATION) {
-                    posT = LOCATION;
+                if (fighter.group && posT !== POS_LOCATION) {
+                    posT = POS_LOCATION;
                     [xT, yT] = [fighterNew.x, fighterNew.y];
                 }
             }
         }
     },
 
-    enemyList() {
-        this.enemies = {};
+    setEnemyList(detail, normal, unique) {
+        this.enemyList = {};
         for (let key in fighterTab) {
-            for (let fighter of fighterTab[key]) {
-				this.enemies[`${fighter.lvl},${fighter.mod},${key}`] = fighter.name['b'];
+            for (let [tabId, f] of fighterTab[key].entries()) {
+                if (key === 'misc' && f.mod !== MOD_UNIQUE) continue;
+                if (f.mod === MOD_UNIQUE) {
+                    if (!unique) continue;
+                } else {
+                    if (!normal) continue;
+                }
+
+                let func = numberPadding;
+                let lvl = func(f.lvl, 2, true);
+                let list = `Lv: ${lvl}`;
+                if (detail) {
+                    let hr = func(f.hpRate, 3);
+                    let mr = func(f.mpRate, 3);
+                    let str = func(f.str, 3);
+                    let dex = func(f.dex, 3);
+                    let con = func(f.con, 3);
+                    let int = func(f.int, 3);
+                    let spd = func(f.spd, 4);
+                    let dmg = func(f.dmgBase, 3);
+                    let ac = func(f.acBase, 3);
+                    let sr = func(f.acSRate, 3);
+                    let tr = func(f.acTRate, 3);
+                    let br = func(f.acBRate, 3);
+                    list += `, HR: ${hr}, MR: ${mr}, Str: ${str}, Dex: ${dex}, Con: ${con}, Int: ${int}, Spd: ${spd}, Dmg: ${dmg}, AC: ${ac}, SR: ${sr}, TR: ${tr}, BR: ${br}`;
+                }
+
+                list += `, Mod: ${f.mod}, ${key} ${tabId}`;
+				this.enemyList[list] = `${f.name['b']}`;
 			}
         }
     },
@@ -185,24 +214,24 @@ const creation = {
         if (uniqueId >= 0) magic = true;
         for (let i = 0; i < times; i++) {
             let [typeT, tabIdT] = [type, tabId];
-            if (type === undefined || type === RANDOM) typeT = Item.getType(magic);
-            if (tabId === undefined || tabId === RANDOM) [typeT, tabIdT] = Item.getTabId(typeT, lvl, magic);
+            if (type === RANDOM) typeT = Item.getType(magic);
+            if (tabId === RANDOM) [typeT, tabIdT] = Item.getTabId(typeT, lvl, magic);
             let item = itemTab[typeT].get(tabIdT);
             if (item.lethe) rogue.lethe++;
             let itemNew = new Item(item, quantity);
             itemNew.init(position, x, y, magic, lvl, uniqueId, starter, matBase, matId);
-            if (position === LIST) {
-                itemNew.place = flag.shop ? P_SHOP : P_PACK;
+            if (position === POS_LIST) {
+                itemNew.place = flag.shop ? PLACE_SHOP : PLACE_PACK;
                 return itemNew;
             }
         }
     },
 
-    itemList() {
-        this.items = {};
+    setItemList() {
+        this.itemList = {};
         flag.shop = true;
-        for (let type of equipmentList) {
-            this.items[type] = [];
+        for (let type of equipmentTypeList) {
+            this.itemList[type] = [];
             for (let [tabId, item] of itemTab[type]) {
                 let i = 0;
                 let list = [...materialList];
@@ -214,7 +243,7 @@ const creation = {
                     let item = this.item({
                         type: type,
                         tabId: tabId,
-                        position: LIST,
+                        position: POS_LIST,
                         lvl: 99,
                         matBase: matBase,
                         matId: i,
@@ -222,7 +251,7 @@ const creation = {
 					
                     item.embeddedMax = 0;
                     let name = item.getName();
-                    this.items[type].push(`${name},${item.weight}kg`);
+                    this.itemList[type].push(`${name},${item.weight}kg`);
                 }
             }
 		}
@@ -230,10 +259,10 @@ const creation = {
         flag.shop = false;
     },
 
-    trap(times, tabId, position, x, y, show) {
+    trap(times, tabId = RANDOM, position, x, y, show) {
         for (let i = 0; i < times; i++) {
             let tabIdT = tabId;
-            if (tabId === undefined || tabId === RANDOM) tabIdT = rndInt(trapTab.length - 1);
+            if (tabId === RANDOM) tabIdT = rndInt(trapTab.length - 1);
             let trap = new Trap(trapTab[tabIdT], !show);
             trap.init(position, x, y);
         }
@@ -242,22 +271,28 @@ const creation = {
     stairs(times, tabId, position, x, y, show) {
         for (let i = 0; i < times; i++) {
             let tabIdT = tabId;
-            if (position === INIT) {
+            if (position === POS_INIT) {
                 if (tabId === RANDOM) {
                     if (i <= 1) {
-                        tabIdT = i ? DOWN : UP;
+                        tabIdT = i ? DR_DOWN : DR_UP;
                     } else {
-                        tabIdT = i % 2 ? DOWN : UP;
+                        tabIdT = i % 2 ? DR_DOWN : DR_UP;
                     }
                 }
 
                 show = i <= 1 || coinToss();
             } else if (tabId === RANDOM) {
-				tabIdT = coinToss() ? DOWN : UP;
+				tabIdT = coinToss() ? DR_DOWN : DR_UP;
 			}
 
             let staircase = new Staircase(stairsMap.get(tabIdT), !show);
             staircase.init(position, x, y);
         }
     },
+
+    setList() {
+        if (!rogue.isWizard) return;
+        this.setEnemyList(true, true, true);
+        this.setItemList();
+    }
 };
