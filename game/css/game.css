@@ -99,7 +99,8 @@ li {
 #game-loader .msg-box > h1 {
 	font-family: 'Stardos Stencil';
 	font-weight: 500;
-	font-size: 2.5em;
+    font-size: 2.5em;
+    line-height: 100%;
 }
 
 #game-loader .msg-box > h2 {
